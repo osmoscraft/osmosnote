@@ -1,0 +1,2 @@
+- TODO: display title (with yaml frontmatter)
+- TODO: edit and save note (no wysiwyg)

@@ -2,8 +2,6 @@ const searchBoxElement = document.getElementById("search-box");
 const outputElement = document.getElementById("output");
 
 searchBoxElement.addEventListener("input", async (e) => {
-  console.log(e.target.value);
-
   if (e.target.value.length) {
     const params = new URLSearchParams({
       phrase: e.target.value,
@@ -23,5 +21,7 @@ searchBoxElement.addEventListener("input", async (e) => {
      </ul>`;
 
     outputElement.innerHTML = itemsHtml;
+
+    console.log(result.durationInMs);
   }
 });
