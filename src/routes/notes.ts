@@ -2,6 +2,7 @@ import type { RouteHandlerMethod } from "fastify";
 import { getConfig } from "../config";
 import fs from "fs-extra";
 import path from "path";
+import { parseNote } from "../lib/parse-note";
 
 export interface NotesRouteHandler {
   Params: {
@@ -9,7 +10,7 @@ export interface NotesRouteHandler {
   };
   Reply: {
     title: string;
-    body: string;
+    content: string;
   };
 }
 
@@ -20,10 +21,11 @@ export const handleNotesRoute: RouteHandlerMethod<any, any, any, NotesRouteHandl
   const id = params.id;
   const notesDir = config.notesDir;
 
-  const noteFileContent = await fs.readFile(path.join(notesDir, `${id}.md`), "utf-8");
+  const rawMarkdown = await fs.readFile(path.join(notesDir, `${id}.md`), "utf-8");
+  const note = parseNote(rawMarkdown);
 
   return {
-    title: "test title",
-    body: noteFileContent,
+    title: note.metadata.title,
+    content: note.content,
   };
 };

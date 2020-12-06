@@ -1,3 +1,4 @@
+const noteTitleElement = document.getElementById("note-title");
 const noteContentElement = document.getElementById("note-content");
 
 async function loadNote() {
@@ -12,7 +13,8 @@ async function loadNote() {
   const response = await fetch(`/api/notes/${encodeURIComponent(id)}`);
   const result = await response.json();
 
-  noteContentElement.innerHTML = result.body;
+  noteTitleElement.innerHTML = result.title;
+  noteContentElement.innerHTML = result.content;
 }
 
 loadNote();
