@@ -1,2 +1,3 @@
 - TODO: display title (with yaml frontmatter)
 - TODO: edit and save note (no wysiwyg)
+- TODO: render preview mode (need to decide ssr vs csr)
