@@ -14,8 +14,7 @@ searchBoxElement.addEventListener("input", async (e) => {
     const itemsHtml = `<ul>
        ${items
          .map(
-           (item) =>
-             `<li><a href="/editor.html?filename=${encodeURIComponent(item.filename)}">${item.filename}</a></li>`
+           (item) => `<li><a href="/editor.html?filename=${encodeURIComponent(item.filename)}">${item.title}</a></li>`
          )
          .join("")}
      </ul>`;

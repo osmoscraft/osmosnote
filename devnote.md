@@ -1,3 +1,3 @@
-- TODO: show title in search
+- TODO: keep search result on navigate back
 - TODO: edit and save note (no wysiwyg)
 - TODO: render preview mode (need to decide ssr vs csr)
