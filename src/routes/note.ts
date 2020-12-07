@@ -6,10 +6,12 @@ export interface NoteRouteHandler {
   Params: {
     id: string;
   };
-  Reply: {
-    title: string;
-    content: string;
-  };
+  Reply: NoteReply;
+}
+
+export interface NoteReply {
+  title: string;
+  content: string;
 }
 
 export const handleNoteRoute: RouteHandlerMethod<any, any, any, NoteRouteHandler> = async (request, reply) => {

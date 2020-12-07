@@ -7,9 +7,11 @@ import { runShell } from "../lib/run-shell";
 const LIMIT = 10;
 
 export interface NoteListRouteHandler {
-  Reply: {
-    notes: NoteListItem[];
-  };
+  Reply: NoteListReply;
+}
+
+export interface NoteListReply {
+  notes: NoteListItem[];
 }
 
 export interface NoteListItem {
