@@ -1,4 +1,3 @@
-import { exec } from "child_process";
 import type { RouteHandlerMethod } from "fastify";
 import { performance } from "perf_hooks";
 import { getConfig } from "../config";
@@ -12,10 +11,10 @@ export interface SearchRouteHandler {
   Querystring: {
     phrase: string;
   };
-  Reply: SearchResult;
+  Reply: SearchReplay;
 }
 
-export interface SearchResult {
+export interface SearchReplay {
   items: SearchResultItem[];
   durationInMs: number;
 }

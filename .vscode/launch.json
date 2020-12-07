@@ -3,16 +3,12 @@
   "configurations": [
     {
       "type": "node",
-      "request": "launch",
-      "name": "Debug file with ts-node",
-      "runtimeArgs": [
-        "-r",
-        "ts-node/register"
-      ],
-      "args": [
-        "${workspaceFolder}/src/main.ts"
-      ]
-      // "args": ["${file}"]
+      "request": "attach",
+      "name": "Attach to dev:debug",
+      "protocol": "inspector",
+      "port": 4321,
+      "restart": true,
+      "cwd": "${workspaceRoot}"
     }
   ]
 }

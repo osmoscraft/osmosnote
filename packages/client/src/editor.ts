@@ -1,11 +1,11 @@
-const noteTitleElement = document.getElementById("note-title");
-const noteContentElement = document.getElementById("note-content");
+const noteTitleElement = document.getElementById("note-title") as HTMLElement;
+const noteContentElement = document.getElementById("note-content") as HTMLElement;
 
 async function loadNote() {
   const url = new URL(location.href);
   const searchParams = new URLSearchParams(url.search);
 
-  const filename = searchParams.get("filename");
+  const filename = searchParams.get("filename")!;
   console.log(filename);
 
   const id = filename.split(".md")[0];

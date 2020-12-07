@@ -1,1 +1,4 @@
+# This is an example setup
+# - replace notesDir with your git repository
+# - place this file at ~/.config/platojar/system-two.yaml
 notesDir: "/home/evenstar/repos/project-platojar/markdown-notes-test"
