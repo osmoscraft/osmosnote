@@ -12,10 +12,12 @@ export interface SearchRouteHandler {
   Querystring: {
     phrase: string;
   };
-  Reply: {
-    items: SearchResultItem[];
-    durationInMs: number;
-  };
+  Reply: SearchResult;
+}
+
+export interface SearchResult {
+  items: SearchResultItem[];
+  durationInMs: number;
 }
 
 export interface SearchResultItem {
