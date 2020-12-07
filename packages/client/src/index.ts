@@ -4,6 +4,7 @@ import type { NoteListReply } from "@system-two/server/src/routes/note-list";
 const searchBoxDom = document.getElementById("search-box") as HTMLInputElement;
 const searchResultsDom = document.getElementById("search-results") as HTMLElement;
 const recentNotesDom = document.getElementById("recent-notes") as HTMLElement;
+const captureDom = document.getElementById("capture") as HTMLButtonElement;
 
 searchBoxDom.addEventListener("input", async (e) => {
   if (searchBoxDom.value.length) {
@@ -21,6 +22,15 @@ searchBoxDom.addEventListener("input", async (e) => {
     console.log(result.durationInMs);
   } else {
     searchResultsDom.innerHTML = "";
+  }
+});
+
+captureDom.addEventListener("click", () => {
+  const title = searchBoxDom.value.trim();
+  if (title.length) {
+    window.open(`/editor.html?title=${title}`, `_self`);
+  } else {
+    window.open(`/editor.html`, `_self`);
   }
 });
 

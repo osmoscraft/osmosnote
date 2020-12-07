@@ -1,7 +1,7 @@
 import type { RouteHandlerMethod } from "fastify";
 import { performance } from "perf_hooks";
 import { getConfig } from "../config";
-import { getNoteByFilename } from "../lib/get-note";
+import { readNote } from "../lib/note-file-io";
 import { parseNote } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
 
@@ -72,7 +72,7 @@ async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultI
 
     // open each note to parse its title
     const notesAsync = searchResultItems.map(async (item) => {
-      const markdown = await getNoteByFilename(item.filename);
+      const markdown = await readNote(item.filename);
       const parseResult = parseNote(markdown);
 
       return {

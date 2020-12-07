@@ -1,6 +1,6 @@
 import type { RouteHandlerMethod } from "fastify";
 import { getConfig } from "../config";
-import { getNoteByFilename } from "../lib/get-note";
+import { readNote } from "../lib/note-file-io";
 import { parseNote } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
 
@@ -38,7 +38,7 @@ export const handleNoteListRoute: RouteHandlerMethod<any, any, any, NoteListRout
   const filenames = stdout.trim().split("\n");
 
   const notesAsync = filenames.map(async (filename) => {
-    const markdown = await getNoteByFilename(filename);
+    const markdown = await readNote(filename);
     const parseResult = parseNote(markdown);
 
     return {

@@ -1,7 +1,7 @@
 import fastify from "fastify";
 import fastifyStatic from "fastify-static";
 import path from "path";
-import { handleNoteRoute } from "./routes/note";
+import { handleCreateNote, handleGetNote } from "./routes/note";
 import { handleNoteListRoute } from "./routes/note-list";
 import { handleSearchRoute } from "./routes/search";
 
@@ -9,7 +9,8 @@ const server = fastify();
 
 server.get("/api/search", handleSearchRoute);
 server.get("/api/notes", handleNoteListRoute);
-server.get("/api/notes/:id", handleNoteRoute);
+server.post("/api/notes", handleCreateNote);
+server.get("/api/notes/:id", handleGetNote);
 
 const publicPath = path.join(__dirname, "../public");
 server.register(fastifyStatic, { root: publicPath });
