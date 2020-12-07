@@ -1,4 +1,3 @@
-- TODO: keep search result on navigate back
 - TODO: edit and save note (no wysiwyg)
 - TODO: render preview mode (need to decide ssr vs csr)
 - TODO: switch to ts-node-dev and tsc for dev inner loop

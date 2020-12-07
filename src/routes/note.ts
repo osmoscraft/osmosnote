@@ -2,7 +2,7 @@ import type { RouteHandlerMethod } from "fastify";
 import { getNoteByFilename } from "../lib/get-note";
 import { parseNote } from "../lib/parse-note";
 
-export interface NotesRouteHandler {
+export interface NoteRouteHandler {
   Params: {
     id: string;
   };
@@ -12,7 +12,7 @@ export interface NotesRouteHandler {
   };
 }
 
-export const handleNotesRoute: RouteHandlerMethod<any, any, any, NotesRouteHandler> = async (request, reply) => {
+export const handleNoteRoute: RouteHandlerMethod<any, any, any, NoteRouteHandler> = async (request, reply) => {
   const params = request.params;
   const id = params.id;
 
