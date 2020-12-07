@@ -7,3 +7,13 @@
 * DONE keep search result on navigate back
 * DONE show title in search
 * DONE display title (with yaml frontmatter)
+
+
+* How to handle link insertion?
+- use clipboard as much as possible
+- when pasting, autoformat entire note
+
+* How to handle reference (book, website, podcast)?
+- if a book points existing ideas, link to them
+- if a book generates multiple new idea, capture the book, then capture individual ideas, and point from book to those ideas
+  - May require an "extra paragraph as idea" workflow
