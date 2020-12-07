@@ -3,6 +3,7 @@
 * TODO expose config file in web for read/write
 * TODO use lit-html for efficient rendering
 * TODO an output display for UI feedback (status bar, minibuffer)
+* TODO test
 
 * DONE create new note
 * DONE switch to ts-node-dev and tsc for dev inner loop
