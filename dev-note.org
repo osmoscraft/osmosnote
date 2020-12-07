@@ -1,6 +1,7 @@
 * TODO edit and save note (no wysiwyg)
 * TODO render preview mode (need to decide ssr vs csr)
 * TODO expose config file in web for read/write
+* TODO use lit-html for efficient rendering
 
 * DONE switch to ts-node-dev and tsc for dev inner loop
 * DONE keep search result on navigate back
