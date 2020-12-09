@@ -12,8 +12,7 @@ export interface HandleGetNote {
 }
 
 export interface GetNoteReply {
-  title: string;
-  content: string;
+  note: Note;
 }
 
 export const handleGetNote: RouteHandlerMethod<any, any, any, HandleGetNote> = async (request, reply) => {
@@ -24,8 +23,7 @@ export const handleGetNote: RouteHandlerMethod<any, any, any, HandleGetNote> = a
   const note = parseNote(rawMarkdown);
 
   return {
-    title: note.metadata.title,
-    content: note.content,
+    note,
   };
 };
 
@@ -40,8 +38,7 @@ export interface CreateNoteBody {
 
 export interface CreateNoteReply {
   filename: string;
-  title: string;
-  content: string;
+  note: Note;
 }
 
 export const handleCreateNote: RouteHandlerMethod<any, any, any, HandleCreateNote> = async (request, reply) => {
@@ -51,10 +48,43 @@ export const handleCreateNote: RouteHandlerMethod<any, any, any, HandleCreateNot
   const filename = `${id}.md`;
 
   await writeNote(filename, rawMarkdown);
+  const note = parseNote(rawMarkdown); // re-parse it on server side to be guard against client-side errors
 
   return {
     filename,
-    title: draftNote.metadata.title,
-    content: draftNote.content,
+    note,
+  };
+};
+
+export interface HandleUpdateNote {
+  Params: {
+    id: string;
+  };
+  Body: UpdateNoteBody;
+  Reply: UpdateNoteReply;
+}
+
+export interface UpdateNoteBody {
+  note: Note;
+}
+
+export interface UpdateNoteReply {
+  filename: string;
+  note: Note;
+}
+
+export const handleUpdateNote: RouteHandlerMethod<any, any, any, HandleUpdateNote> = async (request, reply) => {
+  const params = request.params;
+  const id = params.id;
+  const filename = `${id}.md`;
+  const draftNote = request.body.note;
+  const rawMarkdown = stringifyNote(draftNote);
+
+  await writeNote(filename, rawMarkdown);
+  const note = parseNote(rawMarkdown);
+
+  return {
+    filename,
+    note,
   };
 };
