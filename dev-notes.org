@@ -1,9 +1,10 @@
-* TODO render preview mode (need to decide ssr vs csr)
+* TODO insert link (minimum: keyboard Ctrl + L inserts a pre-defined link into document)
 * TODO expose config file in web for read/write
 * TODO use lit-html for efficient rendering
 * TODO an output display for UI feedback (status bar, minibuffer) - localStorage for multi-page app
 * TODO test
 
+* DONE render preview mode (need to decide ssr vs csr)
 * DONE edit and save note (no wysiwyg)
 * DONE create new note
 * DONE switch to ts-node-dev and tsc for dev inner loop

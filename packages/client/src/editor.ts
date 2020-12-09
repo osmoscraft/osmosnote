@@ -5,6 +5,7 @@ import type {
   UpdateNoteBody,
   UpdateNoteReply,
 } from "@system-two/server/src/routes/note";
+import { domToMarkdown, markdownToHtml } from "./lib/codec";
 
 const noteTitleDom = document.getElementById("note-title") as HTMLElement;
 const noteContentDom = document.getElementById("note-content") as HTMLElement;
@@ -17,7 +18,8 @@ async function loadNote() {
     // load existing note
     const id = filename.split(".md")[0];
     const result = await loadExistingNote(id);
-    noteContentDom.innerHTML = result.note.content;
+    // noteContentDom.innerHTML = result.note.content;
+    noteContentDom.innerHTML = markdownToHtml(result.note.content);
 
     saveButtonDom.addEventListener("click", async () => {
       // save changes to note
@@ -26,7 +28,7 @@ async function loadNote() {
           metadata: {
             title: noteTitleDom.innerText,
           },
-          content: noteContentDom.innerText,
+          content: domToMarkdown(noteContentDom),
         },
       };
 
@@ -46,7 +48,7 @@ async function loadNote() {
   } else {
     // prepare for new note
     noteTitleDom.innerHTML = title ?? `New note on ${new Date().toLocaleString()}`;
-    noteContentDom.innerHTML = content ?? `An idea starts here...`;
+    noteContentDom.innerHTML = markdownToHtml(content ?? `An idea starts here...`);
 
     saveButtonDom.addEventListener("click", async () => {
       const createNoteBody: CreateNoteBody = {
@@ -54,7 +56,7 @@ async function loadNote() {
           metadata: {
             title: noteTitleDom.innerText,
           },
-          content: noteContentDom.innerText,
+          content: domToMarkdown(noteContentDom),
         },
       };
 
@@ -85,6 +87,9 @@ async function loadExistingNote(id: string) {
 interface UrlNoteConfig {
   filename: string | null;
   title: string | null;
+  /**
+   * the initial content for the note, in plaintext, not markdown.
+   */
   content: string | null;
 }
 
