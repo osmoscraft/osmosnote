@@ -1,6 +1,8 @@
+* TODO use custom element to handle serialization of links to markdown text
 * TODO insert link (minimum: keyboard Ctrl + L inserts a pre-defined link into document)
 * TODO expose config file in web for read/write
 * TODO use lit-html for efficient rendering
+* TODO git sync through shell script
 * TODO an output display for UI feedback (status bar, minibuffer) - localStorage for multi-page app
 * TODO test
 
