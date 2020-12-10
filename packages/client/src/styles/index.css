@@ -35,3 +35,20 @@ a {
 [contenteditable="true"] {
   outline: none;
 }
+
+div#note-content {
+  font-size: 14px;
+  font-family: monospace;
+}
+
+/**
+ * TODO https://developer.mozilla.org/en-US/docs/Web/CSS/:is
+ */
+div#note-content h1,
+div#note-content h2,
+div#note-content h3,
+div#note-content h4,
+div#note-content h5,
+div#note-content h6 {
+  font-size: 14px;
+}
