@@ -20,12 +20,15 @@ export function domToMarkdown(dom: HTMLElement): string {
 function markdownLineToHtmlLine(markdown: string): string {
   return markdown
     .replace(S2Heading.MARKDOWN_REGEX, S2Heading.MARKDOWN_REPLACER)
-    .replace(S2Link.MARKDOWN_REGEX, S2Link.MARKDOWN_REPLACER);
+    .replace(S2Link.MARKDOWN_REGEX, S2Link.MARKDOWN_REPLACER)
+    .replace(S2Line.MARKDOWN_REGEX, S2Line.MARKDOWN_REPLACER); // Do the line wrapping last or it will interfere with heading detection
 }
 
 function DomLineToMarkdownLine(dom: HTMLElement): string {
+  // must follow order: leaf -> root
   dom.querySelectorAll(S2Link.DOM_SELECTOR).forEach(S2Link.DOM_REPLACER);
   dom.querySelectorAll(S2Heading.DOM_SELECTOR).forEach(S2Heading.DOM_REPLACER);
+  dom.querySelectorAll(S2Line.DOM_SELECTOR).forEach(S2Line.DOM_REPLACER);
 
   return dom.innerText;
 }
@@ -34,17 +37,17 @@ function DomLineToMarkdownLine(dom: HTMLElement): string {
  * TODO consider refactor this into a separate "formatter" module
  */
 export function updateIndentation(dom: HTMLElement) {
-  let currentLevel = "1"; // notice we are working with string, not number;
+  let currentIndent = 0;
 
   dom.querySelectorAll("div[data-line]").forEach((lineWrapperDom) => {
     // if line contains heading of level x, update current level to x
     const headingDom = lineWrapperDom.querySelector(S2Heading.DOM_SELECTOR) as HTMLHeadingElement;
     if (headingDom) {
-      currentLevel = headingDom.dataset.level as string;
+      currentIndent = parseInt(headingDom.dataset.level as string) - 1;
       (lineWrapperDom as HTMLElement).dataset.hasHeading = "";
     }
 
-    (lineWrapperDom as HTMLElement).dataset.indent = currentLevel;
+    (lineWrapperDom as HTMLElement).dataset.indent = currentIndent.toString();
   });
 }
 
@@ -73,10 +76,25 @@ class S2Link extends HTMLAnchorElement {
 
   static MARKDOWN_REGEX = /\[([^\(]+)\]\(([^\[]\d+)\)/g; // e.g. [Some title](200012300630)
   static MARKDOWN_REPLACER = (_match: string, title: string, id: string) =>
-    `<a is="s2-link" data-id="${id}" href="/editor.html?filename=${encodeURIComponent(`${id}.md`)}">${title}</a>`;
+    `<a is="s2-link" data-id="${id}" href="/editor.html?filename=${encodeURIComponent(
+      `${id}.md`
+    )}" contenteditable="false">${title}</a>`;
 
   get markdownText() {
     return `[${this.innerText}](${this.dataset.id ?? this.getAttribute("href")})`;
   }
 }
 customElements.define("s2-link", S2Link, { extends: "a" });
+
+class S2Line extends HTMLPreElement {
+  static DOM_SELECTOR = `pre[is="s2-line"]`;
+  static DOM_REPLACER = (element: Element) => (element.outerHTML = (element as S2Link).markdownText);
+
+  static MARKDOWN_REGEX = /^.*$/gm; // match whole lines
+  static MARKDOWN_REPLACER = (match: string) => `<pre is="s2-line">${match}</pre>`;
+
+  get markdownText() {
+    return this.innerText;
+  }
+}
+customElements.define("s2-line", S2Line, { extends: "pre" });
