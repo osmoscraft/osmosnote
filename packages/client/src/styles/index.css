@@ -111,10 +111,10 @@ div#note-content div[data-indent="5"] {
 }
 
 div#note-content div[data-indent]::before {
-  width: calc((var(--heading-indent) + 1ch) * 2);
+  width: calc(var(--heading-indent) * 2);
 }
 div#note-content div[data-indent][data-has-heading]::before {
-  width: var(--heading-indent);
+  width: calc(var(--heading-indent) - 1ch);
 }
 
 code.hidden-hash {

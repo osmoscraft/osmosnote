@@ -1,11 +1,14 @@
-* TODO use custom element to handle serialization of links to markdown text
 * TODO insert link (minimum: keyboard Ctrl + L inserts a pre-defined link into document)
+* TODO insert heading
+* TODO push/pull indendation
 * TODO expose config file in web for read/write
 * TODO use lit-html for efficient rendering
 * TODO git sync through shell script
 * TODO an output display for UI feedback (status bar, minibuffer) - localStorage for multi-page app
 * TODO test
 
+* DONE heading indentation - handle empty case
+* DONE use custom element to handle serialization of links to markdown text
 * DONE render preview mode (need to decide ssr vs csr)
 * DONE edit and save note (no wysiwyg)
 * DONE create new note

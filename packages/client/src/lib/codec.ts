@@ -43,7 +43,7 @@ export function updateIndentation(dom: HTMLElement) {
     // if line contains heading of level x, update current level to x
     const headingDom = lineWrapperDom.querySelector(S2Heading.DOM_SELECTOR) as HTMLHeadingElement;
     if (headingDom) {
-      currentIndent = parseInt(headingDom.dataset.level as string) - 1;
+      currentIndent = parseInt(headingDom.dataset.level as string);
       (lineWrapperDom as HTMLElement).dataset.hasHeading = "";
     }
 
@@ -76,9 +76,18 @@ class S2Link extends HTMLAnchorElement {
 
   static MARKDOWN_REGEX = /\[([^\(]+)\]\(([^\[]\d+)\)/g; // e.g. [Some title](200012300630)
   static MARKDOWN_REPLACER = (_match: string, title: string, id: string) =>
-    `<a is="s2-link" data-id="${id}" href="/editor.html?filename=${encodeURIComponent(
-      `${id}.md`
-    )}" contenteditable="false">${title}</a>`;
+    `<a is="s2-link" data-id="${id}" href="/editor.html?filename=${encodeURIComponent(`${id}.md`)}">${title}</a>`;
+
+  connectedCallback() {
+    // allow opening link in contenteditable mode
+    this.addEventListener("click", (e) => {
+      if (e.ctrlKey) {
+        window.open(this.href);
+      } else {
+        window.open(this.href, "_self");
+      }
+    });
+  }
 
   get markdownText() {
     return `[${this.innerText}](${this.dataset.id ?? this.getAttribute("href")})`;
