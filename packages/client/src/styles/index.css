@@ -38,7 +38,6 @@ a {
 
 div#note-content {
   font-size: 14px;
-  font-family: monospace;
 }
 
 /**
@@ -51,4 +50,16 @@ div#note-content h4,
 div#note-content h5,
 div#note-content h6 {
   font-size: 14px;
+}
+
+div#note-content h1 {
+  color: var(--base09);
+}
+
+div#note-content h2 {
+  color: var(--base0C);
+}
+
+div#note-content h3 {
+  color: var(--base0B);
 }
