@@ -5,7 +5,7 @@ import type {
   UpdateNoteBody,
   UpdateNoteReply,
 } from "@system-two/server/src/routes/note";
-import { domToMarkdown, markdownToHtml } from "./lib/codec";
+import { domToMarkdown, markdownToHtml, updateIndentation } from "./lib/codec";
 
 const noteTitleDom = document.getElementById("note-title") as HTMLElement;
 const noteContentDom = document.getElementById("note-content") as HTMLElement;
@@ -20,6 +20,7 @@ async function loadNote() {
     const result = await loadExistingNote(id);
     // noteContentDom.innerHTML = result.note.content;
     noteContentDom.innerHTML = markdownToHtml(result.note.content);
+    updateIndentation(noteContentDom);
 
     saveButtonDom.addEventListener("click", async () => {
       // save changes to note

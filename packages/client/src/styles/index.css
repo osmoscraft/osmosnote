@@ -50,16 +50,48 @@ div#note-content h4,
 div#note-content h5,
 div#note-content h6 {
   font-size: 14px;
+  margin: 0;
 }
 
-div#note-content h1 {
+div[data-line] {
+  display: flex;
+}
+
+div#note-content h2[data-level="1"] {
   color: var(--base09);
 }
 
-div#note-content h2 {
+div#note-content h2[data-level="2"] {
   color: var(--base0C);
 }
 
-div#note-content h3 {
+div#note-content h2[data-level="3"] {
   color: var(--base0B);
+}
+
+div#note-content div[data-indent]::before {
+  content: " ";
+  white-space: pre;
+  font-family: monospace;
+}
+div#note-content div[data-indent="1"]::before {
+  width: 2ch;
+}
+div#note-content div[data-indent="1"][data-has-heading]::before {
+  width: 0ch;
+}
+div#note-content div[data-indent="2"]::before {
+  width: 4ch;
+}
+div#note-content div[data-indent="2"][data-has-heading]::before {
+  width: 1ch;
+}
+div#note-content div[data-indent="3"]::before {
+  width: 6ch;
+}
+div#note-content div[data-indent="3"][data-has-heading]::before {
+  width: 2ch;
+}
+code.hidden-hash {
+  opacity: 0;
 }

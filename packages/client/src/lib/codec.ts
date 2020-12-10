@@ -11,7 +11,7 @@ export function domToMarkdown(dom: HTMLElement): string {
   const domCloned = dom.cloneNode(true) as HTMLElement;
 
   const markdown = [...domCloned.querySelectorAll(`div[data-line]`)]
-    .map((domLine) => DomLineToMarkdownLine(domLine as HTMLElement))
+    .map((lineWrapperDom) => DomLineToMarkdownLine(lineWrapperDom as HTMLElement))
     .join("\n");
 
   return markdown;
@@ -30,21 +30,42 @@ function DomLineToMarkdownLine(dom: HTMLElement): string {
   return dom.innerText;
 }
 
+/**
+ * TODO consider refactor this into a separate "formatter" module
+ */
+export function updateIndentation(dom: HTMLElement) {
+  let currentLevel = "1"; // notice we are working with string, not number;
+
+  dom.querySelectorAll("div[data-line]").forEach((lineWrapperDom) => {
+    // if line contains heading of level x, update current level to x
+    const headingDom = lineWrapperDom.querySelector(S2Heading.DOM_SELECTOR) as HTMLHeadingElement;
+    if (headingDom) {
+      currentLevel = headingDom.dataset.level as string;
+      (lineWrapperDom as HTMLElement).dataset.hasHeading = "";
+    }
+
+    (lineWrapperDom as HTMLElement).dataset.indent = currentLevel;
+  });
+}
+
 class S2Heading extends HTMLHeadingElement {
-  static DOM_SELECTOR = `h1[^s2-heading], h2[^s2-heading], h3[^s2-heading], h4[^s2-heading], h5[^s2-heading], h6[^s2-heading]`;
+  static DOM_SELECTOR = `h2[is="s2-heading"]`;
   static DOM_REPLACER = (element: Element) => (element.outerHTML = (element as S2Heading).markdownText);
 
   static MARKDOWN_REGEX = /^#{1,6} (.*)/gm; // e.g. # My title
   static MARKDOWN_REPLACER = (_match: string, title: string) => {
     const level = _match.split(" ")[0].length;
-    return `<h${level} is="s2-heading" data-level="${level}">${"#".repeat(level)} ${title}</h${level}>`;
+    return `<h2 is="s2-heading" data-level="${level}"><code class="hidden-hash">${"#".repeat(
+      level - 1
+    )}</code><code># </code>${title}</h2}>`;
   };
 
   get markdownText() {
     return this.innerText;
   }
 }
-customElements.define("s2-heading", S2Heading, { extends: "h1" });
+// TODO, use the correct semantic level. It requires defining a new class for each level.
+customElements.define("s2-heading", S2Heading, { extends: "h2" });
 
 class S2Link extends HTMLAnchorElement {
   static DOM_SELECTOR = `a[is="s2-link"]`;
