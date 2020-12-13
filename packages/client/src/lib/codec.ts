@@ -18,60 +18,23 @@ export function domToMarkdown(dom: HTMLElement): string {
 }
 
 function markdownLineToHtmlLine(markdown: string): string {
-  return (
-    markdown
-      // .replace(S2Heading.MARKDOWN_REGEX, S2Heading.MARKDOWN_REPLACER)
-      .replace(S2Link.MARKDOWN_REGEX, S2Link.MARKDOWN_REPLACER)
-      .replace(S2Line.MARKDOWN_REGEX, S2Line.MARKDOWN_REPLACER)
-  ); // Do the line wrapping last or it will interfere with heading detection
+  return markdown
+    .replace(S2Link.MARKDOWN_REGEX, S2Link.MARKDOWN_REPLACER)
+    .replace(S2Line.MARKDOWN_REGEX, S2Line.MARKDOWN_REPLACER); // Do the line wrapping last or it will interfere with heading detection
 }
 
 function DomLineToMarkdownLine(dom: HTMLElement): string {
   // must follow order: leaf -> root
   dom.querySelectorAll(S2Link.DOM_SELECTOR).forEach(S2Link.DOM_REPLACER);
-  // dom.querySelectorAll(S2Heading.DOM_SELECTOR).forEach(S2Heading.DOM_REPLACER);
   dom.querySelectorAll(S2Line.DOM_SELECTOR).forEach(S2Line.DOM_REPLACER);
 
   return dom.innerText;
 }
 
-/**
- * TODO consider refactor this into a separate "formatter" module
- */
-// export function updateIndentation(dom: HTMLElement) {
-//   let currentIndent = 0;
-
-//   dom.querySelectorAll("div[data-line]").forEach((lineWrapperDom) => {
-//     // if line contains heading of level x, update current level to x
-//     const headingDom = lineWrapperDom.querySelector(S2Heading.DOM_SELECTOR) as HTMLHeadingElement;
-//     if (headingDom) {
-//       currentIndent = parseInt(headingDom.dataset.level as string);
-//       (lineWrapperDom as HTMLElement).dataset.hasHeading = "";
-//     }
-
-//     (lineWrapperDom as HTMLElement).dataset.indent = currentIndent.toString();
-//   });
-// }
-
-// class S2Heading extends HTMLHeadingElement {
-//   static DOM_SELECTOR = `h2[is="s2-heading"]`;
-//   static DOM_REPLACER = (element: Element) => (element.outerHTML = (element as S2Heading).markdownText);
-
-//   static MARKDOWN_REGEX = /^#{1,6} (.*)/gm; // e.g. # My title
-//   static MARKDOWN_REPLACER = (_match: string, title: string) => {
-//     const level = _match.split(" ")[0].length;
-//     return `<h2 is="s2-heading" data-level="${level}"><code class="hidden-hash">${"#".repeat(
-//       level - 1
-//     )}</code><code># </code>${title}</h2}>`;
-//   };
-
-//   get markdownText() {
-//     return this.innerText;
-//   }
-// }
-// // TODO, use the correct semantic level. It requires defining a new class for each level.
-// customElements.define("s2-heading", S2Heading, { extends: "h2" });
-
+// TODO
+//
+// avoid changing any content html. Use markdown instead. Use CSS to hide bracket and id.
+//
 class S2Link extends HTMLAnchorElement {
   static DOM_SELECTOR = `a[is="s2-link"]`;
   static DOM_REPLACER = (element: Element) => (element.outerHTML = (element as S2Link).markdownText);
@@ -117,19 +80,18 @@ class S2Line extends HTMLPreElement {
     this.processHeading();
     this.processIndent();
 
-    // TODO save as instance property for GC
-    const callback: MutationCallback = (mutationsList, observer) => {
-      const characterChange = mutationsList.find((mutation) => mutation.type === "characterData");
-      if (characterChange) {
-        this.processHeading();
-        this.processIndent({ propagate: true });
-      }
-    };
-
-    const observer = new MutationObserver(callback);
+    const observer = new MutationObserver(this.handleMutation);
 
     observer.observe(this, { subtree: true, characterData: true });
   }
+
+  handleMutation: MutationCallback = (mutationsList, observer) => {
+    const characterChange = mutationsList.find((mutation) => mutation.type === "characterData");
+    if (characterChange) {
+      this.processHeading();
+      this.processIndent({ propagate: true });
+    }
+  };
 
   processHeading() {
     const headingResult = this.scanHeading(this.innerText);
