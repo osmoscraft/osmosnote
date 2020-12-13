@@ -51,6 +51,13 @@
 
       .shared-content pre[is="s2-line"] {
         margin: 0;
+        display: flex;
+      }
+
+      pre[is="s2-line"]::before {
+        flex-shrink: 0;
+        content: " ";
+        width: 0ch;
       }
 
       /**
@@ -64,10 +71,6 @@
       .shared-content h6 {
         font-size: 14px;
         margin: 0;
-      }
-
-      div[data-line] {
-        display: flex;
       }
 
       div#note-overlay h2[data-level="1"],
@@ -85,47 +88,8 @@
         color: var(--base0B);
       }
 
-      .shared-content div[data-indent]::before {
-        content: " ";
-        white-space: pre;
-        font-family: monospace;
-        flex-shrink: 0;
-        font-size: 14px;
-      }
-
-      .shared-content div[data-indent="0"] {
-        --heading-indent: 0ch;
-      }
-
-      .shared-content div[data-indent="1"] {
-        --heading-indent: 1ch;
-      }
-
-      .shared-content div[data-indent="2"] {
-        --heading-indent: 2ch;
-      }
-
-      .shared-content div[data-indent="3"] {
-        --heading-indent: 3ch;
-      }
-
-      .shared-content div[data-indent="4"] {
-        --heading-indent: 4ch;
-      }
-
-      .shared-content div[data-indent="5"] {
-        --heading-indent: 5ch;
-      }
-
-      .shared-content div[data-indent]::before {
-        width: calc(var(--heading-indent) * 2);
-      }
-      .shared-content div[data-indent][data-has-heading]::before {
-        width: calc(var(--heading-indent) - 1ch);
-      }
-
       code.hidden-hash {
-        color: var(--base00); /* same as page background */
+        color: var(--base02); /* same as page background */
       }
     </style>
     <script type="module" src="editor.ts"></script>

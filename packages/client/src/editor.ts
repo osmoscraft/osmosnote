@@ -19,16 +19,14 @@ async function loadNote() {
     // load existing note
     const id = filename.split(".md")[0];
     const result = await loadExistingNote(id);
-    // noteContentDom.innerHTML = result.note.content;
     noteContentDom.innerHTML = markdownToHtml(result.note.content);
     noteOverlayDom.innerHTML = markdownToHtml(result.note.content);
-    updateIndentation(noteContentDom);
-    updateIndentation(noteOverlayDom);
+    // TODO run highlight logic here on overlay
 
     const observer = new MutationObserver(function () {
       const newContent = domToMarkdown(noteContentDom);
       noteOverlayDom.innerHTML = markdownToHtml(newContent);
-      updateIndentation(noteOverlayDom);
+      // TODO run highlight logic here on overlay
     });
 
     observer.observe(noteContentDom, { subtree: true, childList: true, characterData: true });

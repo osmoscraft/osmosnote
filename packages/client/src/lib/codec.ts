@@ -1,7 +1,7 @@
 export function markdownToHtml(markdown: string): string {
   const html = markdown
     .split("\n")
-    .map((line, i) => `<div data-line="${i}">${markdownLineToHtmlLine(line)}</div>`)
+    .map((line, i) => markdownLineToHtmlLine(line))
     .join("");
 
   return html;
@@ -10,7 +10,7 @@ export function markdownToHtml(markdown: string): string {
 export function domToMarkdown(dom: HTMLElement): string {
   const domCloned = dom.cloneNode(true) as HTMLElement;
 
-  const markdown = [...domCloned.querySelectorAll(`div[data-line]`)]
+  const markdown = [...domCloned.querySelectorAll(`pre[is="s2-line"]`)]
     .map((lineWrapperDom) => DomLineToMarkdownLine(lineWrapperDom as HTMLElement))
     .join("\n");
 
