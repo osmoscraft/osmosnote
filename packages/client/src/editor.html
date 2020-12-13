@@ -14,7 +14,112 @@
     </nav>
     <button id="save">Save</button>
     <h1 id="note-title" contenteditable="true"></h1>
-    <div id="note-content" contenteditable="true"></div>
+    <div class="note-content-layers">
+      <div class="shared-content" id="note-content" contenteditable="true"></div>
+      <div class="shared-content" id="note-overlay"></div>
+    </div>
+    <style>
+      .note-content-layers {
+        position: relative;
+      }
+
+      #note-content,
+      #note-overlay {
+        white-space: pre-wrap;
+        position: absolute;
+        width: 100%;
+        font-size: 14px;
+        font-family: monospace;
+      }
+
+      [contenteditable="true"] {
+        outline: none;
+      }
+
+      div#note-overlay {
+        font-size: 14px;
+        pointer-events: none;
+      }
+
+      .shared-content pre[is="s2-line"] {
+        margin: 0;
+      }
+
+      /**
+ * TODO https://developer.mozilla.org/en-US/docs/Web/CSS/:is
+ */
+      .shared-content h1,
+      .shared-content h2,
+      .shared-content h3,
+      .shared-content h4,
+      .shared-content h5,
+      .shared-content h6 {
+        font-size: 14px;
+        margin: 0;
+      }
+
+      div[data-line] {
+        display: flex;
+      }
+
+      div#note-overlay h2[data-level="1"],
+      div#note-overlay h2[data-level="4"] {
+        color: var(--base09);
+      }
+
+      div#note-overlay h2[data-level="2"],
+      div#note-overlay h2[data-level="4"] {
+        color: var(--base0C);
+      }
+
+      div#note-overlay h2[data-level="3"],
+      div#note-overlay h2[data-level="6"] {
+        color: var(--base0B);
+      }
+
+      .shared-content div[data-indent]::before {
+        content: " ";
+        white-space: pre;
+        font-family: monospace;
+        flex-shrink: 0;
+        font-size: 14px;
+      }
+
+      .shared-content div[data-indent="0"] {
+        --heading-indent: 0ch;
+      }
+
+      .shared-content div[data-indent="1"] {
+        --heading-indent: 1ch;
+      }
+
+      .shared-content div[data-indent="2"] {
+        --heading-indent: 2ch;
+      }
+
+      .shared-content div[data-indent="3"] {
+        --heading-indent: 3ch;
+      }
+
+      .shared-content div[data-indent="4"] {
+        --heading-indent: 4ch;
+      }
+
+      .shared-content div[data-indent="5"] {
+        --heading-indent: 5ch;
+      }
+
+      .shared-content div[data-indent]::before {
+        width: calc(var(--heading-indent) * 2);
+      }
+      .shared-content div[data-indent][data-has-heading]::before {
+        width: calc(var(--heading-indent) - 1ch);
+      }
+
+      code.hidden-hash {
+        color: var(--base00); /* same as page background */
+      }
+    </style>
     <script type="module" src="editor.ts"></script>
   </body>
 </html>

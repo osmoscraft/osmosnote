@@ -9,6 +9,7 @@ import { domToMarkdown, markdownToHtml, updateIndentation } from "./lib/codec";
 
 const noteTitleDom = document.getElementById("note-title") as HTMLElement;
 const noteContentDom = document.getElementById("note-content") as HTMLElement;
+const noteOverlayDom = document.getElementById("note-overlay") as HTMLElement;
 const saveButtonDom = document.getElementById("save") as HTMLButtonElement;
 
 async function loadNote() {
@@ -20,7 +21,9 @@ async function loadNote() {
     const result = await loadExistingNote(id);
     // noteContentDom.innerHTML = result.note.content;
     noteContentDom.innerHTML = markdownToHtml(result.note.content);
+    noteOverlayDom.innerHTML = markdownToHtml(result.note.content);
     updateIndentation(noteContentDom);
+    updateIndentation(noteOverlayDom);
 
     saveButtonDom.addEventListener("click", async () => {
       // save changes to note
@@ -29,7 +32,7 @@ async function loadNote() {
           metadata: {
             title: noteTitleDom.innerText,
           },
-          content: domToMarkdown(noteContentDom),
+          content: domToMarkdown(noteOverlayDom),
         },
       };
 
@@ -49,7 +52,7 @@ async function loadNote() {
   } else {
     // prepare for new note
     noteTitleDom.innerHTML = title ?? `New note on ${new Date().toLocaleString()}`;
-    noteContentDom.innerHTML = markdownToHtml(content ?? `An idea starts here...`);
+    noteOverlayDom.innerHTML = markdownToHtml(content ?? `An idea starts here...`);
 
     saveButtonDom.addEventListener("click", async () => {
       const createNoteBody: CreateNoteBody = {
@@ -57,7 +60,7 @@ async function loadNote() {
           metadata: {
             title: noteTitleDom.innerText,
           },
-          content: domToMarkdown(noteContentDom),
+          content: domToMarkdown(noteOverlayDom),
         },
       };
 
