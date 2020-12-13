@@ -25,6 +25,16 @@ async function loadNote() {
     updateIndentation(noteContentDom);
     updateIndentation(noteOverlayDom);
 
+    const observer = new MutationObserver(function () {
+      const newContent = domToMarkdown(noteContentDom);
+      noteOverlayDom.innerHTML = markdownToHtml(newContent);
+      updateIndentation(noteOverlayDom);
+    });
+
+    observer.observe(noteContentDom, { subtree: true, childList: true, characterData: true });
+
+    noteContentDom.addEventListener("keydown", () => {});
+
     saveButtonDom.addEventListener("click", async () => {
       // save changes to note
       const updateNoteBody: UpdateNoteBody = {
