@@ -54,15 +54,9 @@
         display: flex;
       }
 
-      pre[is="s2-line"]::before {
-        flex-shrink: 0;
-        content: " ";
-        width: 0ch;
-      }
-
       /**
- * TODO https://developer.mozilla.org/en-US/docs/Web/CSS/:is
- */
+      * TODO https://developer.mozilla.org/en-US/docs/Web/CSS/:is
+      */
       .shared-content h1,
       .shared-content h2,
       .shared-content h3,
@@ -73,19 +67,62 @@
         margin: 0;
       }
 
-      div#note-overlay h2[data-level="1"],
-      div#note-overlay h2[data-level="4"] {
+      pre[is="s2-line"][data-heading-level="1"],
+      pre[is="s2-line"][data-heading-level="4"] {
         color: var(--base09);
       }
 
-      div#note-overlay h2[data-level="2"],
-      div#note-overlay h2[data-level="4"] {
+      pre[is="s2-line"][data-heading-level="2"],
+      pre[is="s2-line"][data-heading-level="4"] {
         color: var(--base0C);
       }
 
-      div#note-overlay h2[data-level="3"],
-      div#note-overlay h2[data-level="6"] {
+      pre[is="s2-line"][data-heading-level="3"],
+      pre[is="s2-line"][data-heading-level="6"] {
         color: var(--base0B);
+      }
+
+      pre[is="s2-line"][data-indent-level]::before {
+        content: " ";
+        white-space: pre;
+        font-family: monospace;
+        flex-shrink: 0;
+        font-size: 14px;
+      }
+
+      pre[is="s2-line"][data-indent-level="0"] {
+        --heading-indent: 0ch;
+      }
+
+      pre[is="s2-line"][data-indent-level="1"] {
+        --heading-indent: 1ch;
+      }
+
+      pre[is="s2-line"][data-indent-level="2"] {
+        --heading-indent: 2ch;
+      }
+
+      pre[is="s2-line"][data-indent-level="3"] {
+        --heading-indent: 3ch;
+      }
+
+      pre[is="s2-line"][data-indent-level="4"] {
+        --heading-indent: 4ch;
+      }
+
+      pre[is="s2-line"][data-indent-level="5"] {
+        --heading-indent: 5ch;
+      }
+
+      pre[is="s2-line"][data-indent-level="6"] {
+        --heading-indent: 6ch;
+      }
+
+      pre[is="s2-line"][data-indent-level]::before {
+        width: calc(var(--heading-indent) * 2);
+      }
+      pre[is="s2-line"][data-indent-level][data-heading-level]::before {
+        width: calc(var(--heading-indent) - 1ch);
       }
 
       code.hidden-hash {

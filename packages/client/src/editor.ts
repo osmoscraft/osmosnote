@@ -5,7 +5,7 @@ import type {
   UpdateNoteBody,
   UpdateNoteReply,
 } from "@system-two/server/src/routes/note";
-import { domToMarkdown, markdownToHtml, updateIndentation } from "./lib/codec";
+import { domToMarkdown, markdownToHtml } from "./lib/codec";
 
 const noteTitleDom = document.getElementById("note-title") as HTMLElement;
 const noteContentDom = document.getElementById("note-content") as HTMLElement;
