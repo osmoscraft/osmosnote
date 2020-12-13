@@ -1,13 +1,12 @@
 * TODO insert link (minimum: keyboard Ctrl + L inserts a pre-defined link into document)
-* TODO insert heading
-* TODO insert line-break with `enter` key
-* TODO push/pull indendation
+* TODO tab/shift-tab to push/pull indendation
 * TODO expose config file in web for read/write
-* TODO use lit-html for efficient rendering
 * TODO git sync through shell script
 * TODO an output display for UI feedback (status bar, minibuffer) - localStorage for multi-page app
 * TODO test
 
+* DONE insert line-break with `enter` key
+* DONE insert heading
 * DONE heading indentation - handle empty case
 * DONE use custom element to handle serialization of links to markdown text
 * DONE render preview mode (need to decide ssr vs csr)
