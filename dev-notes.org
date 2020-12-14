@@ -5,6 +5,7 @@
 * TODO an output display for UI feedback (status bar, minibuffer) - localStorage for multi-page app
 * TODO test
 * TODO handle paste formatting
+* TODO fix link selection color defect
 
 * DONE insert line-break with `enter` key
 * DONE insert heading
