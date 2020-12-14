@@ -1,4 +1,4 @@
-* TODO insert link (minimum: keyboard Ctrl + L inserts a pre-defined link into document)
+* TODO insert link (minimum: a mechnisam to get ~[title](id)~ in the clipboard)
 * TODO tab/shift-tab to push/pull indendation
 * TODO expose config file in web for read/write
 * TODO git sync through shell script

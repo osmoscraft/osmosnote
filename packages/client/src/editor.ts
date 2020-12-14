@@ -8,7 +8,7 @@ import type {
 import { editableNoteToMarkdown, markdownToEditableHtml, markdownToOverlayHtml } from "./lib/codec";
 
 const noteTitleDom = document.getElementById("note-title") as HTMLElement;
-const noteEditableDom = document.getElementById("note-content") as HTMLElement;
+const noteEditableDom = document.getElementById("note-editable") as HTMLElement;
 const noteOverlayDom = document.getElementById("note-overlay") as HTMLElement;
 const saveButtonDom = document.getElementById("save") as HTMLButtonElement;
 
@@ -21,12 +21,10 @@ async function loadNote() {
     const result = await loadExistingNote(id);
     noteEditableDom.innerHTML = markdownToEditableHtml(result.note.content);
     noteOverlayDom.innerHTML = markdownToOverlayHtml(result.note.content);
-    // TODO run highlight logic here on overlay
 
     const observer = new MutationObserver(function () {
       const newContent = editableNoteToMarkdown(noteEditableDom);
       noteOverlayDom.innerHTML = markdownToOverlayHtml(newContent);
-      // TODO run highlight logic here on overlay
     });
 
     observer.observe(noteEditableDom, { subtree: true, childList: true, characterData: true });

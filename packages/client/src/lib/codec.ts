@@ -21,7 +21,9 @@ export function markdownToOverlayHtml(markdown: string): string {
 }
 
 export function editableNoteToMarkdown(dom: HTMLElement): string {
-  const markdown = [...dom.querySelectorAll(`pre[is="s2-line"]`)].map((line) => (line as S2Line).innerText).join("\n");
+  const markdown = [...dom.querySelectorAll(`pre[is="s2-line"]`)]
+    .map((line) => (line as S2Line).innerText.split("\n").join(""))
+    .join("\n");
 
   return markdown;
 }
