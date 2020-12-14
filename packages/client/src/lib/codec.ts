@@ -1,47 +1,37 @@
-export function markdownToHtml(markdown: string): string {
+export function markdownToEditableHtml(markdown: string): string {
   const html = markdown
     .split("\n")
-    .map((line, i) => markdownLineToHtmlLine(line))
+    .map((line, i) => `<pre is="s2-line">${line}</pre>`)
     .join("");
 
   return html;
 }
 
-export function domToMarkdown(dom: HTMLElement): string {
-  const domCloned = dom.cloneNode(true) as HTMLElement;
+export function markdownToOverlayHtml(markdown: string): string {
+  const html = markdown
+    .split("\n")
+    .map((line, i) => `<pre is="s2-line">${highlightLine(line)}</pre>`)
+    .join("");
 
-  const markdown = [...domCloned.querySelectorAll(`pre[is="s2-line"]`)]
-    .map((lineWrapperDom) => DomLineToMarkdownLine(lineWrapperDom as HTMLElement))
-    .join("\n");
+  return html;
+}
+
+export function editableNoteToMarkdown(dom: HTMLElement): string {
+  const markdown = [...dom.querySelectorAll(`pre[is="s2-line"]`)].map((line) => (line as S2Line).innerText).join("\n");
 
   return markdown;
 }
 
-function markdownLineToHtmlLine(markdown: string): string {
-  return markdown
-    .replace(S2Link.MARKDOWN_REGEX, S2Link.MARKDOWN_REPLACER)
-    .replace(S2Line.MARKDOWN_REGEX, S2Line.MARKDOWN_REPLACER); // Do the line wrapping last or it will interfere with heading detection
+function highlightLine(lineMarkdown: string): string {
+  return lineMarkdown.replace(S2Link.MARKDOWN_REGEX, S2Link.MARKDOWN_REPLACER);
 }
 
-function DomLineToMarkdownLine(dom: HTMLElement): string {
-  // must follow order: leaf -> root
-  dom.querySelectorAll(S2Link.DOM_SELECTOR).forEach(S2Link.DOM_REPLACER);
-  dom.querySelectorAll(S2Line.DOM_SELECTOR).forEach(S2Line.DOM_REPLACER);
-
-  return dom.innerText;
-}
-
-// TODO
-//
-// avoid changing any content html. Use markdown instead. Use CSS to hide bracket and id.
-//
 class S2Link extends HTMLAnchorElement {
-  static DOM_SELECTOR = `a[is="s2-link"]`;
-  static DOM_REPLACER = (element: Element) => (element.outerHTML = (element as S2Link).markdownText);
-
   static MARKDOWN_REGEX = /\[([^\(]+)\]\(([^\[]\d+)\)/g; // e.g. [Some title](200012300630)
   static MARKDOWN_REPLACER = (_match: string, title: string, id: string) =>
-    `<a is="s2-link" data-id="${id}" href="/editor.html?filename=${encodeURIComponent(`${id}.md`)}">${title}</a>`;
+    `[${title}](<a is="s2-link" data-id="${id}" href="/editor.html?filename=${encodeURIComponent(
+      `${id}.md`
+    )}">${id}</a>)`;
 
   connectedCallback() {
     // allow opening link in contenteditable mode

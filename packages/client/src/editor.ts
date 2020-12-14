@@ -5,10 +5,10 @@ import type {
   UpdateNoteBody,
   UpdateNoteReply,
 } from "@system-two/server/src/routes/note";
-import { domToMarkdown, markdownToHtml } from "./lib/codec";
+import { editableNoteToMarkdown, markdownToEditableHtml, markdownToOverlayHtml } from "./lib/codec";
 
 const noteTitleDom = document.getElementById("note-title") as HTMLElement;
-const noteContentDom = document.getElementById("note-content") as HTMLElement;
+const noteEditableDom = document.getElementById("note-content") as HTMLElement;
 const noteOverlayDom = document.getElementById("note-overlay") as HTMLElement;
 const saveButtonDom = document.getElementById("save") as HTMLButtonElement;
 
@@ -19,19 +19,19 @@ async function loadNote() {
     // load existing note
     const id = filename.split(".md")[0];
     const result = await loadExistingNote(id);
-    noteContentDom.innerHTML = markdownToHtml(result.note.content);
-    noteOverlayDom.innerHTML = markdownToHtml(result.note.content);
+    noteEditableDom.innerHTML = markdownToEditableHtml(result.note.content);
+    noteOverlayDom.innerHTML = markdownToOverlayHtml(result.note.content);
     // TODO run highlight logic here on overlay
 
     const observer = new MutationObserver(function () {
-      const newContent = domToMarkdown(noteContentDom);
-      noteOverlayDom.innerHTML = markdownToHtml(newContent);
+      const newContent = editableNoteToMarkdown(noteEditableDom);
+      noteOverlayDom.innerHTML = markdownToOverlayHtml(newContent);
       // TODO run highlight logic here on overlay
     });
 
-    observer.observe(noteContentDom, { subtree: true, childList: true, characterData: true });
+    observer.observe(noteEditableDom, { subtree: true, childList: true, characterData: true });
 
-    noteContentDom.addEventListener("keydown", () => {});
+    noteEditableDom.addEventListener("keydown", () => {});
 
     saveButtonDom.addEventListener("click", async () => {
       // save changes to note
@@ -40,7 +40,7 @@ async function loadNote() {
           metadata: {
             title: noteTitleDom.innerText,
           },
-          content: domToMarkdown(noteOverlayDom),
+          content: editableNoteToMarkdown(noteOverlayDom),
         },
       };
 
@@ -60,7 +60,7 @@ async function loadNote() {
   } else {
     // prepare for new note
     noteTitleDom.innerHTML = title ?? `New note on ${new Date().toLocaleString()}`;
-    noteOverlayDom.innerHTML = markdownToHtml(content ?? `An idea starts here...`);
+    noteOverlayDom.innerHTML = markdownToEditableHtml(content ?? `An idea starts here...`);
 
     saveButtonDom.addEventListener("click", async () => {
       const createNoteBody: CreateNoteBody = {
@@ -68,7 +68,7 @@ async function loadNote() {
           metadata: {
             title: noteTitleDom.innerText,
           },
-          content: domToMarkdown(noteOverlayDom),
+          content: editableNoteToMarkdown(noteOverlayDom),
         },
       };
 
