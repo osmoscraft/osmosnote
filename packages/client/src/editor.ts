@@ -36,7 +36,6 @@ async function loadNote() {
     observer.observe(noteEditableDom, { subtree: true, childList: true, characterData: true });
 
     noteEditableDom.addEventListener("keydown", (event) => {
-      console.log(event);
       if (event.key === "/") {
         event.stopPropagation();
         event.preventDefault();
