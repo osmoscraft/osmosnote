@@ -1,4 +1,4 @@
-import type { SearchReplay } from "@system-two/server/src/routes/search";
+import type { SearchResult } from "@system-two/server/src/routes/search";
 import type { NoteListReply } from "@system-two/server/src/routes/note-list";
 
 const searchBoxDom = document.getElementById("search-box") as HTMLInputElement;
@@ -13,7 +13,7 @@ searchBoxDom.addEventListener("input", async (e) => {
     });
 
     const response = await fetch(`/api/search?${params.toString()}`);
-    const result: SearchReplay = await response.json();
+    const result: SearchResult = await response.json();
 
     searchResultsDom.innerHTML = result.items
       .map((item) => `<a href="/editor.html?filename=${encodeURIComponent(item.filename)}">${item.title}</a>`)

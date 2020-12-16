@@ -5,19 +5,25 @@ import type {
   UpdateNoteBody,
   UpdateNoteReply,
 } from "@system-two/server/src/routes/note";
+import type { SearchResult } from "@system-two/server/src/routes/search";
+import { sendToClipboard } from "./lib/clipboard";
 import { editableNoteToMarkdown, markdownToEditableHtml, markdownToOverlayHtml } from "./lib/codec";
+import { restoreRange, saveRange } from "./lib/curosr";
+import { filenameToId } from "./lib/id";
 
 const noteTitleDom = document.getElementById("note-title") as HTMLElement;
 const noteEditableDom = document.getElementById("note-editable") as HTMLElement;
 const noteOverlayDom = document.getElementById("note-overlay") as HTMLElement;
 const saveButtonDom = document.getElementById("save") as HTMLButtonElement;
+const searchBoxDom = document.getElementById("search-box") as HTMLInputElement;
+const searchResultsDom = document.getElementById("search-results") as HTMLElement;
 
 async function loadNote() {
   const { filename, title, content } = getNoteConfigFromUrl();
 
   if (filename) {
     // load existing note
-    const id = filename.split(".md")[0];
+    const id = filenameToId(filename);
     const result = await loadExistingNote(id);
     noteEditableDom.innerHTML = markdownToEditableHtml(result.note.content);
     noteOverlayDom.innerHTML = markdownToOverlayHtml(result.note.content);
@@ -29,7 +35,50 @@ async function loadNote() {
 
     observer.observe(noteEditableDom, { subtree: true, childList: true, characterData: true });
 
-    noteEditableDom.addEventListener("keydown", () => {});
+    noteEditableDom.addEventListener("keydown", (event) => {
+      console.log(event);
+      if (event.key === "/") {
+        event.stopPropagation();
+        event.preventDefault();
+        saveRange();
+        searchBoxDom.focus();
+      }
+    });
+
+    searchBoxDom.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        restoreRange();
+      }
+    });
+
+    searchBoxDom.addEventListener("input", async (e) => {
+      if (searchBoxDom.value.length) {
+        const params = new URLSearchParams({
+          phrase: searchBoxDom.value,
+        });
+
+        const response = await fetch(`/api/search?${params.toString()}`);
+        const result: SearchResult = await response.json();
+
+        searchResultsDom.innerHTML = result.items
+          .map((item) => `<button data-link="[${item.title}](${filenameToId(item.filename)})">${item.title}</button>`)
+          .join("");
+      } else {
+        searchResultsDom.innerHTML = "";
+      }
+    });
+
+    searchResultsDom.addEventListener("click", (e) => {
+      const linkMarkdown = (e.target as HTMLButtonElement)?.dataset?.link;
+      if (linkMarkdown) {
+        searchBoxDom.value = "";
+        searchResultsDom.innerHTML = "";
+        sendToClipboard(linkMarkdown);
+        restoreRange();
+      }
+    });
 
     saveButtonDom.addEventListener("click", async () => {
       // save changes to note

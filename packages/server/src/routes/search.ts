@@ -11,10 +11,10 @@ export interface SearchRouteHandler {
   Querystring: {
     phrase: string;
   };
-  Reply: SearchReplay;
+  Reply: SearchResult;
 }
 
-export interface SearchReplay {
+export interface SearchResult {
   items: SearchResultItem[];
   durationInMs: number;
 }
