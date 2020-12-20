@@ -8,6 +8,7 @@
 * TODO test
 * TODO handle paste formatting
 * TODO fix link selection color defect
+* TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer 
 
 * DONE insert link (minimum: a mechnisam to get ~[title](id)~ in the clipboard)
 * DONE insert line-break with `enter` key
