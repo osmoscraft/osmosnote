@@ -5,18 +5,27 @@ import type {
   UpdateNoteBody,
   UpdateNoteReply,
 } from "@system-two/server/src/routes/note";
-import type { SearchResult } from "@system-two/server/src/routes/search";
+import "./components/content-host/content-host";
+import type { ContentHost } from "./components/content-host/content-host";
+import "./components/search-box/search-box";
+import type { SearchBox } from "./components/search-box/search-box";
+import "./components/status-bar/status-bar";
 import { sendToClipboard } from "./lib/clipboard";
-import { editableNoteToMarkdown, markdownToEditableHtml, markdownToOverlayHtml } from "./lib/codec";
 import { restoreRange, saveRange } from "./lib/curosr";
 import { filenameToId } from "./lib/id";
 
 const noteTitleDom = document.getElementById("note-title") as HTMLElement;
-const noteEditableDom = document.getElementById("note-editable") as HTMLElement;
-const noteOverlayDom = document.getElementById("note-overlay") as HTMLElement;
 const saveButtonDom = document.getElementById("save") as HTMLButtonElement;
-const searchBoxDom = document.getElementById("search-box") as HTMLInputElement;
-const searchResultsDom = document.getElementById("search-results") as HTMLElement;
+
+const contentHost = document.querySelector("s2-content-host") as ContentHost;
+const searchBox = document.querySelector("s2-search-box") as SearchBox;
+
+/**
+ * TODO add a headless command manager
+ * - save
+ * - link
+ * - leader key detection
+ */
 
 async function loadNote() {
   const { filename, title, content } = getNoteConfigFromUrl();
@@ -25,58 +34,20 @@ async function loadNote() {
     // load existing note
     const id = filenameToId(filename);
     const result = await loadExistingNote(id);
-    noteEditableDom.innerHTML = markdownToEditableHtml(result.note.content);
-    noteOverlayDom.innerHTML = markdownToOverlayHtml(result.note.content);
+    contentHost.loadMarkdown(result.note.content);
 
-    const observer = new MutationObserver(function () {
-      const newContent = editableNoteToMarkdown(noteEditableDom);
-      noteOverlayDom.innerHTML = markdownToOverlayHtml(newContent);
+    searchBox.addEventListener("search-box:did-cancel", () => {
+      restoreRange();
     });
 
-    observer.observe(noteEditableDom, { subtree: true, childList: true, characterData: true });
-
-    noteEditableDom.addEventListener("keydown", (event) => {
-      if (event.key === "/") {
-        event.stopPropagation();
-        event.preventDefault();
-        saveRange();
-        searchBoxDom.focus();
-      }
+    searchBox.addEventListener("search-box:did-select-link", (event) => {
+      sendToClipboard(event.detail.selectedLinkMarkdown);
+      restoreRange();
     });
 
-    searchBoxDom.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        event.stopPropagation();
-        restoreRange();
-      }
-    });
-
-    searchBoxDom.addEventListener("input", async (e) => {
-      if (searchBoxDom.value.length) {
-        const params = new URLSearchParams({
-          phrase: searchBoxDom.value,
-        });
-
-        const response = await fetch(`/api/search?${params.toString()}`);
-        const result: SearchResult = await response.json();
-
-        searchResultsDom.innerHTML = result.items
-          .map((item) => `<button data-link="[${item.title}](${filenameToId(item.filename)})">${item.title}</button>`)
-          .join("");
-      } else {
-        searchResultsDom.innerHTML = "";
-      }
-    });
-
-    searchResultsDom.addEventListener("click", (e) => {
-      const linkMarkdown = (e.target as HTMLButtonElement)?.dataset?.link;
-      if (linkMarkdown) {
-        searchBoxDom.value = "";
-        searchResultsDom.innerHTML = "";
-        sendToClipboard(linkMarkdown);
-        restoreRange();
-      }
+    contentHost.addEventListener("content-host:start-modal-search", () => {
+      saveRange();
+      searchBox.startSearch();
     });
 
     saveButtonDom.addEventListener("click", async () => {
@@ -86,7 +57,7 @@ async function loadNote() {
           metadata: {
             title: noteTitleDom.innerText,
           },
-          content: editableNoteToMarkdown(noteOverlayDom),
+          content: contentHost.getMarkdown(),
         },
       };
 
@@ -106,7 +77,7 @@ async function loadNote() {
   } else {
     // prepare for new note
     noteTitleDom.innerHTML = title ?? `New note on ${new Date().toLocaleString()}`;
-    noteOverlayDom.innerHTML = markdownToEditableHtml(content ?? `An idea starts here...`);
+    contentHost.loadMarkdown(content ?? `An idea starts here...`);
 
     saveButtonDom.addEventListener("click", async () => {
       const createNoteBody: CreateNoteBody = {
@@ -114,7 +85,7 @@ async function loadNote() {
           metadata: {
             title: noteTitleDom.innerText,
           },
-          content: editableNoteToMarkdown(noteOverlayDom),
+          content: contentHost.getMarkdown(),
         },
       };
 

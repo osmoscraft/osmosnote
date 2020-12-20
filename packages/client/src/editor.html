@@ -12,16 +12,14 @@
       <a href="index.html">Home</a>
       <br /><br />
     </nav>
-    <input id="search-box" type="search" />
-    <pre><output id="search-results"></output></pre>
+    <s2-search-box></s2-search-box>
     <br /><br />
     <button id="save">Save</button>
     <button id="get-link">Get link</button>
     <h1 id="note-title" contenteditable="true"></h1>
-    <div class="note-layers">
-      <div class="note-shared" id="note-editable" contenteditable="true"></div>
-      <div class="note-shared" id="note-overlay"></div>
-    </div>
+
+    <s2-content-host class="note-layers"></s2-content-host>
+    <s2-status-bar></s2-status-bar>
     <style>
       /* BEGIN debug styles */
       /* .note-shared {
