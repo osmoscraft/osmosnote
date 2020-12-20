@@ -10,6 +10,7 @@ import type { ContentHostComponent } from "./components/content-host/content-hos
 import "./components/search-box/search-box.component";
 import type { SearchBoxComponent } from "./components/search-box/search-box.component";
 import "./components/status-bar/status-bar.component";
+import "./components/command-bar/command-bar.component";
 import { sendToClipboard } from "./lib/clipboard";
 import { restoreRange, saveRange } from "./lib/curosr";
 import { filenameToId } from "./lib/id";
