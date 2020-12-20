@@ -5,11 +5,11 @@ import type {
   UpdateNoteBody,
   UpdateNoteReply,
 } from "@system-two/server/src/routes/note";
-import "./components/content-host/content-host";
-import type { ContentHost } from "./components/content-host/content-host";
-import "./components/search-box/search-box";
-import type { SearchBox } from "./components/search-box/search-box";
-import "./components/status-bar/status-bar";
+import "./components/content-host/content-host.component";
+import type { ContentHostComponent } from "./components/content-host/content-host.component";
+import "./components/search-box/search-box.component";
+import type { SearchBoxComponent } from "./components/search-box/search-box.component";
+import "./components/status-bar/status-bar.component";
 import { sendToClipboard } from "./lib/clipboard";
 import { restoreRange, saveRange } from "./lib/curosr";
 import { filenameToId } from "./lib/id";
@@ -17,8 +17,8 @@ import { filenameToId } from "./lib/id";
 const noteTitleDom = document.getElementById("note-title") as HTMLElement;
 const saveButtonDom = document.getElementById("save") as HTMLButtonElement;
 
-const contentHost = document.querySelector("s2-content-host") as ContentHost;
-const searchBox = document.querySelector("s2-search-box") as SearchBox;
+const contentHost = document.querySelector("s2-content-host") as ContentHostComponent;
+const searchBox = document.querySelector("s2-search-box") as SearchBoxComponent;
 
 /**
  * TODO add a headless command manager

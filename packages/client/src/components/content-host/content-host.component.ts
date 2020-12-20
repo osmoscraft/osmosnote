@@ -7,7 +7,7 @@ declare global {
   }
 }
 
-export class ContentHost extends HTMLElement {
+export class ContentHostComponent extends HTMLElement {
   noteEditableDom!: HTMLElement;
   noteOverlayDom!: HTMLElement;
 
@@ -54,4 +54,4 @@ export class ContentHost extends HTMLElement {
   }
 }
 
-customElements.define("s2-content-host", ContentHost);
+customElements.define("s2-content-host", ContentHostComponent);

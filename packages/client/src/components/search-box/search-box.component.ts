@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-export class SearchBox extends HTMLElement {
+export class SearchBoxComponent extends HTMLElement {
   searchBoxDom!: HTMLInputElement;
   searchResultsDom!: HTMLElement;
 
@@ -67,4 +67,4 @@ export class SearchBox extends HTMLElement {
   }
 }
 
-customElements.define("s2-search-box", SearchBox);
+customElements.define("s2-search-box", SearchBoxComponent);
