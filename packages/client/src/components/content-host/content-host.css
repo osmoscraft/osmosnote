@@ -1,0 +1,143 @@
+/* BEGIN debug styles */
+/* .note-shared {
+        width: 50% !important;
+      }
+      #note-editable {
+        color: saddlebrown !important;
+      } */
+/* End debug styles */
+
+.note-layers {
+  position: relative;
+}
+
+.note-shared {
+  white-space: pre-wrap;
+  position: absolute;
+  width: 100%;
+  font-size: 14px;
+  font-family: monospace;
+}
+
+.note-shared pre[is="s2-line"] {
+  margin: 0;
+  display: flex;
+}
+
+/**
+      * TODO https://developer.mozilla.org/en-US/docs/Web/CSS/:is
+      */
+.note-shared h1,
+.note-shared h2,
+.note-shared h3,
+.note-shared h4,
+.note-shared h5,
+.note-shared h6 {
+  font-size: 14px;
+  margin: 0;
+}
+
+.note-shared [data-indent-level]::before {
+  content: " ";
+  white-space: pre;
+  font-family: monospace;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.note-shared [data-indent-level="0"] {
+  --heading-indent: 0ch;
+}
+
+.note-shared [data-indent-level="1"] {
+  --heading-indent: 1ch;
+}
+
+.note-shared [data-indent-level="2"] {
+  --heading-indent: 2ch;
+}
+
+.note-shared [data-indent-level="3"] {
+  --heading-indent: 3ch;
+}
+
+.note-shared [data-indent-level="4"] {
+  --heading-indent: 4ch;
+}
+
+.note-shared [data-indent-level="5"] {
+  --heading-indent: 5ch;
+}
+
+.note-shared [data-indent-level="6"] {
+  --heading-indent: 6ch;
+}
+
+.note-shared [data-indent-level]::before {
+  width: calc(var(--heading-indent) * 2);
+}
+.note-shared [data-indent-level][data-heading-level]::before {
+  width: calc(var(--heading-indent) - 1ch);
+}
+
+#note-editable {
+  left: 0;
+  outline: none;
+  caret-color: var(--base06);
+  color: transparent;
+}
+
+#note-editable ::selection {
+  color: var(--base06);
+  background-color: var(--base04);
+}
+
+#note-overlay {
+  right: 0;
+}
+
+#note-overlay {
+  font-size: 14px;
+  pointer-events: none;
+}
+
+#note-overlay a[is="s2-link"] {
+  pointer-events: auto;
+}
+
+#note-overlay [data-heading-level="1"],
+#note-overlay [data-heading-level="4"] {
+  color: var(--base09);
+}
+
+#note-overlay [data-heading-level="2"],
+#note-overlay [data-heading-level="4"] {
+  color: var(--base0C);
+}
+
+#note-overlay [data-heading-level="3"],
+#note-overlay [data-heading-level="6"] {
+  color: var(--base0B);
+}
+
+.s2-heading__hidden-hash {
+  color: transparent; /* same as page background */
+}
+
+.s2-link__title {
+  color: var(--base0A);
+}
+
+.s2-link__symbol {
+  color: var(--base03);
+}
+
+.s2-link__id {
+  color: var(--base03);
+  text-decoration: none;
+}
+
+.s2-link__id:hover {
+  color: var(--base0A);
+  text-decoration: underline;
+}

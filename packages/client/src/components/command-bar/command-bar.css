@@ -1,0 +1,54 @@
+s2-command-bar {
+  height: 32px;
+}
+
+.cmdbr-input {
+  width: 100%;
+  height: 32px;
+  background-color: var(--base01);
+  color: var(--base06);
+  border: none;
+  outline: none;
+  font-family: monospace;
+  padding: 0 16px;
+}
+
+.cmdbr-input:focus {
+  background-color: var(--base03);
+}
+
+.cmdbr-options {
+  margin: 8px;
+  border-radius: 2px;
+
+  display: grid;
+}
+
+.cmdbr-options:empty {
+  display: none;
+}
+
+.cmdbr-option {
+  background-color: var(--base01);
+  font-family: monospace;
+  height: 32px;
+  padding: 0 8px;
+  align-items: center;
+  display: flex;
+}
+
+.cmdbr-option--header {
+  color: var(--base0A);
+}
+
+.cmdbr-option--btn {
+  color: var(--base06);
+  border: none;
+  text-align: start;
+  outline: none;
+  border-radius: 2px;
+}
+
+.cmdbr-option--btn:focus {
+  background-color: var(--base03);
+}

@@ -1,5 +1,3 @@
-* TODO Ctrl + S to save
-* TODO use "/" as leader key
 * TODO refactor frontend to class based architecture
 * TODO tab/shift-tab to push/pull indendation
 * TODO expose config file in web for read/write
@@ -10,6 +8,8 @@
 * TODO fix link selection color defect
 * TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer 
 
+* DONE use "/" as leader key
+* DONE / + n + s to save
 * DONE insert link (minimum: a mechnisam to get ~[title](id)~ in the clipboard)
 * DONE insert line-break with `enter` key
 * DONE insert heading

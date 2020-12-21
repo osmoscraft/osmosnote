@@ -1,4 +1,6 @@
 export class S2Line extends HTMLPreElement {
+  private handleMutation!: MutationCallback;
+
   readonly dataset!: {
     headingLevel: string;
     indentLevel: string;
@@ -12,18 +14,18 @@ export class S2Line extends HTMLPreElement {
     this.processHeading();
     this.processIndent();
 
+    this.handleMutation = (mutationsList, observer) => {
+      const characterChange = mutationsList.find((mutation) => mutation.type === "characterData");
+      if (characterChange) {
+        this.processHeading();
+        this.processIndent({ propagate: true });
+      }
+    };
+
     const observer = new MutationObserver(this.handleMutation);
 
     observer.observe(this, { subtree: true, characterData: true });
   }
-
-  handleMutation: MutationCallback = (mutationsList, observer) => {
-    const characterChange = mutationsList.find((mutation) => mutation.type === "characterData");
-    if (characterChange) {
-      this.processHeading();
-      this.processIndent({ propagate: true });
-    }
-  };
 
   processHeading() {
     const headingResult = this.scanHeading(this.innerText);

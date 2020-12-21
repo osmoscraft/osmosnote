@@ -1,0 +1,7 @@
+s2-status-bar {
+  height: 32px;
+  background-color: var(--base01);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}

@@ -1,5 +1,6 @@
 import { editableNoteToMarkdown, markdownToEditableHtml, markdownToOverlayHtml } from "../../lib/codec";
 import { emit } from "../../lib/events";
+import "./content-host.css";
 
 declare global {
   interface GlobalEventHandlersEventMap {
