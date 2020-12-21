@@ -1,6 +1,7 @@
 * TODO refactor title to be a component
 * TODO convert capture to a command
 * TODO convert editor to be home page
+* TODO fix source map (use standalone frontend)
 * TODO git sync through shell script
 * TODO more seamless handling of focus and selection restore
 * TODO tab/shift-tab to push/pull indendation
