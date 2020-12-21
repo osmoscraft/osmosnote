@@ -5,17 +5,6 @@ export const commandTree: RegisteredCommand = {
   key: "",
   commands: [
     {
-      name: "Search",
-      key: "s",
-      commands: [
-        {
-          name: "Note",
-          key: "n",
-          requireArguments: true,
-        },
-      ],
-    },
-    {
       name: "File",
       key: "f",
       commands: [
@@ -30,6 +19,11 @@ export const commandTree: RegisteredCommand = {
           executeOnComplete: true,
         },
       ],
+    },
+    {
+      name: "Search",
+      key: "s",
+      requireArguments: true,
     },
   ],
 };

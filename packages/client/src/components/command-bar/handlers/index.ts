@@ -26,7 +26,7 @@ export interface CommandHandlerResult {
 }
 
 export const commandHandlers: CommandHandlers = {
-  sn: handleSearchNote,
+  s: handleSearchNote,
   fs: handleFileSave,
   fy: handleFileCopyLink,
 };

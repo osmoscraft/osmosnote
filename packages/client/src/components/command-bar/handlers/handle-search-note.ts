@@ -7,7 +7,7 @@ export const handleSearchNote: CommandHandler = async ({ command, execute }) => 
   const phrase = command.args;
 
   if (!execute) {
-    let optionsHtml = /*html*/ `<div class="cmdbr-option cmdbr-option--header">Search and select a note</div>`;
+    let optionsHtml = /*html*/ `<div class="cmdbr-option cmdbr-option--header">"Enter" to open, "y" to copy link</div>`;
 
     if (phrase?.length) {
       const params = new URLSearchParams({
