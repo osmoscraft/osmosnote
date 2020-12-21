@@ -1,13 +1,16 @@
-* TODO refactor frontend to class based architecture
-* TODO tab/shift-tab to push/pull indendation
-* TODO expose config file in web for read/write
+* TODO refactor title to be a component
 * TODO git sync through shell script
-* TODO an output display for UI feedback (status bar, minibuffer) - localStorage for multi-page app
+* TODO more seamless handling of focus and selection restore
+* TODO tab/shift-tab to push/pull indendation
+* TODO undo/redo manager
 * TODO test
 * TODO handle paste formatting
+* TODO expose config file in web for read/write
 * TODO fix link selection color defect
 * TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer 
 
+* DONE an output display for UI feedback (status bar, minibuffer) - localStorage for multi-page app
+* DONE refactor frontend to class based architecture
 * DONE use "/" as leader key
 * DONE / + n + s to save
 * DONE insert link (minimum: a mechnisam to get ~[title](id)~ in the clipboard)
