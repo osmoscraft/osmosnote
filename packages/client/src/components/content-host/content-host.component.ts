@@ -1,5 +1,4 @@
 import { editableNoteToMarkdown, markdownToEditableHtml, markdownToOverlayHtml } from "../../lib/codec";
-import { emit } from "../../lib/events";
 import "./content-host.css";
 
 declare global {
@@ -21,23 +20,10 @@ export class ContentHostComponent extends HTMLElement {
     this.noteOverlayDom = this.querySelector("#note-overlay") as HTMLElement;
 
     this.attachOverlayObserver();
-    this.handleEvents();
   }
 
   getMarkdown(): string {
     return editableNoteToMarkdown(this.noteEditableDom);
-  }
-
-  private handleEvents() {
-    // TODO use event bus to hand off focus
-    this.noteEditableDom.addEventListener("keydown", (event) => {
-      if (event.key === "/") {
-        event.stopPropagation();
-        event.preventDefault();
-
-        emit(this, "content-host:start-modal-search");
-      }
-    });
   }
 
   // When editable dom has any change, re-render overlay

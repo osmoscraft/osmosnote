@@ -5,17 +5,6 @@ export const commandTree: RegisteredCommand = {
   key: "",
   commands: [
     {
-      name: "Note",
-      key: "n",
-      commands: [
-        {
-          name: "Get link",
-          key: "k",
-          executeOnComplete: true,
-        },
-      ],
-    },
-    {
       name: "Search",
       key: "s",
       commands: [
@@ -30,6 +19,11 @@ export const commandTree: RegisteredCommand = {
       name: "File",
       key: "f",
       commands: [
+        {
+          name: "Copy (yank) link",
+          key: "y",
+          executeOnComplete: true,
+        },
         {
           name: "Save",
           key: "s",

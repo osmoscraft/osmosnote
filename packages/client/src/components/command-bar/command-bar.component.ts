@@ -4,6 +4,9 @@ import "./command-bar.css";
 import { commandHandlers } from "./handlers";
 import type { ContentHostComponent } from "../content-host/content-host.component";
 import type { StatusBarComponent } from "../status-bar/status-bar.component";
+import { sendToClipboard } from "../../lib/clipboard";
+import { idToFilename } from "../../lib/id";
+import { saveRange } from "../../lib/curosr";
 
 declare global {
   interface GlobalEventHandlersEventMap {
@@ -75,8 +78,18 @@ export class CommandBarComponent extends HTMLElement {
   }
 
   private handleEvents() {
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "/") {
+        event.stopPropagation();
+        event.preventDefault();
+
+        saveRange();
+        this.enterCommandMode();
+      }
+    });
+
     this.commandInputDom.addEventListener("focus", () => {
-      this.handleInput("");
+      this.handleInput(this.commandInputDom.value);
     });
 
     this.commandInputDom.addEventListener("keydown", (event) => {
@@ -110,8 +123,40 @@ export class CommandBarComponent extends HTMLElement {
       this.handleInput((e.target as HTMLInputElement).value);
     });
 
+    this.commandOptionsDom.addEventListener("keydown", (e) => {
+      if ((e.target as HTMLElement).matches("button")) {
+        const targetDataset = (e.target as HTMLButtonElement).dataset;
+
+        if (targetDataset.copyText && e.key === "y") {
+          e.stopPropagation();
+          e.preventDefault();
+
+          sendToClipboard(targetDataset.copyText);
+          this.statusBarDom.showText(`[command-bar] copied "${targetDataset.copyText}"`);
+          this.clear();
+          emit(this, "command-bar:did-execute");
+        }
+
+        if (targetDataset.openById && e.key === "Enter") {
+        }
+      }
+    });
+
     this.commandOptionsDom.addEventListener("click", (e) => {
-      // commit command options
+      if ((e.target as HTMLElement).matches("button")) {
+        const targetDataset = (e.target as HTMLButtonElement).dataset;
+
+        if (targetDataset.commandKey) {
+          this.commandInputDom.value = this.commandInputDom.value + targetDataset.commandKey;
+          this.handleInput(this.commandInputDom.value);
+        }
+
+        if (targetDataset.openById) {
+          window.open(`/editor.html?filename=${idToFilename(targetDataset.openById)}`, e.ctrlKey ? undefined : "_self");
+          this.clear();
+          emit(this, "command-bar:did-execute");
+        }
+      }
     });
   }
 
@@ -124,7 +169,7 @@ export class CommandBarComponent extends HTMLElement {
       const optionsView = command.commands
         ?.map(
           (command) =>
-            /*html*/ `<button class="cmdbr-option cmdbr-option--btn">[${command.key}] ${command.name}</button>`
+            /*html*/ `<button data-command-key="${command.key}" class="cmdbr-option cmdbr-option--btn">[${command.key}] ${command.name}</button>`
         )
         .join("");
       this.commandOptionsDom.innerHTML = optionsView;

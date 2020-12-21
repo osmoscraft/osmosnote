@@ -1,10 +1,4 @@
-import type {
-  CreateNoteBody,
-  CreateNoteReply,
-  GetNoteReply,
-  UpdateNoteBody,
-  UpdateNoteReply,
-} from "@system-two/server/src/routes/note";
+import type { CreateNoteBody, CreateNoteReply, GetNoteReply } from "@system-two/server/src/routes/note";
 import "./components/command-bar/command-bar.component";
 import type { CommandBarComponent } from "./components/command-bar/command-bar.component";
 import "./components/content-host/content-host.component";
@@ -12,7 +6,6 @@ import type { ContentHostComponent } from "./components/content-host/content-hos
 import "./components/search-box/search-box.component";
 import type { SearchBoxComponent } from "./components/search-box/search-box.component";
 import "./components/status-bar/status-bar.component";
-import { sendToClipboard } from "./lib/clipboard";
 import { restoreRange, saveRange } from "./lib/curosr";
 import { filenameToId } from "./lib/id";
 import { getNoteConfigFromUrl } from "./lib/url";
@@ -21,7 +14,6 @@ const noteTitleDom = document.getElementById("note-title") as HTMLElement;
 const saveButtonDom = document.getElementById("save") as HTMLButtonElement;
 
 const contentHost = document.querySelector("s2-content-host") as ContentHostComponent;
-const searchBox = document.querySelector("s2-search-box") as SearchBoxComponent;
 const commandBar = document.querySelector("s2-command-bar") as CommandBarComponent;
 
 /**
@@ -47,42 +39,6 @@ async function loadNote() {
     commandBar.addEventListener("command-bar:did-execute", () => {
       restoreRange();
     });
-
-    searchBox.addEventListener("search-box:did-select-link", (event) => {
-      sendToClipboard(event.detail.selectedLinkMarkdown);
-      restoreRange();
-    });
-
-    contentHost.addEventListener("content-host:start-modal-search", () => {
-      saveRange();
-      searchBox.startSearch();
-      commandBar.enterCommandMode();
-    });
-
-    // saveButtonDom.addEventListener("click", async () => {
-    //   // save changes to note
-    //   const updateNoteBody: UpdateNoteBody = {
-    //     note: {
-    //       metadata: {
-    //         title: noteTitleDom.innerText,
-    //       },
-    //       content: contentHost.getMarkdown(),
-    //     },
-    //   };
-
-    //   const response = await fetch(`/api/notes/${encodeURIComponent(id)}`, {
-    //     method: "PUT",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(updateNoteBody),
-    //   });
-    //   const result: UpdateNoteReply = await response.json();
-
-    //   console.log(`[editor] updated ${result.note.metadata.title}`);
-
-    //   // location.reload();
-    // });
   } else {
     // prepare for new note
     noteTitleDom.innerHTML = title ?? `New note on ${new Date().toLocaleString()}`;

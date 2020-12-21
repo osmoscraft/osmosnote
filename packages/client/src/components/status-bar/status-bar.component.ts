@@ -9,7 +9,7 @@ export class StatusBarComponent extends HTMLElement {
   }
 
   showText(text: string) {
-    this.outputDom.innerText = text;
+    this.outputDom.innerText = `${new Date().toLocaleTimeString()} ${text}`;
   }
 }
 
