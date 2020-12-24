@@ -1,4 +1,5 @@
 * TODO more seamless handling of focus and selection restore
+  - Ref: https://gomakethings.com/detecting-when-focus-leaves-a-group-of-elements-with-vanilla-js/
 * TODO convert capture to a command
 * TODO convert editor to be home page
 * TODO show backlinks aside
