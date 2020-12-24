@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "parcel watch ./src/*.html --dist-dir ../server/public",
+    "dev": "parcel ./src/*.html --dist-dir ../server/public",
     "build": "parcel build ./src/*.html --dist-dir ../server/public",
     "clean": "rm -rf ../server/public && rm -rf .parcel-cache"
   },

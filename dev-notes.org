@@ -1,7 +1,7 @@
 * TODO refactor title to be a component
 * TODO convert capture to a command
 * TODO convert editor to be home page
-* TODO fix source map (use standalone frontend)
+* TODO show backlinks aside
 * TODO git sync through shell script
 * TODO more seamless handling of focus and selection restore
 * TODO tab/shift-tab to push/pull indendation
@@ -12,6 +12,7 @@
 * TODO fix link selection color defect
 * TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer 
 
+* DONE fix source map (use standalone frontend)
 * DONE an output display for UI feedback (status bar, minibuffer) - localStorage for multi-page app
 * DONE refactor frontend to class based architecture
 * DONE use "/" as leader key

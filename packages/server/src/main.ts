@@ -16,7 +16,7 @@ server.put("/api/notes/:id", handleUpdateNote);
 const publicPath = path.join(__dirname, "../public");
 server.register(fastifyStatic, { root: publicPath });
 
-server.listen(8080, (err, address) => {
+server.listen(8091, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
