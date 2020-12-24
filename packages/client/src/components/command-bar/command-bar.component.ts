@@ -7,6 +7,7 @@ import type { StatusBarComponent } from "../status-bar/status-bar.component";
 import { sendToClipboard } from "../../lib/clipboard";
 import { idToFilename } from "../../lib/id";
 import { saveRange } from "../../lib/curosr";
+import type { DocumentHeaderComponent } from "../document-header/document-header.component";
 
 declare global {
   interface GlobalEventHandlersEventMap {
@@ -37,6 +38,7 @@ export class CommandBarComponent extends HTMLElement {
   commandInputDom!: HTMLInputElement;
   commandOptionsDom!: HTMLElement;
   commandTree!: RegisteredCommand;
+  documentHeaderDom!: DocumentHeaderComponent;
   statusBarDom!: StatusBarComponent;
 
   constructor() {
@@ -53,6 +55,7 @@ export class CommandBarComponent extends HTMLElement {
     this.commandInputDom = document.getElementById("command-input") as HTMLInputElement;
     this.commandOptionsDom = document.getElementById("command-options") as HTMLUListElement;
     this.contentHostDom = document.querySelector("s2-content-host") as ContentHostComponent;
+    this.documentHeaderDom = document.querySelector("s2-document-header") as DocumentHeaderComponent;
     this.statusBarDom = document.querySelector("s2-status-bar") as StatusBarComponent;
 
     this.handleEvents();
@@ -202,7 +205,7 @@ export class CommandBarComponent extends HTMLElement {
         context: {
           contentHost: this.contentHostDom,
           statusBar: this.statusBarDom,
-          titleDom: document.getElementById("note-title") as HTMLElement, // TODO refactor away
+          documentHeader: this.documentHeaderDom,
         },
       });
       if (result.optionsHtml) {
@@ -223,7 +226,7 @@ export class CommandBarComponent extends HTMLElement {
         context: {
           contentHost: this.contentHostDom,
           statusBar: this.statusBarDom,
-          titleDom: document.getElementById("note-title") as HTMLElement, // TODO refactor away
+          documentHeader: this.documentHeaderDom,
         },
       });
     }

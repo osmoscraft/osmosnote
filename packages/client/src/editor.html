@@ -9,9 +9,8 @@
   </head>
   <body>
     <s2-command-bar></s2-command-bar>
-    <s2-search-box></s2-search-box>
-    <h1 id="note-title" contenteditable="true"></h1>
-    <s2-content-host class="note-layers"></s2-content-host>
+    <s2-document-header></s2-document-header>
+    <s2-content-host></s2-content-host>
     <s2-status-bar></s2-status-bar>
     <style>
       s2-command-bar {
@@ -19,6 +18,21 @@
         top: 0;
         width: 100%;
         z-index: 1; /* above content host */
+      }
+
+      s2-document-header {
+        position: absolute;
+        top: 48px;
+        left: 16px;
+        right: 16px;
+      }
+
+      s2-content-host {
+        position: absolute;
+        top: 108px;
+        bottom: 48px;
+        left: 16px;
+        right: 16px;
       }
 
       s2-status-bar {

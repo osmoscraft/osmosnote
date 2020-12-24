@@ -1,0 +1,12 @@
+.dchdr_heading {
+  font-size: 20px;
+  font-weight: 600;
+  background-color: var(--base01);
+  padding: 8px 16px;
+  margin: 0;
+}
+
+.dchdr_heading:focus {
+  outline: 1px solid var(--base0D);
+  outline-offset: -1px;
+}

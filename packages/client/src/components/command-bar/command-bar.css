@@ -11,15 +11,17 @@ s2-command-bar {
   outline: none;
   font-family: monospace;
   padding: 0 16px;
+  border-radius: 0px;
 }
 
 .cmdbr-input:focus {
   background-color: var(--base03);
+  outline: 1px solid var(--base0D);
+  outline-offset: -1px;
 }
 
 .cmdbr-options {
-  margin: 8px;
-  border-radius: 2px;
+  margin: 0;
 
   display: grid;
 }
@@ -32,7 +34,7 @@ s2-command-bar {
   background-color: var(--base01);
   font-family: monospace;
   height: 32px;
-  padding: 0 8px;
+  padding: 0 16px;
   align-items: center;
   display: flex;
 }
@@ -46,7 +48,7 @@ s2-command-bar {
   border: none;
   text-align: start;
   outline: none;
-  border-radius: 2px;
+  border-radius: 0px;
 }
 
 .cmdbr-option--btn:focus {

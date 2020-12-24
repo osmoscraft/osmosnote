@@ -1,20 +1,24 @@
 /* BEGIN debug styles */
 /* .note-shared {
-        width: 50% !important;
-      }
-      #note-editable {
-        color: saddlebrown !important;
-      } */
+  width: 50% !important;
+}
+#note-editable {
+  color: saddlebrown !important;
+} */
 /* End debug styles */
 
-.note-layers {
-  position: relative;
+s2-content-host {
+  background-color: var(--base01);
+  overflow: hidden; /* Show a scroll bar */
 }
 
 .note-shared {
   white-space: pre-wrap;
   position: absolute;
   width: 100%;
+  top: 0;
+  bottom: 0;
+  padding: 16px;
   font-size: 14px;
   font-family: monospace;
 }
@@ -82,9 +86,13 @@
 
 #note-editable {
   left: 0;
-  outline: none;
   caret-color: var(--base06);
   color: transparent;
+}
+
+#note-editable:focus {
+  outline: 1px solid var(--base0D);
+  outline-offset: -1px;
 }
 
 #note-editable ::selection {

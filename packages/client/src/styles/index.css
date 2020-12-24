@@ -30,3 +30,7 @@ body {
 a {
   color: var(--base0A);
 }
+
+* {
+  box-sizing: border-box;
+}

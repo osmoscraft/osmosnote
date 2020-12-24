@@ -1,4 +1,5 @@
 import type { ContentHostComponent } from "../../content-host/content-host.component";
+import type { DocumentHeaderComponent } from "../../document-header/document-header.component";
 import type { StatusBarComponent } from "../../status-bar/status-bar.component";
 import type { CommandInput } from "../command-bar.component";
 import { handleFileCopyLink } from "./handle-file-copy-link";
@@ -12,7 +13,7 @@ export interface CommandHandlers {
 export interface CommandHandlerContext {
   contentHost: ContentHostComponent;
   statusBar: StatusBarComponent;
-  titleDom: HTMLElement;
+  documentHeader: DocumentHeaderComponent;
 }
 
 export interface CommandHandler {
