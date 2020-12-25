@@ -34,3 +34,22 @@ a {
 * {
   box-sizing: border-box;
 }
+
+::-webkit-scrollbar-track {
+  background-color: var(--base01);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: var(--base01);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: var(--base02);
+}
+
+::-webkit-scrollbar-corner {
+  background-color: var(--base01);
+}

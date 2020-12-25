@@ -13,8 +13,11 @@ export class ContentHostComponent extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
-    <div class="note-shared" id="note-editable" contenteditable="true"></div>
-    <div class="note-shared" id="note-overlay"></div>`;
+    <div class="cntcnt-scroll-area">
+      <div class="note-shared" id="note-editable" contenteditable="true"></div>
+      <div class="note-shared" id="note-overlay"></div>
+    </div>
+    `;
 
     this.noteEditableDom = this.querySelector("#note-editable") as HTMLElement;
     this.noteOverlayDom = this.querySelector("#note-overlay") as HTMLElement;
