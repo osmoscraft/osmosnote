@@ -28,7 +28,7 @@ async function loadNote() {
     const result = await loadExistingNote(id);
     contentHost.loadMarkdown(result.note.content);
     documentHeader.setTitle(result.note.metadata.title);
-    referencePanel.setAppearedInNotes(result.appearedInNotes);
+    referencePanel.setIncomingConnections(result.incomingConnections);
 
     commandBar.addEventListener("command-bar:did-cancel", () => {
       restoreRange();

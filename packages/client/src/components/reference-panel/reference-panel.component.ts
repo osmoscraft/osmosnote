@@ -1,4 +1,4 @@
-import type { ReferenceNote } from "@system-two/server/src/routes/note";
+import type { IncomingConnection } from "@system-two/server/src/routes/note";
 import "./reference-panel.css";
 
 export class ReferencePanelComponent extends HTMLElement {
@@ -10,7 +10,7 @@ export class ReferencePanelComponent extends HTMLElement {
     this.listDom = this.querySelector("#refpnl-list") as HTMLUListElement;
   }
 
-  setAppearedInNotes(notes: ReferenceNote[]) {
+  setIncomingConnections(notes: IncomingConnection[]) {
     this.listDom.innerHTML = notes
       .map(
         (note) => /*html*/ `

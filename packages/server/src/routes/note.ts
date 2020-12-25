@@ -15,10 +15,10 @@ export interface HandleGetNote {
 
 export interface GetNoteReply {
   note: Note;
-  appearedInNotes: ReferenceNote[];
+  incomingConnections: IncomingConnection[];
 }
 
-export interface ReferenceNote {
+export interface IncomingConnection {
   filename: string;
   title: string;
   score: number;
@@ -28,12 +28,12 @@ export const handleGetNote: RouteHandlerMethod<any, any, any, HandleGetNote> = a
   const params = request.params;
   const id = params.id;
 
-  const referencingNotes = getAppearedInNotes(id);
+  const incomingConnections = getIncomingConnections(id);
   const note = readNote(`${id}.md`).then((result) => parseNote(result));
 
   return {
     note: await note,
-    appearedInNotes: await referencingNotes,
+    incomingConnections: await incomingConnections,
   };
 };
 
@@ -49,7 +49,6 @@ export interface CreateNoteBody {
 export interface CreateNoteReply {
   filename: string;
   note: Note;
-  appearedInNotes?: ReferenceNote[];
 }
 
 export const handleCreateNote: RouteHandlerMethod<any, any, any, HandleCreateNote> = async (request, reply) => {
@@ -82,7 +81,6 @@ export interface UpdateNoteBody {
 export interface UpdateNoteReply {
   filename: string;
   note: Note;
-  appearedInNotes?: ReferenceNote[];
 }
 
 export const handleUpdateNote: RouteHandlerMethod<any, any, any, HandleUpdateNote> = async (request, reply) => {
@@ -101,7 +99,7 @@ export const handleUpdateNote: RouteHandlerMethod<any, any, any, HandleUpdateNot
   };
 };
 
-async function getAppearedInNotes(id: string): Promise<ReferenceNote[]> {
+async function getIncomingConnections(id: string): Promise<IncomingConnection[]> {
   const config = await getConfig();
 
   const { error, stdout, stderr } = await runShell(`rg "\(${id}\)" --count-matches`, { cwd: config.notesDir });
@@ -132,7 +130,7 @@ async function getAppearedInNotes(id: string): Promise<ReferenceNote[]> {
       };
     });
 
-    const notes: ReferenceNote[] = await Promise.all(notesAsync);
+    const notes: IncomingConnection[] = await Promise.all(notesAsync);
     const sortedNotes = notes
       .sort((a, b) => a.title.localeCompare(b.title)) // sort title first to result can remain the same
       .sort((a, b) => b.score - a.score);
