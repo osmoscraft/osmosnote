@@ -81,8 +81,11 @@ export class CommandBarComponent extends HTMLElement {
   }
 
   private handleEvents() {
+    // this component never disconnect, otherwise, we need to clean up window listeners
     window.addEventListener("keydown", (event) => {
       if (event.key === "/") {
+        if (document.activeElement === this.commandInputDom) return; // Don't handle it if it's alreay active
+
         event.stopPropagation();
         event.preventDefault();
 
@@ -91,11 +94,12 @@ export class CommandBarComponent extends HTMLElement {
       }
     });
 
-    this.commandInputDom.addEventListener("focus", () => {
-      this.handleInput(this.commandInputDom.value);
+    this.addEventListener("focusout", (event) => {
+      if (this.contains(event.relatedTarget as Node)) return;
+      this.commandOptionsDom.innerHTML = "";
     });
 
-    this.commandInputDom.addEventListener("keydown", (event) => {
+    this.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         event.preventDefault();
         event.stopPropagation();
@@ -104,12 +108,17 @@ export class CommandBarComponent extends HTMLElement {
         this.clear();
         emit(this, "command-bar:did-cancel");
       }
+    });
 
-      if (event.key === "Enter") {
-        event.preventDefault();
-        event.stopPropagation();
+    this.commandInputDom.addEventListener("focus", () => {
+      this.handleInput(this.commandInputDom.value);
+    });
 
-        this.executeCommand();
+    this.commandInputDom.addEventListener("keydown", (event) => {
+      const activeOption = this.commandOptionsDom.querySelector("[data-option][data-active]") as HTMLElement;
+      if (activeOption) {
+        const handled = this.handleOptionKeydown(activeOption, event);
+        if (handled) return;
       }
 
       if (event.key === "Backspace") {
@@ -120,46 +129,41 @@ export class CommandBarComponent extends HTMLElement {
           event.stopPropagation();
         }
       }
+
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const currentOption = this.commandOptionsDom.querySelector("[data-option][data-active]") as HTMLElement;
+        if (currentOption) {
+          const candidateOption =
+            event.key === "ArrowDown" ? currentOption.nextElementSibling : currentOption.previousElementSibling;
+          if (candidateOption?.matches("[data-option")) {
+            (candidateOption as HTMLElement).dataset.active = "";
+            delete currentOption.dataset.active;
+          } else {
+            // overflow, reset to input
+            delete currentOption.dataset.active;
+          }
+        } else {
+          const options = [...this.commandOptionsDom.querySelectorAll("[data-option]")] as HTMLElement[];
+          const candidateOption = options[event.key === "ArrowDown" ? 0 : options.length - 1];
+          if (candidateOption) {
+            candidateOption.dataset.active = "";
+          }
+        }
+      }
+
+      if (event.key === "Enter") {
+        event.preventDefault();
+        event.stopPropagation();
+
+        this.executeCommand();
+      }
     });
 
     this.commandInputDom.addEventListener("input", async (e) => {
       this.handleInput((e.target as HTMLInputElement).value);
-    });
-
-    this.commandOptionsDom.addEventListener("keydown", (e) => {
-      if ((e.target as HTMLElement).matches("button")) {
-        const targetDataset = (e.target as HTMLButtonElement).dataset;
-
-        if (targetDataset.copyText && e.key === "y") {
-          e.stopPropagation();
-          e.preventDefault();
-
-          sendToClipboard(targetDataset.copyText);
-          this.statusBarDom.showText(`[command-bar] copied "${targetDataset.copyText}"`);
-          this.clear();
-          emit(this, "command-bar:did-execute");
-        }
-
-        if (targetDataset.openById && e.key === "Enter") {
-        }
-      }
-    });
-
-    this.commandOptionsDom.addEventListener("click", (e) => {
-      if ((e.target as HTMLElement).matches("button")) {
-        const targetDataset = (e.target as HTMLButtonElement).dataset;
-
-        if (targetDataset.commandKey) {
-          this.commandInputDom.value = this.commandInputDom.value + targetDataset.commandKey;
-          this.handleInput(this.commandInputDom.value);
-        }
-
-        if (targetDataset.openById) {
-          window.open(`/editor.html?filename=${idToFilename(targetDataset.openById)}`, e.ctrlKey ? undefined : "_self");
-          this.clear();
-          emit(this, "command-bar:did-execute");
-        }
-      }
     });
   }
 
@@ -172,7 +176,7 @@ export class CommandBarComponent extends HTMLElement {
       const optionsView = command.commands
         ?.map(
           (command) =>
-            /*html*/ `<button data-command-key="${command.key}" class="cmdbr-option cmdbr-option--btn">[${command.key}] ${command.name}</button>`
+            /*html*/ `<div data-command-key="${command.key}" data-option class="cmdbr-option cmdbr-option--btn">[${command.key}] ${command.name}</div>`
         )
         .join("");
       this.commandOptionsDom.innerHTML = optionsView;
@@ -192,6 +196,44 @@ export class CommandBarComponent extends HTMLElement {
 
     // command has no child commands, and should render options based on arguments
     this.updateCommandOptions();
+  }
+
+  /**
+   * @return {boolean} whether the processing should stop after
+   */
+  private handleOptionKeydown(optionDom: HTMLElement, e: KeyboardEvent): boolean {
+    const targetDataset = optionDom.dataset;
+
+    if (targetDataset.copyText && e.key === "y") {
+      e.stopPropagation();
+      e.preventDefault();
+
+      sendToClipboard(targetDataset.copyText);
+      this.statusBarDom.showText(`[command-bar] copied "${targetDataset.copyText}"`);
+      this.clear();
+      emit(this, "command-bar:did-execute");
+
+      return true;
+    }
+
+    if (e.key === "Enter") {
+      if (targetDataset.commandKey) {
+        this.commandInputDom.value = this.commandInputDom.value + targetDataset.commandKey;
+        this.handleInput(this.commandInputDom.value);
+
+        return true;
+      }
+
+      if (targetDataset.openById) {
+        window.open(`/editor.html?filename=${idToFilename(targetDataset.openById)}`, e.ctrlKey ? undefined : "_self");
+        this.clear();
+        emit(this, "command-bar:did-execute");
+
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private async updateCommandOptions() {

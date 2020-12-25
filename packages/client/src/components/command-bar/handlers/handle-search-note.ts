@@ -20,9 +20,9 @@ export const handleSearchNote: CommandHandler = async ({ command, execute }) => 
       optionsHtml += result.items
         .map(
           (item) => /*html*/ `
-          <button class="cmdbr-option cmdbr-option--btn" data-open-by-id="${filenameToId(
+          <div class="cmdbr-option cmdbr-option--btn" data-option data-open-by-id="${filenameToId(
             item.filename
-          )}" data-copy-text="[${item.title}](${filenameToId(item.filename)})">${item.title}</button>`
+          )}" data-copy-text="[${item.title}](${filenameToId(item.filename)})">${item.title}</div>`
         )
         .join("");
     } else {
@@ -32,9 +32,9 @@ export const handleSearchNote: CommandHandler = async ({ command, execute }) => 
       optionsHtml += result.notes
         .map(
           (item) =>
-            /*html*/ `<button class="cmdbr-option cmdbr-option--btn" data-open-by-id="${filenameToId(
+            /*html*/ `<div class="cmdbr-option cmdbr-option--btn" data-option data-open-by-id="${filenameToId(
               item.filename
-            )}" data-copy-text="[${item.title}](${filenameToId(item.filename)})">${item.title}</button>`
+            )}" data-copy-text="[${item.title}](${filenameToId(item.filename)})">${item.title}</div>`
         )
         .join("");
     }

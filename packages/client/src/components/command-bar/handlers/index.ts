@@ -5,6 +5,7 @@ import type { CommandInput } from "../command-bar.component";
 import { handleFileCopyLink } from "./handle-file-copy-link";
 import { handleFileSave } from "./handle-file-save";
 import { handleSearchNote } from "./handle-search-note";
+import { handleSlash } from "./handle-slash";
 
 export interface CommandHandlers {
   [key: string]: CommandHandler;
@@ -27,6 +28,7 @@ export interface CommandHandlerResult {
 }
 
 export const commandHandlers: CommandHandlers = {
+  "/": handleSlash,
   s: handleSearchNote,
   fs: handleFileSave,
   fy: handleFileCopyLink,

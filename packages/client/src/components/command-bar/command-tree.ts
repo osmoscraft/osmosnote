@@ -25,5 +25,10 @@ export const commandTree: RegisteredCommand = {
       key: "s",
       requireArguments: true,
     },
+    {
+      name: "Copy slash",
+      key: "/",
+      executeOnComplete: true,
+    },
   ],
 };

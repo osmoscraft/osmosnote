@@ -5,7 +5,7 @@ import { getNoteConfigFromUrl } from "../../../lib/url";
 
 export const handleFileCopyLink: CommandHandler = ({ context }) => {
   const { filename } = getNoteConfigFromUrl();
-  const title = context.titleDom.innerText;
+  const title = context.documentHeader.getTitle();
 
   if (filename) {
     const link = `[${title}](${filenameToId(filename)})`;

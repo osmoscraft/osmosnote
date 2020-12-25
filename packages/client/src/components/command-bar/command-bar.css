@@ -51,6 +51,6 @@ s2-command-bar {
   border-radius: 0px;
 }
 
-.cmdbr-option--btn:focus {
+.cmdbr-option--btn[data-active] {
   background-color: var(--base03);
 }
