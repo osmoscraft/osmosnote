@@ -1,4 +1,3 @@
-* TODO fix padding in content host
 * TODO debug focus won't return on Escape during creating new note
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 * TODO git sync through shell script
@@ -11,6 +10,7 @@
 * TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer 
 * TODO highlight todo and done keywords
 
+* DONE fix padding in content host
 * DONE convert editor to be home page
 * DONE convert capture to a command
 * DONE show backlinks aside

@@ -20,10 +20,10 @@ s2-content-host:focus-within {
 .cntcnt-scroll-area {
   overflow: auto; /* Show a scroll bar */
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: 16px;
+  bottom: 4px;
   left: 16px;
-  right: 0;
+  right: 4px;
 }
 
 .note-shared {
