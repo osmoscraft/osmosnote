@@ -1,12 +1,6 @@
 import { editableNoteToMarkdown, markdownToEditableHtml, markdownToOverlayHtml } from "../../lib/codec";
 import "./content-host.css";
 
-declare global {
-  interface GlobalEventHandlersEventMap {
-    "content-host:start-modal-search": CustomEvent<never>;
-  }
-}
-
 export class ContentHostComponent extends HTMLElement {
   noteEditableDom!: HTMLElement;
   noteOverlayDom!: HTMLElement;

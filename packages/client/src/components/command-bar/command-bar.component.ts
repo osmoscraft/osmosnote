@@ -8,11 +8,13 @@ import { sendToClipboard } from "../../lib/clipboard";
 import { idToFilename } from "../../lib/id";
 import { saveRange } from "../../lib/curosr";
 import type { DocumentHeaderComponent } from "../document-header/document-header.component";
+import { di } from "../../lib/dependency-injector";
+import { CusorService } from "../../services/cursor/cursor.service";
 
 declare global {
   interface GlobalEventHandlersEventMap {
-    "command-bar:did-cancel": CustomEvent<never>;
-    "command-bar:did-execute": CustomEvent<never>;
+    // "command-bar:did-cancel": CustomEvent<never>;
+    // "command-bar:did-execute": CustomEvent<never>;
   }
 }
 
@@ -41,6 +43,8 @@ export class CommandBarComponent extends HTMLElement {
   documentHeaderDom!: DocumentHeaderComponent;
   statusBarDom!: StatusBarComponent;
 
+  cursorService = di.getSingleton(CusorService);
+
   constructor() {
     super();
 
@@ -62,7 +66,17 @@ export class CommandBarComponent extends HTMLElement {
   }
 
   enterCommandMode() {
+    this.cursorService.push();
+
     this.commandInputDom.focus();
+  }
+
+  exitCommandMode() {
+    this.cursorService.pop();
+  }
+
+  isInCommandMode() {
+    return document.activeElement === this.commandInputDom;
   }
 
   clear() {
@@ -81,15 +95,13 @@ export class CommandBarComponent extends HTMLElement {
   }
 
   private handleEvents() {
-    // this component never disconnect, otherwise, we need to clean up window listeners
     window.addEventListener("keydown", (event) => {
       if (event.key === "/") {
-        if (document.activeElement === this.commandInputDom) return; // Don't handle it if it's alreay active
+        if (this.isInCommandMode()) return; // Don't handle it if it's alreay active
 
         event.stopPropagation();
         event.preventDefault();
 
-        saveRange();
         this.enterCommandMode();
       }
     });
@@ -106,7 +118,7 @@ export class CommandBarComponent extends HTMLElement {
 
         // exit command
         this.clear();
-        emit(this, "command-bar:did-cancel");
+        this.exitCommandMode();
       }
     });
 
@@ -211,7 +223,7 @@ export class CommandBarComponent extends HTMLElement {
       sendToClipboard(targetDataset.copyText);
       this.statusBarDom.showText(`[command-bar] copied "${targetDataset.copyText}"`);
       this.clear();
-      emit(this, "command-bar:did-execute");
+      this.exitCommandMode();
 
       return true;
     }
@@ -227,7 +239,7 @@ export class CommandBarComponent extends HTMLElement {
       if (targetDataset.openById) {
         window.open(`/?filename=${idToFilename(targetDataset.openById)}`, e.ctrlKey ? undefined : "_self");
         this.clear();
-        emit(this, "command-bar:did-execute");
+        this.exitCommandMode();
 
         return true;
       }
@@ -274,8 +286,7 @@ export class CommandBarComponent extends HTMLElement {
     }
 
     this.clear();
-
-    emit(this, "command-bar:did-execute");
+    this.exitCommandMode();
   }
 
   private matchCommand(input: CommandInput): RegisteredCommand | null {
