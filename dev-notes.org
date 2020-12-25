@@ -1,5 +1,3 @@
-* TODO more seamless handling of focus and selection restore
-  - Ref: https://gomakethings.com/detecting-when-focus-leaves-a-group-of-elements-with-vanilla-js/
 * TODO convert capture to a command
 * TODO convert editor to be home page
 * TODO show backlinks aside
@@ -12,6 +10,7 @@
 * TODO fix link selection color defect
 * TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer 
 
+* DONE more seamless handling of focus and selection restore
 * DONE refactor title to be a component
 * DONE fix source map (use standalone frontend)
 * DONE an output display for UI feedback (status bar, minibuffer) - localStorage for multi-page app
