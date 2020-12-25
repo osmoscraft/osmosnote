@@ -22,5 +22,3 @@ export class DocumentHeaderComponent extends HTMLElement {
     this.headingDom.innerText = title;
   }
 }
-
-customElements.define("s2-document-header", DocumentHeaderComponent);

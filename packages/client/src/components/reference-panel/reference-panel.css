@@ -1,4 +1,31 @@
 s2-reference-panel {
   background-color: var(--base01);
-  padding: 16px;
+  padding: 16px 0;
+}
+
+s2-reference-panel:focus-within {
+  outline: 1px solid var(--base0D);
+  outline-offset: -1px;
+}
+
+.refpnl-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.refpnl-link {
+  text-decoration: none;
+  padding: 0 16px;
+  display: block;
+  outline: none;
+  color: var(--base04);
+}
+
+.refpnl-link:focus,
+.refpnl-link:hover {
+  color: var(--base0A);
+  text-decoration: underline;
 }

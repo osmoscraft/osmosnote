@@ -295,5 +295,3 @@ export class CommandBarComponent extends HTMLElement {
     return currentCommand;
   }
 }
-
-customElements.define("s2-command-bar", CommandBarComponent);

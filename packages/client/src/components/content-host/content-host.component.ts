@@ -43,5 +43,3 @@ export class ContentHostComponent extends HTMLElement {
     this.noteEditableDom.innerHTML = markdownToEditableHtml(markdown);
   }
 }
-
-customElements.define("s2-content-host", ContentHostComponent);

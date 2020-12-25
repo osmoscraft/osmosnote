@@ -1,7 +1,9 @@
 import type { RouteHandlerMethod } from "fastify";
+import { getConfig } from "../config";
 import { getCurrentId } from "../lib/id";
 import { readNote, writeNote } from "../lib/note-file-io";
 import { Note, parseNote } from "../lib/parse-note";
+import { runShell } from "../lib/run-shell";
 import { stringifyNote } from "../lib/stringify-note";
 
 export interface HandleGetNote {
@@ -13,17 +15,25 @@ export interface HandleGetNote {
 
 export interface GetNoteReply {
   note: Note;
+  appearedInNotes: ReferenceNote[];
+}
+
+export interface ReferenceNote {
+  filename: string;
+  title: string;
+  score: number;
 }
 
 export const handleGetNote: RouteHandlerMethod<any, any, any, HandleGetNote> = async (request, reply) => {
   const params = request.params;
   const id = params.id;
 
-  const rawMarkdown = await readNote(`${id}.md`);
-  const note = parseNote(rawMarkdown);
+  const referencingNotes = getAppearedInNotes(id);
+  const note = readNote(`${id}.md`).then((result) => parseNote(result));
 
   return {
-    note,
+    note: await note,
+    appearedInNotes: await referencingNotes,
   };
 };
 
@@ -39,6 +49,7 @@ export interface CreateNoteBody {
 export interface CreateNoteReply {
   filename: string;
   note: Note;
+  appearedInNotes?: ReferenceNote[];
 }
 
 export const handleCreateNote: RouteHandlerMethod<any, any, any, HandleCreateNote> = async (request, reply) => {
@@ -71,6 +82,7 @@ export interface UpdateNoteBody {
 export interface UpdateNoteReply {
   filename: string;
   note: Note;
+  appearedInNotes?: ReferenceNote[];
 }
 
 export const handleUpdateNote: RouteHandlerMethod<any, any, any, HandleUpdateNote> = async (request, reply) => {
@@ -88,3 +100,43 @@ export const handleUpdateNote: RouteHandlerMethod<any, any, any, HandleUpdateNot
     note,
   };
 };
+
+async function getAppearedInNotes(id: string): Promise<ReferenceNote[]> {
+  const config = await getConfig();
+
+  const { error, stdout, stderr } = await runShell(`rg "\(${id}\)" --count-matches`, { cwd: config.notesDir });
+
+  if (error) {
+    if (error.code === 1) {
+      return [];
+    } else {
+      throw stderr;
+    }
+  } else if (!stdout.length) {
+    return [];
+  } else {
+    const lines = stdout.trim().split("\n");
+    const searchResultItems = lines
+      .map((line) => line.split(":") as [filename: string, count: string])
+      .map((line) => ({ filename: line[0], score: parseInt(line[1]) }));
+
+    // open each note to parse its title
+    const notesAsync = searchResultItems.map(async (item) => {
+      const markdown = await readNote(item.filename);
+      const parseResult = parseNote(markdown);
+
+      return {
+        filename: item.filename,
+        title: parseResult.metadata.title,
+        score: item.score,
+      };
+    });
+
+    const notes: ReferenceNote[] = await Promise.all(notesAsync);
+    const sortedNotes = notes
+      .sort((a, b) => a.title.localeCompare(b.title)) // sort title first to result can remain the same
+      .sort((a, b) => b.score - a.score);
+
+    return sortedNotes;
+  }
+}

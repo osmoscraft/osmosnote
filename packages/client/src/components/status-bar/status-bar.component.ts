@@ -12,5 +12,3 @@ export class StatusBarComponent extends HTMLElement {
     this.outputDom.innerText = `${new Date().toLocaleTimeString()} ${text}`;
   }
 }
-
-customElements.define("s2-status-bar", StatusBarComponent);
