@@ -1,12 +1,12 @@
-import type { CreateNoteBody, CreateNoteReply, GetNoteReply } from "@system-two/server/src/routes/note";
+import type { GetNoteReply } from "@system-two/server/src/routes/note";
 import "./components/command-bar/command-bar.component";
 import type { CommandBarComponent } from "./components/command-bar/command-bar.component";
 import "./components/content-host/content-host.component";
 import type { ContentHostComponent } from "./components/content-host/content-host.component";
 import "./components/document-header/document-header.component";
 import type { DocumentHeaderComponent } from "./components/document-header/document-header.component";
-import "./components/search-box/search-box.component";
 import "./components/status-bar/status-bar.component";
+import "./components/reference-panel/reference-panel.component";
 import { restoreRange } from "./lib/curosr";
 import { filenameToId } from "./lib/id";
 import { getNoteConfigFromUrl } from "./lib/url";
