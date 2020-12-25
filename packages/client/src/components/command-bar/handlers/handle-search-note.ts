@@ -7,7 +7,7 @@ export const handleSearchNote: CommandHandler = async ({ command, execute }) => 
   const phrase = command.args;
 
   if (!execute) {
-    let optionsHtml = /*html*/ `<div class="cmdbr-option cmdbr-option--header">"Enter" to open, "y" to copy link</div>`;
+    let optionsHtml = /*html*/ `<div class="cmdbr-option cmdbr-option--header">"Enter" to create/open, "y" to copy link</div>`;
 
     if (phrase?.length) {
       const params = new URLSearchParams({
@@ -43,6 +43,14 @@ export const handleSearchNote: CommandHandler = async ({ command, execute }) => 
       optionsHtml,
     };
   } else {
+    // treating input as title to create a new note
+
+    const title = command.args?.trim();
+    if (title?.length) {
+      window.open(`/?title=${title}`, `_self`);
+    } else {
+      window.open(`/`, `_self`);
+    }
     return {};
   }
 };

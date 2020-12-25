@@ -29,7 +29,7 @@ export interface CommandHandlerResult {
 
 export const commandHandlers: CommandHandlers = {
   "/": handleSlash,
-  s: handleSearchNote,
+  n: handleSearchNote,
   fs: handleFileSave,
   fy: handleFileCopyLink,
 };

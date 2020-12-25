@@ -31,10 +31,7 @@ export const handleFileSave: CommandHandler = async ({ command, context }) => {
 
     const result: CreateNoteReply = await response.json();
 
-    // console.log(`[editor] created ${result.filename}`);
-    // window.open(`/editor.html?filename=${result.filename}`, "_self");
-
-    history.replaceState(undefined, document.title, `/editor.html?filename=${result.filename}`);
+    history.replaceState(undefined, document.title, `/?filename=${result.filename}`);
     context.statusBar.showText(`Created ${result.note.metadata.title}`);
 
     return {};

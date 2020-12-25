@@ -15,7 +15,7 @@ export class ReferencePanelComponent extends HTMLElement {
       .map(
         (note) => /*html*/ `
     <li>
-      <a class="refpnl-link" href="/editor.html?filename=${note.filename}">${note.title}</a>
+      <a class="refpnl-link" href="/?filename=${note.filename}">${note.title}</a>
     </li>
     `
       )

@@ -72,7 +72,7 @@ export class CommandBarComponent extends HTMLElement {
 
   private parseInput(input: string): CommandInput {
     const command = input.split(" ")[0];
-    const args = input.split(" ")[1];
+    const args = input.split(" ").slice(1).join(" ");
 
     return {
       command,
@@ -225,7 +225,7 @@ export class CommandBarComponent extends HTMLElement {
       }
 
       if (targetDataset.openById) {
-        window.open(`/editor.html?filename=${idToFilename(targetDataset.openById)}`, e.ctrlKey ? undefined : "_self");
+        window.open(`/?filename=${idToFilename(targetDataset.openById)}`, e.ctrlKey ? undefined : "_self");
         this.clear();
         emit(this, "command-bar:did-execute");
 

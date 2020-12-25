@@ -1,46 +1,54 @@
-import type { SearchResult } from "@system-two/server/src/routes/search";
-import type { NoteListReply } from "@system-two/server/src/routes/note-list";
+import type { GetNoteReply } from "@system-two/server/src/routes/note";
+import { CommandBarComponent } from "./components/command-bar/command-bar.component";
+import { ContentHostComponent } from "./components/content-host/content-host.component";
+import { DocumentHeaderComponent } from "./components/document-header/document-header.component";
+import { ReferencePanelComponent } from "./components/reference-panel/reference-panel.component";
+import { StatusBarComponent } from "./components/status-bar/status-bar.component";
+import { restoreRange } from "./lib/curosr";
+import { filenameToId } from "./lib/id";
+import { getNoteConfigFromUrl } from "./lib/url";
 
-const searchBoxDom = document.getElementById("search-box") as HTMLInputElement;
-const searchResultsDom = document.getElementById("search-results") as HTMLElement;
-const recentNotesDom = document.getElementById("recent-notes") as HTMLElement;
-const captureDom = document.getElementById("capture") as HTMLButtonElement;
+customElements.define("s2-command-bar", CommandBarComponent);
+customElements.define("s2-content-host", ContentHostComponent);
+customElements.define("s2-document-header", DocumentHeaderComponent);
+customElements.define("s2-status-bar", StatusBarComponent);
+customElements.define("s2-reference-panel", ReferencePanelComponent);
 
-searchBoxDom.addEventListener("input", async (e) => {
-  if (searchBoxDom.value.length) {
-    const params = new URLSearchParams({
-      phrase: searchBoxDom.value,
+const contentHost = document.querySelector("s2-content-host") as ContentHostComponent;
+const commandBar = document.querySelector("s2-command-bar") as CommandBarComponent;
+const documentHeader = document.querySelector("s2-document-header") as DocumentHeaderComponent;
+const referencePanel = document.querySelector("s2-reference-panel") as ReferencePanelComponent;
+
+async function loadNote() {
+  const { filename, title, content } = getNoteConfigFromUrl();
+
+  if (filename) {
+    // load existing note
+    const id = filenameToId(filename);
+    const result = await loadExistingNote(id);
+    contentHost.loadMarkdown(result.note.content);
+    documentHeader.setTitle(result.note.metadata.title);
+    referencePanel.setIncomingConnections(result.incomingConnections);
+
+    commandBar.addEventListener("command-bar:did-cancel", () => {
+      restoreRange();
     });
 
-    const response = await fetch(`/api/search?${params.toString()}`);
-    const result: SearchResult = await response.json();
-
-    searchResultsDom.innerHTML = result.items
-      .map((item) => `<a href="/editor.html?filename=${encodeURIComponent(item.filename)}">${item.title}</a>`)
-      .join("\n");
-
-    console.log(result.durationInMs);
+    commandBar.addEventListener("command-bar:did-execute", () => {
+      restoreRange();
+    });
   } else {
-    searchResultsDom.innerHTML = "";
+    // prepare for new note
+    documentHeader.setTitle(title ?? `New note on ${new Date().toLocaleString()}`);
+    contentHost.loadMarkdown(content ?? `An idea starts here...`);
   }
-});
-
-captureDom.addEventListener("click", () => {
-  const title = searchBoxDom.value.trim();
-  if (title.length) {
-    window.open(`/editor.html?title=${title}`, `_self`);
-  } else {
-    window.open(`/editor.html`, `_self`);
-  }
-});
-
-async function loadRecentNotes() {
-  const response = await fetch(`/api/notes`);
-  const result: NoteListReply = await response.json();
-
-  recentNotesDom.innerHTML = result.notes
-    .map((item) => `<a href="/editor.html?filename=${encodeURIComponent(item.filename)}">${item.title}</a>`)
-    .join("\n");
 }
 
-loadRecentNotes();
+async function loadExistingNote(id: string) {
+  const response = await fetch(`/api/notes/${encodeURIComponent(id)}`);
+  const result: GetNoteReply = await response.json();
+
+  return result;
+}
+
+loadNote();

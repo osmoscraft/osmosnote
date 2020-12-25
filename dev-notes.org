@@ -1,4 +1,4 @@
-* TODO convert capture to a command
+* TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 * TODO convert editor to be home page
 * TODO git sync through shell script
 * TODO debug focus won't return on Escape during creating new note
@@ -11,6 +11,7 @@
 * TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer 
 * TODO highlight todo and done keywords
 
+* DONE convert capture to a command
 * DONE show backlinks aside
 * DONE more seamless handling of focus and selection restore
 * DONE refactor title to be a component
