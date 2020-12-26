@@ -1,5 +1,6 @@
 .s2-link__title {
   color: var(--base0D);
+  font-weight: bold;
 }
 
 s2-link[data-cursor-in] .s2-link__title {
