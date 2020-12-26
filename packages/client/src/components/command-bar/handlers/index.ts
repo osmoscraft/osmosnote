@@ -2,7 +2,8 @@ import type { ComponentReferenceService } from "../../../services/component-refe
 import type { CommandInput } from "../command-bar.component";
 import { handleFileCopyLink } from "./handle-file-copy-link";
 import { handleFileSave } from "./handle-file-save";
-import { handleSearchNote } from "./handle-search-note";
+import { handleInsertNote } from "./handle-insert-note";
+import { handleOpenNote } from "./handle-open-note";
 import { handleSlash } from "./handle-slash";
 import { handleWindowTravel } from "./handle-window-travel";
 
@@ -27,7 +28,8 @@ export interface CommandHandlerResult {
 
 export const commandHandlers: CommandHandlers = {
   "/": handleSlash,
-  n: handleSearchNote,
+  o: handleOpenNote,
+  i: handleInsertNote,
   fs: handleFileSave,
   fy: handleFileCopyLink,
   wh: handleWindowTravel,

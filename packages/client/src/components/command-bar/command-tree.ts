@@ -21,8 +21,13 @@ export const commandTree: RegisteredCommand = {
       ],
     },
     {
-      name: "Notes",
-      key: "n",
+      name: "Open",
+      key: "o",
+      requireArguments: true,
+    },
+    {
+      name: "Insert",
+      key: "i",
       requireArguments: true,
     },
     {

@@ -118,8 +118,10 @@ export class CommandBarComponent extends HTMLElement {
     });
 
     this.addEventListener("focusout", (event) => {
+      console.log("out");
       if (this.contains(event.relatedTarget as Node)) return;
       this.commandOptionsDom.innerHTML = "";
+      console.log("cleaned");
     });
 
     this.addEventListener("keydown", (event) => {
@@ -131,7 +133,8 @@ export class CommandBarComponent extends HTMLElement {
       }
     });
 
-    this.commandInputDom.addEventListener("focus", () => {
+    this.commandInputDom.addEventListener("focus", (event) => {
+      console.log("in");
       this.handleInput(this.commandInputDom.value);
     });
 
@@ -225,19 +228,11 @@ export class CommandBarComponent extends HTMLElement {
   private handleOptionKeydown(optionDom: HTMLElement, e: KeyboardEvent): boolean {
     const targetDataset = optionDom.dataset;
 
-    if (targetDataset.copyText && e.key === "y") {
-      e.stopPropagation();
-      e.preventDefault();
-
-      sendToClipboard(targetDataset.copyText);
-      this.componentRefs.statusBar.showText(`[command-bar] copied "${targetDataset.copyText}"`);
-      this.exitCommandMode();
-
-      return true;
-    }
-
     if (e.key === "Enter") {
       if (targetDataset.commandKey) {
+        e.stopPropagation();
+        e.preventDefault();
+
         this.commandInputDom.value = this.commandInputDom.value + targetDataset.commandKey;
         this.handleInput(this.commandInputDom.value);
 
@@ -245,7 +240,21 @@ export class CommandBarComponent extends HTMLElement {
       }
 
       if (targetDataset.openById) {
+        e.stopPropagation();
+        e.preventDefault();
+
         window.open(`/?filename=${idToFilename(targetDataset.openById)}`, e.ctrlKey ? undefined : "_self");
+        this.exitCommandMode();
+
+        return true;
+      }
+
+      if (targetDataset.copyText) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        sendToClipboard(targetDataset.copyText);
+        this.componentRefs.statusBar.showText(`[command-bar] copied "${targetDataset.copyText}"`);
         this.exitCommandMode();
 
         return true;
@@ -268,7 +277,12 @@ export class CommandBarComponent extends HTMLElement {
         },
       });
       if (result.optionsHtml) {
-        this.commandOptionsDom.innerHTML = result.optionsHtml;
+        // In a rare case, the input could lose focus after the command finishes. So we must check again
+        if (this.isInCommandMode()) {
+          this.commandOptionsDom.innerHTML = result.optionsHtml;
+        } else {
+          this.clear();
+        }
       }
     }
   }
