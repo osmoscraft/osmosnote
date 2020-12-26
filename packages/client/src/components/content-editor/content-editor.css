@@ -7,12 +7,12 @@
 } */
 /* End debug styles */
 
-s2-content-host {
+s2-content-editor {
   background-color: var(--base01);
   border: 1px solid transparent; /* create space for focus outline */
 }
 
-s2-content-host:focus-within {
+s2-content-editor:focus-within {
   outline: 1px solid var(--base0D);
   outline-offset: -1px;
 }

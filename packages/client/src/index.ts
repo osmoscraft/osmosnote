@@ -20,13 +20,13 @@ async function loadNote() {
     // load existing note
     const id = filenameToId(filename);
     const result = await loadExistingNote(id);
-    componentRefs.contentHost.loadMarkdown(result.note.content);
+    componentRefs.contentEditor.loadMarkdown(result.note.content);
     componentRefs.documentHeader.setTitle(result.note.metadata.title);
     componentRefs.referencePanel.setIncomingConnections(result.incomingConnections);
   } else {
     // prepare for new note
     componentRefs.documentHeader.setTitle(title ?? `New note on ${new Date().toLocaleString()}`);
-    componentRefs.contentHost.loadMarkdown(content ?? `An idea starts here...`);
+    componentRefs.contentEditor.loadMarkdown(content ?? `An idea starts here...`);
   }
 }
 

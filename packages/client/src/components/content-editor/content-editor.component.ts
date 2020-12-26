@@ -1,7 +1,7 @@
 import { editableNoteToMarkdown, markdownToEditableHtml, markdownToOverlayHtml } from "../../lib/codec";
-import "./content-host.css";
+import "./content-editor.css";
 
-export class ContentHostComponent extends HTMLElement {
+export class ContentEditorComponent extends HTMLElement {
   noteEditableDom!: HTMLElement;
   noteOverlayDom!: HTMLElement;
 
