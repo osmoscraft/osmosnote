@@ -72,9 +72,4 @@ export class S2Line extends HTMLPreElement {
       return null;
     }
   };
-
-  // TODO this is used in overlay mode
-  private renderHeading(props: { level: number; title: string }) {
-    return `<code class="hidden-hash">${"#".repeat(props.level - 1)}</code><code># </code> ${props.title}`;
-  }
 }
