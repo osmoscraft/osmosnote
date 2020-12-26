@@ -1,4 +1,6 @@
-* TODO debug focus won't return on Escape during creating new note
+* TODO use keyboard to open links (need tech design)
+* TODO use keyboard to switch between Header/Content/Ref (via command)
+* TODO run command directly with hotkey
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 * TODO git sync through shell script
 * TODO tab/shift-tab to push/pull indendation
@@ -10,6 +12,7 @@
 * TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer 
 * TODO highlight todo and done keywords
 
+* DONE debug focus won't return on Escape during creating new note 
 * DONE fix padding in content host
 * DONE convert editor to be home page
 * DONE convert capture to a command

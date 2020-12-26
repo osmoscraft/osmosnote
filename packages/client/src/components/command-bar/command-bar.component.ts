@@ -26,7 +26,9 @@ export const EMPTY_COMMAND: CommandInput = {
 export interface RegisteredCommand {
   name: string;
   key: string;
+  /** Default to false */
   executeOnComplete?: boolean;
+  /** Default to false */
   requireArguments?: boolean;
   commands?: RegisteredCommand[];
 }
