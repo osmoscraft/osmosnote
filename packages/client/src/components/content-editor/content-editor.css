@@ -119,10 +119,6 @@ s2-content-editor:focus-within {
   pointer-events: none;
 }
 
-#note-overlay a[is="s2-link"] {
-  pointer-events: auto;
-}
-
 #note-overlay [data-heading-level="1"],
 #note-overlay [data-heading-level="4"] {
   color: var(--base09);
@@ -140,23 +136,4 @@ s2-content-editor:focus-within {
 
 .s2-heading__hidden-hash {
   color: transparent; /* same as page background */
-}
-
-.s2-link__title {
-  color: var(--base0A);
-}
-
-.s2-link__symbol {
-  color: var(--base03);
-}
-
-.s2-link__id {
-  color: var(--base03);
-  text-decoration: none;
-}
-
-.s2-link__id[data-cursor-in],
-.s2-link__id:hover {
-  color: var(--base0A);
-  text-decoration: underline;
 }

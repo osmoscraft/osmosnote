@@ -6,10 +6,6 @@ export class S2Line extends HTMLPreElement {
     indentLevel: string;
   };
 
-  get markdownText() {
-    return this.innerText;
-  }
-
   connectedCallback() {
     this.processHeading();
     this.processIndent();

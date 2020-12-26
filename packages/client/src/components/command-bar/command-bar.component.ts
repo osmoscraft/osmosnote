@@ -111,10 +111,8 @@ export class CommandBarComponent extends HTMLElement {
     });
 
     this.addEventListener("focusout", (event) => {
-      console.log("out");
       if (this.contains(event.relatedTarget as Node)) return;
       this.commandOptionsDom.innerHTML = "";
-      console.log("cleaned");
     });
 
     this.addEventListener("keydown", (event) => {
@@ -127,7 +125,6 @@ export class CommandBarComponent extends HTMLElement {
     });
 
     this.commandInputDom.addEventListener("focus", (event) => {
-      console.log("in");
       this.handleInput(this.commandInputDom.value);
     });
 

@@ -32,5 +32,5 @@ function highlightLine(lineMarkdown: string): string {
   return lineMarkdown.replace(S2_HEADING_REGEX, S2_HEADING_REPLACER).replace(S2_LINK_REGEX, S2_LINK_REPLACER);
 }
 
-customElements.define("s2-link", S2Link, { extends: "a" });
+customElements.define("s2-link", S2Link);
 customElements.define("s2-line", S2Line, { extends: "pre" });

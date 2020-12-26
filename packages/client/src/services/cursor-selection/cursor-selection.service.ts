@@ -24,7 +24,9 @@ interface SimpleRange {
 export class CursorSelectionService {
   eventTarget = new EventTarget() as HTMLElement; // cast to HTMLElement to get typing information
 
-  private lastEventDetailString: string = "";
+  private currentSelection: CursorSelection = {
+    linkId: null,
+  };
 
   init() {
     document.addEventListener("selectionchange", (event) => {
@@ -52,9 +54,8 @@ export class CursorSelectionService {
             };
           }
 
-          const eventDetailString = JSON.stringify(eventDetail);
-          if (eventDetailString !== this.lastEventDetailString) {
-            this.lastEventDetailString = eventDetailString;
+          if (JSON.stringify(eventDetail) !== JSON.stringify(this.currentSelection)) {
+            this.currentSelection = { ...eventDetail };
             console.log(`[cursor-selection] changed `, eventDetail);
 
             emit(this.eventTarget, "cursor-selection:change", {
