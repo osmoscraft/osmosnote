@@ -1,5 +1,5 @@
-import { editableNoteToMarkdown, markdownToEditableHtml, markdownToOverlayHtml } from "../../lib/codec";
-import { di } from "../../lib/dependency-injector";
+import { editableNoteToMarkdown, markdownToEditableHtml, markdownToOverlayHtml } from "./core/codec";
+import { di } from "../../utils/dependency-injector";
 import { CursorService, WithCursorService } from "../../services/cursor/cursor.service";
 import "./content-editor.css";
 

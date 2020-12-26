@@ -1,7 +1,7 @@
 import type { CommandHandler } from ".";
-import { sendToClipboard } from "../../../lib/clipboard";
-import { filenameToId } from "../../../lib/id";
-import { getNoteConfigFromUrl } from "../../../lib/url";
+import { sendToClipboard } from "../../../utils/clipboard";
+import { filenameToId } from "../../../utils/id";
+import { getNoteConfigFromUrl } from "../../../utils/url";
 
 export const handleFileCopyLink: CommandHandler = ({ context }) => {
   const { filename } = getNoteConfigFromUrl();

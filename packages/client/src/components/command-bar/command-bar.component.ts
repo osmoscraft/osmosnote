@@ -1,6 +1,6 @@
-import { sendToClipboard } from "../../lib/clipboard";
-import { di } from "../../lib/dependency-injector";
-import { idToFilename } from "../../lib/id";
+import { sendToClipboard } from "../../utils/clipboard";
+import { di } from "../../utils/dependency-injector";
+import { idToFilename } from "../../utils/id";
 import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
 import type { WithCursorService } from "../../services/cursor/cursor.service";
 import "./command-bar.css";

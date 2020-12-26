@@ -5,8 +5,8 @@ import type {
   UpdateNoteReply,
 } from "@system-two/server/src/routes/note";
 import type { CommandHandler } from ".";
-import { filenameToId } from "../../../lib/id";
-import { getNoteConfigFromUrl } from "../../../lib/url";
+import { filenameToId } from "../../../utils/id";
+import { getNoteConfigFromUrl } from "../../../utils/url";
 
 export const handleFileSave: CommandHandler = async ({ context }) => {
   const { filename } = getNoteConfigFromUrl();

@@ -1,7 +1,7 @@
 import type { GetNoteReply } from "@system-two/server/src/routes/note";
-import { di } from "./lib/dependency-injector";
-import { filenameToId } from "./lib/id";
-import { getNoteConfigFromUrl } from "./lib/url";
+import { di } from "./utils/dependency-injector";
+import { filenameToId } from "./utils/id";
+import { getNoteConfigFromUrl } from "./utils/url";
 import { ComponentReferenceService } from "./services/component-reference/component-reference.service";
 import { CursorService } from "./services/cursor/cursor.service";
 

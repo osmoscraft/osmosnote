@@ -1,5 +1,5 @@
 import type { CommandHandler } from ".";
-import { sendToClipboard } from "../../../lib/clipboard";
+import { sendToClipboard } from "../../../utils/clipboard";
 
 export const handleSlash: CommandHandler = ({ context }) => {
   sendToClipboard("/");

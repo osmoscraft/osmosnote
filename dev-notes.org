@@ -1,17 +1,20 @@
+* TODO use keyboard to open links (need tech design)
+* TODO fix link selection color defect
+* TODO handle paste formatting
+* TODO git sync through shell script
 * TODO Ctrl+Enter to create note without closing existing
 * TODO Create note on the fly and return new ID in for current Note to use
-* TODO use keyboard to open links (need tech design)
-* TODO run command directly with hotkey
-* TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
-* TODO git sync through shell script
-* TODO tab/shift-tab to push/pull indendation
 * TODO undo/redo manager
-* TODO test
-* TODO handle paste formatting
-* TODO expose config file in web for read/write
-* TODO fix link selection color defect
+* TODO tab/shift-tab to push/pull indendation
+* TODO Atl + arrow to move line(s)
 * TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer 
+* TODO test
+
+** Backlog
+* TODO run command directly with hotkey
+* TODO expose config file in web for read/write
 * TODO highlight todo and done keywords
+* TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 
 * DONE prevent accidental open when yanking from command 
 * DONE use keyboard to switch between Header/Content/Ref (via command)

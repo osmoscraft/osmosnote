@@ -1,7 +1,7 @@
 import type { NoteListReply } from "@system-two/server/src/routes/note-list";
 import type { SearchResult } from "@system-two/server/src/routes/search";
 import type { CommandHandler } from ".";
-import { filenameToId } from "../../../lib/id";
+import { filenameToId } from "../../../utils/id";
 
 export const handleOpenNote: CommandHandler = async ({ input, execute }) => {
   const phrase = input.args;
