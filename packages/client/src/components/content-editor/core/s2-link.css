@@ -1,5 +1,5 @@
 .s2-link__title {
-  color: var(--base0A);
+  color: var(--base0D);
 }
 
 s2-link[data-cursor-in] .s2-link__title {
@@ -19,7 +19,7 @@ s2-link[data-cursor-in] .s2-link__title {
 }
 
 .s2-link__id:hover {
-  color: var(--base0A);
+  color: var(--base0D);
   text-decoration: underline;
 }
 

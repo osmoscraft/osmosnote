@@ -26,6 +26,6 @@ s2-reference-panel:focus-within {
 
 .refpnl-link:focus,
 .refpnl-link:hover {
-  color: var(--base0A);
+  color: var(--base0D);
   text-decoration: underline;
 }

@@ -41,6 +41,7 @@ s2-command-bar {
 
 .cmdbr-option--header {
   color: var(--base0A);
+  font-weight: bold;
 }
 
 .cmdbr-option--btn {
