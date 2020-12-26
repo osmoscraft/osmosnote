@@ -18,7 +18,10 @@ export class DependencyInjector {
     const existingInstance = this.instanceMap.get(klass);
     if (existingInstance) return existingInstance;
 
-    return this.createShallow(klass);
+    const instance = this.createShallow(klass);
+    this.instanceMap.set(klass, instance);
+
+    return instance;
   }
 
   createShallow<T>(klass: { new (...args: any[]): T }): T {
@@ -26,7 +29,6 @@ export class DependencyInjector {
     const depInstances = depKlasses.map((depKlass) => this.getSingleton(depKlass));
 
     const newInstance = new klass(...depInstances);
-    this.instanceMap.set(klass, newInstance);
 
     return newInstance;
   }
