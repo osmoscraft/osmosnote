@@ -8,7 +8,7 @@ import type { CommandHandler } from ".";
 import { filenameToId } from "../../../lib/id";
 import { getNoteConfigFromUrl } from "../../../lib/url";
 
-export const handleFileSave: CommandHandler = async ({ command, context }) => {
+export const handleFileSave: CommandHandler = async ({ context }) => {
   const { filename } = getNoteConfigFromUrl();
   if (!filename) {
     // Create new file

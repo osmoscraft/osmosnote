@@ -3,8 +3,8 @@ import type { SearchResult } from "@system-two/server/src/routes/search";
 import type { CommandHandler } from ".";
 import { filenameToId } from "../../../lib/id";
 
-export const handleSearchNote: CommandHandler = async ({ command, execute }) => {
-  const phrase = command.args;
+export const handleSearchNote: CommandHandler = async ({ input, execute }) => {
+  const phrase = input.args;
 
   if (!execute) {
     let optionsHtml = /*html*/ `<div class="cmdbr-option cmdbr-option--header">"Enter" to create/open, "y" to copy link</div>`;
@@ -45,7 +45,7 @@ export const handleSearchNote: CommandHandler = async ({ command, execute }) => 
   } else {
     // treating input as title to create a new note
 
-    const title = command.args?.trim();
+    const title = input.args?.trim();
     if (title?.length) {
       window.open(`/?title=${title}`, `_self`);
     } else {

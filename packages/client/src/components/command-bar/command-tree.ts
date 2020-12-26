@@ -26,6 +26,27 @@ export const commandTree: RegisteredCommand = {
       requireArguments: true,
     },
     {
+      name: "Window",
+      key: "w",
+      commands: [
+        {
+          name: "Go to Header",
+          key: "h",
+          executeOnComplete: true,
+        },
+        {
+          name: "Go to References",
+          key: "r",
+          executeOnComplete: true,
+        },
+        {
+          name: "Go to Editor",
+          key: "e",
+          executeOnComplete: true,
+        },
+      ],
+    },
+    {
       name: "Copy slash",
       key: "/",
       executeOnComplete: true,

@@ -4,7 +4,7 @@ import { sendToClipboard } from "../../../lib/clipboard";
 export const handleSlash: CommandHandler = ({ context }) => {
   sendToClipboard("/");
 
-  context.statusBar.showText(`"/" copied to clipboard`);
+  context.componentRefs.statusBar.showText(`"/" copied to clipboard`);
 
   return {};
 };

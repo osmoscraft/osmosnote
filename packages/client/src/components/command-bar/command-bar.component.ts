@@ -2,7 +2,7 @@ import { sendToClipboard } from "../../lib/clipboard";
 import { di } from "../../lib/dependency-injector";
 import { idToFilename } from "../../lib/id";
 import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
-import { CursorService } from "../../services/cursor/cursor.service";
+import { CursorRestorePoint, CursorService } from "../../services/cursor/cursor.service";
 import "./command-bar.css";
 import { commandTree } from "./command-tree";
 import { commandHandlers } from "./handlers";
@@ -59,13 +59,16 @@ export class CommandBarComponent extends HTMLElement {
   }
 
   enterCommandMode() {
-    this.cursorService.push();
+    this.cursorService.save();
 
     this.commandInputDom.focus();
   }
 
-  exitCommandMode() {
-    this.cursorService.pop();
+  exitCommandMode(config?: { skipCursorRestore?: boolean }) {
+    this.clear();
+
+    if (config?.skipCursorRestore) return;
+    this.cursorService.restore();
   }
 
   isInCommandMode() {
@@ -109,8 +112,6 @@ export class CommandBarComponent extends HTMLElement {
         event.preventDefault();
         event.stopPropagation();
 
-        // exit command
-        this.clear();
         this.exitCommandMode();
       }
     });
@@ -215,7 +216,6 @@ export class CommandBarComponent extends HTMLElement {
 
       sendToClipboard(targetDataset.copyText);
       this.componentRefs.statusBar.showText(`[command-bar] copied "${targetDataset.copyText}"`);
-      this.clear();
       this.exitCommandMode();
 
       return true;
@@ -231,7 +231,6 @@ export class CommandBarComponent extends HTMLElement {
 
       if (targetDataset.openById) {
         window.open(`/?filename=${idToFilename(targetDataset.openById)}`, e.ctrlKey ? undefined : "_self");
-        this.clear();
         this.exitCommandMode();
 
         return true;
@@ -248,7 +247,7 @@ export class CommandBarComponent extends HTMLElement {
 
     if (typeof handler === "function") {
       const result = await handler({
-        command: currentInput,
+        input: currentInput,
         context: {
           componentRefs: this.componentRefs,
         },
@@ -265,17 +264,16 @@ export class CommandBarComponent extends HTMLElement {
     const handler = commandHandlers[currentInput.command];
 
     if (typeof handler === "function") {
-      await handler({
-        command: currentInput,
+      const result = await handler({
+        input: currentInput,
         execute: true,
         context: {
           componentRefs: this.componentRefs,
         },
       });
-    }
 
-    this.clear();
-    this.exitCommandMode();
+      this.exitCommandMode({ skipCursorRestore: result.skipCursorRestore });
+    }
   }
 
   private matchCommand(input: CommandInput): RegisteredCommand | null {

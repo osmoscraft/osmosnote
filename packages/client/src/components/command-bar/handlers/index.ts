@@ -4,6 +4,7 @@ import { handleFileCopyLink } from "./handle-file-copy-link";
 import { handleFileSave } from "./handle-file-save";
 import { handleSearchNote } from "./handle-search-note";
 import { handleSlash } from "./handle-slash";
+import { handleWindowTravel } from "./handle-window-travel";
 
 export interface CommandHandlers {
   [key: string]: CommandHandler;
@@ -14,13 +15,14 @@ export interface CommandHandlerContext {
 }
 
 export interface CommandHandler {
-  (props: { command: CommandInput; execute?: boolean; context: CommandHandlerContext }):
+  (props: { input: CommandInput; execute?: boolean; context: CommandHandlerContext }):
     | CommandHandlerResult
     | Promise<CommandHandlerResult>;
 }
 
 export interface CommandHandlerResult {
   optionsHtml?: string;
+  skipCursorRestore?: boolean;
 }
 
 export const commandHandlers: CommandHandlers = {
@@ -28,4 +30,7 @@ export const commandHandlers: CommandHandlers = {
   n: handleSearchNote,
   fs: handleFileSave,
   fy: handleFileCopyLink,
+  wh: handleWindowTravel,
+  wr: handleWindowTravel,
+  we: handleWindowTravel,
 };
