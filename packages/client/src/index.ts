@@ -3,14 +3,17 @@ import { di } from "./utils/dependency-injector";
 import { filenameToId } from "./utils/id";
 import { getNoteConfigFromUrl } from "./utils/url";
 import { ComponentReferenceService } from "./services/component-reference/component-reference.service";
-import { CursorService } from "./services/cursor/cursor.service";
+import { CursorSnapshotService } from "./services/cursor-snapshot/cursor-snapshot.service";
+import { CursorSelectionService } from "./services/cursor-selection/cursor-selection.service";
 
-di.registerClass(CursorService, []);
+di.registerClass(CursorSnapshotService, []);
 di.registerClass(ComponentReferenceService, []);
+di.registerClass(CursorSelectionService, []);
 
 // calling mount will trigger constructors within each custom element
 // to avoid circular dependency, don't mount until all services are registered
-di.getSingleton(ComponentReferenceService).mount();
+di.getSingleton(ComponentReferenceService).init();
+di.getSingleton(CursorSelectionService).init();
 
 async function loadNote() {
   const { filename, title, content } = getNoteConfigFromUrl();

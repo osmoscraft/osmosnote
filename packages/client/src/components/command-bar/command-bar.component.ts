@@ -2,17 +2,10 @@ import { sendToClipboard } from "../../utils/clipboard";
 import { di } from "../../utils/dependency-injector";
 import { idToFilename } from "../../utils/id";
 import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
-import type { WithCursorService } from "../../services/cursor/cursor.service";
+import type { WithCursorSnapshotService } from "../../services/cursor-snapshot/cursor-snapshot.service";
 import "./command-bar.css";
 import { commandTree } from "./command-tree";
 import { commandHandlers } from "./handlers";
-
-declare global {
-  interface GlobalEventHandlersEventMap {
-    // "command-bar:did-cancel": CustomEvent<never>;
-    // "command-bar:did-execute": CustomEvent<never>;
-  }
-}
 
 export interface CommandInput {
   command: string;
@@ -86,7 +79,7 @@ export class CommandBarComponent extends HTMLElement {
 
     const managedCursorComponent = this.triggeringElement?.closest("[data-managed-cursor]");
     if (managedCursorComponent) {
-      (managedCursorComponent as WithCursorService).cursorService.save();
+      (managedCursorComponent as WithCursorSnapshotService).cursorSnapshotService.save();
       this.triggeringElement = managedCursorComponent;
     }
   }

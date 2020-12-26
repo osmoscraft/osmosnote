@@ -155,6 +155,7 @@ s2-content-editor:focus-within {
   text-decoration: none;
 }
 
+.s2-link__id[data-cursor-in],
 .s2-link__id:hover {
   color: var(--base0A);
   text-decoration: underline;

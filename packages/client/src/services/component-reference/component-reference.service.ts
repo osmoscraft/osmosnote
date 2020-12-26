@@ -21,7 +21,7 @@ export class ComponentReferenceService {
     return document.querySelector("s2-status-bar") as StatusBarComponent;
   }
 
-  mount() {
+  init() {
     customElements.define("s2-command-bar", CommandBarComponent);
     customElements.define("s2-content-editor", ContentEditorComponent);
     customElements.define("s2-document-header", DocumentHeaderComponent);

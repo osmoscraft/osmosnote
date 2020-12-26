@@ -4,8 +4,8 @@
 
 declare global {
   interface GlobalEventHandlersEventMap {
-    // "my-componet:event-name-1": CustomEvent<never>;
-    // "my-componet:event-name-2": CustomEvent<DetailsType>;
+    "my-componet:event-name-1": CustomEvent<never>;
+    "my-componet:event-name-2": CustomEvent<DetailsType>;
   }
 }
  */
@@ -16,7 +16,7 @@ declare global {
 export function emit<
   K extends keyof GlobalEventHandlersEventMap,
   T extends InitOfCustomEvent<GlobalEventHandlersEventMap[K]>
->(source: HTMLElement, type: K, init?: T) {
+>(source: EventTarget, type: K, init?: T) {
   const event = new CustomEvent(type, init);
   source.dispatchEvent(event);
 }

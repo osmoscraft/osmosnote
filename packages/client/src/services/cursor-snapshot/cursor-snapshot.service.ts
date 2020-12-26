@@ -1,21 +1,21 @@
-export interface CursorRestorePoint {
+export interface CursorSnapshot {
   range: Range | null;
   activeElement: Node | null;
 }
 
-export interface WithCursorService extends HTMLElement {
-  cursorService: CursorService;
+export interface WithCursorSnapshotService extends HTMLElement {
+  cursorSnapshotService: CursorSnapshotService;
 }
 
-export class CursorService {
-  private restorePoint?: CursorRestorePoint;
+export class CursorSnapshotService {
+  private restorePoint?: CursorSnapshot;
 
-  attach(host: WithCursorService) {
+  attach(host: WithCursorSnapshotService) {
     host.dataset.managedCursor = "";
 
     host.addEventListener("focus", (event) => {
-      if (host.cursorService.restorePoint) {
-        host.cursorService.restore();
+      if (host.cursorSnapshotService.restorePoint) {
+        host.cursorSnapshotService.restore();
       }
     });
   }
@@ -25,18 +25,18 @@ export class CursorService {
     const activeElement = document.activeElement;
     const rangeInFocus = range && activeElement && activeElement.contains(range.commonAncestorContainer);
 
-    const restorePoint: CursorRestorePoint = {
+    const restorePoint: CursorSnapshot = {
       range: rangeInFocus ? range : null,
       activeElement,
     };
 
-    console.log("[cursor] save", restorePoint);
+    console.log("[cursor-snapshot] save", restorePoint);
     this.restorePoint = restorePoint;
   }
 
   restore() {
     const restorePoint = this.restorePoint;
-    console.log("[cursor] restore", restorePoint);
+    console.log("[cursor-snapshot] restore", restorePoint);
 
     if (restorePoint) {
       if (restorePoint?.activeElement) {
