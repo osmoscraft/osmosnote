@@ -2,7 +2,7 @@ import { sendToClipboard } from "../../lib/clipboard";
 import { di } from "../../lib/dependency-injector";
 import { idToFilename } from "../../lib/id";
 import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
-import { CursorRestorePoint, CursorService } from "../../services/cursor/cursor.service";
+import type { WithCursorService } from "../../services/cursor/cursor.service";
 import "./command-bar.css";
 import { commandTree } from "./command-tree";
 import { commandHandlers } from "./handlers";
@@ -38,8 +38,9 @@ export class CommandBarComponent extends HTMLElement {
   commandOptionsDom!: HTMLElement;
   commandTree!: RegisteredCommand;
 
-  cursorService = di.getSingleton(CursorService);
   componentRefs = di.getSingleton(ComponentReferenceService);
+
+  private triggeringElement: Element | null = null;
 
   constructor() {
     super();
@@ -59,7 +60,7 @@ export class CommandBarComponent extends HTMLElement {
   }
 
   enterCommandMode() {
-    this.cursorService.save();
+    this.saveCurosr();
 
     this.commandInputDom.focus();
   }
@@ -68,7 +69,7 @@ export class CommandBarComponent extends HTMLElement {
     this.clear();
 
     if (config?.skipCursorRestore) return;
-    this.cursorService.restore();
+    this.restoreCursor();
   }
 
   isInCommandMode() {
@@ -78,6 +79,20 @@ export class CommandBarComponent extends HTMLElement {
   clear() {
     this.commandInputDom.value = "";
     this.commandOptionsDom.innerHTML = "";
+  }
+
+  private saveCurosr() {
+    this.triggeringElement = document.activeElement;
+
+    const managedCursorComponent = this.triggeringElement?.closest("[data-managed-cursor]");
+    if (managedCursorComponent) {
+      (managedCursorComponent as WithCursorService).cursorService.save();
+      this.triggeringElement = managedCursorComponent;
+    }
+  }
+
+  private restoreCursor() {
+    (this.triggeringElement as HTMLElement)?.focus?.();
   }
 
   private parseInput(input: string): CommandInput {

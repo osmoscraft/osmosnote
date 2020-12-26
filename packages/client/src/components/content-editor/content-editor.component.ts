@@ -1,9 +1,12 @@
 import { editableNoteToMarkdown, markdownToEditableHtml, markdownToOverlayHtml } from "../../lib/codec";
+import { di } from "../../lib/dependency-injector";
+import { CursorService, WithCursorService } from "../../services/cursor/cursor.service";
 import "./content-editor.css";
 
-export class ContentEditorComponent extends HTMLElement {
+export class ContentEditorComponent extends HTMLElement implements WithCursorService {
   noteEditableDom!: HTMLElement;
   noteOverlayDom!: HTMLElement;
+  cursorService = di.createShallow(CursorService);
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
@@ -17,6 +20,8 @@ export class ContentEditorComponent extends HTMLElement {
     this.noteOverlayDom = this.querySelector("#note-overlay") as HTMLElement;
 
     this.attachOverlayObserver();
+
+    this.cursorService.attach(this);
   }
 
   getMarkdown(): string {

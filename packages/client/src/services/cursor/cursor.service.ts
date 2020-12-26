@@ -3,8 +3,22 @@ export interface CursorRestorePoint {
   activeElement: Node | null;
 }
 
+export interface WithCursorService extends HTMLElement {
+  cursorService: CursorService;
+}
+
 export class CursorService {
   private restorePoint?: CursorRestorePoint;
+
+  attach(host: WithCursorService) {
+    host.dataset.managedCursor = "";
+
+    host.addEventListener("focus", (event) => {
+      if (host.cursorService.restorePoint) {
+        host.cursorService.restore();
+      }
+    });
+  }
 
   save() {
     const range = this.getRange();
@@ -13,15 +27,15 @@ export class CursorService {
 
     const restorePoint: CursorRestorePoint = {
       range: rangeInFocus ? range : null,
-      activeElement: document.activeElement,
+      activeElement,
     };
 
     console.log("[cursor] save", restorePoint);
     this.restorePoint = restorePoint;
   }
 
-  restore(cursor?: CursorRestorePoint) {
-    const restorePoint = cursor ?? this.restorePoint;
+  restore() {
+    const restorePoint = this.restorePoint;
     console.log("[cursor] restore", restorePoint);
 
     if (restorePoint) {
