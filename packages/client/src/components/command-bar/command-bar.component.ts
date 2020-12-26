@@ -1,15 +1,11 @@
-import { emit } from "../../lib/events";
-import { commandTree } from "./command-tree";
-import "./command-bar.css";
-import { commandHandlers } from "./handlers";
-import type { ContentHostComponent } from "../content-host/content-host.component";
-import type { StatusBarComponent } from "../status-bar/status-bar.component";
 import { sendToClipboard } from "../../lib/clipboard";
-import { idToFilename } from "../../lib/id";
-import { saveRange } from "../../lib/curosr";
-import type { DocumentHeaderComponent } from "../document-header/document-header.component";
 import { di } from "../../lib/dependency-injector";
-import { CusorService } from "../../services/cursor/cursor.service";
+import { idToFilename } from "../../lib/id";
+import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
+import { CursorService } from "../../services/cursor/cursor.service";
+import "./command-bar.css";
+import { commandTree } from "./command-tree";
+import { commandHandlers } from "./handlers";
 
 declare global {
   interface GlobalEventHandlersEventMap {
@@ -36,14 +32,12 @@ export interface RegisteredCommand {
 }
 
 export class CommandBarComponent extends HTMLElement {
-  contentHostDom!: ContentHostComponent;
   commandInputDom!: HTMLInputElement;
   commandOptionsDom!: HTMLElement;
   commandTree!: RegisteredCommand;
-  documentHeaderDom!: DocumentHeaderComponent;
-  statusBarDom!: StatusBarComponent;
 
-  cursorService = di.getSingleton(CusorService);
+  cursorService = di.getSingleton(CursorService);
+  componentRefs = di.getSingleton(ComponentReferenceService);
 
   constructor() {
     super();
@@ -58,9 +52,6 @@ export class CommandBarComponent extends HTMLElement {
 
     this.commandInputDom = document.getElementById("command-input") as HTMLInputElement;
     this.commandOptionsDom = document.getElementById("command-options") as HTMLUListElement;
-    this.contentHostDom = document.querySelector("s2-content-host") as ContentHostComponent;
-    this.documentHeaderDom = document.querySelector("s2-document-header") as DocumentHeaderComponent;
-    this.statusBarDom = document.querySelector("s2-status-bar") as StatusBarComponent;
 
     this.handleEvents();
   }
@@ -221,7 +212,7 @@ export class CommandBarComponent extends HTMLElement {
       e.preventDefault();
 
       sendToClipboard(targetDataset.copyText);
-      this.statusBarDom.showText(`[command-bar] copied "${targetDataset.copyText}"`);
+      this.componentRefs.statusBar.showText(`[command-bar] copied "${targetDataset.copyText}"`);
       this.clear();
       this.exitCommandMode();
 
@@ -257,9 +248,7 @@ export class CommandBarComponent extends HTMLElement {
       const result = await handler({
         command: currentInput,
         context: {
-          contentHost: this.contentHostDom,
-          statusBar: this.statusBarDom,
-          documentHeader: this.documentHeaderDom,
+          componentRefs: this.componentRefs,
         },
       });
       if (result.optionsHtml) {
@@ -278,9 +267,7 @@ export class CommandBarComponent extends HTMLElement {
         command: currentInput,
         execute: true,
         context: {
-          contentHost: this.contentHostDom,
-          statusBar: this.statusBarDom,
-          documentHeader: this.documentHeaderDom,
+          componentRefs: this.componentRefs,
         },
       });
     }

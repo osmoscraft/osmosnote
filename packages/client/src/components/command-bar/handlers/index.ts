@@ -1,6 +1,4 @@
-import type { ContentHostComponent } from "../../content-host/content-host.component";
-import type { DocumentHeaderComponent } from "../../document-header/document-header.component";
-import type { StatusBarComponent } from "../../status-bar/status-bar.component";
+import type { ComponentReferenceService } from "../../../services/component-reference/component-reference.service";
 import type { CommandInput } from "../command-bar.component";
 import { handleFileCopyLink } from "./handle-file-copy-link";
 import { handleFileSave } from "./handle-file-save";
@@ -12,9 +10,7 @@ export interface CommandHandlers {
 }
 
 export interface CommandHandlerContext {
-  contentHost: ContentHostComponent;
-  statusBar: StatusBarComponent;
-  documentHeader: DocumentHeaderComponent;
+  componentRefs: ComponentReferenceService;
 }
 
 export interface CommandHandler {

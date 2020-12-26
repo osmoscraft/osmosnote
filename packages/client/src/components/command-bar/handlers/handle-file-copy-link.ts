@@ -5,15 +5,15 @@ import { getNoteConfigFromUrl } from "../../../lib/url";
 
 export const handleFileCopyLink: CommandHandler = ({ context }) => {
   const { filename } = getNoteConfigFromUrl();
-  const title = context.documentHeader.getTitle();
+  const title = context.componentRefs.documentHeader.getTitle();
 
   if (filename) {
     const link = `[${title}](${filenameToId(filename)})`;
 
     sendToClipboard(link);
-    context.statusBar.showText(`Copied to clipboard: ${link}`);
+    context.componentRefs.statusBar.showText(`Copied to clipboard: ${link}`);
   } else {
-    context.statusBar.showText(`Error: current page is not a note`);
+    context.componentRefs.statusBar.showText(`Error: current page is not a note`);
   }
 
   return {};

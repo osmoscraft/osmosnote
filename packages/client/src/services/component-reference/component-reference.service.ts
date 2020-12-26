@@ -5,11 +5,11 @@ import { ReferencePanelComponent } from "../../components/reference-panel/refere
 import { StatusBarComponent } from "../../components/status-bar/status-bar.component";
 
 export class ComponentReferenceService {
-  get contentHost() {
-    return document.querySelector("s2-content-host") as ContentHostComponent;
-  }
   get commandBar() {
     return document.querySelector("s2-command-bar") as CommandBarComponent;
+  }
+  get contentHost() {
+    return document.querySelector("s2-content-host") as ContentHostComponent;
   }
   get documentHeader() {
     return document.querySelector("s2-document-header") as DocumentHeaderComponent;
@@ -17,12 +17,15 @@ export class ComponentReferenceService {
   get referencePanel() {
     return document.querySelector("s2-reference-panel") as ReferencePanelComponent;
   }
+  get statusBar() {
+    return document.querySelector("s2-status-bar") as StatusBarComponent;
+  }
 
-  constructor() {
+  mount() {
     customElements.define("s2-command-bar", CommandBarComponent);
     customElements.define("s2-content-host", ContentHostComponent);
     customElements.define("s2-document-header", DocumentHeaderComponent);
-    customElements.define("s2-status-bar", StatusBarComponent);
     customElements.define("s2-reference-panel", ReferencePanelComponent);
+    customElements.define("s2-status-bar", StatusBarComponent);
   }
 }

@@ -3,7 +3,7 @@ interface RestorePoint {
   activeElement: Node | null;
 }
 
-export class CusorService {
+export class CursorService {
   private restorePoints: RestorePoint[] = [];
 
   push() {

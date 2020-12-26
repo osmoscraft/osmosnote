@@ -15,9 +15,9 @@ export const handleFileSave: CommandHandler = async ({ command, context }) => {
     const createNoteBody: CreateNoteBody = {
       note: {
         metadata: {
-          title: context.documentHeader.getTitle(),
+          title: context.componentRefs.documentHeader.getTitle(),
         },
-        content: context.contentHost.getMarkdown(),
+        content: context.componentRefs.contentHost.getMarkdown(),
       },
     };
 
@@ -32,7 +32,7 @@ export const handleFileSave: CommandHandler = async ({ command, context }) => {
     const result: CreateNoteReply = await response.json();
 
     history.replaceState(undefined, document.title, `/?filename=${result.filename}`);
-    context.statusBar.showText(`Created ${result.note.metadata.title}`);
+    context.componentRefs.statusBar.showText(`Created ${result.note.metadata.title}`);
 
     return {};
   } else {
@@ -42,9 +42,9 @@ export const handleFileSave: CommandHandler = async ({ command, context }) => {
     const updateNoteBody: UpdateNoteBody = {
       note: {
         metadata: {
-          title: context.documentHeader.getTitle(),
+          title: context.componentRefs.documentHeader.getTitle(),
         },
-        content: context.contentHost.getMarkdown(),
+        content: context.componentRefs.contentHost.getMarkdown(),
       },
     };
 
@@ -59,7 +59,7 @@ export const handleFileSave: CommandHandler = async ({ command, context }) => {
     });
     const result: UpdateNoteReply = await response.json();
 
-    context.statusBar.showText(`Saved ${result.note.metadata.title}`);
+    context.componentRefs.statusBar.showText(`Saved ${result.note.metadata.title}`);
     return {};
   }
 };
