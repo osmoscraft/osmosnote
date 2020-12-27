@@ -1,6 +1,6 @@
 import { CursorSelection, CursorSelectionService } from "../../../services/cursor-selection/cursor-selection.service";
 import { di } from "../../../utils/dependency-injector";
-import "./s2-link.css";
+import "./link.css";
 
 export const S2_LINK_REGEX = /\[([^\(]+)\]\(([^\[]\d+)\)/g; // e.g. [Some title](200012300630)
 export const S2_LINK_REPLACER = (_match: string, title: string, id: string) =>
@@ -8,7 +8,7 @@ export const S2_LINK_REPLACER = (_match: string, title: string, id: string) =>
     `${id}.md`
   )}">${id}</a><code class="s2-link__symbol">)</code></s2-link>`;
 
-export class S2Link extends HTMLElement {
+export class LinkComponent extends HTMLElement {
   private cursorSelectionService!: CursorSelectionService;
   private anchorDom!: HTMLAnchorElement;
 

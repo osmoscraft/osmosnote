@@ -1,6 +1,6 @@
-import { S2_HEADING_REGEX, S2_HEADING_REPLACER } from "./s2-heading";
-import { S2Line } from "./s2-line";
-import { S2_LINK_REGEX, S2_LINK_REPLACER, S2Link } from "./s2-link";
+import { S2_HEADING_REGEX, S2_HEADING_REPLACER } from "./heading";
+import { LineComponent } from "./line.component";
+import { S2_LINK_REGEX, S2_LINK_REPLACER, LinkComponent } from "./link.component";
 
 export function markdownToEditableHtml(markdown: string): string {
   const html = markdown
@@ -22,7 +22,7 @@ export function markdownToOverlayHtml(markdown: string): string {
 
 export function editableNoteToMarkdown(dom: HTMLElement): string {
   const markdown = [...dom.querySelectorAll(`pre[is="s2-line"]`)]
-    .map((line) => (line as S2Line).innerText.split("\n").join(""))
+    .map((line) => (line as LineComponent).innerText.split("\n").join(""))
     .join("\n");
 
   return markdown;
@@ -32,5 +32,5 @@ function highlightLine(lineMarkdown: string): string {
   return lineMarkdown.replace(S2_HEADING_REGEX, S2_HEADING_REPLACER).replace(S2_LINK_REGEX, S2_LINK_REPLACER);
 }
 
-customElements.define("s2-link", S2Link);
-customElements.define("s2-line", S2Line, { extends: "pre" });
+customElements.define("s2-link", LinkComponent);
+customElements.define("s2-line", LineComponent, { extends: "pre" });

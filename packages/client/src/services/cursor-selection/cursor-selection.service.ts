@@ -1,4 +1,4 @@
-import { S2_LINK_REGEX } from "../../components/content-editor/core/s2-link";
+import { S2_LINK_REGEX } from "../../components/content-editor/core/link.component";
 import { emit } from "../../utils/events";
 
 declare global {

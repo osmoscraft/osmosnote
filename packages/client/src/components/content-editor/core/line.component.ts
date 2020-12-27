@@ -1,4 +1,4 @@
-export class S2Line extends HTMLPreElement {
+export class LineComponent extends HTMLPreElement {
   private handleMutation!: MutationCallback;
 
   readonly dataset!: {
@@ -37,8 +37,8 @@ export class S2Line extends HTMLPreElement {
 
     if (this.dataset.headingLevel) {
       this.dataset.indentLevel = this.dataset.headingLevel;
-    } else if ((this.previousSibling as S2Line)?.dataset?.indentLevel) {
-      this.dataset.indentLevel = (this.previousSibling as S2Line).dataset.indentLevel;
+    } else if ((this.previousSibling as LineComponent)?.dataset?.indentLevel) {
+      this.dataset.indentLevel = (this.previousSibling as LineComponent).dataset.indentLevel;
     } else {
       this.dataset.indentLevel = "0";
     }
@@ -47,7 +47,7 @@ export class S2Line extends HTMLPreElement {
 
     if (props?.propagate && isLevelChanged) {
       if ((this.nextSibling as any)?.processIndent) {
-        (this.nextSibling as S2Line).processIndent({ propagate: true });
+        (this.nextSibling as LineComponent).processIndent({ propagate: true });
       }
     }
   }
