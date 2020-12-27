@@ -23,12 +23,23 @@ export class ContentEditorComponent extends HTMLElement implements WithCursorSna
     this.noteOverlayDom = this.querySelector("#note-overlay") as HTMLElement;
 
     this.attachOverlayObserver();
+    this.handlePasting();
 
     this.cursorSnapshotService.attach(this);
   }
 
   getMarkdown(): string {
     return editableNoteToMarkdown(this.noteEditableDom);
+  }
+
+  private handlePasting() {
+    this.addEventListener("paste", (e) => {
+      e.preventDefault();
+
+      const rawText = e.clipboardData?.getData("text");
+
+      document.execCommand("insertText", false, rawText);
+    });
   }
 
   // When editable dom has any change, re-render overlay

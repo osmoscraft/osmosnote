@@ -1,18 +1,24 @@
+import "./line.css";
+
 export class LineComponent extends HTMLPreElement {
   private handleMutation!: MutationCallback;
 
   readonly dataset!: {
     headingLevel: string;
     indentLevel: string;
+
+    isEmpty: string;
   };
 
   connectedCallback() {
+    this.processEmptyLine();
     this.processHeading();
     this.processIndent();
 
     this.handleMutation = (mutationsList, observer) => {
       const characterChange = mutationsList.find((mutation) => mutation.type === "characterData");
       if (characterChange) {
+        this.processEmptyLine();
         this.processHeading();
         this.processIndent({ propagate: true });
       }
@@ -23,7 +29,14 @@ export class LineComponent extends HTMLPreElement {
     observer.observe(this, { subtree: true, characterData: true });
   }
 
-  processHeading() {
+  private processEmptyLine() {
+    if (!this.innerText.length) {
+      // without a tangible <br> element, this line cannot be copied
+      this.innerHTML = `<br>`;
+    }
+  }
+
+  private processHeading() {
     const headingResult = this.scanHeading(this.innerText);
     if (headingResult) {
       this.dataset.headingLevel = headingResult.level.toString();
@@ -32,7 +45,7 @@ export class LineComponent extends HTMLPreElement {
     }
   }
 
-  processIndent(props?: { propagate?: boolean }) {
+  private processIndent(props?: { propagate?: boolean }) {
     const previousIndentLevel = this.dataset.indentLevel;
 
     if (this.dataset.headingLevel) {

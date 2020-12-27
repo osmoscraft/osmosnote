@@ -36,11 +36,6 @@ s2-content-editor:focus-within {
   font-family: monospace;
 }
 
-.note-shared pre[is="s2-line"] {
-  margin: 0;
-  /* white-space: pre-wrap; */
-}
-
 /**
       * TODO https://developer.mozilla.org/en-US/docs/Web/CSS/:is
       */
