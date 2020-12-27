@@ -1,3 +1,4 @@
+* TODO replace contenteditable with textarea
 * TODO git sync through shell script
 * TODO Ctrl+Enter to create note without closing existing
 * TODO Create note on the fly and return new ID in for current Note to use
