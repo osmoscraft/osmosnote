@@ -1,5 +1,3 @@
-* TODO handle paste formatting
-* TODO fix double pasting issue due to source format
 * TODO git sync through shell script
 * TODO Ctrl+Enter to create note without closing existing
 * TODO Create note on the fly and return new ID in for current Note to use
@@ -18,6 +16,8 @@
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 
 ** Finished
+* DONE fix double pasting issue due to source format
+* DONE handle paste formatting
 * DONE use keyboard to open links (need tech design)
 * DONE prevent accidental open when yanking from command 
 * DONE use keyboard to switch between Header/Content/Ref (via command)
