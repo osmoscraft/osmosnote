@@ -11,14 +11,14 @@ export class LineComponent extends HTMLPreElement {
   };
 
   connectedCallback() {
-    this.processEmptyLine();
+    this.processWhitespace();
     this.processHeading();
     this.processIndent();
 
     this.handleMutation = (mutationsList, observer) => {
       const characterChange = mutationsList.find((mutation) => mutation.type === "characterData");
       if (characterChange) {
-        this.processEmptyLine();
+        this.processWhitespace();
         this.processHeading();
         this.processIndent({ propagate: true });
       }
@@ -29,10 +29,21 @@ export class LineComponent extends HTMLPreElement {
     observer.observe(this, { subtree: true, characterData: true });
   }
 
-  private processEmptyLine() {
+  private processWhitespace() {
     if (!this.innerText.length) {
       // without a tangible <br> element, this line cannot be copied
       this.innerHTML = `<br>`;
+    } else if (
+      // convert different line ending conventions to html
+      this.innerText === "\r\n" ||
+      this.innerText === "\n" ||
+      this.innerText === "\r" ||
+      this.innerText === "\n\r"
+    ) {
+      this.innerHTML = `<br>`;
+    } else if (this.innerText.includes("\n") || this.innerText.includes("\r")) {
+      // strip any additional new lines
+      this.innerText = this.innerText.replaceAll("\n", "").replaceAll("\r", "");
     }
   }
 

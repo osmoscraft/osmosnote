@@ -1,4 +1,4 @@
 [is="s2-line"] {
   margin: 0;
-  white-space: nowrap;
+  white-space: pre; /* no wrap, no collapse */
 }
