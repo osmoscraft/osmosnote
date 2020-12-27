@@ -31,7 +31,7 @@ export class CursorSelectionService {
   init() {
     document.addEventListener("selectionchange", (event) => {
       const selection = getSelection();
-      const cursorRange = selection?.getRangeAt(0);
+      const cursorRange = selection?.rangeCount ? selection?.getRangeAt(0) : undefined;
 
       if (cursorRange?.commonAncestorContainer instanceof Text) {
         const rawText = cursorRange.commonAncestorContainer?.textContent;

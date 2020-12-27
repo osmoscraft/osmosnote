@@ -50,13 +50,9 @@ export class CursorSnapshotService {
   }
 
   private getRange(): Range | null {
-    try {
-      const selection = getSelection();
-      const range = selection?.getRangeAt(0).cloneRange();
-      return range ?? null;
-    } catch (error) {
-      return null;
-    }
+    const selection = getSelection();
+    const range = selection?.rangeCount ? selection?.getRangeAt(0) : undefined;
+    return range ?? null;
   }
 
   private setRange(range: Range) {
