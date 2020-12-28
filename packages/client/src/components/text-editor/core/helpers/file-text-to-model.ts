@@ -1,18 +1,18 @@
-import { HEADING_PATTERN, SemanticLine, SemanticModel } from "./core";
+import { HEADING_PATTERN, EngineModelLine, EngineModel } from "../engine-model";
 
-export function fileTextToModel(fileText: string): SemanticModel {
-  // assumption: line ends are normalized to unix style
-  const rawLines = fileText.split("\n");
+export function fileTextToModel(fileText: string): EngineModel {
+  // enforce unix style line ending.
+  const rawLines = fileText.replaceAll("\r", "").split("\n");
 
   const parserContext = {
     isHeading: false,
-    layoutPadding: 0,
+    indentation: 0,
     currentSectionLevel: 0,
     innerText: "",
     isEmpty: true,
   };
 
-  const resultLines: SemanticLine[] = [];
+  const resultLines: EngineModelLine[] = [];
 
   rawLines.forEach((line) => {
     // reset context
@@ -27,7 +27,7 @@ export function fileTextToModel(fileText: string): SemanticModel {
       parserContext.innerText = headingMatch[2];
     }
 
-    parserContext.layoutPadding = parserContext.isHeading
+    parserContext.indentation = parserContext.isHeading
       ? parserContext.currentSectionLevel - 1
       : parserContext.currentSectionLevel * 2;
 
@@ -37,10 +37,10 @@ export function fileTextToModel(fileText: string): SemanticModel {
       isEmpty: parserContext.isEmpty,
       isHeading: parserContext.isHeading,
       isListItem: false, // TODO implement
-      layoutPadding: parserContext.layoutPadding,
+      indentation: parserContext.indentation,
       listItemLevel: 0, // TODO implement
       sectionLevel: parserContext.currentSectionLevel,
-      isInvalid: false,
+      isFormatNeeded: false,
     });
   });
 

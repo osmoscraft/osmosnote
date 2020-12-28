@@ -1,9 +1,9 @@
 import { HistoryService } from "../../services/history/history.service";
 import { di } from "../../utils/dependency-injector";
-import type { SemanticModel } from "./core/core";
-import { draftTextToModel } from "./core/draft-text-to-model";
-import { fileTextToModel } from "./core/file-text-to-model";
-import { modelToDraftText } from "./core/model-to-draft-text";
+import type { EngineModel, EngineModelCursor } from "./core/engine-model";
+import { draftTextToModel } from "./core/helpers/draft-text-to-model";
+import { fileTextToModel } from "./core/helpers/file-text-to-model";
+import { modelToDraftText } from "./core/helpers/model-to-draft-text";
 import { SemanticOverlayComponent } from "./semantic-overlay/semantic-overlay.component";
 import "./text-editor.css";
 
@@ -11,6 +11,9 @@ export class TextEditorComponent extends HTMLElement {
   textAreaDom!: HTMLTextAreaElement;
   semanticOverlay!: SemanticOverlayComponent;
   historyService!: HistoryService;
+  cursor!: EngineModelCursor;
+
+  private needUpdateCursor = false;
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
@@ -32,60 +35,122 @@ export class TextEditorComponent extends HTMLElement {
   loadFileText(fileText: string) {
     const model = fileTextToModel(fileText);
     this.handleModelChange(model);
-    this.historyService.push(JSON.stringify(model));
+    this.takeSnapshot(model);
+    this.updateCursor();
   }
 
   format() {
     const existingDraft = this.textAreaDom.value;
     const model = draftTextToModel(existingDraft, true);
+    this.takeSnapshot(model);
 
     this.handleModelChange(model);
-    this.historyService.push(JSON.stringify(model));
   }
 
   undo() {
     const undoResult = this.historyService.undo();
     if (undoResult !== null) {
-      const model: SemanticModel = JSON.parse(undoResult);
-      this.handleModelChange(model);
+      const model: EngineModel = JSON.parse(undoResult);
+      console.log(model);
+      this.restoreSnapshot(model);
     }
   }
 
   redo() {
     const redoResult = this.historyService.redo();
     if (redoResult !== null) {
-      const model: SemanticModel = JSON.parse(redoResult);
-      this.handleModelChange(model);
+      const model: EngineModel = JSON.parse(redoResult);
+      this.restoreSnapshot(model);
     }
   }
 
-  private handleModelChange(model: SemanticModel) {
+  private handleModelChange(model: EngineModel) {
     const existingDraft = this.textAreaDom.value;
     const cleanDraft = modelToDraftText(model);
 
     if (cleanDraft !== existingDraft) {
-      const { selectionStart, selectionEnd, selectionDirection } = this.textAreaDom;
       this.textAreaDom.value = cleanDraft;
-      // TODO (prevText, newText, prevSelection) => newSelection
-      this.autoAlignCursor({ selectionStart, selectionEnd, selectionDirection });
     }
 
     this.semanticOverlay.updateModel(model);
   }
 
-  private debugSelection() {
-    const { selectionStart, selectionEnd, selectionDirection } = this.textAreaDom;
-    // console.log({ selectionStart, selectionEnd, selectionDirection });
-  }
-
   private handleInput() {
+    this.textAreaDom.addEventListener("keydown", (event) => {
+      const existingDraft = this.textAreaDom.value;
+      const currentModel = draftTextToModel(existingDraft);
+
+      if (["Delete", "Backspace"].includes(event.key)) {
+        // patch due to https://bugs.chromium.org/p/chromium/issues/detail?id=725890
+        this.needUpdateCursor = true;
+      }
+
+      if (event.key === "Enter") {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const { row, col, rawStart, rawEnd } = this.cursor;
+
+        const line = currentModel.lines[row];
+        const nextLineIndentation = line.sectionLevel * 2;
+
+        this.textAreaDom.setRangeText("\n" + " ".repeat(nextLineIndentation), rawStart, rawEnd, "end");
+        this.format();
+      }
+
+      if (event.key === "Backspace") {
+        const { row, col, rawStart, rawEnd } = this.cursor;
+
+        const line = currentModel.lines[row];
+        const currentLineIndentation = line.indentation;
+
+        if (col === currentLineIndentation) {
+          // TODO handle delete selection
+          if (rawStart !== rawEnd) return;
+
+          event.preventDefault();
+          event.stopPropagation();
+
+          // delete all the indentation
+          const deleteAdditional = existingDraft[rawStart - currentLineIndentation - 1] === "\n" ? 1 : 0;
+          this.textAreaDom.setRangeText("", rawStart - currentLineIndentation - deleteAdditional, rawStart, "end");
+
+          this.format();
+        }
+      }
+
+      // TODO handle delete key
+    });
+
+    this.textAreaDom.addEventListener("beforeinput", () => {
+      const existingDraft = this.textAreaDom.value;
+      const model = draftTextToModel(existingDraft);
+      this.takeSnapshot(model);
+    });
+
     this.textAreaDom.addEventListener("input", () => {
       const existingDraft = this.textAreaDom.value;
       const model = draftTextToModel(existingDraft);
 
       this.handleModelChange(model);
-      this.historyService.push(JSON.stringify(model));
+
+      if (this.needUpdateCursor) {
+        this.updateCursor();
+        this.needUpdateCursor = false;
+      }
     });
+  }
+
+  private takeSnapshot(model: EngineModel) {
+    model.cursor = this.cursor;
+    this.historyService.push(JSON.stringify(model));
+  }
+
+  private restoreSnapshot(model: EngineModel) {
+    this.handleModelChange(model);
+    if (model.cursor) {
+      this.textAreaDom.setSelectionRange(model.cursor.rawStart, model.cursor.rawEnd, model.cursor.direction);
+    }
   }
 
   private handleScroll() {
@@ -110,35 +175,32 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   private handleCursor() {
-    interface SemanticCursor {
-      row: number;
-      column: number;
-    }
-
     // TODO implement
     // TODO consolidate with history manager
     document.addEventListener("selectionchange", (e) => {
       if (document.activeElement === this.textAreaDom) {
-        // console.log(this.textAreaDom.selectionStart);
-        this.debugSelection();
+        this.updateCursor();
       }
     });
   }
 
-  // TODO consolidate this into core engine
-  private autoAlignCursor(previousSelection: {
-    selectionStart: number;
-    selectionEnd: number;
-    selectionDirection: string;
-  }) {
-    const draftText = this.textAreaDom.value;
-    // naively, align to end of line
-    for (let i = previousSelection.selectionStart; i < draftText.length; i++) {
-      if (draftText[i] === "\n") {
-        this.textAreaDom.setSelectionRange(i, i);
-        return;
-      }
-    }
+  private updateCursor() {
+    const { selectionStart, selectionEnd, selectionDirection } = this.textAreaDom;
+
+    const draft = this.textAreaDom.value;
+    const draftBefore = draft.slice(0, selectionEnd);
+    const row = draftBefore.split("").filter((char) => char === "\n").length;
+    const lineEndBeforeIndex = draftBefore.lastIndexOf("\n");
+    const draftLineBefore = draftBefore.slice(lineEndBeforeIndex + 1);
+    const col = draftLineBefore.length;
+
+    this.cursor = {
+      col,
+      row,
+      rawStart: selectionStart,
+      rawEnd: selectionEnd,
+      direction: selectionDirection,
+    };
   }
 
   // TODO expose to global command for custom keybinding

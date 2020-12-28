@@ -1,19 +1,19 @@
-import { HEADING_PATTERN, SemanticLine, SemanticModel } from "./core";
+import { HEADING_PATTERN, EngineModelLine, EngineModel } from "../engine-model";
 
-export function draftTextToModel(draftText: string, fixFormat?: boolean): SemanticModel {
+export function draftTextToModel(draftText: string, fixFormat?: boolean): EngineModel {
   // assumption: line ends are normalized to unix style
   const rawLines = draftText.split("\n");
 
   const parserContext = {
     isHeading: false,
-    layoutPadding: 0,
+    indentation: 0,
     currentSectionLevel: 0,
     innerText: "",
     isEmpty: true,
     isInvalid: false,
   };
 
-  const resultLines: SemanticLine[] = [];
+  const resultLines: EngineModelLine[] = [];
 
   rawLines.forEach((line) => {
     // reset context
@@ -27,7 +27,7 @@ export function draftTextToModel(draftText: string, fixFormat?: boolean): Semant
       parserContext.innerText = headingMatch[2];
     }
 
-    parserContext.layoutPadding = parserContext.isHeading
+    parserContext.indentation = parserContext.isHeading
       ? parserContext.currentSectionLevel - 1
       : parserContext.currentSectionLevel * 2;
 
@@ -35,18 +35,18 @@ export function draftTextToModel(draftText: string, fixFormat?: boolean): Semant
       const currentPadding = line.length - line.trimStart().length;
 
       // invalid padding
-      if (currentPadding !== parserContext.layoutPadding) {
+      if (currentPadding !== parserContext.indentation) {
         parserContext.isInvalid = true;
 
         if (fixFormat) {
-          const padding = " ".repeat(parserContext.layoutPadding);
+          const padding = " ".repeat(parserContext.indentation);
           line = padding + line.trimStart();
           parserContext.isInvalid = false;
         }
       }
 
       if (!parserContext.isInvalid) {
-        parserContext.innerText = line.slice(parserContext.layoutPadding); // trim leading space when valid
+        parserContext.innerText = line.slice(parserContext.indentation); // trim leading space when valid
       }
     }
 
@@ -61,10 +61,10 @@ export function draftTextToModel(draftText: string, fixFormat?: boolean): Semant
       isEmpty: parserContext.isEmpty,
       isHeading: parserContext.isHeading,
       isListItem: false, // TODO implement
-      layoutPadding: parserContext.layoutPadding,
+      indentation: parserContext.indentation,
       listItemLevel: 0, // TODO implement
       sectionLevel: parserContext.currentSectionLevel,
-      isInvalid: parserContext.isInvalid,
+      isFormatNeeded: parserContext.isInvalid,
     });
   });
 

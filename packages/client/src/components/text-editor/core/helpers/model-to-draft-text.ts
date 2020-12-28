@@ -1,11 +1,11 @@
-import type { SemanticModel } from "./core";
+import type { EngineModel } from "../engine-model";
 
-export function modelToDraftText(model: SemanticModel): string {
+export function modelToDraftText(model: EngineModel): string {
   const text = model.lines
     .map((line, i) => {
-      if (line.isInvalid) return line.raw;
+      if (line.isFormatNeeded) return line.raw;
 
-      const layoutPadding = " ".repeat(line.layoutPadding);
+      const layoutPadding = " ".repeat(line.indentation);
       const headingPrefix = line.isHeading ? `${"#".repeat(line.sectionLevel)} ` : "";
 
       return `${layoutPadding}${headingPrefix}${line.innerText}`;

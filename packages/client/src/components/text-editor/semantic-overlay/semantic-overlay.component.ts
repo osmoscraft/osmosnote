@@ -1,9 +1,9 @@
-import type { SemanticModel } from "../core/core";
-import { modelToOverlayHtml } from "../core/model-to-overlay-html";
+import type { EngineModel } from "../core/engine-model";
+import { modelToOverlayHtml } from "../core/helpers/model-to-overlay-html";
 import "./semantic-overlay.css";
 
 export class SemanticOverlayComponent extends HTMLElement {
-  updateModel(semanticModel: SemanticModel) {
+  updateModel(semanticModel: EngineModel) {
     this.innerHTML = modelToOverlayHtml(semanticModel);
   }
 
