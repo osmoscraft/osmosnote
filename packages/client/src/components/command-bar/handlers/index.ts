@@ -1,6 +1,7 @@
 import type { ComponentReferenceService } from "../../../services/component-reference/component-reference.service";
 import type { CommandInput } from "../command-bar.component";
 import { handleFileCopyLink } from "./handle-file-copy-link";
+import { handleFileFormat } from "./handle-file-format";
 import { handleFileSave } from "./handle-file-save";
 import { handleInsertNote } from "./handle-insert-note";
 import { handleOpenNote } from "./handle-open-note";
@@ -31,6 +32,7 @@ export const commandHandlers: CommandHandlers = {
   o: handleOpenNote,
   i: handleInsertNote,
   fs: handleFileSave,
+  ff: handleFileFormat,
   fy: handleFileCopyLink,
   wh: handleWindowTravel,
   wr: handleWindowTravel,

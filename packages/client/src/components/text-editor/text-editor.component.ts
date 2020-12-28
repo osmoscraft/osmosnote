@@ -35,6 +35,14 @@ export class TextEditorComponent extends HTMLElement {
     this.historyService.push(JSON.stringify(model));
   }
 
+  format() {
+    const existingDraft = this.textAreaDom.value;
+    const model = draftTextToModel(existingDraft, true);
+
+    this.handleModelChange(model);
+    this.historyService.push(JSON.stringify(model));
+  }
+
   undo() {
     const undoResult = this.historyService.undo();
     if (undoResult !== null) {
@@ -44,7 +52,7 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   redo() {
-    const redoResult = this.historyService.undo();
+    const redoResult = this.historyService.redo();
     if (redoResult !== null) {
       const model: SemanticModel = JSON.parse(redoResult);
       this.handleModelChange(model);
@@ -56,11 +64,18 @@ export class TextEditorComponent extends HTMLElement {
     const cleanDraft = modelToDraftText(model);
 
     if (cleanDraft !== existingDraft) {
+      const { selectionStart, selectionEnd, selectionDirection } = this.textAreaDom;
       this.textAreaDom.value = cleanDraft;
       // TODO (prevText, newText, prevSelection) => newSelection
+      this.autoAlignCursor({ selectionStart, selectionEnd, selectionDirection });
     }
 
     this.semanticOverlay.updateModel(model);
+  }
+
+  private debugSelection() {
+    const { selectionStart, selectionEnd, selectionDirection } = this.textAreaDom;
+    // console.log({ selectionStart, selectionEnd, selectionDirection });
   }
 
   private handleInput() {
@@ -101,11 +116,29 @@ export class TextEditorComponent extends HTMLElement {
     }
 
     // TODO implement
+    // TODO consolidate with history manager
     document.addEventListener("selectionchange", (e) => {
       if (document.activeElement === this.textAreaDom) {
         // console.log(this.textAreaDom.selectionStart);
+        this.debugSelection();
       }
     });
+  }
+
+  // TODO consolidate this into core engine
+  private autoAlignCursor(previousSelection: {
+    selectionStart: number;
+    selectionEnd: number;
+    selectionDirection: string;
+  }) {
+    const draftText = this.textAreaDom.value;
+    // naively, align to end of line
+    for (let i = previousSelection.selectionStart; i < draftText.length; i++) {
+      if (draftText[i] === "\n") {
+        this.textAreaDom.setSelectionRange(i, i);
+        return;
+      }
+    }
   }
 
   // TODO expose to global command for custom keybinding

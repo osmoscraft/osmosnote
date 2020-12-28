@@ -11,6 +11,7 @@ export interface SemanticLine {
   layoutPadding: number;
   listItemLevel: number;
   sectionLevel: number;
+  isInvalid: boolean;
 }
 
 export const HEADING_PATTERN = /^(#{1,6}) (.*)/m; // e.g. # My title

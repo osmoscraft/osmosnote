@@ -3,6 +3,8 @@ import type { SemanticModel } from "./core";
 export function modelToDraftText(model: SemanticModel): string {
   const text = model.lines
     .map((line, i) => {
+      if (line.isInvalid) return line.raw;
+
       const layoutPadding = " ".repeat(line.layoutPadding);
       const headingPrefix = line.isHeading ? `${"#".repeat(line.sectionLevel)} ` : "";
 

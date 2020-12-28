@@ -40,6 +40,7 @@ export function fileTextToModel(fileText: string): SemanticModel {
       layoutPadding: parserContext.layoutPadding,
       listItemLevel: 0, // TODO implement
       sectionLevel: parserContext.currentSectionLevel,
+      isInvalid: false,
     });
   });
 

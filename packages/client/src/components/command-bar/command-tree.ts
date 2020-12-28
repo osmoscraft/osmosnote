@@ -14,6 +14,11 @@ export const commandTree: RegisteredCommand = {
           executeOnComplete: true,
         },
         {
+          name: "Format",
+          key: "f",
+          executeOnComplete: true,
+        },
+        {
           name: "Save",
           key: "s",
           executeOnComplete: true,
