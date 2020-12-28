@@ -1,3 +1,6 @@
+import { draftTextToModel } from "./core/draft-text-to-model";
+import { fileTextToModel } from "./core/file-text-to-model";
+import { modelToDraftText } from "./core/model-to-draft-text";
 import { SemanticOverlayComponent } from "./semantic-overlay/semantic-overlay.component";
 import "./text-editor.css";
 
@@ -17,12 +20,28 @@ export class TextEditorComponent extends HTMLElement {
     this.handlePasting();
     this.handleInput();
     this.handleScroll();
+    this.handleCursor();
+  }
+
+  loadFileText(fileText: string) {
+    const model = fileTextToModel(fileText);
+    this.textAreaDom.value = modelToDraftText(model);
+
+    this.semanticOverlay.updateModel(model);
   }
 
   private handleInput() {
     this.textAreaDom.addEventListener("input", () => {
-      const displayText = this.textAreaDom.value; // Auto indentation
-      this.semanticOverlay.updateContent(displayText);
+      const dirtyDraft = this.textAreaDom.value;
+      const model = draftTextToModel(dirtyDraft);
+      const cleanDraft = modelToDraftText(model);
+
+      if (cleanDraft !== dirtyDraft) {
+        this.textAreaDom.value = cleanDraft;
+      }
+
+      this.semanticOverlay.updateModel(model);
+      console.log(model);
     });
   }
 
@@ -41,6 +60,15 @@ export class TextEditorComponent extends HTMLElement {
 
       document.execCommand("insertText", false, cleanText);
     });
+  }
+
+  private handleCursor() {
+    interface SemanticCursor {
+      row: number;
+      column: number;
+    }
+
+    // TODO implement
   }
 }
 
