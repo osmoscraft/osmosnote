@@ -3,6 +3,7 @@ import { ContentEditorComponent } from "../../components/content-editor/content-
 import { DocumentHeaderComponent } from "../../components/document-header/document-header.component";
 import { ReferencePanelComponent } from "../../components/reference-panel/reference-panel.component";
 import { StatusBarComponent } from "../../components/status-bar/status-bar.component";
+import { TextEditorComponent } from "../../components/text-editor/text-editor.component";
 
 export class ComponentReferenceService {
   get commandBar() {
@@ -20,6 +21,9 @@ export class ComponentReferenceService {
   get statusBar() {
     return document.querySelector("s2-status-bar") as StatusBarComponent;
   }
+  get textEditor() {
+    return document.querySelector("s2-text-editor") as TextEditorComponent;
+  }
 
   init() {
     customElements.define("s2-command-bar", CommandBarComponent);
@@ -27,5 +31,6 @@ export class ComponentReferenceService {
     customElements.define("s2-document-header", DocumentHeaderComponent);
     customElements.define("s2-reference-panel", ReferencePanelComponent);
     customElements.define("s2-status-bar", StatusBarComponent);
+    customElements.define("s2-text-editor", TextEditorComponent);
   }
 }

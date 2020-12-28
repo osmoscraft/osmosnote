@@ -11,6 +11,7 @@
     <s2-command-bar></s2-command-bar>
     <s2-document-header tabindex="-1"></s2-document-header>
     <s2-content-editor tabindex="-1"></s2-content-editor>
+    <s2-text-editor></s2-text-editor>
     <s2-reference-panel tabindex="-1"></s2-reference-panel>
     <s2-status-bar></s2-status-bar>
     <style>
@@ -28,7 +29,16 @@
         right: 16px;
       }
 
+      s2-text-editor {
+        position: absolute;
+        top: 108px;
+        bottom: 48px;
+        left: 16px;
+        right: 352px;
+      }
+
       s2-content-editor {
+        display: none;
         position: absolute;
         top: 108px;
         bottom: 48px;

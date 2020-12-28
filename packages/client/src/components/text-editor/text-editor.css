@@ -1,0 +1,42 @@
+s2-text-editor[data-debug] .text-editor-base {
+  color: pink;
+  width: 50%;
+}
+s2-text-editor[data-debug] s2-semantic-overlay {
+  width: 50%;
+  right: 0;
+  pointer-events: auto;
+}
+
+s2-text-editor {
+  background-color: var(--base01);
+  border: 1px solid transparent; /* create space for focus outline */
+}
+
+s2-text-editor:focus-within {
+  outline: 1px solid var(--base0D);
+  outline-offset: -1px;
+}
+
+.text-editor-shared {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  bottom: 0;
+  font-family: monospace;
+  font-size: 14px;
+  overflow: auto;
+  white-space: pre; /* no wrap, no collapse */
+}
+
+.text-editor-base {
+  /* reset textarea */
+  resize: none;
+  outline: none;
+  padding: 0;
+
+  color: transparent;
+
+  border: none;
+  background-color: transparent;
+}
