@@ -1,11 +1,9 @@
 * TODO replace contenteditable with textarea
 ** TODO Delete from end of line is broken
-** TODO Undo/redo is broken
 ** TODO Cursor position is borken after formatting
 * TODO git sync through shell script
 * TODO Ctrl+Enter to create note without closing existing
 * TODO Create note on the fly and return new ID in for current Note to use
-* TODO undo/redo manager
 * TODO tab/shift-tab to push/pull indendation
 * TODO Atl + arrow to move line(s)
 * TODO tagging system (need design)
@@ -20,6 +18,7 @@
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 
 ** Finished
+* DONE undo/redo manager
 * DONE fix double pasting issue due to source format
 * DONE handle paste formatting
 * DONE use keyboard to open links (need tech design)
