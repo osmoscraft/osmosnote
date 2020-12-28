@@ -24,6 +24,10 @@ async function loadNote() {
     const id = filenameToId(filename);
     const result = await loadExistingNote(id);
     componentRefs.contentEditor.loadMarkdown(result.note.content);
+
+    // experimental
+    componentRefs.textEditor.loadFileText(result.note.content);
+
     componentRefs.documentHeader.setTitle(result.note.metadata.title);
     componentRefs.referencePanel.setIncomingConnections(result.incomingConnections);
   } else {

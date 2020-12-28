@@ -18,7 +18,22 @@ s2-text-editor:focus-within {
   outline-offset: -1px;
 }
 
+.text-editor-base {
+  /* reset textarea */
+  resize: none;
+  outline: none;
+  border: none;
+  padding: 0;
+
+  color: transparent;
+  caret-color: var(--base06);
+
+  background-color: transparent;
+}
+
 .text-editor-shared {
+  border: 16px solid transparent;
+  border-bottom: 0;
   position: absolute;
   top: 0;
   width: 100%;
@@ -29,14 +44,7 @@ s2-text-editor:focus-within {
   white-space: pre; /* no wrap, no collapse */
 }
 
-.text-editor-base {
-  /* reset textarea */
-  resize: none;
-  outline: none;
-  padding: 0;
-
-  color: transparent;
-
-  border: none;
-  background-color: transparent;
+.text-editor-base::selection {
+  color: var(--base03);
+  background-color: var(--base06);
 }

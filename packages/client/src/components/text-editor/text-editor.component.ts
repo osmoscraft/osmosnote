@@ -49,6 +49,10 @@ export class TextEditorComponent extends HTMLElement {
     this.textAreaDom.addEventListener("scroll", () => {
       this.semanticOverlay.updateScroll(this.textAreaDom);
     });
+
+    window.addEventListener("resize", () => {
+      this.semanticOverlay.updateScroll(this.textAreaDom);
+    });
   }
 
   private handlePasting() {
@@ -69,6 +73,11 @@ export class TextEditorComponent extends HTMLElement {
     }
 
     // TODO implement
+    document.addEventListener("selectionchange", (e) => {
+      if (document.activeElement === this.textAreaDom) {
+        console.log(this.textAreaDom.selectionStart);
+      }
+    });
   }
 }
 
