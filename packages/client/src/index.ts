@@ -5,10 +5,12 @@ import { getNoteConfigFromUrl } from "./utils/url";
 import { ComponentReferenceService } from "./services/component-reference/component-reference.service";
 import { CursorSnapshotService } from "./services/cursor-snapshot/cursor-snapshot.service";
 import { CursorSelectionService } from "./services/cursor-selection/cursor-selection.service";
+import { HistoryService } from "./services/history/history.service";
 
 di.registerClass(CursorSnapshotService, []);
 di.registerClass(ComponentReferenceService, []);
 di.registerClass(CursorSelectionService, []);
+di.registerClass(HistoryService, []);
 
 // calling mount will trigger constructors within each custom element
 // to avoid circular dependency, don't mount until all services are registered
@@ -34,6 +36,9 @@ async function loadNote() {
     // prepare for new note
     componentRefs.documentHeader.setTitle(title ?? `New note on ${new Date().toLocaleString()}`);
     componentRefs.contentEditor.loadMarkdown(content ?? `An idea starts here...`);
+
+    // experimental
+    componentRefs.textEditor.loadFileText(content ?? "");
   }
 }
 

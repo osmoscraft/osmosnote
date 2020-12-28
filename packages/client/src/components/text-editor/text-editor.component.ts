@@ -1,3 +1,6 @@
+import { HistoryService } from "../../services/history/history.service";
+import { di } from "../../utils/dependency-injector";
+import type { SemanticModel } from "./core/core";
 import { draftTextToModel } from "./core/draft-text-to-model";
 import { fileTextToModel } from "./core/file-text-to-model";
 import { modelToDraftText } from "./core/model-to-draft-text";
@@ -7,6 +10,7 @@ import "./text-editor.css";
 export class TextEditorComponent extends HTMLElement {
   textAreaDom!: HTMLTextAreaElement;
   semanticOverlay!: SemanticOverlayComponent;
+  historyService!: HistoryService;
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
@@ -16,32 +20,56 @@ export class TextEditorComponent extends HTMLElement {
 
     this.textAreaDom = this.querySelector("textarea")!;
     this.semanticOverlay = this.querySelector("s2-semantic-overlay") as SemanticOverlayComponent;
+    this.historyService = di.createShallow(HistoryService);
 
     this.handlePasting();
     this.handleInput();
     this.handleScroll();
     this.handleCursor();
+    this.handleUndoRedo();
   }
 
   loadFileText(fileText: string) {
     const model = fileTextToModel(fileText);
-    this.textAreaDom.value = modelToDraftText(model);
+    this.handleModelChange(model);
+    this.historyService.push(JSON.stringify(model));
+  }
+
+  undo() {
+    const undoResult = this.historyService.undo();
+    if (undoResult !== null) {
+      const model: SemanticModel = JSON.parse(undoResult);
+      this.handleModelChange(model);
+    }
+  }
+
+  redo() {
+    const redoResult = this.historyService.undo();
+    if (redoResult !== null) {
+      const model: SemanticModel = JSON.parse(redoResult);
+      this.handleModelChange(model);
+    }
+  }
+
+  private handleModelChange(model: SemanticModel) {
+    const existingDraft = this.textAreaDom.value;
+    const cleanDraft = modelToDraftText(model);
+
+    if (cleanDraft !== existingDraft) {
+      this.textAreaDom.value = cleanDraft;
+      // TODO (prevText, newText, prevSelection) => newSelection
+    }
 
     this.semanticOverlay.updateModel(model);
   }
 
   private handleInput() {
     this.textAreaDom.addEventListener("input", () => {
-      const dirtyDraft = this.textAreaDom.value;
-      const model = draftTextToModel(dirtyDraft);
-      const cleanDraft = modelToDraftText(model);
+      const existingDraft = this.textAreaDom.value;
+      const model = draftTextToModel(existingDraft);
 
-      if (cleanDraft !== dirtyDraft) {
-        this.textAreaDom.value = cleanDraft;
-      }
-
-      this.semanticOverlay.updateModel(model);
-      console.log(model);
+      this.handleModelChange(model);
+      this.historyService.push(JSON.stringify(model));
     });
   }
 
@@ -75,7 +103,24 @@ export class TextEditorComponent extends HTMLElement {
     // TODO implement
     document.addEventListener("selectionchange", (e) => {
       if (document.activeElement === this.textAreaDom) {
-        console.log(this.textAreaDom.selectionStart);
+        // console.log(this.textAreaDom.selectionStart);
+      }
+    });
+  }
+
+  // TODO expose to global command for custom keybinding
+  private handleUndoRedo() {
+    this.textAreaDom.addEventListener("keydown", (event) => {
+      if (event.ctrlKey && !event.shiftKey && event.key === "z") {
+        this.undo();
+        event.preventDefault();
+        console.log("[text-editor] undo");
+      }
+
+      if (event.ctrlKey && event.shiftKey && event.key === "Z") {
+        this.redo();
+        event.preventDefault();
+        console.log("[text-editor] redo");
       }
     });
   }
