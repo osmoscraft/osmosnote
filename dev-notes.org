@@ -2,6 +2,7 @@
 ** TODO Cursor position is borken after formatting
 *** TODO when not on last line, "## " will push selection to bottom
 ** TODO ctrl backspace/delete is broken
+* TODO compress history when there is no model change (skip all non-model change in the middle)
 * TODO git sync through shell script
 * TODO Ctrl+Enter to create note without closing existing
 * TODO Create note on the fly and return new ID in for current Note to use

@@ -8,25 +8,35 @@ import { SemanticOverlayComponent } from "./semantic-overlay/semantic-overlay.co
 import "./text-editor.css";
 
 /**
- * Event order (Chromium only)
+ * Event pipeline (from first handled to last)
  *
- * Pasting
- *   keydown > paste > input > selectionchange
+ * "keydown" - ENTER/BACKSPACE/DELETE
+ *     manually update textarea > (trigger "selectionchange")
  *
- * Cutting
- *   keydown > cut > beforeinput > input
+ * "keydown" - ARROW KEYS
+ *     (trigger "selectionchange")
  *
- * Typing
- *   keydown > beforeinput > input > selectionchange
+ * TODO defer to command manager
+ * "keydown" - ^z/^Z
+ *     get model from snapshot > render model > update selection > (trigger "selectionchange")
  *
- * Arrow key
- *   keydown > selectionchange
+ * "keydown" - other
+ *     (trigger "input") > (trigger "selectionchange")
+ *
+ * "paste"
+ *     manually update textarea > (trigger "selectionchange")
+ *
+ * "cut"
+ *     (trigger "selectionchange")
  *
  * Drop external content
- *   beforeinput > input > selectionchange > selectionchange
+ *     (trigger "input") > (trigger "selectionchange")
  *
  * Drag and Drop selected content
- *   beforeinput > input > beforeinput > input > selectionchange > selectionchange
+ *     (trigger "input" - delete) > (trigger "input" - add) > (trigger "selectionchange") > (trigger "selectionchange" duplicated)
+ *
+ * "selectionchange"
+ *     save cursor > render model > save model to snapshot
  */
 
 /**
@@ -92,7 +102,7 @@ export class TextEditorComponent extends HTMLElement {
     }
   }
 
-  // redner textarea and overlay with the model
+  // render textarea and overlay with the model
   private renderModel(model: EngineModel) {
     const existingDraft = this.textAreaDom.value;
     const cleanDraft = modelToDraftText(model);
@@ -168,10 +178,6 @@ export class TextEditorComponent extends HTMLElement {
         }
       }
     });
-
-    this.textAreaDom.addEventListener("input", () => {
-      this.handleDraftChange();
-    });
   }
 
   private takeSnapshot(model: EngineModel) {
@@ -207,9 +213,6 @@ export class TextEditorComponent extends HTMLElement {
       const { rawStart, rawEnd } = this.cursor;
       if (cleanText) {
         this.textAreaDom.setRangeText(cleanText, rawStart, rawEnd, "end");
-        const newDraft = this.textAreaDom.value;
-        const newModel = draftTextToModel(newDraft);
-        this.renderModel(newModel);
       }
     });
   }
@@ -218,7 +221,6 @@ export class TextEditorComponent extends HTMLElement {
     // TODO implement
     // TODO consolidate with history manager
     document.addEventListener("selectionchange", (e) => {
-      console.log("selection change!!");
       if (document.activeElement === this.textAreaDom) {
         this.updateCursor();
         const model = this.handleDraftChange();
