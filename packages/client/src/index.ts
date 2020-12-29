@@ -9,7 +9,7 @@ import { HistoryService } from "./services/history/history.service";
 
 di.registerClass(CursorSnapshotService, []);
 di.registerClass(ComponentReferenceService, []);
-di.registerClass(CursorSelectionService, []);
+di.registerClass(CursorSelectionService, [ComponentReferenceService]);
 di.registerClass(HistoryService, []);
 
 // calling mount will trigger constructors within each custom element

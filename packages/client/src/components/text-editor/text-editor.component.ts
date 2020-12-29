@@ -1,11 +1,20 @@
+import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
+import { CursorSelectionService } from "../../services/cursor-selection/cursor-selection.service";
 import { HistoryService } from "../../services/history/history.service";
 import { di } from "../../utils/dependency-injector";
+import { emit } from "../../utils/events";
 import { DEFAULT_CURSOR, EngineModel, EngineModelCursor } from "./core/engine-model";
 import { draftTextToModelLines } from "./core/helpers/draft-text-to-model";
 import { fileTextToModelLines } from "./core/helpers/file-text-to-model";
 import { modelToDraftText } from "./core/helpers/model-to-draft-text";
 import { SemanticOverlayComponent } from "./semantic-overlay/semantic-overlay.component";
 import "./text-editor.css";
+
+declare global {
+  interface GlobalEventHandlersEventMap {
+    "text-editor:model-changed": CustomEvent<EngineModel>;
+  }
+}
 
 /**
  * Event pipeline (from first handled to last)
@@ -46,6 +55,8 @@ export class TextEditorComponent extends HTMLElement {
   textAreaDom!: HTMLTextAreaElement;
   semanticOverlay!: SemanticOverlayComponent;
   historyService!: HistoryService;
+  componentReferenceService!: ComponentReferenceService;
+  cursorSelectionService!: CursorSelectionService;
   model!: EngineModel;
 
   connectedCallback() {
@@ -57,6 +68,8 @@ export class TextEditorComponent extends HTMLElement {
     this.textAreaDom = this.querySelector("textarea")!;
     this.semanticOverlay = this.querySelector("s2-semantic-overlay") as SemanticOverlayComponent;
     this.historyService = di.createShallow(HistoryService);
+    this.componentReferenceService = di.getSingleton(ComponentReferenceService);
+    this.cursorSelectionService = di.getSingleton(CursorSelectionService);
 
     this.handlePaste();
     this.handleCut();
@@ -84,6 +97,7 @@ export class TextEditorComponent extends HTMLElement {
       cursor: this.getCursor(),
     };
 
+    emit(this, "text-editor:model-changed", { detail: this.model });
     this.renderModel();
   }
 
@@ -128,6 +142,7 @@ export class TextEditorComponent extends HTMLElement {
     }
 
     this.semanticOverlay.updateModel(this.model);
+    this.componentReferenceService.statusBar.showCursor(modelCursor);
   }
 
   private handleInput() {
@@ -139,7 +154,16 @@ export class TextEditorComponent extends HTMLElement {
         event.preventDefault();
         event.stopPropagation();
 
-        const { row, col, rawStart, rawEnd } = this.model.cursor;
+        const cursorSelection = this.cursorSelectionService.getCurrentSelection();
+        if (cursorSelection.linkId) {
+          window.open(
+            `/?filename=${encodeURIComponent(`${cursorSelection.linkId}.md`)}`,
+            event.ctrlKey ? undefined : "_self"
+          );
+          return;
+        }
+
+        const { startRow: row, startCol: col, rawStart, rawEnd } = this.model.cursor;
 
         const line = currentModel.lines[row];
         const nextLineIndentation = line.sectionLevel * 2;
@@ -151,7 +175,7 @@ export class TextEditorComponent extends HTMLElement {
         event.preventDefault();
         event.stopPropagation();
 
-        const { row, col, rawStart, rawEnd } = this.model.cursor;
+        const { startRow: row, startCol: col, rawStart, rawEnd } = this.model.cursor;
 
         const line = currentModel.lines[row];
         const currentLineIndentation = line.indentation;
@@ -176,7 +200,7 @@ export class TextEditorComponent extends HTMLElement {
         event.preventDefault();
         event.stopPropagation();
 
-        const { row, col, rawStart, rawEnd } = this.model.cursor;
+        const { startRow: row, startCol: col, rawStart, rawEnd } = this.model.cursor;
 
         const line = currentModel.lines[row];
         const nextLine = currentModel.lines[row + 1];
@@ -223,7 +247,7 @@ export class TextEditorComponent extends HTMLElement {
     this.textAreaDom.addEventListener("cut", (e) => {
       e.preventDefault();
 
-      const { rawStart, rawEnd, row } = this.model.cursor;
+      const { rawStart, rawEnd, startRow: row } = this.model.cursor;
 
       if (rawStart !== rawEnd) {
         const cutText = this.textAreaDom.value.slice(rawStart, rawEnd);
@@ -276,19 +300,28 @@ export class TextEditorComponent extends HTMLElement {
     const { selectionStart, selectionEnd, selectionDirection } = this.textAreaDom;
 
     const draft = this.textAreaDom.value;
-    const draftBefore = draft.slice(0, selectionEnd);
+    const { row: endRow, col: endCol } = this.getRowCol(draft, selectionEnd);
+    const { row: startRow, col: startCol } = this.getRowCol(draft, selectionStart);
+
+    return {
+      startCol,
+      startRow,
+      endCol,
+      endRow,
+      rawStart: selectionStart,
+      rawEnd: selectionEnd,
+      direction: selectionDirection,
+    };
+  }
+
+  private getRowCol(text: string, offset: number): { row: number; col: number } {
+    const draftBefore = text.slice(0, offset);
     const row = draftBefore.split("").filter((char) => char === "\n").length;
     const lineEndBeforeIndex = draftBefore.lastIndexOf("\n");
     const draftLineBefore = draftBefore.slice(lineEndBeforeIndex + 1);
     const col = draftLineBefore.length;
 
-    return {
-      col,
-      row,
-      rawStart: selectionStart,
-      rawEnd: selectionEnd,
-      direction: selectionDirection,
-    };
+    return { row, col };
   }
 
   // TODO expose to global command for custom keybinding

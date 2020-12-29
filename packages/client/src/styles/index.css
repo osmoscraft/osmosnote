@@ -50,6 +50,10 @@ a {
   background-color: var(--base02);
 }
 
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--base04);
+}
+
 ::-webkit-scrollbar-corner {
   background-color: var(--base01);
 }

@@ -1,14 +1,30 @@
+import type { EngineModelCursor } from "../text-editor/core/engine-model";
 import "./status-bar.css";
 
 export class StatusBarComponent extends HTMLElement {
-  private outputDom!: HTMLOutputElement;
+  private messageOutputDom!: HTMLSpanElement;
+  private cursorStatusDom!: HTMLSpanElement;
 
   connectedCallback() {
-    this.innerHTML = /*html*/ `<output id="status-output">Online</output>`;
-    this.outputDom = this.querySelector("#status-output") as HTMLOutputElement;
+    this.innerHTML = /*html*/ `<output>
+      <span id="cursor-status"></span>
+      <span id="message-output"></span>
+    </output>`;
+    this.messageOutputDom = this.querySelector("#message-output") as HTMLOutputElement;
+    this.cursorStatusDom = this.querySelector("#cursor-status") as HTMLOutputElement;
   }
 
   showText(text: string) {
-    this.outputDom.innerText = `${new Date().toLocaleTimeString()} ${text}`;
+    this.messageOutputDom.innerText = `${new Date().toLocaleTimeString()} ${text}`;
+  }
+
+  showCursor(cursor: EngineModelCursor) {
+    if (cursor.rawStart === cursor.rawEnd) {
+      this.cursorStatusDom.innerText = `${cursor.startRow}:${cursor.startCol}`;
+    } else if (cursor.direction === "backward") {
+      this.cursorStatusDom.innerText = `${cursor.startRow}:${cursor.startCol}←${cursor.endRow}:${cursor.endCol}`;
+    } else {
+      this.cursorStatusDom.innerText = `${cursor.startRow}:${cursor.startCol}→${cursor.endRow}:${cursor.endCol}`;
+    }
   }
 }

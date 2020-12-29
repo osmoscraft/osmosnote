@@ -14,6 +14,11 @@ export const commandTree: RegisteredCommand = {
           executeOnComplete: true,
         },
         {
+          name: "Open",
+          key: "o",
+          requireArguments: true,
+        },
+        {
           name: "Format",
           key: "f",
           executeOnComplete: true,
@@ -24,11 +29,6 @@ export const commandTree: RegisteredCommand = {
           executeOnComplete: true,
         },
       ],
-    },
-    {
-      name: "Open",
-      key: "o",
-      requireArguments: true,
     },
     {
       name: "Insert",

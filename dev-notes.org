@@ -2,18 +2,22 @@
 ** TODO Cursor position is borken after formatting
 *** TODO when not on last line, "## " will push selection to bottom
 ** TODO ctrl backspace/delete is broken
-* TODO ctrl + D to select word under cursor
+* TODO a global command bus
+* TODO open link at point
+* TODO insert to editor, instead of to clipboard
+* TODO handle movement key on boundaries (home, end, left, right)
 * TODO compress history when there is no model change (skip all non-model change in the middle)
 * TODO git sync through shell script
 * TODO Ctrl+Enter to create note without closing existing
 * TODO Create note on the fly and return new ID in for current Note to use
 * TODO tab/shift-tab to push/pull indendation
-* TODO Atl + arrow to move line(s)
+* TODO Alt + arrow to move line(s)
 * TODO tagging system (need design)
 * TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer
 * TODO test
 
 ** Backlog
+* TODO ctrl + D to select word under cursor
 * TODO fix link selection color defect
 * TODO run command directly with hotkey
 * TODO expose config file in web for read/write
@@ -21,6 +25,7 @@
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 
 ** Finished
+* DONE cursor position in status bar
 * DONE cutting doesn't work
 * DONE cannot hit Enter in the middle of text (trimming too greedy)
 * DONE Delete from end of line is broken

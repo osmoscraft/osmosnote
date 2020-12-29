@@ -24,6 +24,7 @@ s2-text-editor:focus-within {
   outline: none;
   border: none;
   padding: 0;
+  cursor: auto; /* this prevents text cursor on scroll bar */
 
   color: transparent;
   caret-color: var(--base06);
@@ -33,7 +34,8 @@ s2-text-editor:focus-within {
 
 .text-editor-shared {
   border: 16px solid transparent;
-  border-bottom: 0;
+  border-bottom-width: 4px;
+  border-right-width: 4px;
   position: absolute;
   top: 0;
   width: 100%;

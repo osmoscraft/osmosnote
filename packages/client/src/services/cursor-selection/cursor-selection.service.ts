@@ -1,5 +1,6 @@
 import { S2_LINK_REGEX } from "../../components/content-editor/core/link.component";
 import { emit } from "../../utils/events";
+import type { ComponentReferenceService } from "../component-reference/component-reference.service";
 
 declare global {
   interface GlobalEventHandlersEventMap {
@@ -22,47 +23,45 @@ interface SimpleRange {
 }
 
 export class CursorSelectionService {
+  constructor(private componentRefs: ComponentReferenceService) {}
+
   eventTarget = new EventTarget() as HTMLElement; // cast to HTMLElement to get typing information
 
   private currentSelection: CursorSelection = {
     linkId: null,
   };
 
+  getCurrentSelection(): CursorSelection {
+    return this.currentSelection;
+  }
+
   init() {
-    document.addEventListener("selectionchange", (event) => {
-      const selection = getSelection();
-      const cursorRange = selection?.rangeCount ? selection?.getRangeAt(0) : undefined;
+    this.componentRefs.textEditor.addEventListener("text-editor:model-changed", (event) => {
+      const { startCol, startRow, endCol, endRow } = event.detail.cursor;
 
-      if (cursorRange?.commonAncestorContainer instanceof Text) {
-        const rawText = cursorRange.commonAncestorContainer?.textContent;
-        if (rawText) {
-          const links = this.getPatternRanges(rawText);
-          // for each link, if cursor falls within, emit found event
-          const selectedLink = links.find(
-            (link) => cursorRange.startOffset > link.range.start && cursorRange.endOffset < link.range.end
-          );
+      let eventDetail: CursorSelection = {
+        linkId: null,
+      };
 
-          let eventDetail: CursorSelection;
+      // only support single line link detection
+      if (startRow === endRow) {
+        const rowContent = event.detail.lines[startRow].draftRaw;
+        const links = this.getPatternRanges(rowContent);
 
-          if (selectedLink) {
-            eventDetail = {
-              linkId: selectedLink.id,
-            };
-          } else {
-            eventDetail = {
-              linkId: null,
-            };
-          }
+        const selectedLink = links.find((link) => startCol > link.range.start && endCol < link.range.end);
 
-          if (JSON.stringify(eventDetail) !== JSON.stringify(this.currentSelection)) {
-            this.currentSelection = { ...eventDetail };
-            console.log(`[cursor-selection] changed `, eventDetail);
-
-            emit(this.eventTarget, "cursor-selection:change", {
-              detail: eventDetail,
-            });
-          }
+        if (selectedLink) {
+          eventDetail.linkId = selectedLink.id;
         }
+      }
+
+      if (JSON.stringify(eventDetail) !== JSON.stringify(this.currentSelection)) {
+        this.currentSelection = { ...eventDetail };
+        console.log(`[cursor-selection] changed `, eventDetail);
+
+        emit(this.eventTarget, "cursor-selection:change", {
+          detail: eventDetail,
+        });
       }
     });
   }

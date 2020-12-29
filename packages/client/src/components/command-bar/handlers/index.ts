@@ -29,8 +29,8 @@ export interface CommandHandlerResult {
 
 export const commandHandlers: CommandHandlers = {
   "/": handleSlash,
-  o: handleOpenNote,
   i: handleInsertNote,
+  fo: handleOpenNote,
   fs: handleFileSave,
   ff: handleFileFormat,
   fy: handleFileCopyLink,
