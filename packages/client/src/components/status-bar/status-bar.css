@@ -1,7 +1,15 @@
 s2-status-bar {
   height: 32px;
   background-color: var(--base01);
+  padding: 0 16px;
+}
+
+.stsbar-output {
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  height: 100%;
+}
+
+.stsbar-spacer {
+  flex: 1 0 auto;
 }

@@ -6,9 +6,10 @@ export class StatusBarComponent extends HTMLElement {
   private cursorStatusDom!: HTMLSpanElement;
 
   connectedCallback() {
-    this.innerHTML = /*html*/ `<output>
-      <span id="cursor-status"></span>
-      <span id="message-output"></span>
+    this.innerHTML = /*html*/ `<output class="stsbar-output">
+    <span class="stsbar-message" id="message-output"></span>
+    <span class="stsbar-spacer"></span>
+    <span class="stsbar-cursor" id="cursor-status"></span>
     </output>`;
     this.messageOutputDom = this.querySelector("#message-output") as HTMLOutputElement;
     this.cursorStatusDom = this.querySelector("#cursor-status") as HTMLOutputElement;

@@ -1,5 +1,4 @@
 :tackling:
-* TODO ctrl backspace/delete is broken
 * TODO git sync through shell script
 
 :backlog:
@@ -10,8 +9,9 @@
 * TODO tab/shift-tab to push/pull indendation, implement as a command
 * TODO Alt + arrow to move line(s)
 * TODO ctrl + D to select word under cursor
-* TODO Cursor position is borken after formatting
-* TODO when not on last line, "## " will push selection to bottom
+* TODO decouple formatting from syntax parsing
+  ** TODO Cursor position is borken after formatting
+  ** TODO when not on last line, "## " will push selection to bottom
 * TODO tagging system (need design)
 * TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer
 * TODO test
@@ -19,8 +19,10 @@
 * TODO expose config file in web for read/write
 * TODO highlight todo and done keywords
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
+* TODO show color bar on left when line has formatting issues
 
 
+* DONE ctrl backspace/delete is broken
 * DONE handle movement key on boundaries (home)
 * DONE insert to editor, instead of to clipboard
 * DONE insert / directly, instead of to clipboard

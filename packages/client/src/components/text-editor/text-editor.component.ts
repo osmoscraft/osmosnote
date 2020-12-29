@@ -1,6 +1,7 @@
 import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
 import { CursorSelectionService } from "../../services/cursor-selection/cursor-selection.service";
 import { HistoryService } from "../../services/history/history.service";
+import { sendToClipboard } from "../../utils/clipboard";
 import { deepEqual } from "../../utils/deep-equal";
 import { di } from "../../utils/dependency-injector";
 import { emit } from "../../utils/events";
@@ -78,7 +79,7 @@ export class TextEditorComponent extends HTMLElement {
 
     this.handlePaste();
     this.handleCut();
-    this.handleInput();
+    this.handleKeydown();
     this.handleScroll();
     this.handleSelectionChange();
     this.handleUndoRedo();
@@ -165,7 +166,7 @@ export class TextEditorComponent extends HTMLElement {
     this.componentReferenceService.statusBar.showCursor(modelCursor);
   }
 
-  private handleInput() {
+  private handleKeydown() {
     this.textAreaDom.addEventListener("keydown", (event) => {
       const existingDraft = this.textAreaDom.value;
       const currentModel = this.model;
@@ -211,7 +212,13 @@ export class TextEditorComponent extends HTMLElement {
           this.textAreaDom.setRangeText("", rawStart - currentLineIndentation - deleteAdditional, rawStart, "end");
         } else {
           if (rawStart > 0) {
-            this.textAreaDom.setRangeText("", rawStart - 1, rawStart, "end");
+            if (event.ctrlKey) {
+              // delete back to a word begining
+              const distanceToWordStart = this.distanceToWordStart(line.draftRaw, col);
+              this.textAreaDom.setRangeText("", rawStart - distanceToWordStart, rawStart, "end");
+            } else {
+              this.textAreaDom.setRangeText("", rawStart - 1, rawStart, "end");
+            }
           }
         }
       }
@@ -230,14 +237,23 @@ export class TextEditorComponent extends HTMLElement {
           return;
         }
 
+        if (rawEnd === this.textAreaDom.value.length) {
+          return;
+        }
+
         if (col === line.draftRaw.length) {
           const nextLineIndentation = nextLine ? nextLine.indentation : 0;
 
           // delete all the indentation
-          this.textAreaDom.setRangeText("", rawStart, rawStart + 1 + nextLineIndentation, "end");
+          this.textAreaDom.setRangeText("", rawStart, rawStart + 1 + nextLineIndentation, "start");
         } else {
           if (nextLine || col < line.draftRaw.length) {
-            this.textAreaDom.setRangeText("", rawStart, rawStart + 1, "end");
+            if (event.ctrlKey) {
+              const distanceToWordEnd = this.distanceToWordEnd(line.draftRaw, col);
+              this.textAreaDom.setRangeText("", rawStart, rawStart + distanceToWordEnd, "start");
+            } else {
+              this.textAreaDom.setRangeText("", rawStart, rawStart + 1, "start");
+            }
           }
         }
       }
@@ -260,6 +276,9 @@ export class TextEditorComponent extends HTMLElement {
           const leftEdgeWithPadding = rawEnd - col + indentation;
           this.textAreaDom.setSelectionRange(leftEdgeWithPadding, leftEdgeWithPadding);
         }
+
+        // to reveal content
+        this.textAreaDom.scrollLeft = 0;
       }
     });
   }
@@ -272,12 +291,10 @@ export class TextEditorComponent extends HTMLElement {
       const contentChanged = !deepEqual(historyModel.lines, this.model.lines);
       const cursorChanged = !deepEqual(historyModel.cursor, this.model.cursor);
 
-      if (cursorChanged) {
-        if (contentChanged) {
-          this.historyService.push(JSON.stringify(this.model));
-        } else {
-          this.historyService.replace(JSON.stringify(this.model));
-        }
+      if (contentChanged) {
+        this.historyService.push(JSON.stringify(this.model));
+      } else if (cursorChanged) {
+        this.historyService.replace(JSON.stringify(this.model));
       }
     } else {
       this.historyService.push(JSON.stringify(this.model));
@@ -304,24 +321,23 @@ export class TextEditorComponent extends HTMLElement {
       e.preventDefault();
 
       const { rawStart, rawEnd, startRow: row } = this.model.cursor;
+      const modelLines = this.model.lines;
 
       if (rawStart !== rawEnd) {
         const cutText = this.textAreaDom.value.slice(rawStart, rawEnd);
 
-        try {
-          navigator.clipboard.writeText(cutText);
-          this.textAreaDom.setRangeText("", rawStart, rawEnd, "end");
-        } catch (error) {
-          console.log("clipboard permission denied");
-        }
+        sendToClipboard(cutText);
+        this.textAreaDom.setRangeText("", rawStart, rawEnd, "end");
       } else {
         const draft = this.textAreaDom.value;
         const contentBefore = draft.slice(0, rawStart);
         const prevLineEnd = contentBefore.lastIndexOf("\n");
 
-        const rawLines = draft.split("\n");
-        rawLines.splice(row, 1);
+        const rawLines = modelLines.map((line) => line.draftRaw);
+        const deletedLine = rawLines.splice(row, 1);
         this.textAreaDom.value = rawLines.join("\n");
+
+        sendToClipboard(deletedLine[0]);
         this.textAreaDom.setSelectionRange(prevLineEnd + 1, prevLineEnd + 1);
       }
     });
@@ -342,13 +358,16 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   private handleSelectionChange() {
-    // TODO consolidate with history manager
     document.addEventListener("selectionchange", (e) => {
       if (document.activeElement === this.textAreaDom) {
-        this.handleDraftChange();
-        this.takeSnapshot();
+        this.handleDomChange();
       }
     });
+  }
+
+  private handleDomChange() {
+    this.handleDraftChange();
+    this.takeSnapshot();
   }
 
   private getCursor(): EditorCursor {
@@ -377,6 +396,54 @@ export class TextEditorComponent extends HTMLElement {
     const col = draftLineBefore.length;
 
     return { row, col };
+  }
+
+  /**
+   * Start at offset and look backward, return the index of the first character of a word
+   */
+  private distanceToWordStart(text: string, startOffset: number): number {
+    const textBeforeCurosr = text.slice(0, startOffset);
+    let foundBoundary = false;
+    let foundContent = false;
+    let currentPosition = startOffset;
+
+    while (!foundBoundary) {
+      if (currentPosition === 0 || (foundContent && textBeforeCurosr[currentPosition - 1] === " ")) {
+        foundBoundary = true;
+        break;
+      }
+
+      if (textBeforeCurosr[currentPosition - 1] !== " ") {
+        foundContent = true;
+      }
+
+      currentPosition--;
+    }
+
+    return startOffset - currentPosition;
+  }
+
+  /**
+   * Start at offset and look forward, return the index of the last character of a word
+   */
+  private distanceToWordEnd(text: string, startOffset: number): number {
+    let foundBoundary = false;
+    let foundContent = false;
+    let currentPosition = startOffset;
+
+    while (!foundBoundary) {
+      if (text[currentPosition] !== " ") {
+        foundContent = true;
+      }
+
+      if (currentPosition === text.length - 1 || (foundContent && text[currentPosition + 1] === " ")) {
+        foundBoundary = true;
+      }
+
+      currentPosition++;
+    }
+
+    return currentPosition - startOffset;
   }
 
   // TODO expose to global command for custom keybinding

@@ -32,7 +32,7 @@ export function fileTextToModelLines(fileText: string): EditorLine[] {
       : parserContext.currentSectionLevel * 2;
 
     const headingPrefix = parserContext.isHeading ? `${"#".repeat(parserContext.currentSectionLevel)} ` : "";
-    const draftRaw = `${parserContext.indentation}${headingPrefix}${parserContext.innerText}`;
+    const draftRaw = `${" ".repeat(parserContext.indentation)}${headingPrefix}${parserContext.innerText}`;
 
     resultLines.push({
       fileRaw: line,

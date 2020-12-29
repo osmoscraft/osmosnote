@@ -2,6 +2,10 @@ export class HistoryService {
   private stack: string[] = [];
   private currentIndex = -1;
 
+  constructor() {
+    (window as any).historyService = this;
+  }
+
   /**
    * This will wipe out future versions
    */
