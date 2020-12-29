@@ -2,7 +2,6 @@ import { sendToClipboard } from "../../utils/clipboard";
 import { di } from "../../utils/dependency-injector";
 import { idToFilename } from "../../utils/id";
 import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
-import type { WithCursorSnapshotService } from "../../services/cursor-snapshot/cursor-snapshot.service";
 import "./command-bar.css";
 import { commandTree } from "./command-tree";
 import { commandHandlers } from "./handlers";
@@ -76,12 +75,6 @@ export class CommandBarComponent extends HTMLElement {
 
   private saveCurosr() {
     this.triggeringElement = document.activeElement;
-
-    const managedCursorComponent = this.triggeringElement?.closest("[data-managed-cursor]");
-    if (managedCursorComponent) {
-      (managedCursorComponent as WithCursorSnapshotService).cursorSnapshotService.save();
-      this.triggeringElement = managedCursorComponent;
-    }
   }
 
   private restoreCursor() {

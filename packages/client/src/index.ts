@@ -3,11 +3,9 @@ import { di } from "./utils/dependency-injector";
 import { filenameToId } from "./utils/id";
 import { getNoteConfigFromUrl } from "./utils/url";
 import { ComponentReferenceService } from "./services/component-reference/component-reference.service";
-import { CursorSnapshotService } from "./services/cursor-snapshot/cursor-snapshot.service";
 import { CursorSelectionService } from "./services/cursor-selection/cursor-selection.service";
 import { HistoryService } from "./services/history/history.service";
 
-di.registerClass(CursorSnapshotService, []);
 di.registerClass(ComponentReferenceService, []);
 di.registerClass(CursorSelectionService, [ComponentReferenceService]);
 di.registerClass(HistoryService, []);
