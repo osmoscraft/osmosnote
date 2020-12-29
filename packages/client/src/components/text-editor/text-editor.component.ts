@@ -24,6 +24,9 @@ declare global {
  * "keydown" - ENTER/BACKSPACE/DELETE
  *     manually update textarea > (trigger "selectionchange")
  *
+ * "keydown" - HOME
+ *
+ *     manually update selection > (trigger "selectionchange")
  * "keydown" - ARROW KEYS
  *     (trigger "selectionchange")
  *
@@ -63,7 +66,7 @@ export class TextEditorComponent extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
-    <textarea class="text-editor-shared text-editor-base" spellcheck="false" id="text-editor-base"></textarea>
+    <textarea autofocus class="text-editor-shared text-editor-base" spellcheck="false" id="text-editor-base"></textarea>
     <s2-syntax-overlay class="text-editor-shared text-syntax-overlay" id="text-syntax-overlay"></s2-syntax-overlay>
     `;
 
@@ -238,6 +241,26 @@ export class TextEditorComponent extends HTMLElement {
           }
         }
       }
+
+      if (event.key === "Home") {
+        event.preventDefault();
+        event.stopPropagation();
+
+        // use where cursor ends as the reference point
+        const { startRow, startCol, endRow, endCol, rawStart, rawEnd } = this.model.cursor;
+        const [row, col] = rawStart < rawEnd ? [endRow, endCol] : [startRow, startCol];
+        const indentation = this.model.lines[row].indentation;
+
+        if (col <= indentation) {
+          // if in padding zone, move to left edge
+          const leftEdge = rawEnd - col;
+          this.textAreaDom.setSelectionRange(leftEdge, leftEdge);
+        } else {
+          // if right to padding, move to padding end
+          const leftEdgeWithPadding = rawEnd - col + indentation;
+          this.textAreaDom.setSelectionRange(leftEdgeWithPadding, leftEdgeWithPadding);
+        }
+      }
     });
   }
 
@@ -256,8 +279,9 @@ export class TextEditorComponent extends HTMLElement {
           this.historyService.replace(JSON.stringify(this.model));
         }
       }
+    } else {
+      this.historyService.push(JSON.stringify(this.model));
     }
-    this.historyService.push(JSON.stringify(this.model));
   }
 
   private restoreSnapshot(model: EditorModel) {

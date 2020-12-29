@@ -1,13 +1,10 @@
 :tackling:
-* TODO insert to editor, instead of to clipboard
-* TODO insert / directly, instead of to clipboard
+* TODO ctrl backspace/delete is broken
+* TODO git sync through shell script
 
 :backlog:
-* TODO ctrl backspace/delete is broken
-* TODO handle movement key on boundaries (home, end, left, right)
-* TODO git sync through shell script
 * TODO support metadata field, e.g. url
-* TODO a global command bus
+* TODO centralize event handling: keyboard > global handler > call command or call component method
 * TODO Ctrl+Enter to create note without closing existing
 * TODO Create note on the fly and return new ID in for current Note to use
 * TODO tab/shift-tab to push/pull indendation, implement as a command
@@ -24,6 +21,9 @@
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 
 
+* DONE handle movement key on boundaries (home)
+* DONE insert to editor, instead of to clipboard
+* DONE insert / directly, instead of to clipboard
 * DONE fix link selection color defect
 * DONE clean up cursor snapshot service
 * DONE open link at point
