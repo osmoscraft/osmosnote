@@ -5,7 +5,7 @@ export const handleWindowTravel: CommandHandler = ({ input, context }) => {
 
   switch (windowChar) {
     case "e":
-      context.componentRefs.contentEditor.focus();
+      context.componentRefs.textEditor.focusTextArea();
       context.componentRefs.statusBar.showText(`[window] travelled to Editor`);
       break;
     case "r":

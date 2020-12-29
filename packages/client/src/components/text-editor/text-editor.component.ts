@@ -89,6 +89,10 @@ export class TextEditorComponent extends HTMLElement {
     this.takeSnapshot();
   }
 
+  focusTextArea() {
+    this.textAreaDom.focus();
+  }
+
   handleDraftChange(props?: { fixFormat?: boolean }) {
     // get model from draft
     const existingDraft = this.textAreaDom.value;
