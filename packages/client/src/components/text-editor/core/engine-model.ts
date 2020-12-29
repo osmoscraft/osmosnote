@@ -1,5 +1,5 @@
 export interface EngineModel {
-  cursor?: EngineModelCursor;
+  cursor: EngineModelCursor;
   lines: EngineModelLine[];
 }
 
@@ -25,3 +25,11 @@ export interface EngineModelCursor {
 }
 
 export const HEADING_PATTERN = /^(#{1,6}) (.*)/m; // e.g. # My title
+
+export const DEFAULT_CURSOR = {
+  rawStart: 0,
+  rawEnd: 0,
+  direction: "forward" as const,
+  row: 0,
+  col: 0,
+};

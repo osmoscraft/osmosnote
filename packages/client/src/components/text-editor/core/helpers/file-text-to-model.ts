@@ -1,6 +1,6 @@
 import { HEADING_PATTERN, EngineModelLine, EngineModel } from "../engine-model";
 
-export function fileTextToModel(fileText: string): EngineModel {
+export function fileTextToModelLines(fileText: string): EngineModelLine[] {
   // enforce unix style line ending.
   const rawLines = fileText.replaceAll("\r", "").split("\n");
 
@@ -48,7 +48,5 @@ export function fileTextToModel(fileText: string): EngineModel {
     });
   });
 
-  return {
-    lines: resultLines,
-  };
+  return resultLines;
 }

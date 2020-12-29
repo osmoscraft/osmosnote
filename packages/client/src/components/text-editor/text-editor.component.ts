@@ -1,8 +1,8 @@
 import { HistoryService } from "../../services/history/history.service";
 import { di } from "../../utils/dependency-injector";
-import type { EngineModel, EngineModelCursor } from "./core/engine-model";
-import { draftTextToModel } from "./core/helpers/draft-text-to-model";
-import { fileTextToModel } from "./core/helpers/file-text-to-model";
+import { DEFAULT_CURSOR, EngineModel, EngineModelCursor } from "./core/engine-model";
+import { draftTextToModelLines } from "./core/helpers/draft-text-to-model";
+import { fileTextToModelLines } from "./core/helpers/file-text-to-model";
 import { modelToDraftText } from "./core/helpers/model-to-draft-text";
 import { SemanticOverlayComponent } from "./semantic-overlay/semantic-overlay.component";
 import "./text-editor.css";
@@ -27,7 +27,7 @@ import "./text-editor.css";
  *     manually update textarea > (trigger "selectionchange")
  *
  * "cut"
- *     (trigger "selectionchange")
+ *     manually update textarea > (trigger "selectionchange")
  *
  * Drop external content
  *     (trigger "input") > (trigger "selectionchange")
@@ -46,7 +46,7 @@ export class TextEditorComponent extends HTMLElement {
   textAreaDom!: HTMLTextAreaElement;
   semanticOverlay!: SemanticOverlayComponent;
   historyService!: HistoryService;
-  cursor!: EngineModelCursor;
+  model!: EngineModel;
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
@@ -58,29 +58,33 @@ export class TextEditorComponent extends HTMLElement {
     this.semanticOverlay = this.querySelector("s2-semantic-overlay") as SemanticOverlayComponent;
     this.historyService = di.createShallow(HistoryService);
 
-    this.handlePasting();
+    this.handlePaste();
+    this.handleCut();
     this.handleInput();
     this.handleScroll();
-    this.handleCursor();
+    this.handleSelectionChange();
     this.handleUndoRedo();
   }
 
   loadFileText(fileText: string) {
-    const model = fileTextToModel(fileText);
-    this.renderModel(model);
-    this.updateCursor();
+    this.model = {
+      lines: fileTextToModelLines(fileText),
+      cursor: { ...DEFAULT_CURSOR },
+    };
+    this.renderModel();
 
-    this.takeSnapshot(model);
+    this.takeSnapshot();
   }
 
-  handleDraftChange(props?: { fixFormat?: boolean }): EngineModel {
+  handleDraftChange(props?: { fixFormat?: boolean }) {
     // get model from draft
     const existingDraft = this.textAreaDom.value;
-    const model = draftTextToModel(existingDraft, props?.fixFormat);
+    this.model = {
+      lines: draftTextToModelLines(existingDraft, props?.fixFormat),
+      cursor: this.getCursor(),
+    };
 
-    this.renderModel(model);
-
-    return model;
+    this.renderModel();
   }
 
   undo() {
@@ -103,27 +107,39 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   // render textarea and overlay with the model
-  private renderModel(model: EngineModel) {
+  private renderModel() {
     const existingDraft = this.textAreaDom.value;
-    const cleanDraft = modelToDraftText(model);
+    const cleanDraft = modelToDraftText(this.model);
 
+    // render text
     if (cleanDraft !== existingDraft) {
       this.textAreaDom.value = cleanDraft;
     }
 
-    this.semanticOverlay.updateModel(model);
+    // render cursor
+    const modelCursor = this.model.cursor;
+    const currentCursor = this.getCursor();
+    if (
+      currentCursor.rawStart !== modelCursor.rawStart &&
+      currentCursor.rawEnd !== modelCursor.rawEnd &&
+      currentCursor.direction !== modelCursor.direction
+    ) {
+      this.textAreaDom.setSelectionRange(modelCursor.rawStart, modelCursor.rawEnd, modelCursor.direction);
+    }
+
+    this.semanticOverlay.updateModel(this.model);
   }
 
   private handleInput() {
     this.textAreaDom.addEventListener("keydown", (event) => {
       const existingDraft = this.textAreaDom.value;
-      const currentModel = draftTextToModel(existingDraft);
+      const currentModel = this.model;
 
       if (event.key === "Enter") {
         event.preventDefault();
         event.stopPropagation();
 
-        const { row, col, rawStart, rawEnd } = this.cursor;
+        const { row, col, rawStart, rawEnd } = this.model.cursor;
 
         const line = currentModel.lines[row];
         const nextLineIndentation = line.sectionLevel * 2;
@@ -135,15 +151,17 @@ export class TextEditorComponent extends HTMLElement {
         event.preventDefault();
         event.stopPropagation();
 
-        const { row, col, rawStart, rawEnd } = this.cursor;
+        const { row, col, rawStart, rawEnd } = this.model.cursor;
 
         const line = currentModel.lines[row];
         const currentLineIndentation = line.indentation;
 
-        if (col === currentLineIndentation) {
-          // TODO handle delete selection
-          if (rawStart !== rawEnd) return;
+        if (rawStart !== rawEnd) {
+          this.textAreaDom.setRangeText("", rawStart, rawEnd);
+          return;
+        }
 
+        if (col === currentLineIndentation) {
           // delete all the indentation
           const deleteAdditional = existingDraft[rawStart - currentLineIndentation - 1] === "\n" ? 1 : 0;
           this.textAreaDom.setRangeText("", rawStart - currentLineIndentation - deleteAdditional, rawStart, "end");
@@ -158,15 +176,17 @@ export class TextEditorComponent extends HTMLElement {
         event.preventDefault();
         event.stopPropagation();
 
-        const { row, col, rawStart, rawEnd } = this.cursor;
+        const { row, col, rawStart, rawEnd } = this.model.cursor;
 
         const line = currentModel.lines[row];
         const nextLine = currentModel.lines[row + 1];
 
-        if (col === line.draftRaw.length) {
-          // TODO handle delete selection
-          if (rawStart !== rawEnd) return;
+        if (rawStart !== rawEnd) {
+          this.textAreaDom.setRangeText("", rawStart, rawEnd);
+          return;
+        }
 
+        if (col === line.draftRaw.length) {
           const nextLineIndentation = nextLine ? nextLine.indentation : 0;
 
           // delete all the indentation
@@ -180,16 +200,13 @@ export class TextEditorComponent extends HTMLElement {
     });
   }
 
-  private takeSnapshot(model: EngineModel) {
-    model.cursor = this.cursor;
-    this.historyService.push(JSON.stringify(model));
+  private takeSnapshot() {
+    this.historyService.push(JSON.stringify(this.model));
   }
 
   private restoreSnapshot(model: EngineModel) {
-    this.renderModel(model);
-    if (model.cursor) {
-      this.textAreaDom.setSelectionRange(model.cursor.rawStart, model.cursor.rawEnd, model.cursor.direction);
-    }
+    this.model = model;
+    this.renderModel();
   }
 
   private handleScroll() {
@@ -202,7 +219,27 @@ export class TextEditorComponent extends HTMLElement {
     });
   }
 
-  private handlePasting() {
+  private handleCut() {
+    this.textAreaDom.addEventListener("cut", (e) => {
+      e.preventDefault();
+
+      const { rawStart, rawEnd } = this.model.cursor;
+
+      // TODO handle whole line cut
+      if (rawStart !== rawEnd) {
+        const cutText = this.textAreaDom.value.slice(rawStart, rawEnd);
+
+        try {
+          navigator.clipboard.writeText(cutText);
+          this.textAreaDom.setRangeText("", rawStart, rawEnd, "end");
+        } catch (error) {
+          console.log("clipboard permission denied");
+        }
+      }
+    });
+  }
+
+  private handlePaste() {
     this.textAreaDom.addEventListener("paste", (e) => {
       e.preventDefault();
 
@@ -210,26 +247,24 @@ export class TextEditorComponent extends HTMLElement {
       const cleanText = rawText?.replaceAll("\r", ""); // adhere to linux convention
 
       // TODO consider replace tab characters \t
-      const { rawStart, rawEnd } = this.cursor;
+      const { rawStart, rawEnd } = this.model.cursor;
       if (cleanText) {
         this.textAreaDom.setRangeText(cleanText, rawStart, rawEnd, "end");
       }
     });
   }
 
-  private handleCursor() {
-    // TODO implement
+  private handleSelectionChange() {
     // TODO consolidate with history manager
     document.addEventListener("selectionchange", (e) => {
       if (document.activeElement === this.textAreaDom) {
-        this.updateCursor();
-        const model = this.handleDraftChange();
-        this.takeSnapshot(model);
+        this.handleDraftChange();
+        this.takeSnapshot();
       }
     });
   }
 
-  private updateCursor() {
+  private getCursor(): EngineModelCursor {
     const { selectionStart, selectionEnd, selectionDirection } = this.textAreaDom;
 
     const draft = this.textAreaDom.value;
@@ -239,7 +274,7 @@ export class TextEditorComponent extends HTMLElement {
     const draftLineBefore = draftBefore.slice(lineEndBeforeIndex + 1);
     const col = draftLineBefore.length;
 
-    this.cursor = {
+    return {
       col,
       row,
       rawStart: selectionStart,

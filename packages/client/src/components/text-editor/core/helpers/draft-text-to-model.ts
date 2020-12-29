@@ -1,6 +1,6 @@
 import { HEADING_PATTERN, EngineModelLine, EngineModel } from "../engine-model";
 
-export function draftTextToModel(draftText: string, fixFormat?: boolean): EngineModel {
+export function draftTextToModelLines(draftText: string, fixFormat?: boolean): EngineModelLine[] {
   // assumption: line ends are normalized to unix style
   const rawLines = draftText.split("\n");
 
@@ -69,7 +69,5 @@ export function draftTextToModel(draftText: string, fixFormat?: boolean): Engine
     });
   });
 
-  return {
-    lines: resultLines,
-  };
+  return resultLines;
 }

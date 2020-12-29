@@ -20,6 +20,7 @@
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 
 ** Finished
+* DONE cutting doesn't work
 * DONE cannot hit Enter in the middle of text (trimming too greedy)
 * DONE Delete from end of line is broken
 * DONE Handle enter, backspace, delete manually at semantic boundary

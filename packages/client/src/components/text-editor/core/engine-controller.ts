@@ -1,5 +1,5 @@
 import type { EngineModel } from "./engine-model";
-import { fileTextToModel } from "./helpers/file-text-to-model";
+import { fileTextToModelLines } from "./helpers/file-text-to-model";
 
 export interface EngineInputEvent {
   key: KeyboardEvent["key"];
@@ -13,7 +13,7 @@ export class EngineController {
 
   initialize(fileText: string) {
     // parse content and populate model
-    this.model = fileTextToModel(fileText);
+    // this.model = fileTextToModel(fileText);
   }
 
   handleCursor() {}
