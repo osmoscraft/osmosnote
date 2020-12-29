@@ -7,6 +7,28 @@ import { modelToDraftText } from "./core/helpers/model-to-draft-text";
 import { SemanticOverlayComponent } from "./semantic-overlay/semantic-overlay.component";
 import "./text-editor.css";
 
+/**
+ * Event order (Chromium only)
+ *
+ * Pasting
+ *   keydown > paste > input > selectionchange
+ *
+ * Cutting
+ *   keydown > beforeinput > input
+ *
+ * Typing
+ *   keydown > beforeinput > input > selectionchange
+ *
+ * Drop external content
+ *   beforeinput > input > selectionchange > selectionchange
+ *
+ * Drag and Drop selected content
+ *   beforeinput > input > beforeinput > input > selectionchange > selectionchange
+ */
+
+/**
+ *
+ */
 export class TextEditorComponent extends HTMLElement {
   textAreaDom!: HTMLTextAreaElement;
   semanticOverlay!: SemanticOverlayComponent;
@@ -170,7 +192,19 @@ export class TextEditorComponent extends HTMLElement {
       const rawText = e.clipboardData?.getData("text");
       const cleanText = rawText?.replaceAll("\r", ""); // adhere to linux convention
 
-      document.execCommand("insertText", false, cleanText);
+      // TODO consider replace tab characters \t
+      const { rawStart, rawEnd } = this.cursor;
+      if (cleanText) {
+        const existingDraft = this.textAreaDom.value;
+        const model = draftTextToModel(existingDraft);
+        this.takeSnapshot(model);
+        this.textAreaDom.setRangeText(cleanText, rawStart, rawEnd, "end");
+        const newDraft = this.textAreaDom.value;
+        const newModel = draftTextToModel(newDraft);
+        this.handleModelChange(newModel);
+      }
+
+      // document.execCommand("insertText", false, cleanText);
     });
   }
 

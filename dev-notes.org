@@ -21,6 +21,7 @@
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 
 ** Finished
+* DONE pasting is not managed by history
 * DONE Defer formatting until file save
 * DONE undo/redo manager
 * DONE fix double pasting issue due to source format
