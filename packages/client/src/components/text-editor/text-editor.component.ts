@@ -14,10 +14,13 @@ import "./text-editor.css";
  *   keydown > paste > input > selectionchange
  *
  * Cutting
- *   keydown > beforeinput > input
+ *   keydown > cut > beforeinput > input
  *
  * Typing
  *   keydown > beforeinput > input > selectionchange
+ *
+ * Arrow key
+ *   keydown > selectionchange
  *
  * Drop external content
  *   beforeinput > input > selectionchange > selectionchange
@@ -57,16 +60,19 @@ export class TextEditorComponent extends HTMLElement {
   loadFileText(fileText: string) {
     const model = fileTextToModel(fileText);
     this.handleModelChange(model);
-    this.takeSnapshot(model);
     this.updateCursor();
   }
 
   format() {
     const existingDraft = this.textAreaDom.value;
     const model = draftTextToModel(existingDraft, true);
-    this.takeSnapshot(model);
 
     this.handleModelChange(model);
+
+    const newDraft = this.textAreaDom.value;
+    const newModel = draftTextToModel(newDraft, true);
+
+    this.takeSnapshot(newModel);
   }
 
   undo() {
@@ -82,6 +88,8 @@ export class TextEditorComponent extends HTMLElement {
     const redoResult = this.historyService.redo();
     if (redoResult !== null) {
       const model: EngineModel = JSON.parse(redoResult);
+      console.log(model);
+
       this.restoreSnapshot(model);
     }
   }
@@ -235,6 +243,11 @@ export class TextEditorComponent extends HTMLElement {
       rawEnd: selectionEnd,
       direction: selectionDirection,
     };
+
+    const newDraft = this.textAreaDom.value;
+    const newModel = draftTextToModel(newDraft, true);
+
+    this.takeSnapshot(newModel);
   }
 
   // TODO expose to global command for custom keybinding

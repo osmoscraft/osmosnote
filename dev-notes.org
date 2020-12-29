@@ -3,7 +3,6 @@
 ** TODO Cursor position is borken after formatting
 ** TODO cannot hit Enter in the middle of text (trimming too greedy)
 ** TODO Handle enter, backspace, delete manually at semantic boundary
-* TODO manage cursor for undo redo
 * TODO git sync through shell script
 * TODO Ctrl+Enter to create note without closing existing
 * TODO Create note on the fly and return new ID in for current Note to use
@@ -21,6 +20,8 @@
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 
 ** Finished
+* DONE history does not include the last edit (cannot undo then redo)
+* DONE manage cursor for undo redo
 * DONE pasting is not managed by history
 * DONE Defer formatting until file save
 * DONE undo/redo manager
