@@ -223,9 +223,8 @@ export class TextEditorComponent extends HTMLElement {
     this.textAreaDom.addEventListener("cut", (e) => {
       e.preventDefault();
 
-      const { rawStart, rawEnd } = this.model.cursor;
+      const { rawStart, rawEnd, row } = this.model.cursor;
 
-      // TODO handle whole line cut
       if (rawStart !== rawEnd) {
         const cutText = this.textAreaDom.value.slice(rawStart, rawEnd);
 
@@ -235,6 +234,15 @@ export class TextEditorComponent extends HTMLElement {
         } catch (error) {
           console.log("clipboard permission denied");
         }
+      } else {
+        const draft = this.textAreaDom.value;
+        const contentBefore = draft.slice(0, rawStart);
+        const prevLineEnd = contentBefore.lastIndexOf("\n");
+
+        const rawLines = draft.split("\n");
+        rawLines.splice(row, 1);
+        this.textAreaDom.value = rawLines.join("\n");
+        this.textAreaDom.setSelectionRange(prevLineEnd + 1, prevLineEnd + 1);
       }
     });
   }
