@@ -41,6 +41,6 @@ export class LineOverlayComponent extends HTMLElement {
   }
 }
 
-const LINK_PATTERN = /\[([^\(]+)\]\(([^\[]\d+)\)/g; // e.g. [Some title](200012300630)
+export const LINK_PATTERN = /\[([^\(]+)\]\(([^\[]\d+)\)/g; // e.g. [Some title](200012300630)
 const LINK_REPLACER = (_match: string, title: string, id: string) =>
   /*html*/ `<s2-link-overlay data-id="${id}" data-title="${title}"></s2-link-overlay>`;

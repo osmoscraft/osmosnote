@@ -25,7 +25,6 @@ async function loadNote() {
     // load existing note
     const id = filenameToId(filename);
     const result = await loadExistingNote(id);
-    componentRefs.contentEditor.loadMarkdown(result.note.content);
 
     // experimental
     componentRefs.textEditor.loadFileText(result.note.content);
@@ -35,7 +34,6 @@ async function loadNote() {
   } else {
     // prepare for new note
     componentRefs.documentHeader.setTitle(title ?? `New note on ${new Date().toLocaleString()}`);
-    componentRefs.contentEditor.loadMarkdown(content ?? `An idea starts here...`);
 
     // experimental
     componentRefs.textEditor.loadFileText(content ?? "");

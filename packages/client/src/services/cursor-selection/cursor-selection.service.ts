@@ -1,4 +1,4 @@
-import { S2_LINK_REGEX } from "../../components/content-editor/core/link.component";
+import { LINK_PATTERN } from "../../components/text-editor/core/overlay/line-overlay.component";
 import { emit } from "../../utils/events";
 import type { ComponentReferenceService } from "../component-reference/component-reference.service";
 
@@ -67,7 +67,7 @@ export class CursorSelectionService {
   }
 
   private getPatternRanges(text: string): LinkWithRange[] {
-    const linkPattern = S2_LINK_REGEX;
+    const linkPattern = LINK_PATTERN;
     const matchResult = text.matchAll(linkPattern);
     const linksWithRange: LinkWithRange[] = [...matchResult].map((result) => ({
       id: result[2], // second capture group is id
