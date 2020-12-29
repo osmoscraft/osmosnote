@@ -6,7 +6,7 @@ export function modelToOverlayHtml(model: EngineModel): string {
   const html = model.lines
     .map((line, i) => {
       return /*html*/ `<s2-line-overlay
-        data-raw="${line.raw}"
+        data-raw="${line.fileRaw}"
         data-section-level="${line.sectionLevel}"
         data-is-invalid="${line.isFormatNeeded}"
         data-is-heading="${line.isHeading}"

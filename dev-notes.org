@@ -1,8 +1,7 @@
 * TODO replace contenteditable with textarea
-** TODO Delete from end of line is broken
 ** TODO Cursor position is borken after formatting
-** TODO cannot hit Enter in the middle of text (trimming too greedy)
-** TODO Handle enter, backspace, delete manually at semantic boundary
+*** TODO when not on last line, "## " will push selection to bottom
+** TODO ctrl backspace/delete is broken
 * TODO git sync through shell script
 * TODO Ctrl+Enter to create note without closing existing
 * TODO Create note on the fly and return new ID in for current Note to use
@@ -20,6 +19,9 @@
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 
 ** Finished
+* DONE cannot hit Enter in the middle of text (trimming too greedy)
+* DONE Delete from end of line is broken
+* DONE Handle enter, backspace, delete manually at semantic boundary
 * DONE history does not include the last edit (cannot undo then redo)
 * DONE manage cursor for undo redo
 * DONE pasting is not managed by history

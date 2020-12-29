@@ -38,8 +38,6 @@ export class TextEditorComponent extends HTMLElement {
   historyService!: HistoryService;
   cursor!: EngineModelCursor;
 
-  private needUpdateCursor = false;
-
   connectedCallback() {
     this.innerHTML = /*html*/ `
     <textarea class="text-editor-shared text-editor-base" spellcheck="false" id="text-editor-base"></textarea>
@@ -59,20 +57,20 @@ export class TextEditorComponent extends HTMLElement {
 
   loadFileText(fileText: string) {
     const model = fileTextToModel(fileText);
-    this.handleModelChange(model);
+    this.renderModel(model);
     this.updateCursor();
+
+    this.takeSnapshot(model);
   }
 
-  format() {
+  handleDraftChange(props?: { fixFormat?: boolean }): EngineModel {
+    // get model from draft
     const existingDraft = this.textAreaDom.value;
-    const model = draftTextToModel(existingDraft, true);
+    const model = draftTextToModel(existingDraft, props?.fixFormat);
 
-    this.handleModelChange(model);
+    this.renderModel(model);
 
-    const newDraft = this.textAreaDom.value;
-    const newModel = draftTextToModel(newDraft, true);
-
-    this.takeSnapshot(newModel);
+    return model;
   }
 
   undo() {
@@ -94,7 +92,8 @@ export class TextEditorComponent extends HTMLElement {
     }
   }
 
-  private handleModelChange(model: EngineModel) {
+  // redner textarea and overlay with the model
+  private renderModel(model: EngineModel) {
     const existingDraft = this.textAreaDom.value;
     const cleanDraft = modelToDraftText(model);
 
@@ -110,11 +109,6 @@ export class TextEditorComponent extends HTMLElement {
       const existingDraft = this.textAreaDom.value;
       const currentModel = draftTextToModel(existingDraft);
 
-      if (["Delete", "Backspace"].includes(event.key)) {
-        // patch due to https://bugs.chromium.org/p/chromium/issues/detail?id=725890
-        this.needUpdateCursor = true;
-      }
-
       if (event.key === "Enter") {
         event.preventDefault();
         event.stopPropagation();
@@ -125,10 +119,12 @@ export class TextEditorComponent extends HTMLElement {
         const nextLineIndentation = line.sectionLevel * 2;
 
         this.textAreaDom.setRangeText("\n" + " ".repeat(nextLineIndentation), rawStart, rawEnd, "end");
-        this.format();
       }
 
       if (event.key === "Backspace") {
+        event.preventDefault();
+        event.stopPropagation();
+
         const { row, col, rawStart, rawEnd } = this.cursor;
 
         const line = currentModel.lines[row];
@@ -138,36 +134,43 @@ export class TextEditorComponent extends HTMLElement {
           // TODO handle delete selection
           if (rawStart !== rawEnd) return;
 
-          event.preventDefault();
-          event.stopPropagation();
-
           // delete all the indentation
           const deleteAdditional = existingDraft[rawStart - currentLineIndentation - 1] === "\n" ? 1 : 0;
           this.textAreaDom.setRangeText("", rawStart - currentLineIndentation - deleteAdditional, rawStart, "end");
-
-          this.format();
+        } else {
+          if (rawStart > 0) {
+            this.textAreaDom.setRangeText("", rawStart - 1, rawStart, "end");
+          }
         }
       }
 
-      // TODO handle delete key
-    });
+      if (event.key === "Delete") {
+        event.preventDefault();
+        event.stopPropagation();
 
-    this.textAreaDom.addEventListener("beforeinput", () => {
-      const existingDraft = this.textAreaDom.value;
-      const model = draftTextToModel(existingDraft);
-      this.takeSnapshot(model);
+        const { row, col, rawStart, rawEnd } = this.cursor;
+
+        const line = currentModel.lines[row];
+        const nextLine = currentModel.lines[row + 1];
+
+        if (col === line.draftRaw.length) {
+          // TODO handle delete selection
+          if (rawStart !== rawEnd) return;
+
+          const nextLineIndentation = nextLine ? nextLine.indentation : 0;
+
+          // delete all the indentation
+          this.textAreaDom.setRangeText("", rawStart, rawStart + 1 + nextLineIndentation, "end");
+        } else {
+          if (nextLine || col < line.draftRaw.length) {
+            this.textAreaDom.setRangeText("", rawStart, rawStart + 1, "end");
+          }
+        }
+      }
     });
 
     this.textAreaDom.addEventListener("input", () => {
-      const existingDraft = this.textAreaDom.value;
-      const model = draftTextToModel(existingDraft);
-
-      this.handleModelChange(model);
-
-      if (this.needUpdateCursor) {
-        this.updateCursor();
-        this.needUpdateCursor = false;
-      }
+      this.handleDraftChange();
     });
   }
 
@@ -177,7 +180,7 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   private restoreSnapshot(model: EngineModel) {
-    this.handleModelChange(model);
+    this.renderModel(model);
     if (model.cursor) {
       this.textAreaDom.setSelectionRange(model.cursor.rawStart, model.cursor.rawEnd, model.cursor.direction);
     }
@@ -203,16 +206,11 @@ export class TextEditorComponent extends HTMLElement {
       // TODO consider replace tab characters \t
       const { rawStart, rawEnd } = this.cursor;
       if (cleanText) {
-        const existingDraft = this.textAreaDom.value;
-        const model = draftTextToModel(existingDraft);
-        this.takeSnapshot(model);
         this.textAreaDom.setRangeText(cleanText, rawStart, rawEnd, "end");
         const newDraft = this.textAreaDom.value;
         const newModel = draftTextToModel(newDraft);
-        this.handleModelChange(newModel);
+        this.renderModel(newModel);
       }
-
-      // document.execCommand("insertText", false, cleanText);
     });
   }
 
@@ -220,8 +218,11 @@ export class TextEditorComponent extends HTMLElement {
     // TODO implement
     // TODO consolidate with history manager
     document.addEventListener("selectionchange", (e) => {
+      console.log("selection change!!");
       if (document.activeElement === this.textAreaDom) {
         this.updateCursor();
+        const model = this.handleDraftChange();
+        this.takeSnapshot(model);
       }
     });
   }
@@ -243,11 +244,6 @@ export class TextEditorComponent extends HTMLElement {
       rawEnd: selectionEnd,
       direction: selectionDirection,
     };
-
-    const newDraft = this.textAreaDom.value;
-    const newModel = draftTextToModel(newDraft, true);
-
-    this.takeSnapshot(newModel);
   }
 
   // TODO expose to global command for custom keybinding

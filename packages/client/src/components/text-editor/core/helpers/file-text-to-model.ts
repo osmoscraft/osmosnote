@@ -31,8 +31,12 @@ export function fileTextToModel(fileText: string): EngineModel {
       ? parserContext.currentSectionLevel - 1
       : parserContext.currentSectionLevel * 2;
 
+    const headingPrefix = parserContext.isHeading ? `${"#".repeat(parserContext.currentSectionLevel)} ` : "";
+    const draftRaw = `${parserContext.indentation}${headingPrefix}${parserContext.innerText}`;
+
     resultLines.push({
-      raw: line,
+      fileRaw: line,
+      draftRaw,
       innerText: parserContext.innerText,
       isEmpty: parserContext.isEmpty,
       isHeading: parserContext.isHeading,

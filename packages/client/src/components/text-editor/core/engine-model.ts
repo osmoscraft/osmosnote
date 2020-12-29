@@ -4,7 +4,8 @@ export interface EngineModel {
 }
 
 export interface EngineModelLine {
-  raw: string;
+  fileRaw: string;
+  draftRaw: string;
   innerText: string;
   isEmpty: boolean;
   isHeading: boolean;

@@ -56,7 +56,8 @@ export function draftTextToModel(draftText: string, fixFormat?: boolean): Engine
     parserContext.isEmpty = !raw.length;
 
     resultLines.push({
-      raw,
+      fileRaw: raw,
+      draftRaw: line,
       innerText: parserContext.innerText,
       isEmpty: parserContext.isEmpty,
       isHeading: parserContext.isHeading,
