@@ -1,4 +1,4 @@
-import { LINK_PATTERN } from "../../components/text-editor/core/overlay/line-overlay.component";
+import { LINK_PATTERN } from "../../components/text-editor/overlay/parts/line-overlay.component";
 import { emit } from "../../utils/events";
 import type { ComponentReferenceService } from "../component-reference/component-reference.service";
 

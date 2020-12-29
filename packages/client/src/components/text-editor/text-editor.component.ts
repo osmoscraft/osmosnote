@@ -4,16 +4,16 @@ import { HistoryService } from "../../services/history/history.service";
 import { deepEqual } from "../../utils/deep-equal";
 import { di } from "../../utils/dependency-injector";
 import { emit } from "../../utils/events";
-import { DEFAULT_CURSOR, EngineModel, EngineModelCursor } from "./core/engine-model";
-import { draftTextToModelLines } from "./core/helpers/draft-text-to-model";
-import { fileTextToModelLines } from "./core/helpers/file-text-to-model";
-import { modelToDraftText } from "./core/helpers/model-to-draft-text";
-import { SemanticOverlayComponent } from "./semantic-overlay/semantic-overlay.component";
+import { DEFAULT_CURSOR, EditorModel, EditorCursor } from "./model/editor-model";
+import { draftTextToModelLines } from "./model/helpers/draft-text-to-model";
+import { fileTextToModelLines } from "./model/helpers/file-text-to-model";
+import { modelToDraftText } from "./model/helpers/model-to-draft-text";
+import { SyntaxOverlayComponent } from "./overlay/syntax-overlay.component";
 import "./text-editor.css";
 
 declare global {
   interface GlobalEventHandlersEventMap {
-    "text-editor:model-changed": CustomEvent<EngineModel>;
+    "text-editor:model-changed": CustomEvent<EditorModel>;
   }
 }
 
@@ -54,20 +54,20 @@ declare global {
  */
 export class TextEditorComponent extends HTMLElement {
   textAreaDom!: HTMLTextAreaElement;
-  semanticOverlay!: SemanticOverlayComponent;
+  semanticOverlay!: SyntaxOverlayComponent;
   historyService!: HistoryService;
   componentReferenceService!: ComponentReferenceService;
   cursorSelectionService!: CursorSelectionService;
-  model!: EngineModel;
+  model!: EditorModel;
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
     <textarea class="text-editor-shared text-editor-base" spellcheck="false" id="text-editor-base"></textarea>
-    <s2-semantic-overlay class="text-editor-shared text-semantic-overlay" id="text-semantic-overlay"></s2-semantic-overlay>
+    <s2-syntax-overlay class="text-editor-shared text-syntax-overlay" id="text-syntax-overlay"></s2-syntax-overlay>
     `;
 
     this.textAreaDom = this.querySelector("textarea")!;
-    this.semanticOverlay = this.querySelector("s2-semantic-overlay") as SemanticOverlayComponent;
+    this.semanticOverlay = this.querySelector("s2-syntax-overlay") as SyntaxOverlayComponent;
     this.historyService = di.createShallow(HistoryService);
     this.componentReferenceService = di.getSingleton(ComponentReferenceService);
     this.cursorSelectionService = di.getSingleton(CursorSelectionService);
@@ -109,7 +109,7 @@ export class TextEditorComponent extends HTMLElement {
   undo() {
     const undoResult = this.historyService.undo();
     if (undoResult !== null) {
-      const model: EngineModel = JSON.parse(undoResult);
+      const model: EditorModel = JSON.parse(undoResult);
       console.log(model);
       this.restoreSnapshot(model);
     }
@@ -118,7 +118,7 @@ export class TextEditorComponent extends HTMLElement {
   redo() {
     const redoResult = this.historyService.redo();
     if (redoResult !== null) {
-      const model: EngineModel = JSON.parse(redoResult);
+      const model: EditorModel = JSON.parse(redoResult);
       console.log(model);
 
       this.restoreSnapshot(model);
@@ -232,7 +232,7 @@ export class TextEditorComponent extends HTMLElement {
   private takeSnapshot() {
     const historyString = this.historyService.peek();
     if (historyString) {
-      const historyModel = JSON.parse(historyString) as EngineModel;
+      const historyModel = JSON.parse(historyString) as EditorModel;
 
       const contentChanged = !deepEqual(historyModel.lines, this.model.lines);
       const cursorChanged = !deepEqual(historyModel.cursor, this.model.cursor);
@@ -248,7 +248,7 @@ export class TextEditorComponent extends HTMLElement {
     this.historyService.push(JSON.stringify(this.model));
   }
 
-  private restoreSnapshot(model: EngineModel) {
+  private restoreSnapshot(model: EditorModel) {
     this.model = model;
     this.renderModel();
   }
@@ -316,7 +316,7 @@ export class TextEditorComponent extends HTMLElement {
     });
   }
 
-  private getCursor(): EngineModelCursor {
+  private getCursor(): EditorCursor {
     const { selectionStart, selectionEnd, selectionDirection } = this.textAreaDom;
 
     const draft = this.textAreaDom.value;
@@ -362,4 +362,4 @@ export class TextEditorComponent extends HTMLElement {
   }
 }
 
-customElements.define("s2-semantic-overlay", SemanticOverlayComponent);
+customElements.define("s2-syntax-overlay", SyntaxOverlayComponent);

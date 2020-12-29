@@ -1,6 +1,6 @@
-import { HEADING_PATTERN, EngineModelLine, EngineModel } from "../engine-model";
+import { EditorLine, HEADING_PATTERN } from "../editor-model";
 
-export function draftTextToModelLines(draftText: string, fixFormat?: boolean): EngineModelLine[] {
+export function draftTextToModelLines(draftText: string, fixFormat?: boolean): EditorLine[] {
   // assumption: line ends are normalized to unix style
   const rawLines = draftText.split("\n");
 
@@ -13,7 +13,7 @@ export function draftTextToModelLines(draftText: string, fixFormat?: boolean): E
     isInvalid: false,
   };
 
-  const resultLines: EngineModelLine[] = [];
+  const resultLines: EditorLine[] = [];
 
   rawLines.forEach((line) => {
     // reset context

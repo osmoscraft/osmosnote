@@ -2,7 +2,7 @@ s2-text-editor[data-debug] .text-editor-base {
   color: pink;
   width: 50%;
 }
-s2-text-editor[data-debug] s2-semantic-overlay {
+s2-text-editor[data-debug] s2-syntax-overlay {
   width: 50%;
   right: 0;
   pointer-events: auto;

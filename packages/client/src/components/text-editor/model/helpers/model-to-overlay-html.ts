@@ -1,8 +1,8 @@
-import type { EngineModel } from "../engine-model";
-import { LineOverlayComponent } from "../overlay/line-overlay.component";
-import { LinkOverlayComponent } from "../overlay/link-overlay.component";
+import type { EditorModel } from "../editor-model";
+import { LineOverlayComponent } from "../../overlay/parts/line-overlay.component";
+import { LinkOverlayComponent } from "../../overlay/parts/link-overlay.component";
 
-export function modelToOverlayHtml(model: EngineModel): string {
+export function modelToOverlayHtml(model: EditorModel): string {
   const html = model.lines
     .map((line, i) => {
       return /*html*/ `<s2-line-overlay

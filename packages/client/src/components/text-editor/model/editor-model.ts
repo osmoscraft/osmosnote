@@ -1,9 +1,9 @@
-export interface EngineModel {
-  cursor: EngineModelCursor;
-  lines: EngineModelLine[];
+export interface EditorModel {
+  cursor: EditorCursor;
+  lines: EditorLine[];
 }
 
-export interface EngineModelLine {
+export interface EditorLine {
   fileRaw: string;
   draftRaw: string;
   innerText: string;
@@ -16,7 +16,7 @@ export interface EngineModelLine {
   isFormatNeeded: boolean;
 }
 
-export interface EngineModelCursor {
+export interface EditorCursor {
   rawStart: number;
   rawEnd: number;
   direction: "forward" | "backward" | "none";

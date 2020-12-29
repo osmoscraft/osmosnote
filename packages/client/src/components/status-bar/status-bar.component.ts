@@ -1,4 +1,4 @@
-import type { EngineModelCursor } from "../text-editor/core/engine-model";
+import type { EditorCursor } from "../text-editor/model/editor-model";
 import "./status-bar.css";
 
 export class StatusBarComponent extends HTMLElement {
@@ -18,7 +18,7 @@ export class StatusBarComponent extends HTMLElement {
     this.messageOutputDom.innerText = `${new Date().toLocaleTimeString()} ${text}`;
   }
 
-  showCursor(cursor: EngineModelCursor) {
+  showCursor(cursor: EditorCursor) {
     if (cursor.rawStart === cursor.rawEnd) {
       this.cursorStatusDom.innerText = `${cursor.startRow}:${cursor.startCol}`;
     } else if (cursor.direction === "backward") {

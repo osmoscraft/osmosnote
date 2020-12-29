@@ -1,6 +1,6 @@
-import type { EngineModel } from "../engine-model";
+import type { EditorModel } from "../editor-model";
 
-export function modelToDraftText(model: EngineModel): string {
+export function modelToDraftText(model: EditorModel): string {
   const text = model.lines
     .map((line, i) => {
       if (line.isFormatNeeded) return line.fileRaw;
