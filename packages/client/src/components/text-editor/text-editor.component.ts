@@ -1,6 +1,7 @@
 import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
 import { CursorSelectionService } from "../../services/cursor-selection/cursor-selection.service";
 import { HistoryService } from "../../services/history/history.service";
+import { deepEqual } from "../../utils/deep-equal";
 import { di } from "../../utils/dependency-injector";
 import { emit } from "../../utils/events";
 import { DEFAULT_CURSOR, EngineModel, EngineModelCursor } from "./core/engine-model";
@@ -138,8 +139,8 @@ export class TextEditorComponent extends HTMLElement {
     const modelCursor = this.model.cursor;
     const currentCursor = this.getCursor();
     if (
-      currentCursor.rawStart !== modelCursor.rawStart &&
-      currentCursor.rawEnd !== modelCursor.rawEnd &&
+      currentCursor.rawStart !== modelCursor.rawStart ||
+      currentCursor.rawEnd !== modelCursor.rawEnd ||
       currentCursor.direction !== modelCursor.direction
     ) {
       this.textAreaDom.setSelectionRange(modelCursor.rawStart, modelCursor.rawEnd, modelCursor.direction);
@@ -229,6 +230,21 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   private takeSnapshot() {
+    const historyString = this.historyService.peek();
+    if (historyString) {
+      const historyModel = JSON.parse(historyString) as EngineModel;
+
+      const contentChanged = !deepEqual(historyModel.lines, this.model.lines);
+      const cursorChanged = !deepEqual(historyModel.cursor, this.model.cursor);
+
+      if (cursorChanged) {
+        if (contentChanged) {
+          this.historyService.push(JSON.stringify(this.model));
+        } else {
+          this.historyService.replace(JSON.stringify(this.model));
+        }
+      }
+    }
     this.historyService.push(JSON.stringify(this.model));
   }
 

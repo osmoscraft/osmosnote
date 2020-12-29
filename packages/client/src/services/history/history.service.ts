@@ -2,6 +2,9 @@ export class HistoryService {
   private stack: string[] = [];
   private currentIndex = -1;
 
+  /**
+   * This will wipe out future versions
+   */
   push(value: string) {
     // ensure uniqueness
     if (value === this.stack[this.currentIndex]) return;
@@ -9,6 +12,18 @@ export class HistoryService {
     this.stack = this.stack.slice(0, this.currentIndex + 1);
     this.stack.push(value);
     this.currentIndex = this.stack.length - 1;
+  }
+
+  /**
+   * This will wipe out current and future verions
+   */
+  replace(value: string) {
+    this.stack = this.stack.slice(0, this.currentIndex);
+    this.stack.push(value);
+  }
+
+  peek(): string | null {
+    return this.stack[this.currentIndex];
   }
 
   undo(): string | null {
