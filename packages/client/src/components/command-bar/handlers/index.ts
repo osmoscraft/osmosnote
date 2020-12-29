@@ -28,8 +28,8 @@ export interface CommandHandlerResult {
 }
 
 export const commandHandlers: CommandHandlers = {
-  "/": handleSlash,
-  i: handleInsertNote,
+  "i/": handleSlash,
+  il: handleInsertNote,
   fo: handleOpenNote,
   fs: handleFileSave,
   ff: handleFileFormat,

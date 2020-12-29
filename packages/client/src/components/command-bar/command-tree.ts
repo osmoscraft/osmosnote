@@ -33,7 +33,18 @@ export const commandTree: RegisteredCommand = {
     {
       name: "Insert",
       key: "i",
-      requireArguments: true,
+      commands: [
+        {
+          name: "Slash",
+          key: "/",
+          executeOnComplete: true,
+        },
+        {
+          name: "Link",
+          key: "l",
+          requireArguments: true,
+        },
+      ],
     },
     {
       name: "Window",
@@ -55,11 +66,6 @@ export const commandTree: RegisteredCommand = {
           executeOnComplete: true,
         },
       ],
-    },
-    {
-      name: "Copy slash",
-      key: "/",
-      executeOnComplete: true,
     },
   ],
 };

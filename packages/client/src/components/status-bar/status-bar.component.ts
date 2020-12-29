@@ -19,12 +19,16 @@ export class StatusBarComponent extends HTMLElement {
   }
 
   showCursor(cursor: EditorCursor) {
-    if (cursor.rawStart === cursor.rawEnd) {
+    const selectionSize = cursor.rawEnd - cursor.rawStart;
+
+    if (!selectionSize) {
       this.cursorStatusDom.innerText = `${cursor.startRow}:${cursor.startCol}`;
     } else if (cursor.direction === "backward") {
-      this.cursorStatusDom.innerText = `${cursor.startRow}:${cursor.startCol}←${cursor.endRow}:${cursor.endCol}`;
+      this.cursorStatusDom.innerText = `${cursor.startRow}:${cursor.startCol}🡠${cursor.endRow}:${cursor.endCol} (${selectionSize})`;
+    } else if (cursor.direction === "forward") {
+      this.cursorStatusDom.innerText = `${cursor.startRow}:${cursor.startCol}🡢${cursor.endRow}:${cursor.endCol} (${selectionSize})`;
     } else {
-      this.cursorStatusDom.innerText = `${cursor.startRow}:${cursor.startCol}→${cursor.endRow}:${cursor.endCol}`;
+      this.cursorStatusDom.innerText = `${cursor.startRow}:${cursor.startCol}-${cursor.endRow}:${cursor.endCol} (${selectionSize})`;
     }
   }
 }

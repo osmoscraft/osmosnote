@@ -17,7 +17,7 @@ export const handleFileSave: CommandHandler = async ({ context }) => {
         metadata: {
           title: context.componentRefs.documentHeader.getTitle(),
         },
-        content: context.componentRefs.contentEditor.getMarkdown(),
+        content: context.componentRefs.textEditor.getFileText(),
       },
     };
 
@@ -44,7 +44,7 @@ export const handleFileSave: CommandHandler = async ({ context }) => {
         metadata: {
           title: context.componentRefs.documentHeader.getTitle(),
         },
-        content: context.componentRefs.contentEditor.getMarkdown(),
+        content: context.componentRefs.textEditor.getFileText(),
       },
     };
 

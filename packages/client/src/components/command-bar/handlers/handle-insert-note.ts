@@ -20,7 +20,7 @@ export const handleInsertNote: CommandHandler = async ({ input, execute }) => {
       optionsHtml += result.items
         .map(
           (item) => /*html*/ `
-          <div class="cmdbr-option cmdbr-option--btn" data-option data-copy-text="[${item.title}](${filenameToId(
+          <div class="cmdbr-option cmdbr-option--btn" data-option data-insert-text="[${item.title}](${filenameToId(
             item.filename
           )})">${item.title}</div>`
         )
@@ -32,7 +32,7 @@ export const handleInsertNote: CommandHandler = async ({ input, execute }) => {
       optionsHtml += result.notes
         .map(
           (item) =>
-            /*html*/ `<div class="cmdbr-option cmdbr-option--btn" data-option data-copy-text="[${
+            /*html*/ `<div class="cmdbr-option cmdbr-option--btn" data-option data-insert-text="[${
               item.title
             }](${filenameToId(item.filename)})">${item.title}</div>`
         )

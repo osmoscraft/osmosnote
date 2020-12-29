@@ -8,6 +8,7 @@ import { DEFAULT_CURSOR, EditorModel, EditorCursor } from "./model/editor-model"
 import { draftTextToModelLines } from "./model/helpers/draft-text-to-model";
 import { fileTextToModelLines } from "./model/helpers/file-text-to-model";
 import { modelToDraftText } from "./model/helpers/model-to-draft-text";
+import { modelToFileText } from "./model/helpers/model-to-file-text";
 import { SyntaxOverlayComponent } from "./overlay/syntax-overlay.component";
 import "./text-editor.css";
 
@@ -80,7 +81,7 @@ export class TextEditorComponent extends HTMLElement {
     this.handleUndoRedo();
   }
 
-  loadFileText(fileText: string) {
+  setFileText(fileText: string) {
     this.model = {
       lines: fileTextToModelLines(fileText),
       cursor: { ...DEFAULT_CURSOR },
@@ -88,6 +89,10 @@ export class TextEditorComponent extends HTMLElement {
     this.renderModel();
 
     this.takeSnapshot();
+  }
+
+  getFileText(): string {
+    return modelToFileText(this.model);
   }
 
   focusTextArea() {
@@ -104,6 +109,13 @@ export class TextEditorComponent extends HTMLElement {
 
     emit(this, "text-editor:model-changed", { detail: this.model });
     this.renderModel();
+  }
+
+  insertAtCursor(text: string) {
+    const { rawStart, rawEnd } = this.model.cursor;
+    if (text) {
+      this.textAreaDom.setRangeText(text, rawStart, rawEnd, "end");
+    }
   }
 
   undo() {
@@ -299,9 +311,8 @@ export class TextEditorComponent extends HTMLElement {
       const cleanText = rawText?.replaceAll("\r", ""); // adhere to linux convention
 
       // TODO consider replace tab characters \t
-      const { rawStart, rawEnd } = this.model.cursor;
       if (cleanText) {
-        this.textAreaDom.setRangeText(cleanText, rawStart, rawEnd, "end");
+        this.insertAtCursor(cleanText);
       }
     });
   }

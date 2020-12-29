@@ -25,7 +25,7 @@ async function loadNote() {
     const result = await loadExistingNote(id);
 
     // experimental
-    componentRefs.textEditor.loadFileText(result.note.content);
+    componentRefs.textEditor.setFileText(result.note.content);
 
     componentRefs.documentHeader.setTitle(result.note.metadata.title);
     componentRefs.referencePanel.setIncomingConnections(result.incomingConnections);
@@ -34,7 +34,7 @@ async function loadNote() {
     componentRefs.documentHeader.setTitle(title ?? `New note on ${new Date().toLocaleString()}`);
 
     // experimental
-    componentRefs.textEditor.loadFileText(content ?? "");
+    componentRefs.textEditor.setFileText(content ?? "");
   }
 }
 

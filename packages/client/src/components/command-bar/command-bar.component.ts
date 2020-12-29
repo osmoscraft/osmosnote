@@ -232,12 +232,12 @@ export class CommandBarComponent extends HTMLElement {
         return true;
       }
 
-      if (targetDataset.copyText) {
+      if (targetDataset.insertText) {
         e.stopPropagation();
         e.preventDefault();
 
-        sendToClipboard(targetDataset.copyText);
-        this.componentRefs.statusBar.showText(`[command-bar] copied "${targetDataset.copyText}"`);
+        this.componentRefs.textEditor.insertAtCursor(targetDataset.insertText);
+        this.componentRefs.statusBar.showText(`[command-bar] inserted "${targetDataset.insertText}"`);
         this.exitCommandMode();
 
         return true;
