@@ -8,13 +8,13 @@ s2-link-overlay[data-cursor-in] .s2-link-overlay__title {
 }
 
 .s2-link-overlay__symbol {
-  color: var(--base03);
+  color: var(--theme-text-color-ghost);
 }
 
 .s2-link-overlay__id {
   pointer-events: auto;
 
-  color: var(--base03);
+  color: var(--theme-text-color-ghost);
   text-decoration: none;
   outline: none;
 }

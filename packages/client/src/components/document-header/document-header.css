@@ -1,11 +1,22 @@
 s2-document-header:focus-within {
-  outline: var(--theme-divider-width) solid var(--theme-outline-color);
+  outline: none;
+  /* outline: var(--theme-divider-width) solid var(--theme-outline-color); */
+}
+
+s2-document-header {
+  display: grid;
+  grid-template:
+    "metadata" auto
+    "heading" auto / auto;
+  gap: var(--theme-divider-width);
 }
 
 .dchdr-heading {
+  grid-area: heading;
+
   font-size: 20px;
   font-weight: 600;
-  background-color: var(--theme-background);
+  background-color: var(--theme-background-rest);
   padding: 8px 16px;
   margin: 0;
 
@@ -13,5 +24,70 @@ s2-document-header:focus-within {
 }
 
 .dchdr-heading:focus {
+  background-color: var(--theme-background-active);
+  outline: var(--theme-divider-width) solid var(--theme-outline-color);
+}
+
+.dchdr-metadata {
+  grid-area: metadata;
+}
+
+.dchdr-metadata__summary {
+  padding: 4px 16px;
+  outline: none;
+  background-color: var(--base01);
+  color: var(--theme-text-color-ghost);
+}
+.dchdr-metadata__summary:focus {
+  background-color: var(--theme-background-active);
+  color: var(--theme-text-color);
+}
+
+.dchdr-metadata[open] .dchdr-metadata__summary {
+  background-color: var(--theme-menu-option-background-alt);
+  color: var(--theme-text-color);
+}
+
+.dchdr-metadata[open] .dchdr-metadata__summary:focus {
+  background-color: var(--theme-menu-option-background-active);
+  color: var(--theme-text-color-knockout);
+  font-weight: bold;
+}
+
+.dchdr-metadata__summary::-webkit-details-marker {
+  display: none;
+}
+
+.dchdr-metadata:focus-within {
+  outline: var(--theme-divider-width) solid var(--theme-outline-color);
+}
+
+.dchdr-fields {
+  --field-input-color: var(--theme-text-color);
+
+  display: grid;
+  padding: 4px 0;
+  background-color: var(--theme-background-rest);
+}
+
+.dchdr-field__label {
+  color: var(--base0D);
+  font-weight: bold;
+  font-size: 14px;
+  padding: 0px 16px;
+}
+
+.dchdr-field__input {
+  outline: none;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+
+  background: var(--field-input-background);
+  font-family: monospace;
+  color: var(--field-input-color);
+}
+
+.dchdr-field__input:focus {
   background-color: var(--theme-background-active);
 }

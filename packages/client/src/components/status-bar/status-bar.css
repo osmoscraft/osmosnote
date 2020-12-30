@@ -1,8 +1,9 @@
 s2-status-bar {
-  height: 32px;
+  height: 24px;
   background-color: var(--base0D);
-  color: var(--base00);
+  color: var(--theme-text-color-knockout);
   font-weight: bold;
+  font-size: 14px;
 
   padding: 0 16px;
 }

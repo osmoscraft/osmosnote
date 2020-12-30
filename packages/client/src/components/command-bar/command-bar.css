@@ -38,7 +38,7 @@ s2-command-bar[data-active] {
 }
 
 .cmdbr-option {
-  background-color: var(--theme-background-inactive);
+  background-color: var(--theme-menu-option-background-rest);
   font-family: monospace;
   height: 32px;
   padding: 0 16px;
@@ -60,5 +60,7 @@ s2-command-bar[data-active] {
 }
 
 .cmdbr-option--btn[data-active] {
-  background-color: var(--theme-background-active);
+  font-weight: bold;
+  color: var(--theme-text-color-knockout);
+  background-color: var(--theme-menu-option-background-active);
 }

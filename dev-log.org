@@ -3,6 +3,8 @@
 * TODO parse and display :tag: anywhere in body
 * TODO package into single executable
 * TODO add an empty line between frontmatter and body
+* TODO fix panel travel
+* TODO fix command auto close
 
 
 :backlog:

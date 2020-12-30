@@ -10,7 +10,7 @@ s2-text-editor[data-debug] s2-syntax-overlay {
 s2-text-editor {
   min-height: 0px; /* make it shrinkable */
 
-  background-color: var(--theme-background);
+  background-color: var(--theme-background-rest);
   display: grid;
   grid-template: "split-left split-right" 1fr / 1fr;
 }

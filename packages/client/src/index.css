@@ -21,10 +21,15 @@
   --base0F: #d65d0e; /* brown */
 
   /* derived */
-  --theme-background: var(--base01);
+  --theme-background-rest: var(--base01);
   --theme-background-active: var(--base00);
-  --theme-background-inactive: var(--base02);
+  --theme-menu-option-background-rest: var(--base00);
+  --theme-menu-option-background-alt: var(--base03); /* active but out of focus */
+  --theme-menu-option-background-active: var(--base0D);
   --theme-text-color: var(--base06);
+  --theme-text-color-secondary: var(--base04);
+  --theme-text-color-knockout: var(--base00); /* used on solid color background */
+  --theme-text-color-ghost: var(--base03); /* symbols, disabled content */
   --theme-divider-color: var(--base03);
   --theme-divider-width: 1px;
   --theme-outline-color: var(--base0D);
