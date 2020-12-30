@@ -33,6 +33,7 @@ s2-document-header {
 }
 
 .dchdr-metadata__summary {
+  font-size: 14px;
   padding: 4px 16px;
   outline: none;
   background-color: var(--base01);
