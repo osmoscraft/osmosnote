@@ -5,8 +5,14 @@ import { getNoteConfigFromUrl } from "./utils/url";
 import { ComponentReferenceService } from "./services/component-reference/component-reference.service";
 import { CursorSelectionService } from "./services/cursor-selection/cursor-selection.service";
 import { HistoryService } from "./services/history/history.service";
+import { ProxyService } from "./services/proxy/proxy.service";
+import { SourceControlService } from "./services/source-control/source-control.service";
+import { FileStorageService } from "./services/file-storage/file-storage.service";
 
 di.registerClass(ComponentReferenceService, []);
+di.registerClass(ProxyService, []);
+di.registerClass(SourceControlService, [ProxyService]);
+di.registerClass(FileStorageService, [ProxyService]);
 di.registerClass(CursorSelectionService, [ComponentReferenceService]);
 di.registerClass(HistoryService, []);
 

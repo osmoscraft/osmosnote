@@ -1,7 +1,8 @@
-import { sendToClipboard } from "../../utils/clipboard";
+import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
+import { FileStorageService } from "../../services/file-storage/file-storage.service";
+import { SourceControlService } from "../../services/source-control/source-control.service";
 import { di } from "../../utils/dependency-injector";
 import { idToFilename } from "../../utils/id";
-import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
 import "./command-bar.css";
 import { commandTree } from "./command-tree";
 import { commandHandlers } from "./handlers";
@@ -31,6 +32,8 @@ export class CommandBarComponent extends HTMLElement {
   commandTree!: RegisteredCommand;
 
   componentRefs = di.getSingleton(ComponentReferenceService);
+  sourceControlService = di.getSingleton(SourceControlService);
+  fileStorageService = di.getSingleton(FileStorageService);
 
   private triggeringElement: Element | null = null;
 
@@ -257,6 +260,8 @@ export class CommandBarComponent extends HTMLElement {
         input: currentInput,
         context: {
           componentRefs: this.componentRefs,
+          fileStorageService: this.fileStorageService,
+          sourceControlService: this.sourceControlService,
         },
       });
       if (result.optionsHtml) {
@@ -281,6 +286,8 @@ export class CommandBarComponent extends HTMLElement {
         execute: true,
         context: {
           componentRefs: this.componentRefs,
+          fileStorageService: this.fileStorageService,
+          sourceControlService: this.sourceControlService,
         },
       });
 

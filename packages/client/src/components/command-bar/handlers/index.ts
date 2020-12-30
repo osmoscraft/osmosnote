@@ -1,4 +1,6 @@
 import type { ComponentReferenceService } from "../../../services/component-reference/component-reference.service";
+import type { FileStorageService } from "../../../services/file-storage/file-storage.service";
+import type { SourceControlService } from "../../../services/source-control/source-control.service";
 import type { CommandInput } from "../command-bar.component";
 import { handleFileCopyLink } from "./handle-file-copy-link";
 import { handleFileFormat } from "./handle-file-format";
@@ -16,6 +18,8 @@ export interface CommandHandlers {
 
 export interface CommandHandlerContext {
   componentRefs: ComponentReferenceService;
+  fileStorageService: FileStorageService;
+  sourceControlService: SourceControlService;
 }
 
 export interface CommandHandler {
@@ -34,6 +38,7 @@ export const commandHandlers: CommandHandlers = {
   il: handleInsertNote,
   fo: handleOpenNote,
   fs: handleFileSave,
+  fa: handleFileSave,
   ff: handleFileFormat,
   fy: handleFileCopyLink,
   wh: handleWindowTravel,

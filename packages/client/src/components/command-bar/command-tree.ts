@@ -28,6 +28,11 @@ export const commandTree: RegisteredCommand = {
           key: "s",
           executeOnComplete: true,
         },
+        {
+          name: "Save and sync all",
+          key: "a",
+          executeOnComplete: true,
+        },
       ],
     },
     {

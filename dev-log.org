@@ -1,7 +1,16 @@
 :tackling:
+* TODO show status on app launch
+* TODO support metadata field, e.g. url
+* TODO parse and display :tag: anywhere in body
+* TODO tag filtering in search
+* TODO insert multiple tags from command option
+* TODO package into single executable
+* TODO add an empty line between frontmatter and body
+* TODO refactor search to be a service
+* TODO decouple command lambda from command key binding
 
 :backlog:
-* TODO support metadata field, e.g. url
+* TODO show save progress - need to break git actions into smaller api calls
 * TODO centralize event handling: keyboard > global handler > call command or call component method
 * TODO Ctrl+Enter to create note without closing existing
 * TODO Create note on the fly and return new ID in for current Note to use
@@ -19,8 +28,10 @@
 * TODO highlight todo and done keywords
 * TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
 * TODO show color bar on left when line has formatting issues
+* TODO handle list rendering (* or - as bullet)
 
 
+* DONE `fa` to save and sync all
 * DONE git sync through shell script
 * DONE ctrl backspace/delete is broken
 * DONE handle movement key on boundaries (home)
