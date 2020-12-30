@@ -1,14 +1,17 @@
 s2-document-header:focus-within {
-  outline: 1px solid var(--base0D);
-  outline-offset: -1px;
+  outline: var(--theme-divider-width) solid var(--theme-outline-color);
 }
 
-.dchdr_heading {
+.dchdr-heading {
   font-size: 20px;
   font-weight: 600;
-  background-color: var(--base01);
+  background-color: var(--theme-background);
   padding: 8px 16px;
   margin: 0;
 
   outline: none;
+}
+
+.dchdr-heading:focus {
+  background-color: var(--theme-background-active);
 }

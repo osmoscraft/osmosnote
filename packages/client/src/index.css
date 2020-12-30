@@ -1,0 +1,122 @@
+/* GLOBAL */
+
+:root {
+  /* scheme: "Gruvbox dark, medium"
+  author: "Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)" */
+  --base00: #282828; /* ---- */
+  --base01: #3c3836; /* --- */
+  --base02: #504945; /* -- */
+  --base03: #665c54; /* - */
+  --base04: #bdae93; /* + */
+  --base05: #d5c4a1; /* ++ */
+  --base06: #ebdbb2; /* +++ */
+  --base07: #fbf1c7; /* ++++ */
+  --base08: #fb4934; /* red */
+  --base09: #fe8019; /* orange */
+  --base0A: #fabd2f; /* yellow */
+  --base0B: #b8bb26; /* green */
+  --base0C: #8ec07c; /* aqua/cyan */
+  --base0D: #83a598; /* blue */
+  --base0E: #d3869b; /* purple */
+  --base0F: #d65d0e; /* brown */
+
+  /* derived */
+  --theme-background: var(--base01);
+  --theme-background-active: var(--base00);
+  --theme-background-inactive: var(--base02);
+  --theme-text-color: var(--base06);
+  --theme-divider-color: var(--base03);
+  --theme-divider-width: 1px;
+  --theme-outline-color: var(--base0D);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue",
+    sans-serif;
+}
+
+a {
+  color: var(--base0D);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  --track-color: transparent;
+  --thumb-color-rest: transparent;
+  --thumb-color-hover: transparent;
+  width: 16px;
+  height: 16px;
+  background-color: var(--track-color);
+}
+
+::-webkit-scrollbar-thumb {
+  --track-color: transparent;
+  border-radius: 8px;
+  width: 8px;
+  height: 8px;
+  border: 4px solid var(--track-color);
+  background-clip: padding-box;
+
+  background-color: var(--thumb-color-rest);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--thumb-color-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background-color: var(--track-color);
+}
+
+:focus-within::-webkit-scrollbar-thumb {
+  --thumb-color-rest: var(--base01);
+  --thumb-color-hover: var(--base03);
+}
+
+/* COMPONENTS */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  display: grid;
+  grid-template:
+    "header header" auto
+    "main aside" 1fr
+    "footer footer" auto / 1fr 320px;
+  gap: var(--theme-divider-width);
+  padding: var(--theme-divider-width);
+
+  background-color: var(--theme-divider-color); /* negative space becomes gap */
+  color: var(--theme-text-color);
+}
+
+s2-command-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+s2-document-header {
+  grid-area: header;
+}
+
+s2-text-editor {
+  grid-area: main;
+}
+
+s2-reference-panel {
+  grid-area: aside;
+}
+
+s2-status-bar {
+  grid-area: footer;
+  margin: calc(-1 * var(--theme-divider-width)); /* blend into gutter */
+}

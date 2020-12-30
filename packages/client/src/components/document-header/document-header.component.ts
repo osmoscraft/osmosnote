@@ -10,7 +10,7 @@ export class DocumentHeaderComponent extends HTMLElement {
   headingDom!: HTMLHeadingElement;
 
   connectedCallback() {
-    this.innerHTML = /*html*/ `<h1 id="document-heading" class="dchdr_heading" contenteditable="true"></h1>`;
+    this.innerHTML = /*html*/ `<h1 id="document-heading" class="dchdr-heading" contenteditable="true"></h1>`;
     this.headingDom = this.querySelector("#document-heading") as HTMLHeadingElement;
   }
 

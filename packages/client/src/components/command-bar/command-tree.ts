@@ -68,21 +68,21 @@ export const commandTree: RegisteredCommand = {
       ],
     },
     {
-      name: "Window",
-      key: "w",
+      name: "Go to",
+      key: "g",
       commands: [
         {
-          name: "Go to Header",
+          name: "Header",
           key: "h",
           executeOnComplete: true,
         },
         {
-          name: "Go to References",
+          name: "References",
           key: "r",
           executeOnComplete: true,
         },
         {
-          name: "Go to Editor",
+          name: "Editor",
           key: "e",
           executeOnComplete: true,
         },

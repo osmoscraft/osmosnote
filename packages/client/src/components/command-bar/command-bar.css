@@ -1,5 +1,12 @@
 s2-command-bar {
   height: 32px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+s2-command-bar[data-active] {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .cmdbr-input {
@@ -15,8 +22,8 @@ s2-command-bar {
 }
 
 .cmdbr-input:focus {
-  background-color: var(--base03);
-  outline: 1px solid var(--base0D);
+  background-color: var(--theme-background-active);
+  outline: 1px solid var(--theme-outline-color);
   outline-offset: -1px;
 }
 
@@ -31,7 +38,7 @@ s2-command-bar {
 }
 
 .cmdbr-option {
-  background-color: var(--base01);
+  background-color: var(--theme-background-inactive);
   font-family: monospace;
   height: 32px;
   padding: 0 16px;
@@ -53,5 +60,5 @@ s2-command-bar {
 }
 
 .cmdbr-option--btn[data-active] {
-  background-color: var(--base03);
+  background-color: var(--theme-background-active);
 }

@@ -1,11 +1,11 @@
 s2-reference-panel {
-  background-color: var(--base01);
+  background-color: var(--theme-background);
   padding: 16px 0;
 }
 
 s2-reference-panel:focus-within {
-  outline: 1px solid var(--base0D);
-  outline-offset: -1px;
+  outline: var(--theme-divider-width) solid var(--theme-outline-color);
+  background-color: var(--theme-background-active);
 }
 
 .refpnl-list {

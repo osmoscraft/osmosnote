@@ -27,6 +27,10 @@ export interface RegisteredCommand {
 }
 
 export class CommandBarComponent extends HTMLElement {
+  readonly dataset!: {
+    active?: "true";
+  };
+
   commandInputDom!: HTMLInputElement;
   commandOptionsDom!: HTMLElement;
   commandTree!: RegisteredCommand;
@@ -56,6 +60,7 @@ export class CommandBarComponent extends HTMLElement {
 
   enterCommandMode() {
     this.saveCurosr();
+    this.dataset.active = "true";
 
     this.commandInputDom.focus();
   }
@@ -63,6 +68,7 @@ export class CommandBarComponent extends HTMLElement {
   exitCommandMode(config?: { skipCursorRestore?: boolean }) {
     this.clear();
 
+    delete this.dataset.active;
     if (config?.skipCursorRestore) return;
     this.restoreCursor();
   }

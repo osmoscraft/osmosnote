@@ -4,13 +4,13 @@ import type { SourceControlService } from "../../../services/source-control/sour
 import type { CommandInput } from "../command-bar.component";
 import { handleFileCopyLink } from "./handle-file-copy-link";
 import { handleFileFormat } from "./handle-file-format";
-import { handleFileSave } from "./handle-file-save";
+import { handleFileSave, handleFileSaveAndSync } from "./handle-file-save";
 import { handleInsertNote } from "./handle-insert-note";
 import { handleOpenNote } from "./handle-open-note";
 import { handleSlash } from "./handle-slash";
 import { handleVersionsCheck } from "./handle-versions-check";
 import { handleVersionsSync } from "./handle-versions-sync";
-import { handleWindowTravel } from "./handle-window-travel";
+import { handleGoToEditor, handleGoToHeader, handleGoToReferences } from "./handle-window-travel";
 
 export interface CommandHandlers {
   [key: string]: CommandHandler;
@@ -38,12 +38,12 @@ export const commandHandlers: CommandHandlers = {
   il: handleInsertNote,
   fo: handleOpenNote,
   fs: handleFileSave,
-  fa: handleFileSave,
+  fa: handleFileSaveAndSync,
   ff: handleFileFormat,
   fy: handleFileCopyLink,
-  wh: handleWindowTravel,
-  wr: handleWindowTravel,
-  we: handleWindowTravel,
+  gh: handleGoToHeader,
+  gr: handleGoToReferences,
+  ge: handleGoToEditor,
   vs: handleVersionsSync,
   vc: handleVersionsCheck,
 };
