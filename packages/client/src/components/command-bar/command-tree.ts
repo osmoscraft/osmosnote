@@ -47,6 +47,22 @@ export const commandTree: RegisteredCommand = {
       ],
     },
     {
+      name: "Versions",
+      key: "v",
+      commands: [
+        {
+          name: "Sync",
+          key: "s",
+          executeOnComplete: true,
+        },
+        {
+          name: "check",
+          key: "c",
+          executeOnComplete: true,
+        },
+      ],
+    },
+    {
       name: "Window",
       key: "w",
       commands: [

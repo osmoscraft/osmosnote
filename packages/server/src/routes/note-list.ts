@@ -20,7 +20,7 @@ export interface NoteListItem {
   content: string;
 }
 
-export const handleNoteListRoute: RouteHandlerMethod<any, any, any, NoteListRouteHandler> = async (request, reply) => {
+export const handleGetNoteList: RouteHandlerMethod<any, any, any, NoteListRouteHandler> = async (request, reply) => {
   const config = await getConfig();
 
   const notesDir = config.notesDir;

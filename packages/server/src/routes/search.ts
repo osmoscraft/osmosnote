@@ -25,7 +25,7 @@ export interface SearchResultItem {
   score: number;
 }
 
-export const handleSearchRoute: RouteHandlerMethod<any, any, any, SearchRouteHandler> = async (request, reply) => {
+export const handleSearch: RouteHandlerMethod<any, any, any, SearchRouteHandler> = async (request, reply) => {
   const config = await getConfig();
 
   const query = request.query;

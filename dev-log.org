@@ -1,5 +1,4 @@
 :tackling:
-* TODO git sync through shell script
 
 :backlog:
 * TODO support metadata field, e.g. url
@@ -22,6 +21,7 @@
 * TODO show color bar on left when line has formatting issues
 
 
+* DONE git sync through shell script
 * DONE ctrl backspace/delete is broken
 * DONE handle movement key on boundaries (home)
 * DONE insert to editor, instead of to clipboard

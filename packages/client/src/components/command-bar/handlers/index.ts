@@ -6,6 +6,8 @@ import { handleFileSave } from "./handle-file-save";
 import { handleInsertNote } from "./handle-insert-note";
 import { handleOpenNote } from "./handle-open-note";
 import { handleSlash } from "./handle-slash";
+import { handleVersionsCheck } from "./handle-versions-check";
+import { handleVersionsSync } from "./handle-versions-sync";
 import { handleWindowTravel } from "./handle-window-travel";
 
 export interface CommandHandlers {
@@ -37,4 +39,6 @@ export const commandHandlers: CommandHandlers = {
   wh: handleWindowTravel,
   wr: handleWindowTravel,
   we: handleWindowTravel,
+  vs: handleVersionsSync,
+  vc: handleVersionsCheck,
 };
