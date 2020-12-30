@@ -51,4 +51,13 @@ async function loadExistingNote(id: string) {
   return result;
 }
 
+async function checkVersions() {
+  const sourceControlService = di.getSingleton(SourceControlService);
+  const componentRefs = di.getSingleton(ComponentReferenceService);
+
+  const versionResult = await sourceControlService.check();
+  componentRefs.statusBar.showText(versionResult.message);
+}
+
 loadNote();
+checkVersions();

@@ -1,5 +1,4 @@
 :tackling:
-* TODO show status on app launch
 * TODO support metadata field, e.g. url
 * TODO parse and display :tag: anywhere in body
 * TODO tag filtering in search
@@ -8,6 +7,8 @@
 * TODO add an empty line between frontmatter and body
 * TODO refactor search to be a service
 * TODO decouple command lambda from command key binding
+* TODO grid layout for panels. Reduce gutter. float command bar. Colored status bar
+
 
 :backlog:
 * TODO show save progress - need to break git actions into smaller api calls
@@ -31,6 +32,7 @@
 * TODO handle list rendering (* or - as bullet)
 
 
+* DONE show status on app launch
 * DONE `fa` to save and sync all
 * DONE git sync through shell script
 * DONE ctrl backspace/delete is broken
