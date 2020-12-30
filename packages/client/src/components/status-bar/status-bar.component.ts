@@ -7,9 +7,9 @@ export class StatusBarComponent extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = /*html*/ `<output class="stsbar-output">
-    <span class="stsbar-message" id="message-output"></span>
-    <span class="stsbar-spacer"></span>
     <span class="stsbar-cursor" id="cursor-status"></span>
+    <span class="stsbar-spacer"></span>
+    <span class="stsbar-message" id="message-output"></span>
     </output>`;
     this.messageOutputDom = this.querySelector("#message-output") as HTMLOutputElement;
     this.cursorStatusDom = this.querySelector("#cursor-status") as HTMLOutputElement;
