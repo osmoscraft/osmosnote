@@ -1,5 +1,6 @@
 .s2-link-overlay__title {
-  color: var(--base0D);
+  color: var(--theme-link-color);
+
   font-weight: bold;
 }
 
@@ -20,7 +21,7 @@ s2-link-overlay[data-cursor-in] .s2-link-overlay__title {
 }
 
 .s2-link-overlay__id:hover {
-  color: var(--base0D);
+  color: var(--theme-link-color);
   text-decoration: underline;
 }
 

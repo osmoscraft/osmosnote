@@ -8,17 +8,17 @@ s2-line-overlay[data-is-heading="true"] {
 
 s2-line-overlay[data-is-heading="true"][data-section-level="1"],
 s2-line-overlay[data-is-heading="true"][data-section-level="4"] {
-  color: var(--base0C);
+  color: var(--theme-h1-color);
 }
 
 s2-line-overlay[data-is-heading="true"][data-section-level="2"],
 s2-line-overlay[data-is-heading="true"][data-section-level="4"] {
-  color: var(--base0E);
+  color: var(--theme-h2-color);
 }
 
 s2-line-overlay[data-is-heading="true"][data-section-level="3"],
 s2-line-overlay[data-is-heading="true"][data-section-level="6"] {
-  color: var(--base0F);
+  color: var(--theme-h3-color);
 }
 
 .lnovly-layout-padding,

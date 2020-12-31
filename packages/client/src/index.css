@@ -33,6 +33,14 @@
   --theme-divider-color: var(--base03);
   --theme-divider-width: 1px;
   --theme-outline-color: var(--base0D);
+  --theme-tag-color: var(--base0E);
+  --theme-link-color: var(--base0D);
+  --theme-h1-color: var(--base0B);
+  --theme-h2-color: var(--base0A);
+  --theme-h3-color: var(--base09);
+  --theme-h4-color: var(--base0B);
+  --theme-h5-color: var(--base0A);
+  --theme-h6-color: var(--base0B);
 }
 
 body {

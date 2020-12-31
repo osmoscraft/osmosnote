@@ -1,0 +1,8 @@
+.s2-tag-overlay__symbol {
+  color: var(--theme-text-color-ghost);
+}
+
+.s2-tag-overlay__phrase {
+  font-weight: bold;
+  color: var(--theme-tag-color);
+}

@@ -37,10 +37,16 @@ export class LineOverlayComponent extends HTMLElement {
   }
 
   private highlightLine(input: string): string {
-    return input.replace(LINK_PATTERN, LINK_REPLACER);
+    // TODO, use AST instead of manually regex.
+    // TODO, prevent link inside tag, as it's not searchable
+    // TODO, prevent tag inside link, as it breaks atomic interaction on link
+    return input.replace(LINK_PATTERN, LINK_REPLACER).replace(TAG_PATTERN, TAG_REPLACER);
   }
 }
 
 export const LINK_PATTERN = /\[([^\(]+)\]\(([^\[]\d+)\)/g; // e.g. [Some title](200012300630)
 const LINK_REPLACER = (_match: string, title: string, id: string) =>
   /*html*/ `<s2-link-overlay data-id="${id}" data-title="${title}"></s2-link-overlay>`;
+
+export const TAG_PATTERN = /:.+:/g; // e.g. :some:key word:like this:
+const TAG_REPLACER = (match: string) => /*html*/ `<s2-tag-overlay data-raw="${match}"></s2-tag-overlay>`;

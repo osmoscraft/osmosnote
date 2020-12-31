@@ -1,6 +1,4 @@
 import type { EditorModel } from "../editor-model";
-import { LineOverlayComponent } from "../../overlay/parts/line-overlay.component";
-import { LinkOverlayComponent } from "../../overlay/parts/link-overlay.component";
 
 export function modelToOverlayHtml(model: EditorModel): string {
   const html = model.lines
@@ -18,6 +16,3 @@ export function modelToOverlayHtml(model: EditorModel): string {
 
   return html;
 }
-
-customElements.define("s2-link-overlay", LinkOverlayComponent);
-customElements.define("s2-line-overlay", LineOverlayComponent);
