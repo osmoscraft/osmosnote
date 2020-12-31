@@ -49,7 +49,7 @@ export class CommandBarComponent extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
-      <input id="command-input" class="cmdbr-input" type="text" autocomplete="off" spellcheck="false"/>
+      <input id="command-input" class="cmdbr-input" tabindex="-1" type="text" autocomplete="off" spellcheck="false"/>
       <div id="command-options" class="cmdbr-options"></div>`;
 
     this.commandInputDom = document.getElementById("command-input") as HTMLInputElement;
@@ -61,6 +61,7 @@ export class CommandBarComponent extends HTMLElement {
   enterCommandMode() {
     this.saveCurosr();
     this.dataset.active = "true";
+    this.commandInputDom.tabIndex = 0; // make it focusable AFTER command mode starts. Otherwise, we will trap focus for the rest of the window
 
     this.commandInputDom.focus();
   }
@@ -69,6 +70,8 @@ export class CommandBarComponent extends HTMLElement {
     this.clear();
 
     delete this.dataset.active;
+    this.commandInputDom.tabIndex = -1;
+
     if (config?.skipCursorRestore) return;
     this.restoreCursor();
   }
@@ -146,14 +149,15 @@ export class CommandBarComponent extends HTMLElement {
         }
       }
 
-      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Tab") {
         event.preventDefault();
         event.stopPropagation();
 
+        const isGoUp = event.key === "ArrowUp" || (event.key === "Tab" && event.shiftKey);
+
         const currentOption = this.commandOptionsDom.querySelector("[data-option][data-active]") as HTMLElement;
         if (currentOption) {
-          const candidateOption =
-            event.key === "ArrowDown" ? currentOption.nextElementSibling : currentOption.previousElementSibling;
+          const candidateOption = isGoUp ? currentOption.previousElementSibling : currentOption.nextElementSibling;
           if (candidateOption?.matches("[data-option")) {
             (candidateOption as HTMLElement).dataset.active = "";
             delete currentOption.dataset.active;
@@ -163,7 +167,7 @@ export class CommandBarComponent extends HTMLElement {
           }
         } else {
           const options = [...this.commandOptionsDom.querySelectorAll("[data-option]")] as HTMLElement[];
-          const candidateOption = options[event.key === "ArrowDown" ? 0 : options.length - 1];
+          const candidateOption = options[isGoUp ? options.length - 1 : 0];
           if (candidateOption) {
             candidateOption.dataset.active = "";
           }
