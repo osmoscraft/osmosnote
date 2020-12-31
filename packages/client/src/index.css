@@ -104,9 +104,11 @@ body {
 
 s2-command-bar {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0px;
+  left: 50%;
+  width: 100%;
+  max-width: 640px;
+  transform: translateX(-50%);
 }
 
 s2-document-header {
