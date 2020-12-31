@@ -2,7 +2,7 @@ const searchParams = new URLSearchParams();
 searchParams.set("url", getUrl());
 searchParams.set("title", getTitle());
 searchParams.set("content", getContent());
-const captureUIrl = new URL("http://localhost:1234?" + searchParams.toString());
+const captureUIrl = new URL("http://localhost:2077?" + searchParams.toString());
 
 window.open(captureUIrl);
 
