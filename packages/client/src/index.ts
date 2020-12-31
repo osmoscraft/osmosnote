@@ -22,7 +22,7 @@ di.getSingleton(ComponentReferenceService).init();
 di.getSingleton(CursorSelectionService).init();
 
 async function loadNote() {
-  const { filename, title, content } = getNoteConfigFromUrl();
+  const { filename, title, content, url } = getNoteConfigFromUrl();
   const componentRefs = di.getSingleton(ComponentReferenceService);
 
   if (filename) {
@@ -38,7 +38,7 @@ async function loadNote() {
   } else {
     // prepare for new note
     const newTitle = title ?? `New note on ${new Date().toLocaleString()}`;
-    componentRefs.documentHeader.setData({ metadata: { title: newTitle } });
+    componentRefs.documentHeader.setData({ metadata: { title: newTitle, url: url ?? undefined } });
 
     // experimental
     componentRefs.textEditor.setFileText(content ?? "");

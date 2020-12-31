@@ -5,6 +5,7 @@ export interface UrlNoteConfig {
    * the initial content for the note, in plaintext, not markdown.
    */
   content: string | null;
+  url: string | null;
 }
 
 export function getNoteConfigFromUrl(): UrlNoteConfig {
@@ -14,15 +15,18 @@ export function getNoteConfigFromUrl(): UrlNoteConfig {
   const rawTitle = searchParams.get("title")?.trim();
   const rawFilename = searchParams.get("filename")?.trim();
   const rawContent = searchParams.get("content")?.trim();
+  const rawUrl = searchParams.get("url")?.trim();
 
   // a parameter must have length
-  const title = rawTitle?.length ? rawTitle : null;
-  const filename = rawFilename?.length ? rawFilename : null;
-  const content = rawContent?.length ? rawContent : null;
+  const title = rawTitle ? rawTitle : null;
+  const filename = rawFilename ? rawFilename : null;
+  const content = rawContent ? rawContent : null;
+  const metadataUrl = rawUrl ? rawUrl : null;
 
   return {
     title,
     filename,
     content,
+    url: metadataUrl,
   };
 }
