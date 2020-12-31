@@ -60,7 +60,7 @@ export class DocumentHeaderComponent extends HTMLElement {
         {
           id: "meta-field-url",
           name: "External URL",
-          value: "",
+          value: config.metadata.url ?? "",
           type: "url",
           saveAsKey: "url",
           placeholder: "https://www.domain.com",
@@ -190,7 +190,7 @@ export class DocumentHeaderComponent extends HTMLElement {
     <label for="${props.id}" class="dchdr-field__label">${props.name}</label>
     <input class="dchdr-field__input" id="${props.id}" type="${props.type}" value="${props.value}" placeholder="${
       props.placeholder ?? ""
-    }" data-save-as-key="${props.saveAsKey}"${props.readonly ? " readonly" : ""}>
+    }"${props.saveAsKey ? ` data-save-as-key="${props.saveAsKey}" ` : ""}${props.readonly ? " readonly" : ""}>
     `.trim();
   }
 
