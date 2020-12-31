@@ -33,6 +33,7 @@
 * TODO decouple command lambda from command key binding
 * TODO improve panel travel: consider tab, arrow, hjkl options
 * TODO a way to view status history
+* TODO generate bookmarklet from the app
 
 
 * DONE package into single executable
