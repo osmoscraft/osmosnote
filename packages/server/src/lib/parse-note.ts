@@ -7,16 +7,18 @@ export interface Note {
 
 export interface NoteMetadata {
   title: string;
+  url?: string;
 }
 
 export function parseNote(rawMarkdown: string): Note {
   const parseResult = grayMatter(rawMarkdown);
-  const title = parseResult.data.title;
+  const { title, url } = parseResult.data;
   const content = parseResult.content;
 
   return {
     metadata: {
       title,
+      url,
     },
     content,
   };

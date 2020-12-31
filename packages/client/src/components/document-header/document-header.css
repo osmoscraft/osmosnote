@@ -11,19 +11,21 @@ s2-document-header {
   gap: var(--theme-divider-width);
 }
 
-.dchdr-heading {
+.dchdr-heading-input {
   grid-area: heading;
 
-  font-size: 20px;
-  font-weight: 600;
-  background-color: var(--theme-background-rest);
-  padding: 8px 16px;
+  border: none;
   margin: 0;
+  padding: 8px 16px;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--theme-text-color);
+  background-color: var(--theme-background-rest);
 
   outline: none;
 }
 
-.dchdr-heading:focus {
+.dchdr-heading-input:focus {
   background-color: var(--theme-background-active);
   outline: var(--theme-divider-width) solid var(--theme-outline-color);
 }
@@ -33,6 +35,7 @@ s2-document-header {
 }
 
 .dchdr-metadata__summary {
+  cursor: pointer;
   font-size: 14px;
   padding: 4px 16px;
   outline: none;

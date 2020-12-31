@@ -1,13 +1,12 @@
 :tackling:
-* TODO support metadata field, e.g. url
-* TODO parse and display :tag: anywhere in body
+* TODO capture new note from url
 * TODO package into single executable
-* TODO add an empty line between frontmatter and body
 * TODO fix panel travel
 * TODO fix command auto close
 
 
 :backlog:
+* TODO parse and display :tag: anywhere in body
 * TODO tag filtering in search
 * TODO insert multiple tags from command option
 * TODO refactor search to be a service
@@ -36,6 +35,7 @@
 * TODO a way to view status history
 
 
+* DONE support metadata field, e.g. url
 * DONE grid layout for panels. Reduce gutter. float command bar. Colored status bar
 * DONE show status on app launch
 * DONE `fa` to save and sync all

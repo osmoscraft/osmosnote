@@ -31,9 +31,7 @@ async function upsertFile(context: CommandHandlerContext) {
     // Create new file
     const createNoteBody: CreateNoteBody = {
       note: {
-        metadata: {
-          title: context.componentRefs.documentHeader.getTitle(),
-        },
+        metadata: context.componentRefs.documentHeader.getData(),
         content: context.componentRefs.textEditor.getFileText(),
       },
     };
@@ -50,9 +48,7 @@ async function upsertFile(context: CommandHandlerContext) {
     // save changes to note
     const updateNoteBody: UpdateNoteBody = {
       note: {
-        metadata: {
-          title: context.componentRefs.documentHeader.getTitle(),
-        },
+        metadata: context.componentRefs.documentHeader.getData(),
         content: context.componentRefs.textEditor.getFileText(),
       },
     };

@@ -33,11 +33,12 @@ async function loadNote() {
     // experimental
     componentRefs.textEditor.setFileText(result.note.content);
 
-    componentRefs.documentHeader.setTitle(result.note.metadata.title);
+    componentRefs.documentHeader.setData({ id, metadata: result.note.metadata });
     componentRefs.referencePanel.setIncomingConnections(result.incomingConnections);
   } else {
     // prepare for new note
-    componentRefs.documentHeader.setTitle(title ?? `New note on ${new Date().toLocaleString()}`);
+    const newTitle = title ?? `New note on ${new Date().toLocaleString()}`;
+    componentRefs.documentHeader.setData({ metadata: { title: newTitle } });
 
     // experimental
     componentRefs.textEditor.setFileText(content ?? "");
