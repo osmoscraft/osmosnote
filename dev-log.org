@@ -33,6 +33,7 @@
 * TODO handle list rendering (* or - as bullet)
 * TODO decouple command lambda from command key binding
 * TODO improve panel travel: consider tab, arrow, hjkl options
+* TODO a way to view status history
 
 
 * DONE grid layout for panels. Reduce gutter. float command bar. Colored status bar
