@@ -1,5 +1,6 @@
 :tackling:
-* TODO capture new note from url
+* TODO capture new note from url using bookmarklet
+* TODO capture new note from url using command with auto parsing and canonical tracing
 * TODO package into single executable
 * TODO fix panel travel
 * TODO fix command auto close
