@@ -8,7 +8,9 @@ import { HistoryService } from "./services/history/history.service";
 import { ProxyService } from "./services/proxy/proxy.service";
 import { SourceControlService } from "./services/source-control/source-control.service";
 import { FileStorageService } from "./services/file-storage/file-storage.service";
-import { FocusTrapComponent } from "./components/focus-trap/focus-trap.component";
+
+// global elements
+import "./components/focus-trap/focus-trap.component";
 
 di.registerClass(ComponentReferenceService, []);
 di.registerClass(ProxyService, []);
@@ -61,10 +63,5 @@ async function checkVersions() {
   componentRefs.statusBar.showText(versionResult.message);
 }
 
-function defineGlobalComponents() {
-  customElements.define("s2-focus-trap", FocusTrapComponent);
-}
-
-defineGlobalComponents();
 loadNote();
 checkVersions();
