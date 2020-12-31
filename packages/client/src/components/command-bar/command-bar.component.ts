@@ -49,7 +49,7 @@ export class CommandBarComponent extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
-      <input id="command-input" class="cmdbr-input" tabindex="-1" type="text" autocomplete="off" spellcheck="false"/>
+      <input id="command-input" class="cmdbr-input" disabled tabindex="-1" type="text" autocomplete="off" spellcheck="false"/>
       <div id="command-options" class="cmdbr-options"></div>`;
 
     this.commandInputDom = document.getElementById("command-input") as HTMLInputElement;
@@ -61,7 +61,9 @@ export class CommandBarComponent extends HTMLElement {
   enterCommandMode() {
     this.saveCurosr();
     this.dataset.active = "true";
+
     this.commandInputDom.tabIndex = 0; // make it focusable AFTER command mode starts. Otherwise, we will trap focus for the rest of the window
+    this.commandInputDom.disabled = false;
 
     this.commandInputDom.focus();
   }
@@ -71,6 +73,7 @@ export class CommandBarComponent extends HTMLElement {
 
     delete this.dataset.active;
     this.commandInputDom.tabIndex = -1;
+    this.commandInputDom.disabled = true;
 
     if (config?.skipCursorRestore) return;
     this.restoreCursor();
