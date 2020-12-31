@@ -1,11 +1,10 @@
 :tackling:
+* TODO tag filtering in search
 
 :backlog:
 * TODO onbeforeunload warn unsaved notes
 * TODO capture new note from url using command with multiple heading options
 * TODO debug window build bin output
-* TODO parse and display :tag: anywhere in body
-* TODO tag filtering in search
 * TODO insert multiple tags from command option
 * TODO refactor search to be a service
 * TODO show save progress - need to break git actions into smaller api calls
@@ -34,7 +33,7 @@
 * TODO clean up command system architecture
   ** TODO Disentangle option update vs. execution
 
-
+* DONE parse and display :tag: anywhere in body
 * DONE reference panel use up/down instead of tab to traverse list
 * DONE trap app focus
 * DONE fix command auto close
