@@ -26,7 +26,16 @@ export class ReferencePanelComponent extends HTMLElement {
       .join("");
   }
 
+  focusOnActiveLink() {
+    const allLinks = [...this.querySelectorAll(`a[data-index]`)] as HTMLAnchorElement[];
+    const activeLink = allLinks.find((link) => link.tabIndex === 0);
+
+    activeLink?.focus();
+  }
+
   private handleEvents() {
+    this.addEventListener("focus", () => this.focusOnActiveLink());
+
     this.addEventListener("keydown", (event) => {
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.stopPropagation();

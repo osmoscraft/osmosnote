@@ -1,8 +1,8 @@
 :tackling:
-* TODO reference panel use up/down instead of tab to traverse list
 
 :backlog:
-* TODO capture new note from url using command with auto parsing and canonical tracing
+* TODO onbeforeunload warn unsaved notes
+* TODO capture new note from url using command with multiple heading options
 * TODO debug window build bin output
 * TODO parse and display :tag: anywhere in body
 * TODO tag filtering in search
@@ -31,8 +31,11 @@
 * TODO decouple command lambda from command key binding
 * TODO a way to view status history
 * TODO generate bookmarklet from the app
+* TODO clean up command system architecture
+  ** TODO Disentangle option update vs. execution
 
 
+* DONE reference panel use up/down instead of tab to traverse list
 * DONE trap app focus
 * DONE fix command auto close
 * DONE fix panel travel

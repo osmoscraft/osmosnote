@@ -68,14 +68,13 @@ export class CommandBarComponent extends HTMLElement {
     this.commandInputDom.focus();
   }
 
-  exitCommandMode(config?: { skipCursorRestore?: boolean }) {
+  exitCommandMode() {
     this.clear();
 
     delete this.dataset.active;
     this.commandInputDom.tabIndex = -1;
     this.commandInputDom.disabled = true;
 
-    if (config?.skipCursorRestore) return;
     this.restoreCursor();
   }
 
@@ -305,7 +304,9 @@ export class CommandBarComponent extends HTMLElement {
         },
       });
 
-      this.exitCommandMode({ skipCursorRestore: result.skipCursorRestore });
+      this.exitCommandMode();
+
+      result.runAfterClose?.apply(undefined);
     }
   }
 

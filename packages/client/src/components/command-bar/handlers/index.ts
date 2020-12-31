@@ -30,7 +30,7 @@ export interface CommandHandler {
 
 export interface CommandHandlerResult {
   optionsHtml?: string;
-  skipCursorRestore?: boolean;
+  runAfterClose?: () => void;
 }
 
 export const commandHandlers: CommandHandlers = {
