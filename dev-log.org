@@ -1,5 +1,4 @@
 :tackling:
-* TODO capture new note from url using bookmarklet
 * TODO capture new note from url using command with auto parsing and canonical tracing
 * TODO package into single executable
 * TODO fix panel travel
@@ -36,6 +35,7 @@
 * TODO a way to view status history
 
 
+* DONE capture new note from url using bookmarklet
 * DONE support metadata field, e.g. url
 * DONE grid layout for panels. Reduce gutter. float command bar. Colored status bar
 * DONE show status on app launch
