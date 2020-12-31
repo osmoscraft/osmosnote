@@ -1,6 +1,7 @@
 :tackling:
-* TODO fix panel travel
 * TODO fix command auto close
+* TODO trap app focus
+* TODO reference panel use up/down instead of tab to traverse list
 
 
 :backlog:
@@ -10,10 +11,10 @@
 * TODO tag filtering in search
 * TODO insert multiple tags from command option
 * TODO refactor search to be a service
-* TODO close command bar when losing focus
 * TODO show save progress - need to break git actions into smaller api calls
 * TODO centralize event handling: keyboard > global handler > call command or call component method
 * TODO Ctrl+Enter to create note without closing existing
+* TODO improve panel travel: consider tab, arrow, hjkl options
 * TODO Create note on the fly and return new ID in for current Note to use
 * TODO tab/shift-tab to push/pull indendation, implement as a command
 * TODO Alt + arrow to move line(s)
@@ -31,11 +32,11 @@
 * TODO show color bar on left when line has formatting issues
 * TODO handle list rendering (* or - as bullet)
 * TODO decouple command lambda from command key binding
-* TODO improve panel travel: consider tab, arrow, hjkl options
 * TODO a way to view status history
 * TODO generate bookmarklet from the app
 
 
+* DONE fix panel travel
 * DONE package into single executable
 * DONE capture new note from url using bookmarklet
 * DONE support metadata field, e.g. url

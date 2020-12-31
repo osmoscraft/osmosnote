@@ -45,6 +45,10 @@ export class DocumentHeaderComponent extends HTMLElement {
     this.handleEvents();
   }
 
+  focusHeadingInput() {
+    this.headingInputDom.focus();
+  }
+
   setData(config: HeaderInitConfig) {
     this.model = {
       expanded: false,

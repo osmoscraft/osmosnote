@@ -16,8 +16,8 @@ export const handleGoToReferences: CommandHandler = ({ context }) => {
   };
 };
 
-export const handleGoToHeader: CommandHandler = ({ input, context }) => {
-  context.componentRefs.documentHeader.focus();
+export const handleGoToHeader: CommandHandler = ({ context }) => {
+  context.componentRefs.documentHeader.focusHeadingInput();
 
   return {
     skipCursorRestore: true,
