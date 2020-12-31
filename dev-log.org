@@ -1,8 +1,6 @@
 :tackling:
-* TODO fix command auto close
 * TODO trap app focus
 * TODO reference panel use up/down instead of tab to traverse list
-
 
 :backlog:
 * TODO capture new note from url using command with auto parsing and canonical tracing
@@ -36,6 +34,7 @@
 * TODO generate bookmarklet from the app
 
 
+* DONE fix command auto close
 * DONE fix panel travel
 * DONE package into single executable
 * DONE capture new note from url using bookmarklet

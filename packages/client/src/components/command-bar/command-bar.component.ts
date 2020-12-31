@@ -117,7 +117,8 @@ export class CommandBarComponent extends HTMLElement {
 
     this.addEventListener("focusout", (event) => {
       if (this.contains(event.relatedTarget as Node)) return;
-      this.commandOptionsDom.innerHTML = "";
+
+      this.exitCommandMode();
     });
 
     this.addEventListener("keydown", (event) => {
