@@ -45,6 +45,11 @@ export const handleSearch: RouteHandlerMethod<any, any, any, SearchRouteHandler>
 async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultItem[]> {
   const wordsInput = phrase.trim().split(" ").join("\\W+(?:\\w+\\W+){0,3}?"); // two words separated by 0 to 3 other words
 
+  // TODO when tags are present, do two separate searches
+  // the first one gives a list of files with ALL tags in it.
+  // the second one is the ordinary keyword full text search
+  // return intersection of the two searches
+
   /**
    * \\b ensures word boundary
    *
