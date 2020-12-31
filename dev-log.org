@@ -1,11 +1,11 @@
 :tackling:
-* TODO capture new note from url using command with auto parsing and canonical tracing
-* TODO package into single executable
 * TODO fix panel travel
 * TODO fix command auto close
 
 
 :backlog:
+* TODO capture new note from url using command with auto parsing and canonical tracing
+* TODO debug window build bin output
 * TODO parse and display :tag: anywhere in body
 * TODO tag filtering in search
 * TODO insert multiple tags from command option
@@ -35,6 +35,7 @@
 * TODO a way to view status history
 
 
+* DONE package into single executable
 * DONE capture new note from url using bookmarklet
 * DONE support metadata field, e.g. url
 * DONE grid layout for panels. Reduce gutter. float command bar. Colored status bar

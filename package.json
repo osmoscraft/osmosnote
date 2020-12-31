@@ -17,7 +17,8 @@
     "dev:server": "npm run dev --prefix packages/server",
     "build:client": "npm run build --prefix packages/client",
     "build:server": "npm run build --prefix packages/server",
-    "serve:server": "npm run serve --prefix packages/server"
+    "serve:server": "npm run serve --prefix packages/server",
+    "pack": "npm run pack --prefix packages/server"
   },
   "workspaces": [
     "packages/*"
