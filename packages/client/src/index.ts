@@ -60,7 +60,7 @@ async function checkVersions() {
   const componentRefs = di.getSingleton(ComponentReferenceService);
 
   const versionResult = await sourceControlService.check();
-  componentRefs.statusBar.showText(versionResult.message);
+  componentRefs.statusBar.setMessage(versionResult.message);
 }
 
 loadNote();

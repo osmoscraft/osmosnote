@@ -11,9 +11,9 @@ export const handleFileCopyLink: CommandHandler = ({ context }) => {
     const link = `[${title}](${filenameToId(filename)})`;
 
     sendToClipboard(link);
-    context.componentRefs.statusBar.showText(`Copied to clipboard: ${link}`);
+    context.componentRefs.statusBar.setMessage(`Copied to clipboard: ${link}`);
   } else {
-    context.componentRefs.statusBar.showText(`Error: current page is not a note`);
+    context.componentRefs.statusBar.setMessage(`Error: current page is not a note`);
   }
 
   return {};

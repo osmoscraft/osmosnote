@@ -29,11 +29,11 @@ export interface EditorCursor {
 export const HEADING_PATTERN = /^(#{1,6}) (.*)/m; // e.g. # My title
 
 export const DEFAULT_CURSOR = {
-  rawStart: 0,
-  rawEnd: 0,
   direction: "forward" as const,
-  startRow: 0,
-  startCol: 0,
-  endRow: 0,
   endCol: 0,
+  endRow: 0,
+  rawEnd: 0,
+  rawStart: 0,
+  startCol: 0,
+  startRow: 0,
 };

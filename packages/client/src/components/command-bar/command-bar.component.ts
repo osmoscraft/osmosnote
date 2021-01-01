@@ -253,7 +253,7 @@ export class CommandBarComponent extends HTMLElement {
         e.preventDefault();
 
         this.componentRefs.textEditor.insertAtCursor(targetDataset.insertText);
-        this.componentRefs.statusBar.showText(`[command-bar] inserted "${targetDataset.insertText}"`);
+        this.componentRefs.statusBar.setMessage(`[command-bar] inserted "${targetDataset.insertText}"`);
         this.exitCommandMode();
 
         return true;

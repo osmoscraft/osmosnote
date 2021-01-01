@@ -2,9 +2,9 @@ import type { CommandHandler } from ".";
 
 export const handleVersionsCheck: CommandHandler = async ({ context }) => {
   // don't await. exit immediately
-  context.componentRefs.statusBar.showText("Checking…");
+  context.componentRefs.statusBar.setMessage("Checking…");
   context.sourceControlService.check().then((result) => {
-    context.componentRefs.statusBar.showText(result.message);
+    context.componentRefs.statusBar.setMessage(result.message);
   });
 
   return {};

@@ -5,7 +5,7 @@ import { sendToClipboard } from "../../utils/clipboard";
 import { deepEqual } from "../../utils/deep-equal";
 import { di } from "../../utils/dependency-injector";
 import { emit } from "../../utils/events";
-import { DEFAULT_CURSOR, EditorModel, EditorCursor } from "./model/editor-model";
+import { DEFAULT_CURSOR, EditorModel, EditorCursor, EditorLine } from "./model/editor-model";
 import { draftTextToModelLines } from "./model/helpers/draft-text-to-model";
 import { fileTextToModelLines } from "./model/helpers/file-text-to-model";
 import { modelToDraftText } from "./model/helpers/model-to-draft-text";
@@ -65,6 +65,8 @@ export class TextEditorComponent extends HTMLElement {
   cursorSelectionService!: CursorSelectionService;
   model!: EditorModel;
 
+  private savedLinesString!: string;
+
   connectedCallback() {
     this.innerHTML = /*html*/ `
     <textarea autofocus class="text-editor-shared text-editor-base" spellcheck="false" id="text-editor-base"></textarea>
@@ -84,8 +86,11 @@ export class TextEditorComponent extends HTMLElement {
       cursor: { ...DEFAULT_CURSOR },
     };
 
-    this.saveModelToHistory();
-    this.renderModel();
+    this.pushModelToHistory();
+
+    this.markModelAsSaved();
+
+    this.render();
 
     // init handlers after initial render to prevent double update
 
@@ -95,6 +100,11 @@ export class TextEditorComponent extends HTMLElement {
     this.handleScroll();
     this.handleSelectionChange();
     this.handleUndoRedo();
+  }
+
+  markModelAsSaved() {
+    this.savedLinesString = JSON.stringify(this.model.lines);
+    this.render();
   }
 
   getFileText(): string {
@@ -114,7 +124,7 @@ export class TextEditorComponent extends HTMLElement {
     };
 
     emit(this, "text-editor:model-changed", { detail: this.model });
-    this.renderModel();
+    this.render();
   }
 
   insertAtCursor(text: string) {
@@ -147,8 +157,7 @@ export class TextEditorComponent extends HTMLElement {
     }
   }
 
-  // render textarea and overlay with the model
-  private renderModel() {
+  private render() {
     const existingDraft = this.textAreaDom.value;
     const cleanDraft = modelToDraftText(this.model);
 
@@ -169,7 +178,11 @@ export class TextEditorComponent extends HTMLElement {
     }
 
     this.semanticOverlay.updateModel(this.model);
-    this.componentReferenceService.statusBar.showCursor(modelCursor);
+    this.componentReferenceService.statusBar.setCursorStatus(modelCursor);
+
+    this.componentReferenceService.statusBar.setChangeStatus(
+      this.savedLinesString !== JSON.stringify(this.model.lines)
+    );
   }
 
   private handleKeydown() {
@@ -289,7 +302,7 @@ export class TextEditorComponent extends HTMLElement {
     });
   }
 
-  private saveModelToHistory() {
+  private pushModelToHistory() {
     const historyString = this.historyService.peek();
     const modelString = JSON.stringify(this.model);
 
@@ -311,7 +324,7 @@ export class TextEditorComponent extends HTMLElement {
 
   private restoreSnapshot(model: EditorModel) {
     this.model = model;
-    this.renderModel();
+    this.render();
   }
 
   private handleScroll() {
@@ -375,7 +388,7 @@ export class TextEditorComponent extends HTMLElement {
 
   private handleDomChange() {
     this.handleDraftChange();
-    this.saveModelToHistory();
+    this.pushModelToHistory();
   }
 
   private getCursor(): EditorCursor {
@@ -385,14 +398,16 @@ export class TextEditorComponent extends HTMLElement {
     const { row: endRow, col: endCol } = this.getRowCol(draft, selectionEnd);
     const { row: startRow, col: startCol } = this.getRowCol(draft, selectionStart);
 
+    // Keep it sorted or JSON stringify compare will fail
+    // TODO use factory to update cursor or switch to immutable
     return {
-      startCol,
-      startRow,
+      direction: selectionDirection,
       endCol,
       endRow,
-      rawStart: selectionStart,
       rawEnd: selectionEnd,
-      direction: selectionDirection,
+      rawStart: selectionStart,
+      startCol,
+      startRow,
     };
   }
 

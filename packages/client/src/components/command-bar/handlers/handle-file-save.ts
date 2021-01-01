@@ -6,9 +6,10 @@ import { handleVersionsCheck } from "./handle-versions-check";
 import { handleVersionsSync } from "./handle-versions-sync";
 
 export const handleFileSave: CommandHandler = async ({ input, context }) => {
-  context.componentRefs.statusBar.showText("Saving…");
+  context.componentRefs.statusBar.setMessage("Saving…");
 
   upsertFile(context).then(() => {
+    context.componentRefs.textEditor.markModelAsSaved();
     handleVersionsCheck({ input, context });
   });
 
@@ -16,9 +17,10 @@ export const handleFileSave: CommandHandler = async ({ input, context }) => {
 };
 
 export const handleFileSaveAndSync: CommandHandler = async ({ input, context }) => {
-  context.componentRefs.statusBar.showText("Saving…");
+  context.componentRefs.statusBar.setMessage("Saving…");
 
   upsertFile(context).then((result) => {
+    context.componentRefs.textEditor.markModelAsSaved();
     handleVersionsSync({ input, context });
   });
 
@@ -39,7 +41,7 @@ async function upsertFile(context: CommandHandlerContext) {
     const result = await context.fileStorageService.create(createNoteBody);
 
     history.replaceState(undefined, document.title, `/?filename=${result.filename}`);
-    context.componentRefs.statusBar.showText(`Created ${result.note.metadata.title}`);
+    context.componentRefs.statusBar.setMessage(`Created ${result.note.metadata.title}`);
 
     return result;
   } else {
@@ -56,7 +58,7 @@ async function upsertFile(context: CommandHandlerContext) {
     const id = filenameToId(filename);
     const result = await context.fileStorageService.update(id, updateNoteBody);
 
-    context.componentRefs.statusBar.showText(`Saved ${result.note.metadata.title}`);
+    context.componentRefs.statusBar.setMessage(`Saved ${result.note.metadata.title}`);
 
     return result;
   }

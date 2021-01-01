@@ -5,13 +5,27 @@ s2-status-bar {
   font-weight: bold;
   font-size: 14px;
 
-  padding: 0 16px;
+  padding: 0;
 }
 
 .stsbar-output {
   display: flex;
   align-items: center;
   height: 100%;
+}
+
+.stsbar-chip {
+  padding: 0 8px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.stsbar-chip--change[data-is-dirty="false"] {
+  background-color: var(--theme-success-background);
+}
+.stsbar-chip--change[data-is-dirty="true"] {
+  background-color: var(--theme-warning-background);
 }
 
 .stsbar-spacer {
