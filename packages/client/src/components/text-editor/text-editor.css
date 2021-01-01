@@ -29,7 +29,7 @@ s2-text-editor:focus-within {
   cursor: auto; /* this prevents text cursor on scroll bar */
 
   color: transparent;
-  caret-color: var(--base06);
+  caret-color: var(--theme-text-color);
 
   background-color: transparent;
 }
@@ -49,6 +49,5 @@ s2-text-editor:focus-within {
 }
 
 .text-editor-base::selection {
-  color: var(--base03);
-  background-color: var(--base06);
+  background-color: var(--theme-text-selection-background);
 }

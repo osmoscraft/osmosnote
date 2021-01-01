@@ -27,6 +27,7 @@
   --theme-menu-option-background-alt: var(--base03); /* active but out of focus */
   --theme-menu-option-background-active: var(--base0D);
   --theme-text-color: var(--base06);
+  --theme-text-selection-background: var(--base05);
   --theme-text-color-secondary: var(--base04);
   --theme-text-color-knockout: var(--base00); /* used on solid color background */
   --theme-text-color-ghost: var(--base03); /* symbols, disabled content */
@@ -41,6 +42,8 @@
   --theme-h4-color: var(--base0B);
   --theme-h5-color: var(--base0A);
   --theme-h6-color: var(--base0B);
+  --theme-success-background: var(--base0C);
+  --theme-warning-background: var(--base09);
 }
 
 body {
