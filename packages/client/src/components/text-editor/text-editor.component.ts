@@ -278,6 +278,8 @@ export class TextEditorComponent extends HTMLElement {
       }
 
       if (event.key === "Home") {
+        if (event.shiftKey) return;
+
         event.preventDefault();
         event.stopPropagation();
 
