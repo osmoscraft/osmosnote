@@ -35,6 +35,7 @@
 
   ** Responsive UI
     - show save progress - need to break git actions into smaller api calls
+    - consolidate remote sync status with local save status chip
     - a way to view status history
     - highlight todo and done keywords
     - show color bar on left when line has formatting issues
