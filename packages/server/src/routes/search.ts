@@ -43,12 +43,38 @@ export const handleSearch: RouteHandlerMethod<any, any, any, SearchRouteHandler>
 };
 
 async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultItem[]> {
-  const wordsInput = phrase.trim().split(" ").join("\\W+(?:\\w+\\W+){0,3}?"); // two words separated by 0 to 3 other words
+  const baseQuery = phrase.trim();
+  const tagsQuery = baseQuery.match(/:.+:/)?.[0];
+  const keywordQuery = tagsQuery ? baseQuery.replace(tagsQuery, "") : baseQuery;
 
-  // TODO when tags are present, do two separate searches
-  // the first one gives a list of files with ALL tags in it.
-  // the second one is the ordinary keyword full text search
-  // return intersection of the two searches
+  let getFilenamesPreprocess: string = "";
+
+  /*
+   * When tags are specified, we require all result files to contain all of tags.
+   */
+  if (tagsQuery) {
+    /*
+     * ripgrep does not support look ahead, or we could use the following to emulate "AND" logic
+     * ref: https://stackoverflow.com/questions/13911053/regular-expression-to-match-all-words-in-a-query-in-any-order
+     * `${tags.map((tag) => `(?=.*:${tag}:)`).join("")}.+`;
+     *
+     * Instead, we do a pass for each tag to narrow down the filenames
+     */
+
+    /*
+     * get a list of files contains all the tags, separated by space
+     * -l list file names only
+     * -0 removes new line character after each file name
+     * xargs -0 formats the file names into a space separate list that can be piped into the next rg command. -r stops processing if it's empty
+     */
+    const tags = tagsQuery
+      .split(":")
+      .map((tag) => tag.trim())
+      .filter((tag) => !!tag);
+    getFilenamesPreprocess = tags.map((tag) => `rg :${tag}: -l --ignore-case -0 | xargs -0 -r `).join("");
+  }
+
+  const wordsInput = keywordQuery.trim().split(" ").join("\\W+(?:\\w+\\W+){0,3}?"); // two words separated by 0 to 3 other words
 
   /**
    * \\b ensures word boundary
@@ -59,7 +85,10 @@ async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultI
     error,
     stdout,
     stderr,
-  } = await runShell(`rg "\\b${wordsInput}" --ignore-case --count-matches | head -n ${RESULT_LIMIT}`, { cwd: dir });
+  } = await runShell(
+    `${getFilenamesPreprocess}rg "\\b${wordsInput}" --ignore-case --count-matches | head -n ${RESULT_LIMIT}`,
+    { cwd: dir }
+  );
 
   if (error) {
     if (error.code === 1) {

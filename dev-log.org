@@ -1,38 +1,54 @@
 :tackling:
-* TODO tag filtering in search
-
-:backlog:
 * TODO onbeforeunload warn unsaved notes
-* TODO capture new note from url using command with multiple heading options
-* TODO debug window build bin output
-* TODO insert multiple tags from command option
-* TODO refactor search to be a service
-* TODO show save progress - need to break git actions into smaller api calls
-* TODO centralize event handling: keyboard > global handler > call command or call component method
-* TODO Ctrl+Enter to create note without closing existing
-* TODO improve panel travel: consider tab, arrow, hjkl options
-* TODO Create note on the fly and return new ID in for current Note to use
-* TODO tab/shift-tab to push/pull indendation, implement as a command
-* TODO Alt + arrow to move line(s)
-* TODO ctrl + D to select word under cursor
-* TODO decouple formatting from syntax parsing
-  ** TODO Cursor position is borken after formatting
-  ** TODO when not on last line, "## " will push selection to bottom
-* TODO tagging system (need design)
-* TODO use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer
-* TODO test
-* TODO run command directly with hotkey
-* TODO expose config file in web for read/write
-* TODO highlight todo and done keywords
-* TODO type "?" to reopen help menu, show placeholder hint when command bar isn't focused
-* TODO show color bar on left when line has formatting issues
-* TODO handle list rendering (* or - as bullet)
-* TODO decouple command lambda from command key binding
-* TODO a way to view status history
-* TODO generate bookmarklet from the app
-* TODO clean up command system architecture
-  ** TODO Disentangle option update vs. execution
 
+* Backlog
+
+  ** Bugs
+    - Cursor position is borken after formatting
+    - when not on last line, "## " will push selection to bottom
+    - debug windows build bin output (may have to do with git auth)
+
+  ** Intuitive modal/window management
+    - insert multiple tags from command option
+    - Ctrl+Enter to create note without closing existing
+    - Create note on the fly and return new ID in for current Note to use
+
+  ** Hassle-free 1st run
+    - generate bookmarklet from the app
+    - expose config file in web for read/write
+    - type "?" to reopen help menu, show placeholder hint when command bar isn't focused
+
+  ** Knowledge capture
+    - Support list 
+      - syntax highlight
+      - push/pull indendation, implement as a command
+    - capture new note from url using command with multiple heading options
+
+  ** Responsive UI
+    - show save progress - need to break git actions into smaller api calls
+    - a way to view status history
+    - highlight todo and done keywords
+    - show color bar on left when line has formatting issues
+
+  ** Keyboard ergonomics
+    - Alt + arrow to move line(s)
+    - ctrl + D to select word under cursor
+    - run command directly with hotkey (require refactoring)
+
+  ** Refactoring
+    - centralize event handling: keyboard > global handler > call command or call component method
+    - clean up command system architecture
+      - decouple command lambda from command key binding
+      - Disentangle option update vs. execution
+    - decouple formatting from syntax parsing
+    - refactor search to be a service
+    - use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer
+    - unit test
+    - Find xargs alternative. (replace with plain javascript string manipulation?)
+
+
+* DONE tagging system (need design)
+* DONE tag filtering in search
 * DONE parse and display :tag: anywhere in body
 * DONE reference panel use up/down instead of tab to traverse list
 * DONE trap app focus
@@ -95,6 +111,7 @@
 * DONE show title in search
 * DONE display title (with yaml frontmatter)
 
+:ideas:
 
 * How to handle link insertion?
 - use clipboard as much as possible
