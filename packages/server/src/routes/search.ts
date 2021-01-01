@@ -74,7 +74,60 @@ async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultI
     getFilenamesPreprocess = tags.map((tag) => `rg :${tag}: -l --ignore-case -0 | xargs -0 -r `).join("");
   }
 
-  const wordsInput = keywordQuery.trim().split(" ").join("\\W+(?:\\w+\\W+){0,3}?"); // two words separated by 0 to 3 other words
+  const keywords = keywordQuery
+    .trim()
+    .split(" ")
+    .filter((keyword) => !!keyword);
+
+  if (keywords.length) {
+    return keywordSearch(dir, keywords, getFilenamesPreprocess);
+  } else {
+    return tagOnlySearch(dir, getFilenamesPreprocess);
+  }
+}
+
+async function tagOnlySearch(dir: string, getFilenamesPreprocess: string) {
+  const { error, stdout, stderr } = await runShell(`${getFilenamesPreprocess}`, { cwd: dir });
+
+  if (error) {
+    if (error.code === 1) {
+      return [];
+    } else {
+      throw stderr;
+    }
+  } else if (!stdout.length) {
+    return [];
+  } else {
+    const filenames = stdout.trim().split(" ");
+
+    const notesAsync = filenames.map(async (filename) => {
+      const markdown = await readNote(filename);
+      const parseResult = parseNote(markdown);
+
+      return {
+        filename: filename,
+        title: parseResult.metadata.title,
+        content: parseResult.content,
+        score: 0, // can't tally tag core yet
+      };
+    });
+
+    const notes: SearchResultItem[] = await Promise.all(notesAsync);
+    const sortedNotes = notes
+      .sort((a, b) => a.title.localeCompare(b.title)) // sort title first to result can remain the same
+      .sort((a, b) => b.score - a.score);
+
+    return sortedNotes;
+  }
+}
+
+async function keywordSearch(dir: string, keywords: string[], getFilenamesPreprocess: string) {
+  const wordsInput = keywords.join("\\W+(?:\\w+\\W+){0,3}?"); // two words separated by 0 to 3 other words
+
+  let searchCommand = "";
+  if (keywords.length) {
+    searchCommand = `${getFilenamesPreprocess}rg "\\b${wordsInput}" --ignore-case --count-matches | head -n ${RESULT_LIMIT}`;
+  }
 
   /**
    * \\b ensures word boundary

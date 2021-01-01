@@ -11,14 +11,14 @@
     "serve": "npm-run-all --print-label -p serve:*",
     "clean": "npm-run-all --print-label -p clean:*",
     "build": "npm-run-all --print-label -p clean:* -p build:*",
+    "pack": "npm run pack --prefix packages/server",
     "clean:client": "npm run clean --prefix packages/client",
     "clean:server": "npm run clean --prefix packages/server",
     "dev:client": "npm run dev --prefix packages/client",
     "dev:server": "npm run dev --prefix packages/server",
     "build:client": "npm run build --prefix packages/client",
     "build:server": "npm run build --prefix packages/server",
-    "serve:server": "npm run serve --prefix packages/server",
-    "pack": "npm run pack --prefix packages/server"
+    "serve:server": "npm run serve --prefix packages/server"
   },
   "workspaces": [
     "packages/*"
