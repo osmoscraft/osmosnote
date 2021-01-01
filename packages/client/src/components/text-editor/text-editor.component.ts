@@ -76,6 +76,18 @@ export class TextEditorComponent extends HTMLElement {
     this.historyService = di.createShallow(HistoryService);
     this.componentReferenceService = di.getSingleton(ComponentReferenceService);
     this.cursorSelectionService = di.getSingleton(CursorSelectionService);
+  }
+
+  initWithText(fileText: string) {
+    this.model = {
+      lines: fileTextToModelLines(fileText),
+      cursor: { ...DEFAULT_CURSOR },
+    };
+
+    this.saveModelToHistory();
+    this.renderModel();
+
+    // init handlers after initial render to prevent double update
 
     this.handlePaste();
     this.handleCut();
@@ -83,16 +95,6 @@ export class TextEditorComponent extends HTMLElement {
     this.handleScroll();
     this.handleSelectionChange();
     this.handleUndoRedo();
-  }
-
-  setFileText(fileText: string) {
-    this.model = {
-      lines: fileTextToModelLines(fileText),
-      cursor: { ...DEFAULT_CURSOR },
-    };
-    this.renderModel();
-
-    this.saveModelToHistory();
   }
 
   getFileText(): string {
@@ -124,18 +126,22 @@ export class TextEditorComponent extends HTMLElement {
 
   undo() {
     const undoResult = this.historyService.undo();
-    if (undoResult !== null) {
+    if (undoResult === null) {
+      console.log("[text-editor] no change to undo");
+    } else {
       const model: EditorModel = JSON.parse(undoResult);
-      console.log(model);
+      console.log("[text-editor] model after undo", model);
       this.restoreSnapshot(model);
     }
   }
 
   redo() {
     const redoResult = this.historyService.redo();
-    if (redoResult !== null) {
+    if (redoResult === null) {
+      console.log("[text-editor] no change to redo");
+    } else {
       const model: EditorModel = JSON.parse(redoResult);
-      console.log(model);
+      console.log("[text-editor] model after redo", model);
 
       this.restoreSnapshot(model);
     }
@@ -454,13 +460,11 @@ export class TextEditorComponent extends HTMLElement {
       if (event.ctrlKey && !event.shiftKey && event.key === "z") {
         this.undo();
         event.preventDefault();
-        console.log("[text-editor] undo");
       }
 
       if (event.ctrlKey && event.shiftKey && event.key === "Z") {
         this.redo();
         event.preventDefault();
-        console.log("[text-editor] redo");
       }
     });
   }

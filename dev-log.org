@@ -55,7 +55,8 @@
     - unit test
     - Find xargs alternative. (replace with plain javascript string manipulation?)
 
-
+* DONE open existing drafts creates unwanted history record
+* DONE history record is creatd before content init
 * DONE do not allow empty space inside tag. For example, "this is an url: https://..." shouldn't trigger a tag highlight
 * DONE tagging system (need design)
 * DONE tag filtering in search

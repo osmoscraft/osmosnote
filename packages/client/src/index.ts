@@ -34,7 +34,7 @@ async function loadNote() {
     const result = await loadExistingNote(id);
 
     // experimental
-    componentRefs.textEditor.setFileText(result.note.content);
+    componentRefs.textEditor.initWithText(result.note.content);
 
     componentRefs.documentHeader.setData({ id, metadata: result.note.metadata });
     componentRefs.referencePanel.setIncomingConnections(result.incomingConnections);
@@ -44,7 +44,7 @@ async function loadNote() {
     componentRefs.documentHeader.setData({ metadata: { title: newTitle, url: url ?? undefined } });
 
     // experimental
-    componentRefs.textEditor.setFileText(content ?? "");
+    componentRefs.textEditor.initWithText(content ?? "");
   }
 }
 

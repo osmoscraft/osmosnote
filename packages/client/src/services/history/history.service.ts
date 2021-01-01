@@ -2,6 +2,10 @@ export class HistoryService {
   private stack: string[] = [];
   private currentIndex = -1;
 
+  get length() {
+    return this.stack.length;
+  }
+
   constructor() {
     (window as any).historyService = this;
   }
