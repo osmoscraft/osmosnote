@@ -100,6 +100,7 @@ export class TextEditorComponent extends HTMLElement {
     this.handleScroll();
     this.handleSelectionChange();
     this.handleUndoRedo();
+    this.handleUnload();
   }
 
   markModelAsSaved() {
@@ -180,9 +181,8 @@ export class TextEditorComponent extends HTMLElement {
     this.semanticOverlay.updateModel(this.model);
     this.componentReferenceService.statusBar.setCursorStatus(modelCursor);
 
-    this.componentReferenceService.statusBar.setChangeStatus(
-      this.savedLinesString !== JSON.stringify(this.model.lines)
-    );
+    const isDraftDirty = this.isDraftDirty();
+    this.componentReferenceService.statusBar.setChangeStatus(isDraftDirty);
   }
 
   private handleKeydown() {
@@ -388,6 +388,16 @@ export class TextEditorComponent extends HTMLElement {
     });
   }
 
+  private handleUnload() {
+    console.log("hijack");
+    window.addEventListener("beforeunload", (event) => {
+      if (this.isDraftDirty()) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    });
+  }
+
   private handleDomChange() {
     this.handleDraftChange();
     this.pushModelToHistory();
@@ -469,6 +479,10 @@ export class TextEditorComponent extends HTMLElement {
     }
 
     return currentPosition - startOffset;
+  }
+
+  private isDraftDirty(): boolean {
+    return this.savedLinesString !== JSON.stringify(this.model.lines);
   }
 
   // TODO expose to global command for custom keybinding
