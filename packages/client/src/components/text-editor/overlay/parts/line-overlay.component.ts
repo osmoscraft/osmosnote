@@ -48,5 +48,6 @@ export const LINK_PATTERN = /\[([^\(]+)\]\(([^\[]\d+)\)/g; // e.g. [Some title](
 const LINK_REPLACER = (_match: string, title: string, id: string) =>
   /*html*/ `<s2-link-overlay data-id="${id}" data-title="${title}"></s2-link-overlay>`;
 
-export const TAG_PATTERN = /:.+:/g; // e.g. :some:key word:like this:
+// Note we don't allow white space next to the separator. ":some:key word:like this:" is ok, ": hello :world :" is not ok.
+export const TAG_PATTERN = /:([^\s]([^:]+[^\s]:))+/g;
 const TAG_REPLACER = (match: string) => /*html*/ `<s2-tag-overlay data-raw="${match}"></s2-tag-overlay>`;
