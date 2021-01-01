@@ -23,6 +23,7 @@
       - syntax highlight
       - push/pull indendation, implement as a command
     - capture new note from url using command with multiple heading options
+    - Dedupe url capture -> open existing note for existing url 
 
   ** Responsive UI
     - show save progress - need to break git actions into smaller api calls
@@ -112,11 +113,6 @@
 * DONE show title in search
 * DONE display title (with yaml frontmatter)
 
-:ideas:
-
-* How to handle link insertion?
-- use clipboard as much as possible
-- when pasting, autoformat entire note
 
 * How to handle reference (book, website, podcast)?
 - if a book points existing ideas, link to them
