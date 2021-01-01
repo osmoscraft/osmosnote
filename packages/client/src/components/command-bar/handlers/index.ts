@@ -41,6 +41,9 @@ export interface CommandHandlerResult {
    * @deprecated, use `getOptionsHtml` hook
    */
   optionsHtml?: string;
+  /**
+   * return the html for the dropdown
+   */
   onInputChange?: () => string | Promise<string>;
   onExecute?: () => any;
 }

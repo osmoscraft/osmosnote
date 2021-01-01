@@ -5,27 +5,33 @@ import { getNoteConfigFromUrl } from "../../../utils/url";
 import { handleVersionsCheck } from "./handle-versions-check";
 import { handleVersionsSync } from "./handle-versions-sync";
 
-export const handleFileSave: CommandHandler = async ({ input, context }) => {
-  context.componentRefs.statusBar.setMessage("Saving…");
+export const handleFileSave: CommandHandler = async ({ input, context }) => ({
+  onExecute: async () => {
+    context.componentRefs.statusBar.setMessage("Saving…");
 
-  upsertFile(context).then(() => {
-    context.componentRefs.textEditor.markModelAsSaved();
-    handleVersionsCheck({ input, context });
-  });
+    try {
+      await upsertFile(context);
+      context.componentRefs.textEditor.markModelAsSaved();
+      handleVersionsCheck({ input, context });
+    } catch (error) {
+      context.componentRefs.statusBar.setMessage(`Error saving note`, "error");
+    }
+  },
+});
 
-  return {};
-};
+export const handleFileSaveAndSync: CommandHandler = async ({ input, context }) => ({
+  onExecute: async () => {
+    context.componentRefs.statusBar.setMessage("Saving…");
 
-export const handleFileSaveAndSync: CommandHandler = async ({ input, context }) => {
-  context.componentRefs.statusBar.setMessage("Saving…");
-
-  upsertFile(context).then((result) => {
-    context.componentRefs.textEditor.markModelAsSaved();
-    handleVersionsSync({ input, context });
-  });
-
-  return {};
-};
+    try {
+      await upsertFile(context);
+      context.componentRefs.textEditor.markModelAsSaved();
+      handleVersionsSync({ input, context });
+    } catch (error) {
+      context.componentRefs.statusBar.setMessage(`Error saving note`, "error");
+    }
+  },
+});
 
 async function upsertFile(context: CommandHandlerContext) {
   const { filename } = getNoteConfigFromUrl();

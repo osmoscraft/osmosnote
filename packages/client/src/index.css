@@ -44,6 +44,7 @@
   --theme-h6-color: var(--base0B);
   --theme-success-background: var(--base0C);
   --theme-warning-background: var(--base09);
+  --theme-error-background: var(--base08);
 }
 
 body {

@@ -4,17 +4,19 @@ import { filenameToId } from "../../../utils/id";
 import { getNoteConfigFromUrl } from "../../../utils/url";
 
 export const handleFileCopyLink: CommandHandler = ({ context }) => {
-  const { filename } = getNoteConfigFromUrl();
-  const title = context.componentRefs.documentHeader.getTitle();
+  return {
+    onExecute: () => {
+      const { filename } = getNoteConfigFromUrl();
+      const title = context.componentRefs.documentHeader.getTitle();
 
-  if (filename) {
-    const link = `[${title}](${filenameToId(filename)})`;
+      if (filename) {
+        const link = `[${title}](${filenameToId(filename)})`;
 
-    sendToClipboard(link);
-    context.componentRefs.statusBar.setMessage(`Copied to clipboard: ${link}`);
-  } else {
-    context.componentRefs.statusBar.setMessage(`Error: current page is not a note`);
-  }
-
-  return {};
+        sendToClipboard(link);
+        context.componentRefs.statusBar.setMessage(`Copied: ${link}`);
+      } else {
+        context.componentRefs.statusBar.setMessage(`Cannot copy unsaved note`, "warning");
+      }
+    },
+  };
 };

@@ -28,6 +28,13 @@ s2-status-bar {
   background-color: var(--theme-warning-background);
 }
 
+.stsbar-chip--message[data-kind="warning"] {
+  background-color: var(--theme-warning-background);
+}
+.stsbar-chip--message[data-kind="error"] {
+  background-color: var(--theme-error-background);
+}
+
 .stsbar-spacer {
   flex: 1 0 auto;
 }

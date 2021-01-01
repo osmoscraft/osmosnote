@@ -23,8 +23,9 @@ export class StatusBarComponent extends HTMLElement {
     this.changeStatusDom.dataset.isDirty = isDirty ? "true" : "false";
   }
 
-  setMessage(text: string) {
-    this.messageOutputDom.innerText = `${new Date().toLocaleTimeString()} ${text}`;
+  setMessage(text: string, kind: "error" | "info" | "warning" = "info") {
+    this.messageOutputDom.innerText = `${text} ${new Date().toLocaleTimeString()}`;
+    this.messageOutputDom.dataset.kind = kind;
   }
 
   setCursorStatus(cursor: EditorCursor) {
