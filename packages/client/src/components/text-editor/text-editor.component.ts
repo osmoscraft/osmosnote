@@ -92,7 +92,7 @@ export class TextEditorComponent extends HTMLElement {
     };
     this.renderModel();
 
-    this.takeSnapshot();
+    this.saveModelToHistory();
   }
 
   getFileText(): string {
@@ -283,8 +283,10 @@ export class TextEditorComponent extends HTMLElement {
     });
   }
 
-  private takeSnapshot() {
+  private saveModelToHistory() {
     const historyString = this.historyService.peek();
+    const modelString = JSON.stringify(this.model);
+
     if (historyString) {
       const historyModel = JSON.parse(historyString) as EditorModel;
 
@@ -292,12 +294,12 @@ export class TextEditorComponent extends HTMLElement {
       const cursorChanged = !deepEqual(historyModel.cursor, this.model.cursor);
 
       if (contentChanged) {
-        this.historyService.push(JSON.stringify(this.model));
+        this.historyService.push(modelString);
       } else if (cursorChanged) {
-        this.historyService.replace(JSON.stringify(this.model));
+        this.historyService.replace(modelString);
       }
     } else {
-      this.historyService.push(JSON.stringify(this.model));
+      this.historyService.push(modelString);
     }
   }
 
@@ -367,7 +369,7 @@ export class TextEditorComponent extends HTMLElement {
 
   private handleDomChange() {
     this.handleDraftChange();
-    this.takeSnapshot();
+    this.saveModelToHistory();
   }
 
   private getCursor(): EditorCursor {

@@ -17,6 +17,7 @@
     - generate bookmarklet from the app
     - expose config file in web for read/write
     - type "?" to reopen help menu, show placeholder hint when command bar isn't focused
+    - more verbose output in server logs
 
   ** Knowledge capture
     - Support list 
