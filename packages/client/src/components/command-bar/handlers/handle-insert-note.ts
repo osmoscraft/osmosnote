@@ -7,7 +7,7 @@ export const handleInsertNote: CommandHandler = async ({ input, execute }) => {
   const phrase = input.args;
 
   if (!execute) {
-    let optionsHtml = /*html*/ `<div class="cmdbr-option cmdbr-option--header">Get link</div>`;
+    let optionsHtml = /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--header">Insert note</div>`;
 
     if (phrase?.length) {
       const params = new URLSearchParams({
@@ -20,9 +20,9 @@ export const handleInsertNote: CommandHandler = async ({ input, execute }) => {
       optionsHtml += result.items
         .map(
           (item) => /*html*/ `
-          <div class="cmdbr-option cmdbr-option--btn" data-option data-insert-text="[${item.title}](${filenameToId(
-            item.filename
-          )})">${item.title}</div>`
+          <div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-insert-text="[${
+            item.title
+          }](${filenameToId(item.filename)})">${item.title}</div>`
         )
         .join("");
     } else {
@@ -32,7 +32,7 @@ export const handleInsertNote: CommandHandler = async ({ input, execute }) => {
       optionsHtml += result.notes
         .map(
           (item) =>
-            /*html*/ `<div class="cmdbr-option cmdbr-option--btn" data-option data-insert-text="[${
+            /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-insert-text="[${
               item.title
             }](${filenameToId(item.filename)})">${item.title}</div>`
         )

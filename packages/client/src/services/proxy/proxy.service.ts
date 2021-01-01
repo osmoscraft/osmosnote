@@ -1,12 +1,12 @@
 export class ProxyService {
-  async get<T>(url: string) {
+  async get<ReplyType>(url: string) {
     const response = await fetch(url);
 
-    const result: T = await response.json();
+    const result: ReplyType = await response.json();
     return result;
   }
 
-  async post<T>(url: string, body: any) {
+  async post<ReplyType, BodyType>(url: string, body: BodyType) {
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -15,11 +15,11 @@ export class ProxyService {
       body: JSON.stringify(body),
     });
 
-    const result: T = await response.json();
+    const result: ReplyType = await response.json();
     return result;
   }
 
-  async put<T>(url: string, body: any) {
+  async put<ReplyType, BodyType>(url: string, body: BodyType) {
     const response = await fetch(url, {
       method: "PUT",
       headers: {
@@ -27,7 +27,7 @@ export class ProxyService {
       },
       body: JSON.stringify(body),
     });
-    const result: T = await response.json();
+    const result: ReplyType = await response.json();
     return result;
   }
 

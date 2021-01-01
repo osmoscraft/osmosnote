@@ -27,17 +27,17 @@ s2-command-bar[data-active] {
   outline-offset: -1px;
 }
 
-.cmdbr-options {
+.cmdbr-dropdown {
   margin: 0;
 
   display: grid;
 }
 
-.cmdbr-options:empty {
+.cmdbr-dropdown:empty {
   display: none;
 }
 
-.cmdbr-option {
+.cmdbr-dropdown-row {
   background-color: var(--theme-menu-option-background-rest);
   font-family: monospace;
   height: 32px;
@@ -46,20 +46,24 @@ s2-command-bar[data-active] {
   display: flex;
 }
 
-.cmdbr-option--header {
+.cmdbr-dropdown-row--header {
   color: var(--base0A);
   font-weight: bold;
 }
 
-.cmdbr-option--btn {
-  color: var(--base06);
+.cmdbr-dropdown-row--message {
+  color: var(--theme-text-color-secondary);
+}
+
+.cmdbr-dropdown-row--btn {
+  color: var(--theme-text-color);
   border: none;
   text-align: start;
   outline: none;
   border-radius: 0px;
 }
 
-.cmdbr-option--btn[data-active] {
+.cmdbr-dropdown-row--btn[data-active] {
   font-weight: bold;
   color: var(--theme-text-color-knockout);
   background-color: var(--theme-menu-option-background-active);

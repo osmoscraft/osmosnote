@@ -1,5 +1,6 @@
 import { ComponentReferenceService } from "../../services/component-reference/component-reference.service";
 import { FileStorageService } from "../../services/file-storage/file-storage.service";
+import { ProxyService } from "../../services/proxy/proxy.service";
 import { SourceControlService } from "../../services/source-control/source-control.service";
 import { di } from "../../utils/dependency-injector";
 import { idToFilename } from "../../utils/id";
@@ -38,6 +39,7 @@ export class CommandBarComponent extends HTMLElement {
   componentRefs = di.getSingleton(ComponentReferenceService);
   sourceControlService = di.getSingleton(SourceControlService);
   fileStorageService = di.getSingleton(FileStorageService);
+  proxyService = di.getSingleton(ProxyService);
 
   private triggeringElement: Element | null = null;
 
@@ -50,7 +52,7 @@ export class CommandBarComponent extends HTMLElement {
   connectedCallback() {
     this.innerHTML = /*html*/ `
       <input id="command-input" class="cmdbr-input" disabled tabindex="-1" type="text" autocomplete="off" spellcheck="false"/>
-      <div id="command-options" class="cmdbr-options"></div>`;
+      <div id="command-options" class="cmdbr-dropdown"></div>`;
 
     this.commandInputDom = document.getElementById("command-input") as HTMLInputElement;
     this.commandOptionsDom = document.getElementById("command-options") as HTMLUListElement;
@@ -199,7 +201,7 @@ export class CommandBarComponent extends HTMLElement {
       const optionsView = command.commands
         ?.map(
           (command) =>
-            /*html*/ `<div data-command-key="${command.key}" data-option class="cmdbr-option cmdbr-option--btn">[${command.key}] ${command.name}</div>`
+            /*html*/ `<div data-command-key="${command.key}" data-option class="cmdbr-dropdown-row cmdbr-dropdown-row--btn">[${command.key}] ${command.name}</div>`
         )
         .join("");
       this.commandOptionsDom.innerHTML = optionsView;
@@ -238,11 +240,21 @@ export class CommandBarComponent extends HTMLElement {
         return true;
       }
 
-      if (targetDataset.openById) {
+      if (targetDataset.openUrl) {
         e.stopPropagation();
         e.preventDefault();
 
-        window.open(`/?filename=${idToFilename(targetDataset.openById)}`, e.ctrlKey ? undefined : "_self");
+        window.open(targetDataset.openUrl, e.ctrlKey || targetDataset.alwaysNewTab === "true" ? undefined : "_self");
+        this.exitCommandMode();
+
+        return true;
+      }
+
+      if (targetDataset.openNoteById) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        window.open(`/?filename=${idToFilename(targetDataset.openNoteById)}`, e.ctrlKey ? undefined : "_self");
         this.exitCommandMode();
 
         return true;
@@ -275,12 +287,13 @@ export class CommandBarComponent extends HTMLElement {
           componentRefs: this.componentRefs,
           fileStorageService: this.fileStorageService,
           sourceControlService: this.sourceControlService,
+          proxyService: this.proxyService,
         },
       });
-      if (result.optionsHtml) {
+      if (result.optionsHtml || result.onInputChange) {
         // In a rare case, the input could lose focus after the command finishes. So we must check again
         if (this.isInCommandMode()) {
-          this.commandOptionsDom.innerHTML = result.optionsHtml;
+          this.commandOptionsDom.innerHTML = result.optionsHtml ?? (await result.onInputChange?.()) ?? "";
         } else {
           this.clear();
         }
@@ -301,12 +314,13 @@ export class CommandBarComponent extends HTMLElement {
           componentRefs: this.componentRefs,
           fileStorageService: this.fileStorageService,
           sourceControlService: this.sourceControlService,
+          proxyService: this.proxyService,
         },
       });
 
       this.exitCommandMode();
 
-      result.runAfterClose?.apply(undefined);
+      result.onExecute?.apply(undefined);
     }
   }
 

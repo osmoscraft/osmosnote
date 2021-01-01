@@ -9,7 +9,7 @@ export class SourceControlService {
       action: "check",
     };
 
-    return this.proxyService.post<VersionsReply>(`/api/versions`, versionsBody);
+    return this.proxyService.post<VersionsReply, VersionsBody>(`/api/versions`, versionsBody);
   }
 
   async sync() {
@@ -17,6 +17,6 @@ export class SourceControlService {
       action: "sync",
     };
 
-    return this.proxyService.post<VersionsReply>(`/api/versions`, versionsBody);
+    return this.proxyService.post<VersionsReply, VersionsBody>(`/api/versions`, versionsBody);
   }
 }

@@ -10,10 +10,13 @@ export class FileStorageService {
   constructor(private proxyService: ProxyService) {}
 
   async update(id: string, updateNoteBody: UpdateNoteBody) {
-    return this.proxyService.put<UpdateNoteReply>(`/api/notes/${encodeURIComponent(id)}`, updateNoteBody);
+    return this.proxyService.put<UpdateNoteReply, UpdateNoteBody>(
+      `/api/notes/${encodeURIComponent(id)}`,
+      updateNoteBody
+    );
   }
 
   async create(createNoteBody: CreateNoteBody) {
-    return this.proxyService.post<CreateNoteReply>(`/api/notes`, createNoteBody);
+    return this.proxyService.post<CreateNoteReply, CreateNoteBody>(`/api/notes`, createNoteBody);
   }
 }

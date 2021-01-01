@@ -40,14 +40,19 @@ export const commandTree: RegisteredCommand = {
       key: "i",
       commands: [
         {
+          name: "Note",
+          key: "n",
+          requireArguments: true,
+        },
+        {
+          name: "URL",
+          key: "l",
+          requireArguments: true,
+        },
+        {
           name: "Slash",
           key: "/",
           executeOnComplete: true,
-        },
-        {
-          name: "Link",
-          key: "l",
-          requireArguments: true,
         },
       ],
     },

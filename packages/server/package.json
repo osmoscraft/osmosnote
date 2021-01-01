@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/platojar/system-two#readme",
   "dependencies": {
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.5",
     "fastify": "^3.9.1",
     "fastify-static": "^3.3.0",
     "fs-extra": "^9.0.1",

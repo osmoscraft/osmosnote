@@ -7,7 +7,7 @@ export const handleOpenNote: CommandHandler = async ({ input, execute }) => {
   const phrase = input.args;
 
   if (!execute) {
-    let optionsHtml = /*html*/ `<div class="cmdbr-option cmdbr-option--header">Open or create</div>`;
+    let optionsHtml = /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--header">Open note</div>`;
 
     if (phrase?.length) {
       const params = new URLSearchParams({
@@ -20,9 +20,9 @@ export const handleOpenNote: CommandHandler = async ({ input, execute }) => {
       optionsHtml += result.items
         .map(
           (item) => /*html*/ `
-          <div class="cmdbr-option cmdbr-option--btn" data-option data-open-by-id="${filenameToId(item.filename)}">${
-            item.title
-          }</div>`
+          <div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-open-note-by-id="${filenameToId(
+            item.filename
+          )}">${item.title}</div>`
         )
         .join("");
     } else {
@@ -32,7 +32,7 @@ export const handleOpenNote: CommandHandler = async ({ input, execute }) => {
       optionsHtml += result.notes
         .map(
           (item) =>
-            /*html*/ `<div class="cmdbr-option cmdbr-option--btn" data-option data-open-by-id="${filenameToId(
+            /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-open-note-by-id="${filenameToId(
               item.filename
             )}">${item.title}</div>`
         )

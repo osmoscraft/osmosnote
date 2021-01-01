@@ -1,4 +1,5 @@
 :tackling:
+* TODO show duplicated links when inserting url
 
 * Backlog
 
@@ -6,6 +7,7 @@
     - Cursor position is borken after formatting
     - when not on last line, "## " will push selection to bottom
     - debug windows build bin output (may have to do with git auth)
+    - Save a newly created file won't update metadata
 
   ** Intuitive modal/window management
     - insert multiple tags from command option
@@ -22,13 +24,8 @@
     - Support list 
       - syntax highlight
       - push/pull indendation, implement as a command
-    - Link url displayed in footnote
-      - split reference panel for incoming/outgoing links
-      - parse and highlight `[linkname][N]`
-      - auto update footnote content and order
-      - hanlde actions
-        - primary: mouse click and keyboard enter
-        - secondary: travel to reference list and back
+    - Handle external link gracefully
+    - Delete note
     - capture new note from url using command with multiple heading options
     - Dedupe url capture -> open existing note for existing url 
 
@@ -45,6 +42,7 @@
     - run command directly with hotkey (require refactoring)
 
   ** Refactoring
+    - convert all non-entity-CRUD controllers into POST method handlers
     - centralize event handling: keyboard > global handler > call command or call component method
     - clean up command system architecture
       - decouple command lambda from command key binding
@@ -55,6 +53,7 @@
     - unit test
     - Find xargs alternative. (replace with plain javascript string manipulation?)
 
+* DONE Handle Insert by url
 * DONE onbeforeunload warn unsaved notes
 * DONE open existing drafts creates unwanted history record
 * DONE history record is creatd before content init
