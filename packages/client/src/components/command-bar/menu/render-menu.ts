@@ -1,6 +1,17 @@
 import type { NoteListReply } from "@system-two/server/src/routes/note-list";
 import type { SearchReply } from "@system-two/server/src/routes/search";
 import { filenameToId } from "../../../utils/id";
+import type { RegisteredCommand } from "../command-bar.component";
+
+export function renderChildCommands(childCommand: RegisteredCommand[]) {
+  const html = childCommand
+    .map(
+      (command) =>
+        /*html*/ `<div data-command-key="${command.key}" data-option class="cmdbr-dropdown-row cmdbr-dropdown-row--btn">[${command.key}] ${command.name}</div>`
+    )
+    .join("");
+  return html;
+}
 
 export function renderSearchResultSectionForOpen(searchReply: SearchReply): string {
   let html = renderHeaderRow("Search results");

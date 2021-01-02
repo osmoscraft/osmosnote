@@ -1,5 +1,7 @@
 :tackling:
 * TODO hit enter in command is handled differently than open option
+* TODO long title overflow command bar option
+* TODO command bar code refactoring: componentize option handlers
 
 
 * Backlog

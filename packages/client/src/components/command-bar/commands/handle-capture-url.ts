@@ -5,11 +5,11 @@ import type { CommandHandler } from ".";
 import {
   renderHeaderRow,
   renderMessageRow,
-  renderRecentNotesForInsert,
-  renderSearchResultSectionForInsert,
-} from "../shared/dropdown";
+  renderRecentNotesForOpen,
+  renderSearchResultSectionForOpen,
+} from "../menu/render-menu";
 
-export const handleInsertUrl: CommandHandler = async ({ input, context }) => {
+export const handleCaptureUrl: CommandHandler = async ({ input, context }) => {
   const url = input.args?.trim();
 
   return {
@@ -20,7 +20,7 @@ export const handleInsertUrl: CommandHandler = async ({ input, context }) => {
         optionsHtml += renderMessageRow("Paste a URL");
 
         const result = await context.proxyService.get<NoteListReply>(`/api/notes`);
-        optionsHtml += renderRecentNotesForInsert(result);
+        optionsHtml += renderRecentNotesForOpen(result);
 
         return optionsHtml;
       }
@@ -44,10 +44,10 @@ export const handleInsertUrl: CommandHandler = async ({ input, context }) => {
         searchParams.set("content", crawlResult.data.description);
         const openUrl = `/?${searchParams}`;
 
-        optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-insert-on-save="${openUrl}">${crawlResult.data.title}</div>`;
+        optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-open-url="${openUrl}">${crawlResult.data.title}</div>`;
       }
 
-      optionsHtml += renderSearchResultSectionForInsert(searchResult);
+      optionsHtml += renderSearchResultSectionForOpen(searchResult);
 
       return optionsHtml;
     },

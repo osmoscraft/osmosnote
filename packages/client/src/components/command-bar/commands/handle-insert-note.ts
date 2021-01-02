@@ -2,9 +2,9 @@ import type { NoteListReply } from "@system-two/server/src/routes/note-list";
 import type { SearchBody, SearchReply } from "@system-two/server/src/routes/search";
 import type { CommandHandler } from ".";
 import { ensureNoteTitle } from "../../../utils/get-default-title";
-import { renderHeaderRow, renderRecentNotesForOpen, renderSearchResultSectionForOpen } from "../shared/dropdown";
+import { renderHeaderRow, renderRecentNotesForInsert, renderSearchResultSectionForInsert } from "../menu/render-menu";
 
-export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
+export const handleInsertNote: CommandHandler = async ({ input, context }) => {
   const phrase = input.args?.trim();
 
   const searchParams = new URLSearchParams();
@@ -15,14 +15,14 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
     updateDropdownOnInput: async () => {
       let optionsHtml = renderHeaderRow("Create");
 
-      optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-open-url="${openUrl}">${ensureNoteTitle(
+      optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-insert-on-save="${openUrl}">${ensureNoteTitle(
         phrase
       )}</div>`;
 
       if (!phrase?.length) {
         const result = await context.proxyService.get<NoteListReply>(`/api/notes`);
 
-        optionsHtml += renderRecentNotesForOpen(result);
+        optionsHtml += renderRecentNotesForInsert(result);
 
         return optionsHtml;
       }
@@ -31,16 +31,16 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
         phrase,
       });
 
-      optionsHtml += renderSearchResultSectionForOpen(result);
+      optionsHtml += renderSearchResultSectionForInsert(result);
 
       return optionsHtml;
     },
     runOnCommit: () => {
       // treating input as title to create a new note
       if (phrase?.length) {
-        window.open(`/?title=${phrase}`, `_self`);
+        window.open(`/?title=${phrase}`, `_blank`);
       } else {
-        window.open(`/`, `_self`);
+        window.open(`/`, `_blank`);
       }
     },
   };

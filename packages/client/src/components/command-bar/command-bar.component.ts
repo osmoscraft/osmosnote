@@ -6,7 +6,8 @@ import { di } from "../../utils/dependency-injector";
 import { idToFilename } from "../../utils/id";
 import "./command-bar.css";
 import { commandTree } from "./command-tree";
-import { commandHandlers } from "./handlers";
+import { commandHandlers } from "./commands";
+import { renderChildCommands } from "./menu/render-menu";
 
 declare global {
   interface GlobalEventHandlersEventMap {
@@ -148,8 +149,13 @@ export class CommandBarComponent extends HTMLElement {
     this.commandInputDom.addEventListener("keydown", async (event) => {
       const activeOption = this.commandOptionsDom.querySelector("[data-option][data-active]") as HTMLElement;
       if (activeOption) {
-        const handled = this.handleOptionKeydown(activeOption, event);
-        if (handled) return;
+        const handled = this.handleOptionKeydown({ optionDom: activeOption, event: event });
+
+        if (handled) {
+          event.stopPropagation();
+          event.preventDefault();
+          return;
+        }
       }
 
       if (event.key === "Backspace") {
@@ -210,13 +216,7 @@ export class CommandBarComponent extends HTMLElement {
 
     // command has child commands, render options
     if (command?.commands?.length) {
-      const optionsView = command.commands
-        ?.map(
-          (command) =>
-            /*html*/ `<div data-command-key="${command.key}" data-option class="cmdbr-dropdown-row cmdbr-dropdown-row--btn">[${command.key}] ${command.name}</div>`
-        )
-        .join("");
-      this.commandOptionsDom.innerHTML = optionsView;
+      this.commandOptionsDom.innerHTML = renderChildCommands(command.commands);
       return;
     }
 
@@ -248,14 +248,12 @@ export class CommandBarComponent extends HTMLElement {
   /**
    * @return {boolean} whether the processing should stop after
    */
-  private handleOptionKeydown(optionDom: HTMLElement, e: KeyboardEvent): boolean {
-    const targetDataset = optionDom.dataset;
+  private handleOptionKeydown(props: { optionDom: HTMLElement; event: KeyboardEvent }): boolean {
+    const targetDataset = props.optionDom.dataset;
+    const e = props.event;
 
     if (e.key === "Enter") {
       if (targetDataset.commandKey) {
-        e.stopPropagation();
-        e.preventDefault();
-
         this.commandInputDom.value = this.commandInputDom.value + targetDataset.commandKey;
         this.handleInput(this.commandInputDom.value);
 
@@ -263,9 +261,6 @@ export class CommandBarComponent extends HTMLElement {
       }
 
       if (targetDataset.openUrl) {
-        e.stopPropagation();
-        e.preventDefault();
-
         window.open(targetDataset.openUrl, e.ctrlKey || targetDataset.alwaysNewTab === "true" ? undefined : "_self");
         this.exitCommandMode();
 
@@ -273,9 +268,6 @@ export class CommandBarComponent extends HTMLElement {
       }
 
       if (targetDataset.openNoteById) {
-        e.stopPropagation();
-        e.preventDefault();
-
         window.open(`/?filename=${idToFilename(targetDataset.openNoteById)}`, e.ctrlKey ? undefined : "_self");
         this.exitCommandMode();
 
@@ -283,9 +275,6 @@ export class CommandBarComponent extends HTMLElement {
       }
 
       if (targetDataset.insertText) {
-        e.stopPropagation();
-        e.preventDefault();
-
         this.componentRefs.textEditor.insertAtCursor(targetDataset.insertText);
         this.componentRefs.statusBar.setMessage(`[command-bar] inserted "${targetDataset.insertText}"`);
         this.exitCommandMode();
@@ -294,9 +283,6 @@ export class CommandBarComponent extends HTMLElement {
       }
 
       if (targetDataset.insertOnSave) {
-        e.stopPropagation();
-        e.preventDefault();
-
         this.componentRefs.statusBar.setMessage("Save child note to insert, [ESC] to cancel", "warning");
 
         const handleChildNoteCreated = (ev: CustomEvent<ChildNoteCreated>) => {
