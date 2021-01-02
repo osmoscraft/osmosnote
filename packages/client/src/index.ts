@@ -11,6 +11,7 @@ import { FileStorageService } from "./services/file-storage/file-storage.service
 
 // global elements
 import "./components/focus-trap/focus-trap.component";
+import { ensureNoteTitle } from "./utils/get-default-title";
 
 di.registerClass(ComponentReferenceService, []);
 di.registerClass(ProxyService, []);
@@ -40,7 +41,7 @@ async function loadNote() {
     componentRefs.referencePanel.setIncomingConnections(result.incomingConnections);
   } else {
     // prepare for new note
-    const newTitle = title ?? `New note on ${new Date().toLocaleString()}`;
+    const newTitle = ensureNoteTitle(title);
     componentRefs.documentHeader.setData({ metadata: { title: newTitle, url: url ?? undefined } });
 
     // experimental

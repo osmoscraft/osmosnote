@@ -11,10 +11,15 @@ export interface SearchRouteHandler {
   Querystring: {
     phrase: string;
   };
-  Reply: SearchResult;
+  Body: SearchBody;
+  Reply: SearchReply;
 }
 
-export interface SearchResult {
+export interface SearchBody {
+  phrase: string;
+}
+
+export interface SearchReply {
   items: SearchResultItem[];
   durationInMs: number;
 }
@@ -29,7 +34,7 @@ export const handleSearch: RouteHandlerMethod<any, any, any, SearchRouteHandler>
   const config = await getConfig();
 
   const query = request.query;
-  const phrase = query.phrase;
+  const phrase = request.body.phrase ?? query.phrase;
   const notesDir = config.notesDir;
 
   const now = performance.now();
@@ -128,7 +133,8 @@ async function keywordSearch(dir: string, keywords: string[], getFilenamesPrepro
 
   let searchCommand = "";
   if (keywords.length) {
-    searchCommand = `${getFilenamesPreprocess}rg "\\b${wordsInput}" --ignore-case --count-matches | head -n ${RESULT_LIMIT}`;
+    // -H ensures file path is displayed even when there is only one result
+    searchCommand = `${getFilenamesPreprocess}rg "\\b${wordsInput}" -H --ignore-case --count-matches | head -n ${RESULT_LIMIT}`;
   }
 
   /**
@@ -136,14 +142,7 @@ async function keywordSearch(dir: string, keywords: string[], getFilenamesPrepro
    *
    * trim result with `| head` to prevent node buffer overflow
    */
-  const {
-    error,
-    stdout,
-    stderr,
-  } = await runShell(
-    `${getFilenamesPreprocess}rg "\\b${wordsInput}" --ignore-case --count-matches | head -n ${RESULT_LIMIT}`,
-    { cwd: dir }
-  );
+  const { error, stdout, stderr } = await runShell(searchCommand, { cwd: dir });
 
   if (error) {
     if (error.code === 1) {

@@ -51,6 +51,7 @@ export const commandHandlers: CommandHandlers = {
   in: handleInsertNote,
   il: handleInsertLink,
   fo: handleOpenNote,
+  nn: handleOpenNote,
   fs: handleFileSave,
   fa: handleFileSaveAndSync,
   ff: handleFileFormat,

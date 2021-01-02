@@ -3,7 +3,7 @@ import type { CommandHandler, CommandHandlerContext } from ".";
 import { filenameToId } from "../../../utils/id";
 import { getNoteConfigFromUrl } from "../../../utils/url";
 
-export const handleFileSave: CommandHandler = async ({ input, context }) => ({
+export const handleFileSave: CommandHandler = async ({ context }) => ({
   runOnMatch: async () => {
     context.componentRefs.statusBar.setMessage("Saving…");
 
@@ -11,6 +11,7 @@ export const handleFileSave: CommandHandler = async ({ input, context }) => ({
       await upsertFile(context);
       context.componentRefs.textEditor.markModelAsSaved();
 
+      context.componentRefs.statusBar.setMessage("Checking…");
       const result = await context.sourceControlService.check();
       context.componentRefs.statusBar.setMessage(result.message);
     } catch (error) {
@@ -19,7 +20,7 @@ export const handleFileSave: CommandHandler = async ({ input, context }) => ({
   },
 });
 
-export const handleFileSaveAndSync: CommandHandler = async ({ input, context }) => ({
+export const handleFileSaveAndSync: CommandHandler = async ({ context }) => ({
   runOnMatch: async () => {
     context.componentRefs.statusBar.setMessage("Saving…");
 
@@ -27,6 +28,7 @@ export const handleFileSaveAndSync: CommandHandler = async ({ input, context }) 
       await upsertFile(context);
       context.componentRefs.textEditor.markModelAsSaved();
 
+      context.componentRefs.statusBar.setMessage("Syncing…");
       const result = await context.sourceControlService.sync();
       context.componentRefs.statusBar.setMessage(result.message);
     } catch (error) {

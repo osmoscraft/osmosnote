@@ -1,5 +1,5 @@
 :tackling:
-* TODO show duplicated links when inserting url
+* TODO new file should start with dirty state
 
 * Backlog
 
@@ -29,6 +29,9 @@
     - Delete note
     - capture new note from url using command with multiple heading options
     - Dedupe url capture -> open existing note for existing url 
+    - Support tag insertion
+      - Auto complete command with Up/Down arrow move using data-auto-complete directive 
+      - runOnCommitKeepOpen hook to repeat insertion
 
   ** Responsive UI
     - show save progress - need to break git actions into smaller api calls
@@ -43,7 +46,7 @@
     - run command directly with hotkey (require refactoring)
 
   ** Refactoring
-    - convert all non-entity-CRUD controllers into POST method handlers
+    - consolidate and clean up various dropdown menus. Consider share menu option as web components
     - centralize event handling: keyboard > global handler > call command or call component method
     - clean up command system architecture
       - decouple command lambda from command key binding
@@ -54,6 +57,8 @@
     - unit test
     - Find xargs alternative. (replace with plain javascript string manipulation?)
 
+* DONE show duplicated links when inserting url
+* DONE convert all non-entity-crud controllers into post method handlers
 * DONE Disentangle option update vs. execution
 * DONE Handle Insert by url
 * DONE onbeforeunload warn unsaved notes

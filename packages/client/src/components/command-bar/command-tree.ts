@@ -5,6 +5,20 @@ export const commandTree: RegisteredCommand = {
   key: "",
   commands: [
     {
+      name: "New",
+      key: "n",
+      commands: [
+        {
+          name: "Note",
+          key: "n",
+        },
+        {
+          name: "URL",
+          key: "l",
+        },
+      ],
+    },
+    {
       name: "File",
       key: "f",
       commands: [

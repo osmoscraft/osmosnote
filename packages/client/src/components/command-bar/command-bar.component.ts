@@ -47,7 +47,7 @@ export class CommandBarComponent extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
-      <input id="command-input" class="cmdbr-input" disabled tabindex="-1" type="text" autocomplete="off" spellcheck="false"/>
+      <input id="command-input" class="cmdbr-input" disabled tabindex="-1" type="text" autocomplete="off" spellcheck="false" data-active/>
       <div id="command-options" class="cmdbr-dropdown"></div>`;
 
     this.commandInputDom = document.getElementById("command-input") as HTMLInputElement;
@@ -156,22 +156,23 @@ export class CommandBarComponent extends HTMLElement {
 
         const isGoUp = event.key === "ArrowUp" || (event.key === "Tab" && event.shiftKey);
 
-        const currentOption = this.commandOptionsDom.querySelector("[data-option][data-active]") as HTMLElement;
-        if (currentOption) {
-          const candidateOption = isGoUp ? currentOption.previousElementSibling : currentOption.nextElementSibling;
-          if (candidateOption?.matches("[data-option")) {
-            (candidateOption as HTMLElement).dataset.active = "";
-            delete currentOption.dataset.active;
-          } else {
-            // overflow, reset to input
-            delete currentOption.dataset.active;
-          }
-        } else {
-          const options = [...this.commandOptionsDom.querySelectorAll("[data-option]")] as HTMLElement[];
-          const candidateOption = options[isGoUp ? options.length - 1 : 0];
-          if (candidateOption) {
-            candidateOption.dataset.active = "";
-          }
+        const allOptions = [
+          this.commandInputDom,
+          ...this.commandOptionsDom.querySelectorAll("[data-option]"),
+        ] as HTMLElement[];
+        let currentOptionIndex = allOptions.findIndex((option) => option.dataset.active === "");
+
+        if (currentOptionIndex < 0) {
+          currentOptionIndex = 0; // the input itself must be active when none of the options are active
+        }
+
+        const newIndex = (currentOptionIndex + (isGoUp ? allOptions.length - 1 : 1)) % allOptions.length;
+
+        allOptions.forEach((option) => delete option.dataset.active);
+        const newActiveOption = allOptions[newIndex];
+        if (newActiveOption.dataset.option === "") {
+          // filter out the input element
+          newActiveOption.dataset.active = "";
         }
       }
 

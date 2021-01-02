@@ -11,7 +11,7 @@ import { handleCrawl } from "./routes/crawl";
 async function run() {
   const server = fastify();
 
-  server.get("/api/search", handleSearch);
+  server.post("/api/search", handleSearch);
   server.get("/api/notes", handleGetNoteList);
   server.post("/api/notes", handleCreateNote);
   server.get("/api/notes/:id", handleGetNote);

@@ -1,33 +1,50 @@
 import type { NoteListReply } from "@system-two/server/src/routes/note-list";
-import type { SearchResult } from "@system-two/server/src/routes/search";
+import type { SearchBody, SearchReply } from "@system-two/server/src/routes/search";
 import type { CommandHandler } from ".";
+import { ensureNoteTitle } from "../../../utils/get-default-title";
 import { filenameToId } from "../../../utils/id";
+import { getHeaderRow, getMessageRow } from "../shared/dropdown";
 
-export const handleInsertNote: CommandHandler = async ({ input }) => {
-  const phrase = input.args;
+export const handleInsertNote: CommandHandler = async ({ input, context }) => {
+  const phrase = input.args?.trim();
+
+  const searchParams = new URLSearchParams();
+  phrase && searchParams.set("title", phrase);
+  const openUrl = phrase ? `/?${searchParams}` : "/";
 
   return {
     updateDropdownOnInput: async () => {
-      let optionsHtml = /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--header">Insert note</div>`;
+      let optionsHtml = getHeaderRow("Create");
+
+      optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-open-url="${openUrl}">${ensureNoteTitle(
+        phrase
+      )}</div>`;
 
       if (phrase?.length) {
-        const params = new URLSearchParams({
+        optionsHtml += getHeaderRow("Searcch result");
+        const result = await context.proxyService.post<SearchReply, SearchBody>(`/api/search`, {
           phrase,
         });
 
-        const response = await fetch(`/api/search?${params.toString()}`);
-        const result: SearchResult = await response.json();
-
-        optionsHtml += result.items
-          .map(
-            (item) => /*html*/ `
+        if (!result?.items) {
+          optionsHtml += getMessageRow("Error searching");
+        } else {
+          optionsHtml += result.items
+            .map(
+              (item) => /*html*/ `
             <div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-insert-text="[${
               item.title
             }](${filenameToId(item.filename)})">${item.title}</div>`
-          )
-          .join("");
+            )
+            .join("");
+
+          if (!result.items.length) {
+            optionsHtml += getMessageRow("No items found");
+          }
+        }
       } else {
-        // load recent notes
+        optionsHtml += getHeaderRow("Recent");
+
         const response = await fetch(`/api/notes`);
         const result: NoteListReply = await response.json();
         optionsHtml += result.notes
@@ -38,6 +55,10 @@ export const handleInsertNote: CommandHandler = async ({ input }) => {
               }](${filenameToId(item.filename)})">${item.title}</div>`
           )
           .join("");
+
+        if (!result.notes.length) {
+          optionsHtml += getMessageRow("No recent items");
+        }
       }
 
       return optionsHtml;
