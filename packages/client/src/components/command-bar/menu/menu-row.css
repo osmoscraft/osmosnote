@@ -29,3 +29,11 @@ s2-menu-row[data-kind="option"][data-active] {
   color: var(--theme-text-color-knockout);
   background-color: var(--theme-menu-option-background-active);
 }
+
+/* Single rows max */
+.menu-row-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

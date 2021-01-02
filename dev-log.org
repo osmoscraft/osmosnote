@@ -1,7 +1,5 @@
 :tackling:
 * TODO hit enter in command is handled differently than open option
-* TODO long title overflow command bar option
-* TODO command bar code refactoring: componentize option handlers
 
 
 * Backlog
@@ -67,6 +65,8 @@
     - automate branch + tag based release git github CI/CD
 
 
+* DONE long title overflow command bar option
+* DONE command bar code refactoring: componentize option handlers
 * DONE child window creation and backtrack insertion
 * DONE insert new node should not replace current window
 * DONE Text area doesn't reveal cursor when hitting enter after a long string
