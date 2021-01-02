@@ -1,4 +1,5 @@
 :tackling:
+* TODO child window creation and backtrack insertion
 
 * Backlog
 
@@ -12,7 +13,6 @@
   ** Intuitive modal/window management
     - insert multiple tags from command option
     - Ctrl+Enter to create note without closing existing
-    - Create note on the fly and return new ID in for current Note to use
 
   ** Hassle-free 1st run
     - generate bookmarklet from the app
@@ -27,11 +27,12 @@
       - push/pull indendation, implement as a command
     - Handle external link gracefully
     - Delete note
-    - capture new note from url using command with multiple heading options
-    - Dedupe url capture -> open existing note for existing url 
+    - Replace selection with new capture (by title or by url)
     - Support tag insertion
       - Auto complete command with Up/Down arrow move using data-auto-complete directive 
       - runOnCommitKeepOpen hook to repeat insertion
+    - Unify URL and textual capture and insert. Determine type on client side.
+      - Consider perf draw back though. Maybe combine search and crawl into a discover API
 
   ** Responsive UI
     - show save progress - need to break git actions into smaller api calls
