@@ -11,27 +11,22 @@ export const commandTree: RegisteredCommand = {
         {
           name: "Copy (yank) link",
           key: "y",
-          executeOnComplete: true,
         },
         {
           name: "Open",
           key: "o",
-          requireArguments: true,
         },
         {
           name: "Format",
           key: "f",
-          executeOnComplete: true,
         },
         {
           name: "Save",
           key: "s",
-          executeOnComplete: true,
         },
         {
           name: "Save and sync all",
           key: "a",
-          executeOnComplete: true,
         },
       ],
     },
@@ -42,17 +37,14 @@ export const commandTree: RegisteredCommand = {
         {
           name: "Note",
           key: "n",
-          requireArguments: true,
         },
         {
           name: "URL",
           key: "l",
-          requireArguments: true,
         },
         {
           name: "Slash",
           key: "/",
-          executeOnComplete: true,
         },
       ],
     },
@@ -63,12 +55,10 @@ export const commandTree: RegisteredCommand = {
         {
           name: "Sync",
           key: "s",
-          executeOnComplete: true,
         },
         {
           name: "check",
           key: "c",
-          executeOnComplete: true,
         },
       ],
     },
@@ -79,17 +69,14 @@ export const commandTree: RegisteredCommand = {
         {
           name: "Header",
           key: "h",
-          executeOnComplete: true,
         },
         {
           name: "References",
           key: "r",
-          executeOnComplete: true,
         },
         {
           name: "Editor",
           key: "e",
-          executeOnComplete: true,
         },
       ],
     },

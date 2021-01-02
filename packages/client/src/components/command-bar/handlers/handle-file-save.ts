@@ -2,17 +2,17 @@ import type { CreateNoteBody, UpdateNoteBody } from "@system-two/server/src/rout
 import type { CommandHandler, CommandHandlerContext } from ".";
 import { filenameToId } from "../../../utils/id";
 import { getNoteConfigFromUrl } from "../../../utils/url";
-import { handleVersionsCheck } from "./handle-versions-check";
-import { handleVersionsSync } from "./handle-versions-sync";
 
 export const handleFileSave: CommandHandler = async ({ input, context }) => ({
-  onExecute: async () => {
+  runOnMatch: async () => {
     context.componentRefs.statusBar.setMessage("Saving…");
 
     try {
       await upsertFile(context);
       context.componentRefs.textEditor.markModelAsSaved();
-      handleVersionsCheck({ input, context });
+
+      const result = await context.sourceControlService.check();
+      context.componentRefs.statusBar.setMessage(result.message);
     } catch (error) {
       context.componentRefs.statusBar.setMessage(`Error saving note`, "error");
     }
@@ -20,13 +20,15 @@ export const handleFileSave: CommandHandler = async ({ input, context }) => ({
 });
 
 export const handleFileSaveAndSync: CommandHandler = async ({ input, context }) => ({
-  onExecute: async () => {
+  runOnMatch: async () => {
     context.componentRefs.statusBar.setMessage("Saving…");
 
     try {
       await upsertFile(context);
       context.componentRefs.textEditor.markModelAsSaved();
-      handleVersionsSync({ input, context });
+
+      const result = await context.sourceControlService.sync();
+      context.componentRefs.statusBar.setMessage(result.message);
     } catch (error) {
       context.componentRefs.statusBar.setMessage(`Error saving note`, "error");
     }

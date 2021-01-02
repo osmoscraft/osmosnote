@@ -1,6 +1,5 @@
 :tackling:
 * TODO show duplicated links when inserting url
-* TODO Disentangle option update vs. execution
 
 * Backlog
 
@@ -55,6 +54,7 @@
     - unit test
     - Find xargs alternative. (replace with plain javascript string manipulation?)
 
+* DONE Disentangle option update vs. execution
 * DONE Handle Insert by url
 * DONE onbeforeunload warn unsaved notes
 * DONE open existing drafts creates unwanted history record

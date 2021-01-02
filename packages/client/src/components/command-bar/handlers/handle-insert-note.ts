@@ -7,7 +7,7 @@ export const handleInsertNote: CommandHandler = async ({ input }) => {
   const phrase = input.args;
 
   return {
-    onInputChange: async () => {
+    updateDropdownOnInput: async () => {
       let optionsHtml = /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--header">Insert note</div>`;
 
       if (phrase?.length) {
@@ -42,7 +42,7 @@ export const handleInsertNote: CommandHandler = async ({ input }) => {
 
       return optionsHtml;
     },
-    onExecute: () => {
+    runOnCommit: () => {
       // treating input as title to create a new note
 
       const title = input.args?.trim();

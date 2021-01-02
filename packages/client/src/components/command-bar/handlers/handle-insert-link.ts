@@ -5,7 +5,7 @@ export const handleInsertLink: CommandHandler = async ({ input, context }) => {
   const url = input.args;
 
   return {
-    onInputChange: async () => {
+    updateDropdownOnInput: async () => {
       let optionsHtml = /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--header">Insert link</div>`;
 
       if (!url) return optionsHtml;
@@ -32,6 +32,6 @@ export const handleInsertLink: CommandHandler = async ({ input, context }) => {
         );
       }
     },
-    onExecute: () => url && window.open(`/?url=${encodeURIComponent(url)}`, `_blank`),
+    runOnCommit: () => url && window.open(`/?url=${encodeURIComponent(url)}`, `_blank`),
   };
 };

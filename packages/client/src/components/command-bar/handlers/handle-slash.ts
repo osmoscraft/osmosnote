@@ -1,5 +1,5 @@
 import type { CommandHandler } from ".";
 
 export const handleSlash: CommandHandler = ({ context }) => ({
-  onExecute: () => context.componentRefs.textEditor.insertAtCursor("/"),
+  runOnMatch: () => context.componentRefs.textEditor.insertAtCursor("/"),
 });

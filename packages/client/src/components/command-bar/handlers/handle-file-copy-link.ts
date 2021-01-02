@@ -5,7 +5,7 @@ import { getNoteConfigFromUrl } from "../../../utils/url";
 
 export const handleFileCopyLink: CommandHandler = ({ context }) => {
   return {
-    onExecute: () => {
+    runOnMatch: () => {
       const { filename } = getNoteConfigFromUrl();
       const title = context.componentRefs.documentHeader.getTitle();
 

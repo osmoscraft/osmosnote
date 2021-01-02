@@ -389,7 +389,6 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   private handleUnload() {
-    console.log("hijack");
     window.addEventListener("beforeunload", (event) => {
       if (this.isDraftDirty()) {
         event.preventDefault();

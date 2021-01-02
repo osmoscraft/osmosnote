@@ -10,8 +10,7 @@ import { handleInsertLink } from "./handle-insert-link";
 import { handleInsertNote } from "./handle-insert-note";
 import { handleOpenNote } from "./handle-open-note";
 import { handleSlash } from "./handle-slash";
-import { handleVersionsCheck } from "./handle-versions-check";
-import { handleVersionsSync } from "./handle-versions-sync";
+import { handleVersionsCheck, handleVersionsSync } from "./handle-versions";
 import { handleGoToEditor, handleGoToHeader, handleGoToReferences } from "./handle-window-travel";
 
 export interface CommandHandlers {
@@ -26,26 +25,25 @@ export interface CommandHandlerContext {
 }
 
 export interface CommandHandler {
-  (props: {
-    input: CommandInput;
-    /**
-     * @deprecated, It will detect execute based on presence of `runAfterClose` hook
-     */
-    execute?: boolean;
-    context: CommandHandlerContext;
-  }): CommandHandlerResult | Promise<CommandHandlerResult>;
+  (props: { input: CommandInput; context: CommandHandlerContext }):
+    | CommandHandlerResult
+    | Promise<CommandHandlerResult>;
 }
 
 export interface CommandHandlerResult {
   /**
-   * @deprecated, use `getOptionsHtml` hook
-   */
-  optionsHtml?: string;
-  /**
+   * run when input changes
    * return the html for the dropdown
    */
-  onInputChange?: () => string | Promise<string>;
-  onExecute?: () => any;
+  updateDropdownOnInput?: () => string | Promise<string>;
+  /**
+   * run when keydown sequence matches the command
+   */
+  runOnMatch?: () => any;
+  /**
+   * run when the command is committed with "Enter" key
+   */
+  runOnCommit?: () => any;
 }
 
 export const commandHandlers: CommandHandlers = {

@@ -81,8 +81,10 @@ async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultI
 
   if (keywords.length) {
     return keywordSearch(dir, keywords, getFilenamesPreprocess);
-  } else {
+  } else if (tagsQuery) {
     return tagOnlySearch(dir, getFilenamesPreprocess);
+  } else {
+    return [];
   }
 }
 

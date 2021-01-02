@@ -20,10 +20,6 @@ export const EMPTY_COMMAND: CommandInput = {
 export interface RegisteredCommand {
   name: string;
   key: string;
-  /** Default to false */
-  executeOnComplete?: boolean;
-  /** Default to false */
-  requireArguments?: boolean;
   commands?: RegisteredCommand[];
 }
 
@@ -138,7 +134,7 @@ export class CommandBarComponent extends HTMLElement {
       this.handleInput(this.commandInputDom.value);
     });
 
-    this.commandInputDom.addEventListener("keydown", (event) => {
+    this.commandInputDom.addEventListener("keydown", async (event) => {
       const activeOption = this.commandOptionsDom.querySelector("[data-option][data-active]") as HTMLElement;
       if (activeOption) {
         const handled = this.handleOptionKeydown(activeOption, event);
@@ -183,7 +179,11 @@ export class CommandBarComponent extends HTMLElement {
         event.preventDefault();
         event.stopPropagation();
 
-        this.executeCommand();
+        const executableCommand = await this.buildCommand();
+        if (executableCommand?.runOnCommit) {
+          this.exitCommandMode();
+          executableCommand.runOnCommit();
+        }
       }
     });
 
@@ -208,19 +208,29 @@ export class CommandBarComponent extends HTMLElement {
       return;
     }
 
-    // command has no child commands, and should execute and exit
-    if (command?.executeOnComplete) {
-      this.executeCommand();
+    const executableCommand = await this.buildCommand();
+    if (!executableCommand) return;
+
+    if (executableCommand.runOnMatch) {
+      this.exitCommandMode();
+
+      executableCommand.runOnMatch();
       return;
     }
 
-    // add auto trailing space when arguments are required
-    if (command?.requireArguments && input.indexOf(" ") < 0) {
-      this.commandInputDom.value = `${this.commandInputDom.value} `;
+    if (executableCommand.updateDropdownOnInput) {
+      const dropdownHtml = await executableCommand.updateDropdownOnInput();
+
+      // it is possible the dropdown html arrives after the user commits the query
+      if (this.isInCommandMode()) {
+        this.commandOptionsDom.innerHTML = dropdownHtml;
+      }
     }
 
-    // command has no child commands, and should render options based on arguments
-    this.updateCommandOptions();
+    // add auto trailing space
+    if (input.indexOf(" ") < 0) {
+      this.commandInputDom.value = `${this.commandInputDom.value} `;
+    }
   }
 
   /**
@@ -275,12 +285,12 @@ export class CommandBarComponent extends HTMLElement {
     return false;
   }
 
-  private async updateCommandOptions() {
+  private async buildCommand() {
     const currentInput = this.parseInput(this.commandInputDom.value);
 
     const handler = commandHandlers[currentInput.command];
 
-    if (typeof handler === "function") {
+    if (handler) {
       const result = await handler({
         input: currentInput,
         context: {
@@ -290,37 +300,10 @@ export class CommandBarComponent extends HTMLElement {
           proxyService: this.proxyService,
         },
       });
-      if (result.optionsHtml || result.onInputChange) {
-        // In a rare case, the input could lose focus after the command finishes. So we must check again
-        if (this.isInCommandMode()) {
-          this.commandOptionsDom.innerHTML = result.optionsHtml ?? (await result.onInputChange?.()) ?? "";
-        } else {
-          this.clear();
-        }
-      }
-    }
-  }
 
-  private async executeCommand() {
-    const currentInput = this.parseInput(this.commandInputDom.value);
-
-    const handler = commandHandlers[currentInput.command];
-
-    if (typeof handler === "function") {
-      const result = await handler({
-        input: currentInput,
-        execute: true,
-        context: {
-          componentRefs: this.componentRefs,
-          fileStorageService: this.fileStorageService,
-          sourceControlService: this.sourceControlService,
-          proxyService: this.proxyService,
-        },
-      });
-
-      this.exitCommandMode();
-
-      result.onExecute?.apply(undefined);
+      return result;
+    } else {
+      return null;
     }
   }
 
