@@ -49,8 +49,8 @@ export const handleSearch: RouteHandlerMethod<any, any, any, SearchRouteHandler>
 
 async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultItem[]> {
   const baseQuery = phrase.trim();
-  const tags = [...baseQuery.matchAll(/:([^:]+?):/g)].map((item) => item[1]);
-  const keywordQuery = baseQuery.replace(/:([^:]+?):/g, "").trim();
+  const tags = [...baseQuery.matchAll(/:([^:\s]+?(\s+[^:\s]+?)*):/g)].map((item) => item[1]);
+  const keywordQuery = baseQuery.replace(/:([^:\s]+?(\s+[^:\s]+?)*):/g, "").trim();
 
   let getFilenamesPreprocess: string = "";
 
