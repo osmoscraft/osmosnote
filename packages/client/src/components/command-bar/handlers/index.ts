@@ -6,12 +6,13 @@ import type { CommandInput } from "../command-bar.component";
 import { handleFileCopyLink } from "./handle-file-copy-link";
 import { handleFileFormat } from "./handle-file-format";
 import { handleFileSave, handleFileSaveAndSync } from "./handle-file-save";
-import { handleInsertLink } from "./handle-insert-link";
+import { handleInsertUrl } from "./handle-insert-url";
 import { handleInsertNote } from "./handle-insert-note";
-import { handleOpenNote } from "./handle-open-note";
+import { handleCaptureNote } from "./handle-capture-note";
 import { handleSlash } from "./handle-slash";
 import { handleVersionsCheck, handleVersionsSync } from "./handle-versions";
 import { handleGoToEditor, handleGoToHeader, handleGoToReferences } from "./handle-window-travel";
+import { handleCaptureUrl } from "./handle-capture-url";
 
 export interface CommandHandlers {
   [key: string]: CommandHandler;
@@ -49,9 +50,10 @@ export interface CommandHandlerResult {
 export const commandHandlers: CommandHandlers = {
   "i/": handleSlash,
   in: handleInsertNote,
-  il: handleInsertLink,
-  fo: handleOpenNote,
-  nn: handleOpenNote,
+  il: handleInsertUrl,
+  fo: handleCaptureNote,
+  nn: handleCaptureNote,
+  nl: handleCaptureUrl,
   fs: handleFileSave,
   fa: handleFileSaveAndSync,
   ff: handleFileFormat,

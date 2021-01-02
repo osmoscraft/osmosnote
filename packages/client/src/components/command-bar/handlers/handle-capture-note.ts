@@ -2,9 +2,9 @@ import type { NoteListReply } from "@system-two/server/src/routes/note-list";
 import type { SearchBody, SearchReply } from "@system-two/server/src/routes/search";
 import type { CommandHandler } from ".";
 import { ensureNoteTitle } from "../../../utils/get-default-title";
-import { renderHeaderRow, renderRecentNotesForInsert, renderSearchResultSectionForInsert } from "../shared/dropdown";
+import { renderHeaderRow, renderRecentNotesForOpen, renderSearchResultSectionForOpen } from "../shared/dropdown";
 
-export const handleInsertNote: CommandHandler = async ({ input, context }) => {
+export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
   const phrase = input.args?.trim();
 
   const searchParams = new URLSearchParams();
@@ -22,7 +22,7 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
       if (!phrase?.length) {
         const result = await context.proxyService.get<NoteListReply>(`/api/notes`);
 
-        optionsHtml += renderRecentNotesForInsert(result);
+        optionsHtml += renderRecentNotesForOpen(result);
 
         return optionsHtml;
       }
@@ -31,7 +31,7 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
         phrase,
       });
 
-      optionsHtml += renderSearchResultSectionForInsert(result);
+      optionsHtml += renderSearchResultSectionForOpen(result);
 
       return optionsHtml;
     },
@@ -40,9 +40,9 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
 
       const title = input.args?.trim();
       if (title?.length) {
-        window.open(`/?title=${title}`, `_blank`);
+        window.open(`/?title=${title}`, `_self`);
       } else {
-        window.open(`/`, `_blank`);
+        window.open(`/`, `_self`);
       }
     },
   };

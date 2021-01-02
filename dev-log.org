@@ -22,6 +22,7 @@
     - more verbose output in server logs
 
   ** Knowledge capture
+    - When clipboard has content, use it as default for URL or text based capture
     - Support list 
       - syntax highlight
       - push/pull indendation, implement as a command
@@ -57,6 +58,7 @@
     - unit test
     - Find xargs alternative. (replace with plain javascript string manipulation?)
 
+* DONE separate capture url from insert url
 * DONE show duplicated links when inserting url
 * DONE convert all non-entity-crud controllers into post method handlers
 * DONE Disentangle option update vs. execution
