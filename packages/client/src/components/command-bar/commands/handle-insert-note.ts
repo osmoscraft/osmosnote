@@ -15,9 +15,9 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
     updateDropdownOnInput: async () => {
       let optionsHtml = renderHeaderRow("Create");
 
-      optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-insert-on-save="${openUrl}">${ensureNoteTitle(
+      optionsHtml += /*html*/ `<s2-menu-row data-kind="option" data-insert-on-save="${openUrl}" data-label="${ensureNoteTitle(
         phrase
-      )}</div>`;
+      )}"></s2-menu-row>`;
 
       if (!phrase?.length) {
         const result = await context.proxyService.get<NoteListReply>(`/api/notes`);

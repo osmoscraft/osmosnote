@@ -44,7 +44,7 @@ export const handleInsertUrl: CommandHandler = async ({ input, context }) => {
         searchParams.set("content", crawlResult.data.description);
         const openUrl = `/?${searchParams}`;
 
-        optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-insert-on-save="${openUrl}">${crawlResult.data.title}</div>`;
+        optionsHtml += /*html*/ `<s2-menu-row data-kind="option" data-insert-on-save="${openUrl}" data-label="${crawlResult.data.title}"></s2-menu-row>`;
       }
 
       optionsHtml += renderSearchResultSectionForInsert(searchResult);

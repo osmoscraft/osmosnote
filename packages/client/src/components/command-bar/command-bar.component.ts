@@ -7,7 +7,10 @@ import { idToFilename } from "../../utils/id";
 import "./command-bar.css";
 import { commandTree } from "./command-tree";
 import { commandHandlers } from "./commands";
+import { MenuRowComponent } from "./menu/menu-row.component";
 import { renderChildCommands } from "./menu/render-menu";
+
+customElements.define("s2-menu-row", MenuRowComponent);
 
 declare global {
   interface GlobalEventHandlersEventMap {
@@ -147,7 +150,9 @@ export class CommandBarComponent extends HTMLElement {
     });
 
     this.commandInputDom.addEventListener("keydown", async (event) => {
-      const activeOption = this.commandOptionsDom.querySelector("[data-option][data-active]") as HTMLElement;
+      const activeOption = this.commandOptionsDom.querySelector(
+        `s2-menu-row[data-kind="option"][data-active]`
+      ) as MenuRowComponent;
       if (activeOption) {
         const handled = this.handleOptionKeydown({ optionDom: activeOption, event: event });
 
@@ -175,8 +180,8 @@ export class CommandBarComponent extends HTMLElement {
 
         const allOptions = [
           this.commandInputDom,
-          ...this.commandOptionsDom.querySelectorAll("[data-option]"),
-        ] as HTMLElement[];
+          ...this.commandOptionsDom.querySelectorAll(`s2-menu-row[data-kind="option"]`),
+        ] as MenuRowComponent[];
         let currentOptionIndex = allOptions.findIndex((option) => option.dataset.active === "");
 
         if (currentOptionIndex < 0) {
@@ -187,7 +192,7 @@ export class CommandBarComponent extends HTMLElement {
 
         allOptions.forEach((option) => delete option.dataset.active);
         const newActiveOption = allOptions[newIndex];
-        if (newActiveOption.dataset.option === "") {
+        if (newActiveOption.dataset.kind === "option") {
           // filter out the input element
           newActiveOption.dataset.active = "";
         }
@@ -248,7 +253,7 @@ export class CommandBarComponent extends HTMLElement {
   /**
    * @return {boolean} whether the processing should stop after
    */
-  private handleOptionKeydown(props: { optionDom: HTMLElement; event: KeyboardEvent }): boolean {
+  private handleOptionKeydown(props: { optionDom: MenuRowComponent; event: KeyboardEvent }): boolean {
     const targetDataset = props.optionDom.dataset;
     const e = props.event;
 
@@ -262,7 +267,7 @@ export class CommandBarComponent extends HTMLElement {
 
       if (targetDataset.openUrl) {
         const shouldOpenInNew = e.ctrlKey || targetDataset.alwaysNewTab === "true";
-        window.open(targetDataset.openUrl, shouldOpenInNew ? undefined : "_self");
+        window.open(targetDataset.openUrl, shouldOpenInNew ? "_blank" : "_self");
 
         this.exitCommandMode();
 
@@ -270,7 +275,7 @@ export class CommandBarComponent extends HTMLElement {
       }
 
       if (targetDataset.openNoteById) {
-        window.open(`/?filename=${idToFilename(targetDataset.openNoteById)}`, e.ctrlKey ? undefined : "_self");
+        window.open(`/?filename=${idToFilename(targetDataset.openNoteById)}`, e.ctrlKey ? "_blank" : "_self");
         this.exitCommandMode();
 
         return true;

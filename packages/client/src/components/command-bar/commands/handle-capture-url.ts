@@ -36,7 +36,7 @@ export const handleCaptureUrl: CommandHandler = async ({ input, context }) => {
       const [searchResult, crawlResult] = await Promise.all([searchAsync, crawlAsync]);
 
       if (crawlResult.error || !crawlResult.data) {
-        optionsHtml += /*html*/ renderMessageRow(crawlResult.error?.toString?.() ?? "Error crawling URL");
+        optionsHtml += renderMessageRow(crawlResult.error?.toString?.() ?? "Error crawling URL");
       } else {
         const searchParams = new URLSearchParams();
         searchParams.set("url", crawlResult.data.canonicalUrl);
@@ -44,7 +44,7 @@ export const handleCaptureUrl: CommandHandler = async ({ input, context }) => {
         searchParams.set("content", crawlResult.data.description);
         const openUrl = `/?${searchParams}`;
 
-        optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-open-url="${openUrl}">${crawlResult.data.title}</div>`;
+        optionsHtml += /*html*/ `<s2-menu-row data-kind="option" data-open-url="${openUrl}" data-label="${crawlResult.data.title}"></s2-menu-row>`;
       }
 
       optionsHtml += renderSearchResultSectionForOpen(searchResult);
