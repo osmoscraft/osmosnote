@@ -261,7 +261,9 @@ export class CommandBarComponent extends HTMLElement {
       }
 
       if (targetDataset.openUrl) {
-        window.open(targetDataset.openUrl, e.ctrlKey || targetDataset.alwaysNewTab === "true" ? undefined : "_self");
+        const shouldOpenInNew = e.ctrlKey || targetDataset.alwaysNewTab === "true";
+        window.open(targetDataset.openUrl, shouldOpenInNew ? undefined : "_self");
+
         this.exitCommandMode();
 
         return true;
