@@ -49,44 +49,32 @@ export const handleSearch: RouteHandlerMethod<any, any, any, SearchRouteHandler>
 
 async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultItem[]> {
   const baseQuery = phrase.trim();
-  const tagsQuery = baseQuery.match(/:.+:/)?.[0];
-  const keywordQuery = tagsQuery ? baseQuery.replace(tagsQuery, "") : baseQuery;
+  const tags = [...baseQuery.matchAll(/:([^:]+?):/g)].map((item) => item[1]);
+  const keywordQuery = baseQuery.replace(/:([^:]+?):/g, "").trim();
 
   let getFilenamesPreprocess: string = "";
 
   /*
    * When tags are specified, we require all result files to contain all of tags.
+   * In org mode, adjacent tags share a single ":", e.g. :tag1:tag2:tag3:,
+   * In our systemm, adjacent tags won't share ":", e.g. :tag1::tag2::tag3:
+   * This will speed up regex as it prevents lookahead/lookback
    */
-  if (tagsQuery) {
-    /*
-     * ripgrep does not support look ahead, or we could use the following to emulate "AND" logic
-     * ref: https://stackoverflow.com/questions/13911053/regular-expression-to-match-all-words-in-a-query-in-any-order
-     * `${tags.map((tag) => `(?=.*:${tag}:)`).join("")}.+`;
-     *
-     * Instead, we do a pass for each tag to narrow down the filenames
-     */
-
+  if (tags.length) {
     /*
      * get a list of files contains all the tags, separated by space
      * -l list file names only
      * -0 removes new line character after each file name
      * xargs -0 formats the file names into a space separate list that can be piped into the next rg command. -r stops processing if it's empty
      */
-    const tags = tagsQuery
-      .split(":")
-      .map((tag) => tag.trim())
-      .filter((tag) => !!tag);
     getFilenamesPreprocess = tags.map((tag) => `rg :${tag}: -l --ignore-case -0 | xargs -0 -r `).join("");
   }
 
-  const keywords = keywordQuery
-    .trim()
-    .split(" ")
-    .filter((keyword) => !!keyword);
+  const keywords = keywordQuery.split(" ").filter((keyword) => !!keyword);
 
   if (keywords.length) {
     return keywordSearch(dir, keywords, getFilenamesPreprocess);
-  } else if (tagsQuery) {
+  } else if (tags) {
     return tagOnlySearch(dir, getFilenamesPreprocess);
   } else {
     return [];

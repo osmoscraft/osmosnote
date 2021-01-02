@@ -49,5 +49,5 @@ const LINK_REPLACER = (_match: string, title: string, id: string) =>
   /*html*/ `<s2-link-overlay data-id="${id}" data-title="${title}"></s2-link-overlay>`;
 
 // Note we don't allow white space next to the separator. ":some:key word:like this:" is ok, ": hello :world :" is not ok.
-export const TAG_PATTERN = /:([^\s]([^:]+[^\s]:))+/g;
-const TAG_REPLACER = (match: string) => /*html*/ `<s2-tag-overlay data-raw="${match}"></s2-tag-overlay>`;
+export const TAG_PATTERN = /:([^:]+?):/g;
+const TAG_REPLACER = (_match: string, tag: string) => /*html*/ `<s2-tag-overlay data-tag="${tag}"></s2-tag-overlay>`;

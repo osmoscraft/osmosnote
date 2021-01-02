@@ -1,5 +1,5 @@
 :tackling:
-
+* TODO tag search
 
 * Backlog
 
@@ -63,7 +63,7 @@
   ** Dev experience
     - automate branch + tag based release git github CI/CD
 
-
+* DONE use double columns to separate tags to avoid regex lookahead
 * DONE hit enter in command is handled differently than open option
 * DONE long title overflow command bar option
 * DONE command bar code refactoring: componentize option handlers
