@@ -1,5 +1,4 @@
 :tackling:
-* TODO hit enter in command is handled differently than open option
 
 
 * Backlog
@@ -65,6 +64,7 @@
     - automate branch + tag based release git github CI/CD
 
 
+* DONE hit enter in command is handled differently than open option
 * DONE long title overflow command bar option
 * DONE command bar code refactoring: componentize option handlers
 * DONE child window creation and backtrack insertion

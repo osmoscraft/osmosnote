@@ -38,9 +38,9 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
     runOnCommit: () => {
       // treating input as title to create a new note
       if (phrase?.length) {
-        window.open(`/?title=${phrase}`, `_blank`);
+        context.windowBridgeService.insertNoteLinkAfterCreated(`/?title=${phrase}`);
       } else {
-        window.open(`/`, `_blank`);
+        context.windowBridgeService.insertNoteLinkAfterCreated(`/`);
       }
     },
   };

@@ -1,6 +1,5 @@
 import type { CreateNoteBody, UpdateNoteBody } from "@system-two/server/src/routes/note";
 import type { CommandHandler, CommandHandlerContext } from ".";
-import { emit } from "../../../utils/events";
 import { filenameToId } from "../../../utils/id";
 import { getNoteConfigFromUrl } from "../../../utils/url";
 
@@ -55,14 +54,10 @@ async function upsertFile(context: CommandHandlerContext) {
     context.componentRefs.statusBar.setMessage(`Created ${result.note.metadata.title}`);
 
     // TODO notify window opener
-    if (window.opener) {
-      emit(window.opener, "command-bar:child-note-created", {
-        detail: {
-          id: filenameToId(result.filename),
-          title: result.note.metadata.title,
-        },
-      });
-    }
+    context.windowBridgeService.notifyNoteCreated({
+      id: filenameToId(result.filename),
+      title: result.note.metadata.title,
+    });
 
     // TODO update new id in metadata
 

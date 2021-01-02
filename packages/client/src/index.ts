@@ -12,6 +12,7 @@ import { FileStorageService } from "./services/file-storage/file-storage.service
 // global elements
 import "./components/focus-trap/focus-trap.component";
 import { ensureNoteTitle } from "./utils/get-default-title";
+import { WindowBridgeService } from "./services/window-bridge/window-bridge.service";
 
 di.registerClass(ComponentReferenceService, []);
 di.registerClass(ProxyService, []);
@@ -19,6 +20,7 @@ di.registerClass(SourceControlService, [ProxyService]);
 di.registerClass(FileStorageService, [ProxyService]);
 di.registerClass(CursorSelectionService, [ComponentReferenceService]);
 di.registerClass(HistoryService, []);
+di.registerClass(WindowBridgeService, [ComponentReferenceService]);
 
 // calling mount will trigger constructors within each custom element
 // to avoid circular dependency, don't mount until all services are registered

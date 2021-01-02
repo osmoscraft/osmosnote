@@ -2,6 +2,7 @@ import { ComponentReferenceService } from "../../services/component-reference/co
 import { FileStorageService } from "../../services/file-storage/file-storage.service";
 import { ProxyService } from "../../services/proxy/proxy.service";
 import { SourceControlService } from "../../services/source-control/source-control.service";
+import { WindowBridgeService } from "../../services/window-bridge/window-bridge.service";
 import { di } from "../../utils/dependency-injector";
 import { idToFilename } from "../../utils/id";
 import "./command-bar.css";
@@ -11,17 +12,6 @@ import { MenuRowComponent } from "./menu/menu-row.component";
 import { renderChildCommands } from "./menu/render-menu";
 
 customElements.define("s2-menu-row", MenuRowComponent);
-
-declare global {
-  interface GlobalEventHandlersEventMap {
-    "command-bar:child-note-created": CustomEvent<ChildNoteCreated>;
-  }
-}
-
-export interface ChildNoteCreated {
-  id: string;
-  title: string;
-}
 
 export interface CommandInput {
   command: string;
@@ -51,6 +41,7 @@ export class CommandBarComponent extends HTMLElement {
   sourceControlService = di.getSingleton(SourceControlService);
   fileStorageService = di.getSingleton(FileStorageService);
   proxyService = di.getSingleton(ProxyService);
+  windowBridge = di.getSingleton(WindowBridgeService);
 
   private triggeringElement: Element | null = null;
 
@@ -290,30 +281,7 @@ export class CommandBarComponent extends HTMLElement {
       }
 
       if (targetDataset.insertOnSave) {
-        this.componentRefs.statusBar.setMessage("Save child note to insert, [ESC] to cancel", "warning");
-
-        const handleChildNoteCreated = (ev: CustomEvent<ChildNoteCreated>) => {
-          const insertion = `[${ev.detail.title}](${ev.detail.id})`;
-
-          this.componentRefs.textEditor.insertAtCursor(insertion);
-          this.componentRefs.statusBar.setMessage(`Inserted: "${insertion}"`);
-          window.removeEventListener("command-bar:child-note-created", handleChildNoteCreated);
-          window.removeEventListener("keydown", handleCancel);
-        };
-
-        const handleCancel = (e: KeyboardEvent) => {
-          if (e.key === "Escape") {
-            window.removeEventListener("command-bar:child-note-created", handleChildNoteCreated);
-            window.removeEventListener("keydown", handleCancel);
-            this.componentRefs.statusBar.setMessage(`Cancelled`);
-            console.log("[command-bar] cancelled handling child note created");
-          }
-        };
-
-        window.addEventListener("command-bar:child-note-created", handleChildNoteCreated);
-        window.addEventListener("keydown", handleCancel, { capture: true });
-
-        window.open(targetDataset.insertOnSave);
+        this.windowBridge.insertNoteLinkAfterCreated(targetDataset.insertOnSave);
         this.exitCommandMode();
 
         return true;
@@ -336,6 +304,7 @@ export class CommandBarComponent extends HTMLElement {
           fileStorageService: this.fileStorageService,
           sourceControlService: this.sourceControlService,
           proxyService: this.proxyService,
+          windowBridgeService: this.windowBridge,
         },
       });
 

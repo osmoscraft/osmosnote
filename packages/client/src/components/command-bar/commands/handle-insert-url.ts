@@ -52,6 +52,10 @@ export const handleInsertUrl: CommandHandler = async ({ input, context }) => {
       return optionsHtml;
     },
     // Cannot commit when there is no url
-    runOnCommit: url ? () => url && window.open(`/?url=${encodeURIComponent(url)}`, `_blank`) : undefined,
+    runOnCommit: url
+      ? () => {
+          context.windowBridgeService.insertNoteLinkAfterCreated(`/?url=${encodeURIComponent(url)}`);
+        }
+      : undefined,
   };
 };

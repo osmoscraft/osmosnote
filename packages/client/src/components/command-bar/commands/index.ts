@@ -13,6 +13,7 @@ import { handleSlash } from "./handle-slash";
 import { handleVersionsCheck, handleVersionsSync } from "./handle-versions";
 import { handleGoToEditor, handleGoToHeader, handleGoToReferences } from "./handle-window-travel";
 import { handleCaptureUrl } from "./handle-capture-url";
+import type { WindowBridgeService } from "../../../services/window-bridge/window-bridge.service";
 
 export interface CommandHandlers {
   [key: string]: CommandHandler;
@@ -23,6 +24,7 @@ export interface CommandHandlerContext {
   fileStorageService: FileStorageService;
   sourceControlService: SourceControlService;
   proxyService: ProxyService;
+  windowBridgeService: WindowBridgeService;
 }
 
 export interface CommandHandler {
