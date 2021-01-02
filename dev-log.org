@@ -1,6 +1,6 @@
 :tackling:
-* TODO child window creation and backtrack insertion
-* DONE insert new node should not replace current window
+* TODO hit enter in command is handled differently than open option
+
 
 * Backlog
 
@@ -10,6 +10,7 @@
     - debug windows build bin output (may have to do with git auth)
     - Save a newly created file won't update metadata
     - Can't travel to reference panel when its empty
+    - Changes in title is not being tracked as dirty
 
   ** Intuitive modal/window management
     - insert multiple tags from command option
@@ -62,6 +63,10 @@
   ** Dev experience
     - automate branch + tag based release git github CI/CD
 
+
+* DONE child window creation and backtrack insertion
+* DONE insert new node should not replace current window
+* DONE Text area doesn't reveal cursor when hitting enter after a long string
 * DONE new file should start with dirty state
 * DONE separate capture url from insert url
 * DONE show duplicated links when inserting url

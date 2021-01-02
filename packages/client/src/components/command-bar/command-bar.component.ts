@@ -8,6 +8,17 @@ import "./command-bar.css";
 import { commandTree } from "./command-tree";
 import { commandHandlers } from "./handlers";
 
+declare global {
+  interface GlobalEventHandlersEventMap {
+    "command-bar:child-note-created": CustomEvent<ChildNoteCreated>;
+  }
+}
+
+export interface ChildNoteCreated {
+  id: string;
+  title: string;
+}
+
 export interface CommandInput {
   command: string;
   args?: string;
@@ -277,6 +288,39 @@ export class CommandBarComponent extends HTMLElement {
 
         this.componentRefs.textEditor.insertAtCursor(targetDataset.insertText);
         this.componentRefs.statusBar.setMessage(`[command-bar] inserted "${targetDataset.insertText}"`);
+        this.exitCommandMode();
+
+        return true;
+      }
+
+      if (targetDataset.insertOnSave) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.componentRefs.statusBar.setMessage("Save child note to insert, [ESC] to cancel", "warning");
+
+        const handleChildNoteCreated = (ev: CustomEvent<ChildNoteCreated>) => {
+          const insertion = `[${ev.detail.title}](${ev.detail.id})`;
+
+          this.componentRefs.textEditor.insertAtCursor(insertion);
+          this.componentRefs.statusBar.setMessage(`Inserted: "${insertion}"`);
+          window.removeEventListener("command-bar:child-note-created", handleChildNoteCreated);
+          window.removeEventListener("keydown", handleCancel);
+        };
+
+        const handleCancel = (e: KeyboardEvent) => {
+          if (e.key === "Escape") {
+            window.removeEventListener("command-bar:child-note-created", handleChildNoteCreated);
+            window.removeEventListener("keydown", handleCancel);
+            this.componentRefs.statusBar.setMessage(`Cancelled`);
+            console.log("[command-bar] cancelled handling child note created");
+          }
+        };
+
+        window.addEventListener("command-bar:child-note-created", handleChildNoteCreated);
+        window.addEventListener("keydown", handleCancel, { capture: true });
+
+        window.open(targetDataset.insertOnSave);
         this.exitCommandMode();
 
         return true;

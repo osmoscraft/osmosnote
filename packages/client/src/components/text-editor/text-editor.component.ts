@@ -178,6 +178,11 @@ export class TextEditorComponent extends HTMLElement {
       this.textAreaDom.setSelectionRange(modelCursor.rawStart, modelCursor.rawEnd, modelCursor.direction);
     }
 
+    // hack, force text area to reveal cursor
+    // ref: https://stackoverflow.com/questions/29899364/how-do-you-scroll-to-the-position-of-the-cursor-in-a-textarea
+    this.textAreaDom.blur();
+    this.textAreaDom.focus();
+
     this.semanticOverlay.updateModel(this.model);
     this.componentReferenceService.statusBar.setCursorStatus(modelCursor);
 
