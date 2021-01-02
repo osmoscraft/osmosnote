@@ -57,6 +57,9 @@
     - unit test
     - Find xargs alternative. (replace with plain javascript string manipulation?)
 
+  ** Dev experience
+    - automate branch + tag based release git github CI/CD
+
 * DONE new file should start with dirty state
 * DONE separate capture url from insert url
 * DONE show duplicated links when inserting url
