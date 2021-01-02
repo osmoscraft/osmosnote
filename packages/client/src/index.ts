@@ -24,6 +24,7 @@ di.registerClass(HistoryService, []);
 // to avoid circular dependency, don't mount until all services are registered
 di.getSingleton(ComponentReferenceService).init();
 di.getSingleton(CursorSelectionService).init();
+const proxy = di.getSingleton(ProxyService);
 
 async function loadNote() {
   const { filename, title, content, url } = getNoteConfigFromUrl();
@@ -32,7 +33,7 @@ async function loadNote() {
   if (filename) {
     // load existing note
     const id = filenameToId(filename);
-    const result = await loadExistingNote(id);
+    const result = await proxy.get<GetNoteReply>(`/api/notes/${encodeURIComponent(id)}`);
 
     componentRefs.textEditor.initWithText(result.note.content);
     componentRefs.documentHeader.setData({ id, metadata: result.note.metadata });
@@ -48,13 +49,6 @@ async function loadNote() {
 
     componentRefs.textEditor.initWithText(content ?? "", { startAsDirty: shouldStartAsDirty });
   }
-}
-
-async function loadExistingNote(id: string) {
-  const response = await fetch(`/api/notes/${encodeURIComponent(id)}`);
-  const result: GetNoteReply = await response.json();
-
-  return result;
 }
 
 async function checkVersions() {

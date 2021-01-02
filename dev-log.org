@@ -1,5 +1,6 @@
 :tackling:
 * TODO child window creation and backtrack insertion
+* DONE insert new node should not replace current window
 
 * Backlog
 

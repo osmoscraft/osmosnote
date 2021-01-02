@@ -15,7 +15,7 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
     updateDropdownOnInput: async () => {
       let optionsHtml = renderHeaderRow("Create");
 
-      optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-open-url="${openUrl}">${ensureNoteTitle(
+      optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-open-url="${openUrl}" data-always-new-tab="true">${ensureNoteTitle(
         phrase
       )}</div>`;
 
