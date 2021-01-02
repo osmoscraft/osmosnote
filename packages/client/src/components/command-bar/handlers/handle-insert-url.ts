@@ -10,7 +10,7 @@ import {
 } from "../shared/dropdown";
 
 export const handleInsertUrl: CommandHandler = async ({ input, context }) => {
-  const url = input.args;
+  const url = input.args?.trim();
 
   return {
     updateDropdownOnInput: async () => {
@@ -51,6 +51,7 @@ export const handleInsertUrl: CommandHandler = async ({ input, context }) => {
 
       return optionsHtml;
     },
-    runOnCommit: () => url && window.open(`/?url=${encodeURIComponent(url)}`, `_blank`),
+    // Cannot commit when there is no url
+    runOnCommit: url ? () => url && window.open(`/?url=${encodeURIComponent(url)}`, `_blank`) : undefined,
   };
 };

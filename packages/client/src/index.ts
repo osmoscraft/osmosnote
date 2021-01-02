@@ -34,18 +34,19 @@ async function loadNote() {
     const id = filenameToId(filename);
     const result = await loadExistingNote(id);
 
-    // experimental
     componentRefs.textEditor.initWithText(result.note.content);
-
     componentRefs.documentHeader.setData({ id, metadata: result.note.metadata });
     componentRefs.referencePanel.setIncomingConnections(result.incomingConnections);
   } else {
     // prepare for new note
     const newTitle = ensureNoteTitle(title);
+
     componentRefs.documentHeader.setData({ metadata: { title: newTitle, url: url ?? undefined } });
 
-    // experimental
-    componentRefs.textEditor.initWithText(content ?? "");
+    // start dirty when there is risk of losing pre-populated content
+    const shouldStartAsDirty = !!title || !!url || !!content;
+
+    componentRefs.textEditor.initWithText(content ?? "", { startAsDirty: shouldStartAsDirty });
   }
 }
 

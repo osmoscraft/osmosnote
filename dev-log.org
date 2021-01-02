@@ -1,5 +1,4 @@
 :tackling:
-* TODO new file should start with dirty state
 
 * Backlog
 
@@ -58,6 +57,7 @@
     - unit test
     - Find xargs alternative. (replace with plain javascript string manipulation?)
 
+* DONE new file should start with dirty state
 * DONE separate capture url from insert url
 * DONE show duplicated links when inserting url
 * DONE convert all non-entity-crud controllers into post method handlers

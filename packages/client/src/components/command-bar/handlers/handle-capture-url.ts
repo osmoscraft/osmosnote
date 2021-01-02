@@ -10,7 +10,7 @@ import {
 } from "../shared/dropdown";
 
 export const handleCaptureUrl: CommandHandler = async ({ input, context }) => {
-  const url = input.args;
+  const url = input.args?.trim();
 
   return {
     updateDropdownOnInput: async () => {
@@ -44,13 +44,14 @@ export const handleCaptureUrl: CommandHandler = async ({ input, context }) => {
         searchParams.set("content", crawlResult.data.description);
         const openUrl = `/?${searchParams}`;
 
-        optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-open-url="${openUrl}" data-always-new-tab="true" >${crawlResult.data.title}</div>`;
+        optionsHtml += /*html*/ `<div class="cmdbr-dropdown-row cmdbr-dropdown-row--btn" data-option data-open-url="${openUrl}">${crawlResult.data.title}</div>`;
       }
 
       optionsHtml += renderSearchResultSectionForOpen(searchResult);
 
       return optionsHtml;
     },
-    runOnCommit: () => url && window.open(`/?url=${encodeURIComponent(url)}`, `_blank`),
+    // Cannot commit when there is no url
+    runOnCommit: url ? () => url && window.open(`/?url=${encodeURIComponent(url)}`, `_blank`) : undefined,
   };
 };

@@ -37,10 +37,8 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
     },
     runOnCommit: () => {
       // treating input as title to create a new note
-
-      const title = input.args?.trim();
-      if (title?.length) {
-        window.open(`/?title=${title}`, `_self`);
+      if (phrase?.length) {
+        window.open(`/?title=${phrase}`, `_self`);
       } else {
         window.open(`/`, `_self`);
       }

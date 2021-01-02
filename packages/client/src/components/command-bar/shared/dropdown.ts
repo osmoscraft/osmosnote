@@ -1,5 +1,5 @@
 import type { NoteListReply } from "@system-two/server/src/routes/note-list";
-import type { SearchReply, SearchResultItem } from "@system-two/server/src/routes/search";
+import type { SearchReply } from "@system-two/server/src/routes/search";
 import { filenameToId } from "../../../utils/id";
 
 export function renderSearchResultSectionForOpen(searchReply: SearchReply): string {

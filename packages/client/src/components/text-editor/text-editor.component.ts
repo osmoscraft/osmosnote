@@ -65,7 +65,7 @@ export class TextEditorComponent extends HTMLElement {
   cursorSelectionService!: CursorSelectionService;
   model!: EditorModel;
 
-  private savedLinesString!: string;
+  private savedLinesString: string | null = null; // before a note is created, the saved version is null
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
@@ -80,7 +80,7 @@ export class TextEditorComponent extends HTMLElement {
     this.cursorSelectionService = di.getSingleton(CursorSelectionService);
   }
 
-  initWithText(fileText: string) {
+  initWithText(fileText: string, config?: { startAsDirty?: boolean }) {
     this.model = {
       lines: fileTextToModelLines(fileText),
       cursor: { ...DEFAULT_CURSOR },
@@ -88,7 +88,7 @@ export class TextEditorComponent extends HTMLElement {
 
     this.pushModelToHistory();
 
-    this.markModelAsSaved();
+    !config?.startAsDirty && this.markModelAsSaved();
 
     this.render();
 
