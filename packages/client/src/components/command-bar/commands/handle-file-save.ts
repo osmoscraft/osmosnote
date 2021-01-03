@@ -15,6 +15,7 @@ export const handleFileSave: CommandHandler = async ({ context }) => ({
       const result = await context.sourceControlService.check();
       context.componentRefs.statusBar.setMessage(result.message);
     } catch (error) {
+      console.error(error);
       context.componentRefs.statusBar.setMessage(`Error saving note`, "error");
     }
   },
@@ -32,6 +33,7 @@ export const handleFileSaveAndSync: CommandHandler = async ({ context }) => ({
       const result = await context.sourceControlService.sync();
       context.componentRefs.statusBar.setMessage(result.message);
     } catch (error) {
+      console.error(error);
       context.componentRefs.statusBar.setMessage(`Error saving note`, "error");
     }
   },

@@ -1,5 +1,4 @@
 :tackling:
-* TODO save error when just saved a child note
 
 * Backlog
 
@@ -60,7 +59,7 @@
     - automate branch + tag based release git github CI/CD
 
   
-
+* DONE save error when just saved a child note
 * DONE suggest recently used tags
 * DONE insert multiple tags from command option
 * DONE tag search

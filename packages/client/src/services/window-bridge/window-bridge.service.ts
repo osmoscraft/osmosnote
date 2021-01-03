@@ -53,10 +53,16 @@ export class WindowBridgeService {
   }
 
   notifyNoteCreated(detail: NoteCreatedDetail) {
-    if (window.opener) {
-      emit(window.opener, "command-bar:child-note-created", {
-        detail,
-      });
+    try {
+      if ((window.opener as Window)?.location?.host === location.host) {
+        if (window.opener && window.opener.host) {
+          emit(window.opener, "command-bar:child-note-created", {
+            detail,
+          });
+        }
+      }
+    } catch (error) {
+      console.log("[window-bridge] opener is not the same host");
     }
   }
 
