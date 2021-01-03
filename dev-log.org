@@ -1,6 +1,4 @@
 :tackling:
-* TODO cannot cancel child create handler
-* TODO child create does not report to parent
 
 * Backlog
 
@@ -62,6 +60,8 @@
   ** Dev experience
     - automate branch + tag based release git github CI/CD
 
+* DONE cannot cancel child create handler
+* DONE child create does not report to parent
 * DONE :tag: is not a good syntax because it conflicts with timestamp -> replaced with #
 * DONE save error when just saved a child note
 * DONE suggest recently used tags
