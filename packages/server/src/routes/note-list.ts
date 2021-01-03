@@ -6,7 +6,7 @@ import { runShell } from "../lib/run-shell";
 
 const LIMIT = 10;
 
-export interface NoteListRouteHandler {
+export interface HandleNoteList {
   Reply: NoteListReply;
 }
 
@@ -20,7 +20,7 @@ export interface NoteListItem {
   content: string;
 }
 
-export const handleGetNoteList: RouteHandlerMethod<any, any, any, NoteListRouteHandler> = async (request, reply) => {
+export const handleGetNoteList: RouteHandlerMethod<any, any, any, HandleNoteList> = async (request, reply) => {
   const config = await getConfig();
 
   const notesDir = config.notesDir;

@@ -1,4 +1,5 @@
-import type { TagsLookupBody, TagsLookupReply } from "@system-two/server/src/routes/tags-lookup";
+import type { LookupTagsBody, LookupTagsReply } from "@system-two/server/src/routes/lookup-tags";
+import type { SuggestTagsBody, SuggestTagsReply } from "@system-two/server/src/routes/suggest-tags";
 import type { CommandHandler } from ".";
 
 export const handleInsertTags: CommandHandler = async ({ input, context }) => {
@@ -6,38 +7,56 @@ export const handleInsertTags: CommandHandler = async ({ input, context }) => {
 
   return {
     updateDropdownOnInput: async () => {
-      if (!phrase) return ""; // TODO render recent tags
+      let html = "";
 
-      const { error, data } = await context.proxyService.post<TagsLookupReply, TagsLookupBody>("/api/tags-lookup", {
+      if (!phrase) {
+        html += /*html*/ `<s2-menu-row data-kind="header" data-label="Recent"></s2-menu-row>`;
+
+        const { error, data } = await context.proxyService.post<SuggestTagsReply, SuggestTagsBody>(
+          "/api/suggest-tags",
+          {}
+        );
+
+        if (error) {
+          html += /*html*/ `<s2-menu-row data-label="Error getting tags"></s2-menu-row>`;
+        } else if (!data?.tags.length) {
+          html += /*html*/ `<s2-menu-row data-label="No recent tags"></s2-menu-row>`;
+        } else {
+          html += data?.tags
+            .map(
+              (item) =>
+                /*html*/ `<s2-menu-row data-kind="option" data-label=":${item.text}:" data-auto-complete="${item.text}">${item.text}</s2-menu-row>`
+            )
+            .join("");
+        }
+
+        return html;
+      }
+
+      const { error, data } = await context.proxyService.post<LookupTagsReply, LookupTagsBody>("/api/lookup-tags", {
         query: phrase,
       });
 
+      html += /*html*/ `<s2-menu-row data-kind="header" data-label="Search results"></s2-menu-row>`;
+
       if (error) {
-        return /*html*/ `<s2-menu-row data-label="Error looking up tags"></s2-menu-row>`;
+        html += /*html*/ `<s2-menu-row data-label="Error looking up tags"></s2-menu-row>`;
+      } else if (!data?.tags.length) {
+        html += /*html*/ `<s2-menu-row data-label="No tags found"></s2-menu-row>`;
+      } else {
+        html += data.tags
+          .map(
+            (tag) =>
+              /*html*/ `<s2-menu-row data-kind="option" data-label=":${tag}:" data-auto-complete="${tag}"></s2-menu-row>`
+          )
+          .join("");
       }
 
-      if (!data?.tags.length) {
-        return /*html*/ `<s2-menu-row data-label="No tags found"></s2-menu-row>`;
-      }
-
-      const optionsHtml = data.tags
-        .map(
-          (tag) =>
-            /*html*/ `<s2-menu-row data-kind="option" data-label=":${tag}:" data-auto-complete="${tag}"></s2-menu-row>`
-        )
-        .join("");
-
-      return optionsHtml;
+      return html;
     },
     repeatableRunOnCommit: () => {
       context.componentRefs.textEditor.insertAtCursor(`:${phrase}:`);
       context.componentRefs.statusBar.setMessage(`[command-bar] inserted ":${phrase}:"`);
-      // // treating input as title to create a new note
-      // if (phrase?.length) {
-      //   context.windowBridgeService.insertNoteLinkAfterCreated(`/?title=${phrase}`);
-      // } else {
-      //   context.windowBridgeService.insertNoteLinkAfterCreated(`/`);
-      // }
     },
   };
 };

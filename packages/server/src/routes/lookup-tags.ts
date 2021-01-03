@@ -2,23 +2,23 @@ import type { RouteHandlerMethod } from "fastify";
 import { getConfig } from "../config";
 import { runShell } from "../lib/run-shell";
 
-export interface HandleTagsLookup {
-  Body: TagsLookupBody;
-  Reply: TagsLookupReply;
+export interface HandleLookupTags {
+  Body: LookupTagsBody;
+  Reply: LookupTagsReply;
 }
 
-export interface TagsLookupBody {
+export interface LookupTagsBody {
   query: string;
 }
 
-export type TagsLookupReply = {
+export type LookupTagsReply = {
   error?: string;
   data?: {
     tags: string[];
   };
 };
 
-export const HandleTagsLookup: RouteHandlerMethod<any, any, any, HandleTagsLookup> = async (request, reply) => {
+export const handleLookupTags: RouteHandlerMethod<any, any, any, HandleLookupTags> = async (request, reply) => {
   const query = request.body.query?.trim();
 
   const config = await getConfig();

@@ -12,7 +12,7 @@
     - Newly opened window won't receive focus
 
   ** Intuitive modal/window management
-    - Ctrl+Enter to create note without closing existing
+    - Ctrl+Enter in command input to create note without closing existing
 
   ** Hassle-free 1st run
     - generate bookmarklet from the app
@@ -25,15 +25,10 @@
     - Support list 
       - syntax highlight
       - push/pull indendation, implement as a command
-    - Handle external link gracefully
     - Delete note
     - Replace selection with new capture (by title or by url)
-    - Support tag insertion
-      - Auto complete command with Up/Down arrow move using data-auto-complete directive 
-      - runOnCommitKeepOpen hook to repeat insertion
     - Unify URL and textual capture and insert. Determine type on client side.
       - Consider perf draw back though. Maybe combine search and crawl into a discover API
-    - Suggest recently used tags when query is empty
 
   ** Responsive UI
     - show save progress - need to break git actions into smaller api calls
@@ -41,27 +36,29 @@
     - a way to view status history
     - highlight todo and done keywords
     - show color bar on left when line has formatting issues
+    - highlight part of the command options that overlap with the current input
+    - highlight raw URL and make them clickable
 
   ** Keyboard ergonomics
     - Alt + arrow to move line(s)
     - ctrl + D to select word under cursor
     - run command directly with hotkey (require refactoring)
+    - ctrl + enter to insert below, ctrl + shift enter to insert above
 
   ** Refactoring
-    - consolidate and clean up various dropdown menus. Consider share menu option as web components
     - centralize event handling: keyboard > global handler > call command or call component method
     - clean up command system architecture
       - decouple command lambda from command key binding
-      - Disentangle option update vs. execution
     - decouple formatting from syntax parsing
     - refactor search to be a service
-    - use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer
     - unit test
+    - use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer
     - Find xargs alternative. (replace with plain javascript string manipulation?)
 
   ** Dev experience
     - automate branch + tag based release git github CI/CD
 
+* DONE suggest recently used tags
 * DONE insert multiple tags from command option
 * DONE tag search
 * DONE use double columns to separate tags to avoid regex lookahead
