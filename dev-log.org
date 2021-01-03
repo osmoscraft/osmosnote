@@ -1,5 +1,4 @@
 :tackling:
-* TODO tag search
 
 * Backlog
 
@@ -13,7 +12,6 @@
     - Newly opened window won't receive focus
 
   ** Intuitive modal/window management
-    - insert multiple tags from command option
     - Ctrl+Enter to create note without closing existing
 
   ** Hassle-free 1st run
@@ -35,6 +33,7 @@
       - runOnCommitKeepOpen hook to repeat insertion
     - Unify URL and textual capture and insert. Determine type on client side.
       - Consider perf draw back though. Maybe combine search and crawl into a discover API
+    - Suggest recently used tags when query is empty
 
   ** Responsive UI
     - show save progress - need to break git actions into smaller api calls
@@ -63,6 +62,8 @@
   ** Dev experience
     - automate branch + tag based release git github CI/CD
 
+* DONE insert multiple tags from command option
+* DONE tag search
 * DONE use double columns to separate tags to avoid regex lookahead
 * DONE hit enter in command is handled differently than open option
 * DONE long title overflow command bar option

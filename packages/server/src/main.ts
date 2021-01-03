@@ -7,6 +7,7 @@ import { handleGetNoteList } from "./routes/note-list";
 import { handleSearch } from "./routes/search";
 import { getConfig } from "./config";
 import { handleCrawl } from "./routes/crawl";
+import { HandleTagsLookup } from "./routes/tags-lookup";
 
 async function run() {
   const server = fastify();
@@ -18,6 +19,7 @@ async function run() {
   server.put("/api/notes/:id", handleUpdateNote);
   server.post("/api/versions", handleVersions);
   server.post("/api/crawl", handleCrawl);
+  server.post("/api/tags-lookup", HandleTagsLookup);
 
   const publicPath = path.join(__dirname, "../public");
   server.register(fastifyStatic, { root: publicPath });

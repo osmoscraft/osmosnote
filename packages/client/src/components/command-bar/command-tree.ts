@@ -57,6 +57,10 @@ export const commandTree: RegisteredCommand = {
           key: "l",
         },
         {
+          name: "Tags",
+          key: "t",
+        },
+        {
           name: "Slash",
           key: "/",
         },

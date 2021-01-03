@@ -14,6 +14,7 @@ import { handleVersionsCheck, handleVersionsSync } from "./handle-versions";
 import { handleGoToEditor, handleGoToHeader, handleGoToReferences } from "./handle-window-travel";
 import { handleCaptureUrl } from "./handle-capture-url";
 import type { WindowBridgeService } from "../../../services/window-bridge/window-bridge.service";
+import { handleInsertTags } from "./handle-insert-tags";
 
 export interface CommandHandlers {
   [key: string]: CommandHandler;
@@ -47,12 +48,18 @@ export interface CommandHandlerResult {
    * run when the command is committed with "Enter" key
    */
   runOnCommit?: () => any;
+  /**
+   * run when the command is committed with "Enter" key.
+   * After commit, command bar remains open with args removed.
+   */
+  repeatableRunOnCommit?: () => any;
 }
 
 export const commandHandlers: CommandHandlers = {
   "i/": handleSlash,
   in: handleInsertNote,
   il: handleInsertUrl,
+  it: handleInsertTags,
   fo: handleCaptureNote,
   nn: handleCaptureNote,
   nl: handleCaptureUrl,

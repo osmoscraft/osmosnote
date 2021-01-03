@@ -183,9 +183,10 @@ export class CommandBarComponent extends HTMLElement {
 
         allOptions.forEach((option) => delete option.dataset.active);
         const newActiveOption = allOptions[newIndex];
+        // filter out the input element
         if (newActiveOption.dataset.kind === "option") {
-          // filter out the input element
           newActiveOption.dataset.active = "";
+          this.handleOptionFocus({ optionDom: newActiveOption });
         }
       }
 
@@ -197,6 +198,20 @@ export class CommandBarComponent extends HTMLElement {
         if (executableCommand?.runOnCommit) {
           this.exitCommandMode();
           executableCommand.runOnCommit();
+        }
+
+        if (executableCommand?.repeatableRunOnCommit) {
+          const savedInput = this.parseInput(this.commandInputDom.value);
+          this.exitCommandMode();
+          executableCommand.repeatableRunOnCommit();
+
+          // skip an update cycle to allow command to be digested
+          setTimeout(() => {
+            this.enterCommandMode();
+            // remove args to get ready for the next run
+            this.commandInputDom.value = savedInput.command;
+            this.handleInput(this.commandInputDom.value);
+          });
         }
       }
     });
@@ -238,6 +253,18 @@ export class CommandBarComponent extends HTMLElement {
     // add auto trailing space
     if (input.indexOf(" ") < 0) {
       this.commandInputDom.value = `${this.commandInputDom.value} `;
+    }
+  }
+
+  /**
+   * Triggered when an option is focused with up down arrow, but not executed yet
+   */
+  private handleOptionFocus(props: { optionDom: MenuRowComponent }) {
+    const optionDom = props.optionDom;
+
+    if (optionDom.dataset.autoComplete) {
+      const currentInput = this.parseInput(this.commandInputDom.value);
+      this.commandInputDom.value = `${currentInput.command} ${optionDom.dataset.autoComplete}`;
     }
   }
 

@@ -8,9 +8,6 @@ import { runShell } from "../lib/run-shell";
 const RESULT_LIMIT = 10;
 
 export interface SearchRouteHandler {
-  Querystring: {
-    phrase: string;
-  };
   Body: SearchBody;
   Reply: SearchReply;
 }
@@ -33,8 +30,7 @@ export interface SearchResultItem {
 export const handleSearch: RouteHandlerMethod<any, any, any, SearchRouteHandler> = async (request, reply) => {
   const config = await getConfig();
 
-  const query = request.query;
-  const phrase = request.body.phrase ?? query.phrase;
+  const phrase = request.body.phrase;
   const notesDir = config.notesDir;
 
   const now = performance.now();

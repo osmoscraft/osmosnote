@@ -7,6 +7,10 @@ export class MenuRowComponent extends HTMLElement {
 
     label: string;
     active?: "";
+    /**
+     * When focused, replace args with the given value
+     */
+    autoComplete?: string;
     openUrl?: string;
     alwaysNewTab?: "true";
     openNoteById?: string;
