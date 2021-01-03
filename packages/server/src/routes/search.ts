@@ -84,7 +84,8 @@ async function tagOnlySearch(dir: string, getFilenamesPreprocess: string) {
   const { error, stdout, stderr } = await runShell(`${getFilenamesPreprocess}`, { cwd: dir });
 
   if (error) {
-    if (error.code === 1) {
+    if (error.code === 1 || stderr?.trim().length) {
+      console.log(`[search] ${stderr}`);
       return [];
     } else {
       throw stderr;
