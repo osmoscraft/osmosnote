@@ -8,7 +8,6 @@
     - Cursor position is borken after formatting
     - when not on last line, "## " will push selection to bottom
     - debug windows build bin output (may have to do with git auth)
-    - Save a newly created file won't update metadata
     - Can't travel to reference panel when its empty
     - Changes in title is not being tracked as dirty
     - Newly opened window won't receive focus
@@ -60,6 +59,7 @@
   ** Dev experience
     - automate branch + tag based release git github CI/CD
 
+* DONE Save a newly created file won't update metadata
 * DONE cannot cancel child create handler
 * DONE child create does not report to parent
 * DONE :tag: is not a good syntax because it conflicts with timestamp -> replaced with #

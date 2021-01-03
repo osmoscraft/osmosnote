@@ -55,13 +55,12 @@ async function upsertFile(context: CommandHandlerContext) {
     history.replaceState(undefined, document.title, `/?filename=${result.filename}`);
     context.componentRefs.statusBar.setMessage(`Created ${result.note.metadata.title}`);
 
-    // TODO notify window opener
     context.windowBridgeService.notifyNoteCreated({
       id: filenameToId(result.filename),
       title: result.note.metadata.title,
     });
 
-    // TODO update new id in metadata
+    context.componentRefs.documentHeader.setId(filenameToId(result.filename));
 
     return result;
   } else {

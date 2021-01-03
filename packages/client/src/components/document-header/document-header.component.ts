@@ -75,6 +75,18 @@ export class DocumentHeaderComponent extends HTMLElement {
     this.renderInitial();
   }
 
+  setId(id: string) {
+    const idField = this.fieldsContainerDom.querySelector(`input[id="meta-field-id"]`) as HTMLInputElement;
+    if (idField) {
+      idField.value = id;
+      this.updateModelFromHtml();
+
+      this.renderUpdate();
+    } else {
+      console.error("Id field does not exist");
+    }
+  }
+
   getTitle(): string {
     return this.headingInputDom.value;
   }
