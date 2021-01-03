@@ -4,6 +4,7 @@ import { getConfig } from "../config";
 import { readNote } from "../lib/note-file-io";
 import { parseNote } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
+import { TAG_SEPARATOR } from "../lib/tag";
 
 const RESULT_LIMIT = 10;
 
@@ -44,16 +45,18 @@ export const handleSearch: RouteHandlerMethod<any, any, any, SearchRouteHandler>
 };
 
 async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultItem[]> {
+  const _ = TAG_SEPARATOR;
+  const tagsRegex = new RegExp(`${_}([^${_}\\s]+?(\\s+[^${_}\\s]+?)*)${_}`, "g");
   const baseQuery = phrase.trim();
-  const tags = [...baseQuery.matchAll(/:([^:\s]+?(\s+[^:\s]+?)*):/g)].map((item) => item[1]);
-  const keywordQuery = baseQuery.replace(/:([^:\s]+?(\s+[^:\s]+?)*):/g, "").trim();
+  const tags = [...baseQuery.matchAll(tagsRegex)].map((item) => item[1]);
+  const keywordQuery = baseQuery.replace(tagsRegex, "").trim();
 
   let getFilenamesPreprocess: string = "";
 
   /*
    * When tags are specified, we require all result files to contain all of tags.
    * In org mode, adjacent tags share a single ":", e.g. :tag1:tag2:tag3:,
-   * In our systemm, adjacent tags won't share ":", e.g. :tag1::tag2::tag3:
+   * In our systemm, adjacent tags won't share "#", e.g. #tag1##tag2##tag3#
    * This will speed up regex as it prevents lookahead/lookback
    */
   if (tags.length) {
@@ -63,7 +66,7 @@ async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultI
      * -0 removes new line character after each file name
      * xargs -0 formats the file names into a space separate list that can be piped into the next rg command. -r stops processing if it's empty
      */
-    getFilenamesPreprocess = tags.map((tag) => `rg :${tag}: -l --ignore-case -0 | xargs -0 -r `).join("");
+    getFilenamesPreprocess = tags.map((tag) => `rg ${_}${tag}${_} -l --ignore-case -0 | xargs -0 -r `).join("");
   }
 
   const keywords = keywordQuery.split(" ").filter((keyword) => !!keyword);

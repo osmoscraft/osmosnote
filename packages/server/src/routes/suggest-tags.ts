@@ -1,6 +1,7 @@
 import type { RouteHandlerMethod } from "fastify";
 import { getConfig } from "../config";
 import { runShell } from "../lib/run-shell";
+import { TAG_SEPARATOR } from "../lib/tag";
 
 const RECENT_NOTE_LIMIT = 30;
 
@@ -31,8 +32,10 @@ export const handleSuggestTags: RouteHandlerMethod<any, any, any, HandleSuggestT
 
   const notesDir = config.notesDir;
 
+  const _ = TAG_SEPARATOR;
+
   const { stdout, stderr, error } = await runShell(
-    `ls -1t *.md | head -n ${RECENT_NOTE_LIMIT} | xargs -d "\\n" rg ":[^:\\s]+?(\\s+[^:\\s]+?)*:" -INo --no-heading`,
+    `ls -1t *.md | head -n ${RECENT_NOTE_LIMIT} | xargs -d "\\n" rg "${_}[^${_}\\s]+?(\\s+[^${_}\\s]+?)*${_}" -INo --no-heading`,
     {
       cwd: notesDir,
     }

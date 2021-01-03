@@ -1,6 +1,7 @@
 import type { RouteHandlerMethod } from "fastify";
 import { getConfig } from "../config";
 import { runShell } from "../lib/run-shell";
+import { TAG_SEPARATOR } from "../lib/tag";
 
 export interface HandleLookupTags {
   Body: LookupTagsBody;
@@ -32,13 +33,15 @@ export const handleLookupTags: RouteHandlerMethod<any, any, any, HandleLookupTag
     };
   }
 
+  const _ = TAG_SEPARATOR;
+
   /**
    * -I hides filename
    * -N hides line number
    * -o only include matched tags
    * --no-heading removes blank line between files
    */
-  const findAllTagsCommand = `rg ":${query}[^:\\s]*?(\\s+[^:\\s]+?)*:" -INo --no-heading`;
+  const findAllTagsCommand = `rg "${_}${query}[^${_}\\s]*?(\\s+[^${_}\\s]+?)*${_}" -INo --no-heading`;
   const { error, stdout, stderr } = await runShell(findAllTagsCommand, { cwd: dir });
 
   if (error) {

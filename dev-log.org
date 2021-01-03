@@ -1,8 +1,13 @@
 :tackling:
+* TODO link and tag must be mutually exclusive
+* TODO :tag: is not a good syntax because it conflicts with timestamp
+
+#tag##tag#
 
 * Backlog
 
   ** Bugs
+    - HTML is leading into the dom, type <button>test</button> to repro
     - Cursor position is borken after formatting
     - when not on last line, "## " will push selection to bottom
     - debug windows build bin output (may have to do with git auth)

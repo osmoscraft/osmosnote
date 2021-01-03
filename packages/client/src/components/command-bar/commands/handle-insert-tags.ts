@@ -1,9 +1,12 @@
 import type { LookupTagsBody, LookupTagsReply } from "@system-two/server/src/routes/lookup-tags";
 import type { SuggestTagsBody, SuggestTagsReply } from "@system-two/server/src/routes/suggest-tags";
 import type { CommandHandler } from ".";
+import { TAG_SEPARATOR } from "../../../utils/tag";
 
 export const handleInsertTags: CommandHandler = async ({ input, context }) => {
   const phrase = input.args?.trim();
+
+  const _ = TAG_SEPARATOR;
 
   return {
     updateDropdownOnInput: async () => {
@@ -25,7 +28,7 @@ export const handleInsertTags: CommandHandler = async ({ input, context }) => {
           html += data?.tags
             .map(
               (item) =>
-                /*html*/ `<s2-menu-row data-kind="option" data-label=":${item.text}:" data-auto-complete="${item.text}">${item.text}</s2-menu-row>`
+                /*html*/ `<s2-menu-row data-kind="option" data-label="${item.text}" data-auto-complete="${item.text}">${item.text}</s2-menu-row>`
             )
             .join("");
         }
@@ -47,7 +50,7 @@ export const handleInsertTags: CommandHandler = async ({ input, context }) => {
         html += data.tags
           .map(
             (tag) =>
-              /*html*/ `<s2-menu-row data-kind="option" data-label=":${tag}:" data-auto-complete="${tag}"></s2-menu-row>`
+              /*html*/ `<s2-menu-row data-kind="option" data-label="${tag}" data-auto-complete="${tag}"></s2-menu-row>`
           )
           .join("");
       }
@@ -55,8 +58,8 @@ export const handleInsertTags: CommandHandler = async ({ input, context }) => {
       return html;
     },
     repeatableRunOnCommit: () => {
-      context.componentRefs.textEditor.insertAtCursor(`:${phrase}:`);
-      context.componentRefs.statusBar.setMessage(`[command-bar] inserted ":${phrase}:"`);
+      context.componentRefs.textEditor.insertAtCursor(`${_}${phrase}${_}`);
+      context.componentRefs.statusBar.setMessage(`[command-bar] inserted "${_}${phrase}${_}"`);
     },
   };
 };
