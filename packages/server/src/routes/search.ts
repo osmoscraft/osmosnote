@@ -66,7 +66,7 @@ async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultI
      * -0 removes new line character after each file name
      * xargs -0 formats the file names into a space separate list that can be piped into the next rg command. -r stops processing if it's empty
      */
-    getFilenamesPreprocess = tags.map((tag) => `rg ${_}${tag}${_} -l --ignore-case -0 | xargs -0 -r `).join("");
+    getFilenamesPreprocess = tags.map((tag) => `rg "${_}${tag}${_}" -l --ignore-case -0 | xargs -0 -r `).join("");
   }
 
   const keywords = keywordQuery.split(" ").filter((keyword) => !!keyword);
