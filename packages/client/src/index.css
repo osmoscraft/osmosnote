@@ -28,19 +28,20 @@
   --theme-menu-option-background-active: var(--base0D);
   --theme-text-color: var(--base06);
   --theme-text-selection-background: var(--base05);
+  --theme-text-color-accent: var(--base09); /* non-interactive accents, e.g. tag prefix */
   --theme-text-color-secondary: var(--base04);
   --theme-text-color-knockout: var(--base00); /* used on solid color background */
   --theme-text-color-ghost: var(--base03); /* symbols, disabled content */
   --theme-divider-color: var(--base03);
   --theme-divider-width: 1px;
   --theme-outline-color: var(--base0D);
-  --theme-tag-color: var(--base0E);
+  --theme-tag-color: var(--base0A);
   --theme-link-color: var(--base0D);
-  --theme-h1-color: var(--base0B);
-  --theme-h2-color: var(--base0A);
-  --theme-h3-color: var(--base09);
-  --theme-h4-color: var(--base0B);
-  --theme-h5-color: var(--base0A);
+  --theme-h1-color: var(--base0C);
+  --theme-h2-color: var(--base0E);
+  --theme-h3-color: var(--base0B);
+  --theme-h4-color: var(--base0C);
+  --theme-h5-color: var(--base0E);
   --theme-h6-color: var(--base0B);
   --theme-success-background: var(--base0C);
   --theme-warning-background: var(--base09);

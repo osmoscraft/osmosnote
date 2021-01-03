@@ -8,6 +8,6 @@ export class TagOverlayComponent extends HTMLElement {
   };
 
   connectedCallback() {
-    this.innerHTML = /*html*/ `<code class="s2-tag-overlay__symbol">${_}</code><code class="s2-tag-overlay__phrase">${this.dataset.tag}</code><code class="s2-tag-overlay__symbol">${_}</code>`;
+    this.innerHTML = /*html*/ `<code class="s2-tag-overlay__prefix-symbol">${_}</code><code class="s2-tag-overlay__phrase">${this.dataset.tag}</code><code class="s2-tag-overlay__suffix-symbol">${_}</code>`;
   }
 }

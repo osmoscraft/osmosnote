@@ -1,4 +1,8 @@
-.s2-tag-overlay__symbol {
+.s2-tag-overlay__prefix-symbol {
+  color: var(--theme-text-color-accent);
+}
+
+.s2-tag-overlay__suffix-symbol {
   color: var(--theme-text-color-ghost);
 }
 
