@@ -5,15 +5,15 @@ on:
     branches: release/*
 
 jobs:
-  build:
+  build-and-pack:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2.1.4
-      with:
-        node-version: 14.x
-    - run: npm ci
-    - run: npm run build
-    - run: npm run pack
+      - uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: 15.x
+      - run: npm ci
+      - run: npm run build
+      - run: npm run pack
