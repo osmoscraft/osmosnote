@@ -3,12 +3,12 @@
   "private": true,
   "version": "1.0.0",
   "description": "",
-  "bin": "dist/main.js",
+  "main": "dist/main.js",
   "scripts": {
     "dev": "ts-node-dev --inspect=4321 --respawn --transpile-only src/main.ts",
     "serve": "node dist/main.js",
     "build": "tsc",
-    "pack": "pkg ./package.json -t latest-linux-x64,latest-win-x64 -o ./bin/s2",
+    "pack": "pkg ./dist/main.js -c package.json -t latest-linux-x64 -o ./bin/s2",
     "clean": "rm -rf dist && rm -rf bin"
   },
   "pkg": {
