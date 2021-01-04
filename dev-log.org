@@ -57,8 +57,8 @@
     - Find xargs alternative. (replace with plain javascript string manipulation?)
 
   ** Dev experience
-    - automate branch + tag based release git github CI/CD
 
+* DONE automate branch + tag based release git github CI/CD
 * DONE Save a newly created file won't update metadata
 * DONE cannot cancel child create handler
 * DONE child create does not report to parent
