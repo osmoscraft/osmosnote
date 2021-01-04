@@ -3,6 +3,7 @@
 * Backlog
 
   ** Bugs
+    - When repo is empty, all commands throw error
     - command var verticle overflow
     - tag search should be case insensitive
     - link and tag must be mutually exclusive
