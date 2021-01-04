@@ -59,7 +59,8 @@
     - use unifiedjs, unist, mdast to generate overlay or even manipulate editor layer
     - Find xargs alternative. (replace with plain javascript string manipulation?)
 
-  ** Dev experience
+  ** Dev experience and code health
+    - handle js-yaml breaking changes
 
 * DONE automate branch + tag based release git github CI/CD
 * DONE Save a newly created file won't update metadata
