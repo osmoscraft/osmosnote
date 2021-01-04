@@ -3,6 +3,8 @@
 * Backlog
 
   ** Bugs
+    - command var verticle overflow
+    - tag search should be case insensitive
     - link and tag must be mutually exclusive
     - HTML is leading into the dom, type <button>test</button> to repro
     - Cursor position is borken after formatting
