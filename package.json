@@ -11,6 +11,7 @@
     "clean": "npm-run-all --print-label -p clean:*",
     "build": "npm-run-all --print-label -p clean:* -p build:*",
     "pack": "npm run pack --prefix packages/server",
+    "release": "node ./scripts/release.js",
     "clean:client": "npm run clean --prefix packages/client",
     "clean:server": "npm run clean --prefix packages/server",
     "dev:client": "npm run dev --prefix packages/client",
