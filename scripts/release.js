@@ -7,15 +7,22 @@ release();
 
 async function release() {
   console.log(`[tag] add v${version}`);
-  const { error, stderr } = await runShell(`git tag v${version}`, { dir: __dirname });
-  if (error || stderr) {
-    console.error("[tag] error code", error?.code);
-    console.error("[tag] error msg", stderr);
+  const { error: addError, stderr: addStderr } = await runShell(`git tag v${version}`, { dir: __dirname });
+  if (addError || addStderr) {
+    console.error("[tag] add failed");
+    console.error("[tag] error code", addError?.code);
+    console.error("[tag] error msg", addStderr);
     exit(1);
   }
 
   console.log(`[tag] push v${version}`);
-  const { error, stderr } = await runShell(`git push origin v${version}`, { dir: __dirname });
+  const { pushError, pushStderr } = await runShell(`git push origin v${version}`, { dir: __dirname });
+  if (pushError || pushStderr) {
+    console.error("[tag] push failed");
+    console.error("[tag] error code", pushError?.code);
+    console.error("[tag] error msg", pushStderr);
+    exit(1);
+  }
 }
 
 async function runShell(command, options) {
