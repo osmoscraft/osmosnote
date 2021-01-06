@@ -41,7 +41,7 @@ export const handleLookupTags: RouteHandlerMethod<any, any, any, HandleLookupTag
    * -o only include matched tags
    * --no-heading removes blank line between files
    */
-  const findAllTagsCommand = `rg "${_}${query}[^${_}\\s]*?(\\s+[^${_}\\s]+?)*${_}" -INo --no-heading`;
+  const findAllTagsCommand = `rg "${_}${query}[^${_}\\s]*?(\\s+[^${_}\\s]+?)*${_}" -INo --ignore-case --no-heading`;
   const { error, stdout, stderr } = await runShell(findAllTagsCommand, { cwd: dir });
 
   if (error) {
