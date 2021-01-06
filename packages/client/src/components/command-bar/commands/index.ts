@@ -56,7 +56,7 @@ export interface CommandHandlerResult {
 }
 
 export const commandHandlers: CommandHandlers = {
-  "i/": handleSlash,
+  "/": handleSlash,
   in: handleInsertNote,
   il: handleInsertUrl,
   it: handleInsertTags,
