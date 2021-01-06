@@ -1,3 +1,4 @@
+import { sanitizeHtml } from "../../../../utils/sanitize";
 import { TAG_SEPARATOR } from "../../../../utils/tag";
 import "./line-overlay.css";
 
@@ -41,7 +42,8 @@ export class LineOverlayComponent extends HTMLElement {
     // TODO, use AST instead of manually regex.
     // TODO, prevent link inside tag, as it's not searchable
     // TODO, prevent tag inside link, as it breaks atomic interaction on link
-    return input.replace(LINK_PATTERN, LINK_REPLACER).replace(TAG_PATTERN, TAG_REPLACER);
+    const sanitizedInput = sanitizeHtml(input);
+    return sanitizedInput.replace(LINK_PATTERN, LINK_REPLACER).replace(TAG_PATTERN, TAG_REPLACER);
   }
 }
 

@@ -1,14 +1,13 @@
 :tackling:
 
+
 * Backlog
 
   ** Bugs
-    - double quote is not parsed
     - When repo is empty, all commands throw error
     - command var verticle overflow
     - tag search should be case insensitive
     - link and tag must be mutually exclusive
-    - HTML is leading into the dom, type <button>test</button> to repro
     - Cursor position is borken after formatting
     - when not on last line, "## " will push selection to bottom
     - debug windows build bin output (may have to do with git auth)
@@ -63,6 +62,8 @@
   ** Dev experience and code health
     - handle js-yaml breaking changes
 
+* DONE double quote is not parsed
+* DONE html is leaking into the dom, type <button>test</button> to repro
 * DONE automate branch + tag based release git github CI/CD
 * DONE Save a newly created file won't update metadata
 * DONE cannot cancel child create handler
