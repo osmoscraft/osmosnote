@@ -52,7 +52,7 @@ export function tokenize(input: string) {
 }
 
 function tokenizeRestOfText(temporaryToken: Token): Token[] {
-  // tag, link, TODO/DONE keywords
+  // tag, []()link, TODO/DONE keywords, hyperlinks
 
   return [];
 }
