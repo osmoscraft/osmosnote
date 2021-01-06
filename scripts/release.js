@@ -6,6 +6,12 @@ const { exit } = require("process");
 release();
 
 async function release() {
+  console.log(`[tag] clean up v${version}`);
+  const { error: cleanError, stderr: cleanStderr } = await runShell(`git tag -d v${version}`, { dir: __dirname });
+  if (cleanError || cleanStderr) {
+    console.log(`[tag] nothing to clean up, continue`);
+  }
+
   console.log(`[tag] add v${version}`);
   const { error: addError, stderr: addStderr } = await runShell(`git tag v${version}`, { dir: __dirname });
   if (addError || addStderr) {
@@ -16,12 +22,16 @@ async function release() {
   }
 
   console.log(`[tag] push v${version}`);
-  const { pushError, pushStderr } = await runShell(`git push origin v${version}`, { dir: __dirname });
+  const { pushStdout, pushError, pushStderr } = await runShell(`git push origin v${version}`, { dir: __dirname });
   if (pushError || pushStderr) {
     console.error("[tag] push failed");
     console.error("[tag] error code", pushError?.code);
     console.error("[tag] error msg", pushStderr);
     exit(1);
+  }
+
+  if (!pushStdout) {
+    console.log("[tag] already update to date, skip release");
   }
 }
 
