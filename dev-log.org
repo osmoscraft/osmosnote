@@ -5,6 +5,7 @@
 * Backlog
 
   ** Bugs
+    - Links no longer interactive for mouse
     - link and tag must be mutually exclusive
     - Cursor position is borken after formatting
     - when not on last line, "## " will push selection to bottom
