@@ -1,19 +1,18 @@
 :tackling:
+- tag search should be case insensitive
 
 
 * Backlog
 
   ** Bugs
-    - When repo is empty, all commands throw error
-    - command var verticle overflow
-    - tag search should be case insensitive
     - link and tag must be mutually exclusive
     - Cursor position is borken after formatting
     - when not on last line, "## " will push selection to bottom
     - debug windows build bin output (may have to do with git auth)
     - Can't travel to reference panel when its empty
     - Changes in title is not being tracked as dirty
-    - Newly opened window won't receive focus
+    - Newly opened window won't receive focus (for some but not all commands)
+    - Sometimes, insert created note after save will insert the wrong ID (end up being current note's ID)
 
   ** Intuitive modal/window management
     - Ctrl+Enter in command input to create note without closing existing
@@ -62,6 +61,8 @@
   ** Dev experience and code health
     - handle js-yaml breaking changes
 
+* DONE command bar verticle overflow
+* DONE When repo is empty, all commands throw error
 * DONE double quote is not parsed
 * DONE html is leaking into the dom, type <button>test</button> to repro
 * DONE automate branch + tag based release git github CI/CD

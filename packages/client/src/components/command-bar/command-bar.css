@@ -1,5 +1,7 @@
 s2-command-bar {
-  height: 32px;
+  --command-bar-height: 32px;
+
+  height: var(--command-bar-height);
   opacity: 0;
   pointer-events: none;
 }
@@ -28,9 +30,16 @@ s2-command-bar[data-active] {
 }
 
 .cmdbr-dropdown {
+  --theme-scrollbar-background: var(--theme-menu-option-background-rest);
+  /* options never receive real focus. force it to adopt focus command bar style */
+  --theme-scrollbar-blur-thumb-rest: var(--theme-scrollbar-focus-thumb-rest);
+  --theme-scrollbar-blur-thumb-hover: var(--theme-scrollbar-focus-thumb-hover);
+
   margin: 0;
 
   display: grid;
+  max-height: calc(100vh - var(--command-bar-height));
+  overflow: auto;
 }
 
 .cmdbr-dropdown:empty {

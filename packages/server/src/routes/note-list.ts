@@ -27,12 +27,13 @@ export const handleGetNoteList: RouteHandlerMethod<any, any, any, HandleNoteList
 
   const { stdout, stderr, error } = await runShell(`ls -1t *.md | head -n ${LIMIT}`, { cwd: notesDir });
 
-  if (error) {
-    throw error;
-  }
+  if (error || stderr.length) {
+    if (stderr) console.log("[note-list] cannot list", stderr);
+    if (error) console.log("[note-list] cannot list", error.name);
 
-  if (stderr.length) {
-    throw stderr;
+    return {
+      notes: [],
+    };
   }
 
   const filenames = stdout.trim().split("\n");

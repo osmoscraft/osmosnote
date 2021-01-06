@@ -261,6 +261,7 @@ export class CommandBarComponent extends HTMLElement {
    */
   private handleOptionFocus(props: { optionDom: MenuRowComponent }) {
     const optionDom = props.optionDom;
+    optionDom.scrollIntoView({ behavior: "smooth" });
 
     if (optionDom.dataset.autoComplete) {
       const currentInput = this.parseInput(this.commandInputDom.value);
