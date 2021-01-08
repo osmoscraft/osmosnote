@@ -22,15 +22,9 @@
 
 ## Meta block
 
-- tripple dash
-
-```
----
-title: Hello world!
-tags: programming, philosophy
-key: value
----
-```
+#+title: Hello world!
+#+tags: programming, philosophy
+#+key: value
 
 ## Heading
 
