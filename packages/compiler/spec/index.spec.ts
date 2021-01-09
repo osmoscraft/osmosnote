@@ -1,7 +1,4 @@
-import "jasmine";
 import { tokenize } from "../src";
-import * as fs from "fs-extra";
-import * as path from "path";
 
 describe("Tokenization", () => {
   it("tokenizes empty page", () => {
@@ -19,7 +16,7 @@ describe("Tokenization", () => {
   });
 
   it("tokenizes sample file", () => {
-    const page = fs.readFileSync(path.join(__dirname, "./sample.txt"), "utf-8");
+    const page = fs.readFileSync(path.join(__dirname, "./sample-01-input.txt"), "utf-8");
     const result = tokenize(page);
 
     expect(result.length).toBe(3);
