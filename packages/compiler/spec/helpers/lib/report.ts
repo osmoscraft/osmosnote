@@ -31,10 +31,15 @@ function printSummary(summary: TestSummary) {
     });
 
     console.log("");
-    console.log(bold(red("[FAIL] ")) + bold(red(`${failedSpecCount} fail`)) + red(` (${totalSpecCount} specs total)`));
+    console.log(
+      bold(red("[FAIL] ")) + red(`Specs: `) + bold(red(`${failedSpecCount} fail`)) + red(` (${totalSpecCount} total)`)
+    );
   } else {
     console.log(
-      bold(green("[PASS] ")) + bold(green(`${totalSpecCount} pass`)) + green(` (${totalSpecCount} specs total)`)
+      bold(green("[PASS] ")) +
+        green(`Specs: `) +
+        bold(green(`${totalSpecCount} pass`)) +
+        green(` (${totalSpecCount} total)`)
     );
   }
 }
