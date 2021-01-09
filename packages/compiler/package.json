@@ -1,0 +1,20 @@
+{
+  "name": "@system-two/compiler",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-node-dev --project package.json ../../node_modules/jasmine/bin/jasmine",
+    "test:watch": "ts-node-dev --respawn --project package.json ../../node_modules/jasmine/bin/jasmine"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jasmine": "^3.6.2",
+    "fs-extra": "^9.0.1",
+    "jasmine": "^3.6.3",
+    "ts-node-dev": "^1.1.1",
+    "typescript": "^4.1.3"
+  }
+}
