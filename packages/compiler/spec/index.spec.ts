@@ -1,6 +1,9 @@
 import { tokenize } from "../src";
+import { describe, it, expect } from "./helpers";
+import fs from "fs-extra";
+import path from "path";
 
-describe("Tokenization", () => {
+describe("Tokenization", async () => {
   it("tokenizes empty page", () => {
     const page = "";
     const result = tokenize(page);
@@ -10,6 +13,7 @@ describe("Tokenization", () => {
 
   it("tokenizes empty line", () => {
     const page = "\n";
+
     const result = tokenize(page);
 
     expect(result.length).toBe(1);

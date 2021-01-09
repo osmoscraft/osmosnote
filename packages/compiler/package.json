@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ts-node-dev --project package.json ../../node_modules/jasmine/bin/jasmine",
-    "test:watch": "ts-node-dev --respawn --project package.json ../../node_modules/jasmine/bin/jasmine",
-    "test:lite": "ts-node-dev --inspect=4321 --respawn --project package.json ./spec/index.spec.ts"
+    "test:watch": "ts-node-dev --respawn --transpile-only spec/run-all.ts",
+    "test:debug": "ts-node-dev --inspect-brk=4321 --respawn --transpile-only spec/run-all.ts",
+    "test": "ts-node-dev --transpile-only spec/run-all.ts"
   },
   "keywords": [],
   "author": "",

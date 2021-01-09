@@ -9,18 +9,6 @@
       "port": 4321,
       "restart": true,
       "cwd": "${workspaceRoot}"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug compiler unit tests",
-      "runtimeArgs": ["-r", "ts-node/register"],
-      "cwd": "${workspaceRoot}/packages/compiler",
-      "args": ["${workspaceRoot}/node_modules/jasmine/bin/jasmine"],
-      "env": {
-        "TS_NODE_PROJECT": "${workspaceRoot}/packages/compiler/package.json"
-      }
-      // "args": ["${file}"]
     }
   ]
 }
