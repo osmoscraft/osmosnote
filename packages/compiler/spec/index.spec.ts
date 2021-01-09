@@ -3,7 +3,7 @@ import { describe, it, expect } from "./helpers";
 import fs from "fs-extra";
 import path from "path";
 
-describe("Tokenization", async () => {
+describe("Tokenization", () => {
   it("tokenizes empty page", () => {
     const page = "";
     const result = tokenize(page);
