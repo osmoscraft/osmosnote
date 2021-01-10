@@ -7,14 +7,14 @@ export type BaseNodeSchema<T = any> = undefined extends T
 interface BaseNodeSchemaInternal<T> {
   type: string;
   pattern: RegExp;
-  childSchemas?: BaseNodeSchema[];
+  children?: BaseNodeSchema[];
   initializeData: (node: ASTNode<BaseNodeSchema>, match: RegExpMatchArray) => T;
 }
 
-export type ASTNode<T extends BaseNodeSchema> = undefined extends T["childSchemas"]
+export type ASTNode<T extends BaseNodeSchema> = undefined extends T["children"]
   ? undefined extends T["initializeData"]
-    ? Omit<ASTNodeInternal<T>, "childNodes" | "data">
-    : Omit<ASTNodeInternal<T>, "childNodes">
+    ? Omit<ASTNodeInternal<T>, "children" | "data">
+    : Omit<ASTNodeInternal<T>, "children">
   : undefined extends T["initializeData"]
   ? Omit<ASTNodeInternal<T>, "data">
   : ASTNodeInternal<T>;
@@ -26,7 +26,7 @@ interface ASTNodeInternal<T extends BaseNodeSchema> {
   /**
    * An array of child notes when child schemas are defined. Otherwise, it will be undefined
    */
-  childNodes: SchemasToNodes<T["childSchemas"]>;
+  children: SchemasToNodes<T["children"]>;
   data: SchemaToNodeData<T>;
 }
 

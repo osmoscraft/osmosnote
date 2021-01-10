@@ -8,11 +8,11 @@ export interface RootNode extends ASTNode<RootNodeSchema> {}
 
 interface RootNodeSchema extends BaseNodeSchema {
   type: "root";
-  childSchemas: [LineEmptyNodeSchema, LineHeadingNodeSchema, LineMetaNodeSchema, LineParagraphNodeSchema];
+  children: [LineEmptyNodeSchema, LineHeadingNodeSchema, LineMetaNodeSchema, LineParagraphNodeSchema];
 }
 
 export const rootSchema: RootNodeSchema = {
   type: "root",
   pattern: /.*/, // Not used, just for completeness
-  childSchemas: [lineEmptySchema, lineHeadingSchema, lineMetaSchema, lineParagraphSchema],
+  children: [lineEmptySchema, lineHeadingSchema, lineMetaSchema, lineParagraphSchema],
 };

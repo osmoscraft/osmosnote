@@ -4,14 +4,14 @@ import { RootNode, rootSchema } from "./nodes/root";
  * Tokenize and build AST
  */
 export function parse(input: string): RootNode {
-  const pageChildNodes: RootNode["childNodes"] = [];
+  const pageChildren: RootNode["children"] = [];
   let currentOffset = 0;
   let remainingInput = input;
 
   while (remainingInput.length) {
     let isMatched = false;
 
-    for (let schema of rootSchema.childSchemas) {
+    for (let schema of rootSchema.children) {
       const match = remainingInput.match(schema.pattern);
       if (match?.[0]) {
         const matchLength = match[0].length;
@@ -23,8 +23,8 @@ export function parse(input: string): RootNode {
           data: {
             value: match[0],
           },
-          childNodes: [], // TOOD handle inline tokens (no recursion needed yet as inline tokens don't nest)
-        } as RootNode["childNodes"][number];
+          children: [], // TOOD handle inline tokens (no recursion needed yet as inline tokens don't nest)
+        } as RootNode["children"][number];
 
         // TODO if needed, call `onBeforeVist` hook
 
@@ -33,7 +33,7 @@ export function parse(input: string): RootNode {
           (node as any).data = data;
         }
 
-        pageChildNodes.push(node);
+        pageChildren.push(node);
 
         currentOffset += matchLength;
         remainingInput = remainingInput.slice(matchLength);
@@ -55,6 +55,6 @@ export function parse(input: string): RootNode {
     type: "root",
     start: 0,
     end: currentOffset,
-    childNodes: pageChildNodes,
+    children: pageChildren,
   };
 }
