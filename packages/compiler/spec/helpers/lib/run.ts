@@ -14,7 +14,7 @@ export interface SuiteSummary {
 
 export interface SpecSummary {
   specName: string;
-  error?: string;
+  error?: Error;
 }
 
 export async function run(scheduledSuites: ScheduledSuite[]): Promise<TestSummary> {

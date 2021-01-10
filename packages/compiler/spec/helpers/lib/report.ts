@@ -26,7 +26,16 @@ function printSummary(summary: TestSummary) {
       const failedSpecs = suite.specSummaries.filter((spec) => spec.error);
       failedSpecs.forEach((spec) => {
         console.log(bold(blue(`- ${spec.specName}`)));
-        console.log(red(`  ${spec.error!.toString()}`));
+        console.log(bold(red(`  ${spec.error?.name ?? "Unknown error"}`)));
+        console.log(
+          red(
+            `${spec
+              .error!.message.trim()
+              .split("\n")
+              .map((line) => `    ${line.trim()}`) // equal padding to every line
+              .join("\n")}`
+          )
+        );
       });
     });
 

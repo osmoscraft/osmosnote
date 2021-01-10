@@ -1,0 +1,28 @@
+{
+  "type": "root",
+  "range": { "start": { "offset": 0 }, "end": { "offset": 123 } },
+  "child": [
+    {
+      "type": "meta",
+      "range": { "start": { "offset": 0 }, "end": { "offset": 37 } },
+      "child": "#+title: Unit testing best practices\n"
+    },
+    {
+      "type": "meta",
+      "range": { "start": { "offset": 37 }, "end": { "offset": 85 } },
+      "child": "#+tags: technique, unit test, quality assurance\n"
+    },
+    { "type": "emptyLine", "range": { "start": { "offset": 85 }, "end": { "offset": 86 } }, "child": "\n" },
+    {
+      "type": "paragraph",
+      "range": { "start": { "offset": 86 }, "end": { "offset": 105 } },
+      "child": "Preamble paragraph\n"
+    },
+    { "type": "emptyLine", "range": { "start": { "offset": 105 }, "end": { "offset": 106 } }, "child": "\n" },
+    {
+      "type": "heading",
+      "range": { "start": { "offset": 106 }, "end": { "offset": 123 } },
+      "child": "# Heading level 1"
+    }
+  ]
+}
