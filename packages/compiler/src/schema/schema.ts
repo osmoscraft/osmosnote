@@ -30,11 +30,7 @@ interface ASTNodeInternal<T extends BaseNodeSchema> {
   data: SchemaToNodeData<T>;
 }
 
-type SchemaToNodeData<T extends BaseNodeSchema> = undefined extends T["initializeData"]
-  ? never
-  : T["initializeData"] extends (...args: any) => any
-  ? ReturnType<T["initializeData"]>
-  : never;
+type SchemaToNodeData<T extends BaseNodeSchema> = T extends BaseNodeSchema<infer U> ? U : never;
 
 type SchemasToNodes<T extends BaseNodeSchema[] | undefined> = undefined extends T
   ? never
