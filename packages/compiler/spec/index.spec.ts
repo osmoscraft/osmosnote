@@ -20,7 +20,7 @@ describe("Tokenization: single line", () => {
     const result = parse(page);
 
     expect(result.child.length).toBe(1);
-    expect(result.child[0].type).toBe("emptyLine");
+    expect(result.child[0].type).toBe("LineEmpty");
   });
 
   it("tokenizers meta", () => {
@@ -29,7 +29,7 @@ describe("Tokenization: single line", () => {
     const result = parse(page);
 
     expect(result.child.length).toBe(1);
-    expect(result.child[0].type).toBe("meta");
+    expect(result.child[0].type).toBe("LineMeta");
   });
 
   it("tokenizers heading", () => {
@@ -38,7 +38,7 @@ describe("Tokenization: single line", () => {
     const result = parse(page);
 
     expect(result.child.length).toBe(1);
-    expect(result.child[0].type).toBe("heading");
+    expect(result.child[0].type).toBe("LineHeading");
   });
 
   it("tokenizers paragraph", () => {
@@ -47,7 +47,7 @@ describe("Tokenization: single line", () => {
     const result = parse(page);
 
     expect(result.child.length).toBe(1);
-    expect(result.child[0].type).toBe("paragraph");
+    expect(result.child[0].type).toBe("LineParagraph");
   });
 });
 
