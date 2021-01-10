@@ -10,7 +10,6 @@ export interface ParentSchema<T = any> extends Schema {
 export interface Schema {
   type: string;
   pattern: RegExp;
-  children?: Schema[];
 }
 
 export interface LiteralNode<T extends LiteralSchema = LiteralSchema> extends Node<T> {

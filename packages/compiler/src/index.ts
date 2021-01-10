@@ -23,7 +23,7 @@ export function parse(input: string): RootNode {
           end: currentOffset + matchLength,
         } as RootNode["children"][number];
 
-        if (schema.children) {
+        if ((schema as ParentSchema).children) {
           (node as ParentNode).children = []; // TODO recursive parsing
         }
 
