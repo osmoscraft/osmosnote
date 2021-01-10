@@ -13,7 +13,7 @@ export interface LineEmptyNodeData {
 export const lineEmptySchema: LineEmptyNodeSchema = {
   type: "LineEmpty",
   pattern: /^\n/,
-  initializeData: (node, match) => ({
-    value: match[0],
-  }),
+  onAfterVisit: (node, match) => {
+    node.value = match[0];
+  },
 };

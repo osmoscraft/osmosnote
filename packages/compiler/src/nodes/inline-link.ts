@@ -9,4 +9,7 @@ export interface InlineLinkNodeSchema extends LiteralSchema {
 export const inlineLinkSchema: InlineLinkNodeSchema = {
   type: "InlineLink",
   pattern: /\[.+?\]\(.+?\)/,
+  onAfterVisit: (node, match) => {
+    node.value = match[0];
+  },
 };

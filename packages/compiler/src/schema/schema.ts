@@ -1,20 +1,23 @@
-export interface LiteralSchema<T = any> extends Schema<T> {}
-
-export interface ParentSchema<T = any> extends Schema<T> {
-  children: Schema[];
+export interface LiteralSchema<T = any> extends Schema {
+  onAfterVisit?: (node: LiteralNode<LiteralSchema<T>>, match: RegExpMatchArray) => void;
 }
 
-export interface Schema<T = any> {
+export interface ParentSchema<T = any> extends Schema {
+  children: Schema[];
+  onAfterVisit?: (node: ParentNode<ParentSchema<T>>, match: RegExpMatchArray) => void;
+}
+
+export interface Schema {
   type: string;
   pattern: RegExp;
-  initializeData?: (node: Node<Schema<T>>, match: RegExpMatchArray) => any;
+  children?: Schema[];
 }
 
-export interface LiteralNode<T extends LiteralSchema<any>> extends Node<T> {
-  value: any;
+export interface LiteralNode<T extends LiteralSchema = LiteralSchema> extends Node<T> {
+  value: string;
 }
 
-export interface ParentNode<T extends ParentSchema<any>> extends Node<T> {
+export interface ParentNode<T extends ParentSchema = ParentSchema> extends Node<T> {
   /**
    * An array of child notes when child schemas are defined. Otherwise, it will be undefined
    */
@@ -28,7 +31,11 @@ export interface Node<T extends Schema> {
   data?: SchemaToNodeData<T>;
 }
 
-type SchemaToNodeData<T extends Schema> = T extends Schema<infer U> ? U : never;
+type SchemaToNodeData<T extends Schema> = T extends ParentSchema<infer U>
+  ? U
+  : T extends LiteralSchema<infer U>
+  ? U
+  : never;
 
 type SchemasToNodes<T extends ParentSchema> = T["children"] extends Schema[]
   ? SchemasToNodeUnion<T["children"]>[]

@@ -7,7 +7,6 @@ export interface LineHeadingNodeSchema extends LiteralSchema<LineHeadingNodeData
 }
 
 export interface LineHeadingNodeData {
-  value: string;
   indentWidth: number;
   sectionLevel: number;
 }
@@ -15,9 +14,11 @@ export interface LineHeadingNodeData {
 export const lineHeadingSchema: LineHeadingNodeSchema = {
   type: "LineHeading",
   pattern: /^(\s*)#+ .*\n?/,
-  initializeData: (node, match) => ({
-    value: "",
-    indentWidth: match[1].length,
-    sectionLevel: 0,
-  }),
+  onAfterVisit: (node, match) => {
+    node.value = match[0];
+    node.data = {
+      indentWidth: match[1].length,
+      sectionLevel: 0,
+    };
+  },
 };

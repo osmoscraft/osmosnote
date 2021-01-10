@@ -2,18 +2,14 @@ import type { LiteralNode, LiteralSchema } from "../schema/schema";
 
 export interface LineMetaNode extends LiteralNode<LineMetaNodeSchema> {}
 
-export interface LineMetaNodeSchema extends LiteralSchema<LineMetaNodeData> {
+export interface LineMetaNodeSchema extends LiteralSchema {
   type: "LineMeta";
-}
-
-export interface LineMetaNodeData {
-  value: string;
 }
 
 export const lineMetaSchema: LineMetaNodeSchema = {
   type: "LineMeta",
   pattern: /^#\+.+?: .*\n?/,
-  initializeData: (node, match) => ({
-    value: match[0],
-  }),
+  onAfterVisit: (node, match) => {
+    node.value = match[0];
+  },
 };

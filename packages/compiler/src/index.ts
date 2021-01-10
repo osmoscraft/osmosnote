@@ -1,4 +1,5 @@
 import { RootNode, rootSchema } from "./nodes/root";
+import type { ParentNode, ParentSchema } from "./schema/schema";
 
 /**
  * Tokenize and build AST
@@ -20,18 +21,15 @@ export function parse(input: string): RootNode {
           type: schema.type,
           start: currentOffset,
           end: currentOffset + matchLength,
-          data: {
-            value: match[0],
-          },
-          children: [], // TOOD handle inline tokens (no recursion needed yet as inline tokens don't nest)
         } as RootNode["children"][number];
+
+        if (schema.children) {
+          (node as ParentNode).children = []; // TODO recursive parsing
+        }
 
         // TODO if needed, call `onBeforeVist` hook
 
-        const data = schema.initializeData?.(node, match);
-        if (data) {
-          (node as any).data = data;
-        }
+        (schema as ParentSchema).onAfterVisit?.(node as ParentNode, match);
 
         pageChildren.push(node);
 
