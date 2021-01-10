@@ -1,28 +1,38 @@
 {
   "type": "root",
-  "range": { "start": { "offset": 0 }, "end": { "offset": 123 } },
-  "child": [
+  "start": 0,
+  "end": 143,
+  "childNodes": [
     {
       "type": "LineMeta",
-      "range": { "start": { "offset": 0 }, "end": { "offset": 37 } },
-      "child": "#+title: Unit testing best practices\n"
+      "start": 0,
+      "end": 37,
+      "data": { "value": "#+title: Unit testing best practices\n" },
+      "childNodes": []
     },
     {
       "type": "LineMeta",
-      "range": { "start": { "offset": 37 }, "end": { "offset": 85 } },
-      "child": "#+tags: technique, unit test, quality assurance\n"
+      "start": 37,
+      "end": 85,
+      "data": { "value": "#+tags: technique, unit test, quality assurance\n" },
+      "childNodes": []
     },
-    { "type": "LineEmpty", "range": { "start": { "offset": 85 }, "end": { "offset": 86 } }, "child": "\n" },
-    {
-      "type": "LineParagraph",
-      "range": { "start": { "offset": 86 }, "end": { "offset": 105 } },
-      "child": "Preamble paragraph\n"
-    },
-    { "type": "LineEmpty", "range": { "start": { "offset": 105 }, "end": { "offset": 106 } }, "child": "\n" },
+    { "type": "LineEmpty", "start": 85, "end": 86, "data": { "value": "\n" }, "childNodes": [] },
+    { "type": "LineParagraph", "start": 86, "end": 105, "data": { "value": "Preamble paragraph\n" }, "childNodes": [] },
+    { "type": "LineEmpty", "start": 105, "end": 106, "data": { "value": "\n" }, "childNodes": [] },
     {
       "type": "LineHeading",
-      "range": { "start": { "offset": 106 }, "end": { "offset": 123 } },
-      "child": "# Heading level 1"
+      "start": 106,
+      "end": 124,
+      "data": { "value": "", "indentWidth": 0, "sectionLevel": 0 },
+      "childNodes": []
+    },
+    {
+      "type": "LineHeading",
+      "start": 124,
+      "end": 143,
+      "data": { "value": "", "indentWidth": 2, "sectionLevel": 0 },
+      "childNodes": []
     }
   ]
 }

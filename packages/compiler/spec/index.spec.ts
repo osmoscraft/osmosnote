@@ -1,7 +1,11 @@
-import { parse } from "../src";
-import { describe, it, expect } from "./helpers";
 import fs from "fs-extra";
 import path from "path";
+import { parse } from "../src";
+import type { LineEmptyNode } from "../src/nodes/line-empty";
+import type { LineHeadingNode } from "../src/nodes/line-heading";
+import type { LineMetaNode } from "../src/nodes/line-meta";
+import type { LineParagraphNode } from "../src/nodes/line-paragraph";
+import { describe, expect, it } from "./helpers";
 
 describe("Tokenization: empty state", () => {
   it("tokenizes empty input", () => {
@@ -9,7 +13,7 @@ describe("Tokenization: empty state", () => {
     const result = parse(page);
 
     expect(result.type).toBe("root");
-    expect(result.child.length).toBe(0);
+    expect(result.childNodes.length).toBe(0);
   });
 });
 
@@ -19,8 +23,8 @@ describe("Tokenization: single line", () => {
 
     const result = parse(page);
 
-    expect(result.child.length).toBe(1);
-    expect(result.child[0].type).toBe("LineEmpty");
+    expect(result.childNodes.length).toBe(1);
+    expect((result.childNodes[0] as LineEmptyNode).type).toBe("LineEmpty");
   });
 
   it("tokenizers meta", () => {
@@ -28,8 +32,8 @@ describe("Tokenization: single line", () => {
 
     const result = parse(page);
 
-    expect(result.child.length).toBe(1);
-    expect(result.child[0].type).toBe("LineMeta");
+    expect(result.childNodes.length).toBe(1);
+    expect((result.childNodes[0] as LineMetaNode).type).toBe("LineMeta");
   });
 
   it("tokenizers heading", () => {
@@ -37,8 +41,8 @@ describe("Tokenization: single line", () => {
 
     const result = parse(page);
 
-    expect(result.child.length).toBe(1);
-    expect(result.child[0].type).toBe("LineHeading");
+    expect(result.childNodes.length).toBe(1);
+    expect((result.childNodes[0] as LineHeadingNode).type).toBe("LineHeading");
   });
 
   it("tokenizers paragraph", () => {
@@ -46,8 +50,8 @@ describe("Tokenization: single line", () => {
 
     const result = parse(page);
 
-    expect(result.child.length).toBe(1);
-    expect(result.child[0].type).toBe("LineParagraph");
+    expect(result.childNodes.length).toBe(1);
+    expect((result.childNodes[0] as LineParagraphNode).type).toBe("LineParagraph");
   });
 });
 
