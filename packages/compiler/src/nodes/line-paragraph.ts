@@ -1,10 +1,10 @@
-import type { ASTNode, BaseNodeSchema } from "../schema/schema";
+import type { ParentNode, ParentSchema } from "../schema/schema";
 import { InlineLinkNodeSchema, inlineLinkSchema } from "./inline-link";
 import { InlineTextNodeSchema, inlineTextSchema } from "./inline-text";
 
-export interface LineParagraphNode extends ASTNode<LineParagraphNodeSchema> {}
+export interface LineParagraphNode extends ParentNode<LineParagraphNodeSchema> {}
 
-export interface LineParagraphNodeSchema extends BaseNodeSchema {
+export interface LineParagraphNodeSchema extends ParentSchema {
   type: "LineParagraph";
   children: [InlineLinkNodeSchema, InlineTextNodeSchema];
 }

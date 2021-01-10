@@ -1,8 +1,8 @@
-import type { ASTNode, BaseNodeSchema } from "../schema/schema";
+import type { LiteralNode, LiteralSchema } from "../schema/schema";
 
-export interface InlineLinkNode extends ASTNode<InlineLinkNodeSchema> {}
+export interface InlineLinkNode extends LiteralNode<InlineLinkNodeSchema> {}
 
-export interface InlineLinkNodeSchema extends BaseNodeSchema {
+export interface InlineLinkNodeSchema extends LiteralSchema {
   type: "InlineLink";
 }
 

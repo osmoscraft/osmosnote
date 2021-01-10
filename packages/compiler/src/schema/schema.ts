@@ -1,45 +1,43 @@
-import type { Optional } from "../utils/type-utils";
+export interface LiteralSchema<T = any> extends Schema<T> {}
 
-export type BaseNodeSchema<T = any> = undefined extends T
-  ? Optional<BaseNodeSchemaInternal<T>, "initializeData">
-  : BaseNodeSchemaInternal<T>;
-
-interface BaseNodeSchemaInternal<T> {
-  type: string;
-  pattern: RegExp;
-  children?: BaseNodeSchema[];
-  initializeData: (node: ASTNode<BaseNodeSchema>, match: RegExpMatchArray) => T;
+export interface ParentSchema<T = any> extends Schema<T> {
+  children: Schema[];
 }
 
-export type ASTNode<T extends BaseNodeSchema> = undefined extends T["children"]
-  ? undefined extends T["initializeData"]
-    ? Omit<ASTNodeInternal<T>, "children" | "data">
-    : Omit<ASTNodeInternal<T>, "children">
-  : undefined extends T["initializeData"]
-  ? Omit<ASTNodeInternal<T>, "data">
-  : ASTNodeInternal<T>;
+export interface Schema<T = any> {
+  type: string;
+  pattern: RegExp;
+  initializeData?: (node: Node<Schema<T>>, match: RegExpMatchArray) => any;
+}
 
-interface ASTNodeInternal<T extends BaseNodeSchema> {
-  type: T["type"];
-  start: number;
-  end: number;
+export interface LiteralNode<T extends LiteralSchema<any>> extends Node<T> {
+  value: any;
+}
+
+export interface ParentNode<T extends ParentSchema<any>> extends Node<T> {
   /**
    * An array of child notes when child schemas are defined. Otherwise, it will be undefined
    */
-  children: SchemasToNodes<T["children"]>;
-  data: SchemaToNodeData<T>;
+  children: SchemasToNodes<T>;
 }
 
-type SchemaToNodeData<T extends BaseNodeSchema> = T extends BaseNodeSchema<infer U> ? U : never;
+export interface Node<T extends Schema> {
+  type: T["type"];
+  start: number;
+  end: number;
+  data?: SchemaToNodeData<T>;
+}
 
-type SchemasToNodes<T extends BaseNodeSchema[] | undefined> = undefined extends T
-  ? never
-  : T extends BaseNodeSchema[]
-  ? SchemasToNodeUnion<T>[]
+type SchemaToNodeData<T extends Schema> = T extends Schema<infer U> ? U : never;
+
+type SchemasToNodes<T extends ParentSchema> = T["children"] extends Schema[]
+  ? SchemasToNodeUnion<T["children"]>[]
   : never;
 
-type SchemasToNodeUnion<T extends BaseNodeSchema[]> = T extends (infer U)[]
-  ? U extends BaseNodeSchema
-    ? ASTNode<U>
+type SchemasToNodeUnion<T extends Schema[]> = T extends (infer U)[]
+  ? U extends ParentSchema
+    ? ParentNode<U>
+    : U extends LiteralSchema
+    ? LiteralNode<U>
     : never
   : never;

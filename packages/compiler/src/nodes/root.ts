@@ -1,12 +1,12 @@
-import type { ASTNode, BaseNodeSchema } from "../schema/schema";
+import type { ParentNode, ParentSchema } from "../schema/schema";
 import { LineEmptyNodeSchema, lineEmptySchema } from "./line-empty";
 import { LineHeadingNodeSchema, lineHeadingSchema } from "./line-heading";
 import { LineMetaNodeSchema, lineMetaSchema } from "./line-meta";
 import { LineParagraphNodeSchema, lineParagraphSchema } from "./line-paragraph";
 
-export interface RootNode extends ASTNode<RootNodeSchema> {}
+export interface RootNode extends ParentNode<RootNodeSchema> {}
 
-interface RootNodeSchema extends BaseNodeSchema {
+interface RootNodeSchema extends ParentSchema {
   type: "root";
   children: [LineEmptyNodeSchema, LineHeadingNodeSchema, LineMetaNodeSchema, LineParagraphNodeSchema];
 }

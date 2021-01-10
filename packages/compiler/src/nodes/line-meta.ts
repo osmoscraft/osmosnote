@@ -1,8 +1,8 @@
-import type { ASTNode, BaseNodeSchema } from "../schema/schema";
+import type { LiteralNode, LiteralSchema } from "../schema/schema";
 
-export interface LineMetaNode extends ASTNode<LineMetaNodeSchema> {}
+export interface LineMetaNode extends LiteralNode<LineMetaNodeSchema> {}
 
-export interface LineMetaNodeSchema extends BaseNodeSchema<LineMetaNodeData> {
+export interface LineMetaNodeSchema extends LiteralSchema<LineMetaNodeData> {
   type: "LineMeta";
 }
 
