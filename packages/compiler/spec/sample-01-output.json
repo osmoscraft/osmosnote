@@ -8,7 +8,7 @@
           "start": { "column": 1, "line": 1, "offset": 0 },
           "end": { "column": 38, "line": 1, "offset": 37 }
         },
-        "data": { "isLineNode": true }
+        "data": { "isLine": true, "metaKey": "title", "metaValue": "Unit testing best practices" }
       },
       {
         "type": "MetaLine",
@@ -16,7 +16,7 @@
           "start": { "column": 1, "line": 2, "offset": 37 },
           "end": { "column": 49, "line": 2, "offset": 85 }
         },
-        "data": { "isLineNode": true }
+        "data": { "isLine": true, "metaKey": "tags", "metaValue": "technique, unit test, quality assurance" }
       },
       {
         "type": "BlankLine",
@@ -24,15 +24,25 @@
           "start": { "column": 1, "line": 3, "offset": 85 },
           "end": { "column": 2, "line": 3, "offset": 86 }
         },
-        "data": { "isLineNode": true }
+        "data": { "isLine": true }
       },
       {
         "type": "ParagraphLine",
+        "children": [
+          {
+            "type": "TextInline",
+            "value": "Preamble paragraph\n",
+            "position": {
+              "start": { "column": 1, "line": 4, "offset": 86 },
+              "end": { "column": 20, "line": 4, "offset": 105 }
+            }
+          }
+        ],
         "position": {
           "start": { "column": 1, "line": 4, "offset": 86 },
           "end": { "column": 20, "line": 4, "offset": 105 }
         },
-        "data": { "isLineNode": true }
+        "data": { "isLine": true }
       },
       {
         "type": "BlankLine",
@@ -40,7 +50,7 @@
           "start": { "column": 1, "line": 5, "offset": 105 },
           "end": { "column": 2, "line": 5, "offset": 106 }
         },
-        "data": { "isLineNode": true }
+        "data": { "isLine": true }
       },
       {
         "type": "HeadingLine",
@@ -48,17 +58,78 @@
           "start": { "column": 1, "line": 6, "offset": 106 },
           "end": { "column": 19, "line": 6, "offset": 124 }
         },
-        "data": { "isLineNode": true }
+        "data": { "isLine": true }
       },
       {
         "type": "HeadingLine",
         "position": {
           "start": { "column": 1, "line": 7, "offset": 124 },
-          "end": { "column": 20, "line": 7, "offset": 143 }
+          "end": { "column": 21, "line": 7, "offset": 144 }
         },
-        "data": { "isLineNode": true }
+        "data": { "isLine": true }
+      },
+      {
+        "type": "BlankLine",
+        "position": {
+          "start": { "column": 1, "line": 8, "offset": 144 },
+          "end": { "column": 2, "line": 8, "offset": 145 }
+        },
+        "data": { "isLine": true }
+      },
+      {
+        "type": "ParagraphLine",
+        "children": [
+          {
+            "type": "TextInline",
+            "value": "    Some paragraph with ",
+            "position": {
+              "start": { "column": 1, "line": 9, "offset": 145 },
+              "end": { "column": 1, "line": 9, "offset": 169 }
+            }
+          },
+          {
+            "type": "LinkInline",
+            "value": "[link](123456)",
+            "data": { "linkTarget": "123456" },
+            "position": {
+              "start": { "column": 25, "line": 9, "offset": 169 },
+              "end": { "column": 39, "line": 9, "offset": 183 }
+            }
+          },
+          {
+            "type": "TextInline",
+            "value": " in the middle.\n",
+            "position": {
+              "start": { "column": 39, "line": 9, "offset": 183 },
+              "end": { "column": 17, "line": 9, "offset": 199 }
+            }
+          }
+        ],
+        "position": {
+          "start": { "column": 1, "line": 9, "offset": 145 },
+          "end": { "column": 17, "line": 9, "offset": 199 }
+        },
+        "data": { "isLine": true }
+      },
+      {
+        "type": "ParagraphLine",
+        "children": [
+          {
+            "type": "TextInline",
+            "value": "    The end.",
+            "position": {
+              "start": { "column": 1, "line": 10, "offset": 199 },
+              "end": { "column": 13, "line": 10, "offset": 211 }
+            }
+          }
+        ],
+        "position": {
+          "start": { "column": 1, "line": 10, "offset": 199 },
+          "end": { "column": 13, "line": 10, "offset": 211 }
+        },
+        "data": { "isLine": true }
       }
     ],
-    "position": { "start": { "column": 1, "line": 1, "offset": 0 }, "end": { "column": 20, "line": 7, "offset": 143 } }
+    "position": { "start": { "column": 1, "line": 1, "offset": 0 }, "end": { "column": 13, "line": 10, "offset": 211 } }
   }
 ]

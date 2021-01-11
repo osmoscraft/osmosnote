@@ -1,8 +1,22 @@
 import { blue, bold, green, red } from "./print";
 import type { TestSummary } from "./run";
 
-export async function report(summary: TestSummary) {
-  printSummary(summary);
+export interface ReportConfig {
+  /**
+   * @default: false
+   */
+  quite?: boolean;
+}
+
+export async function report(summary: TestSummary, config?: ReportConfig) {
+  if (config?.quite) {
+    const actualLog = console.log;
+    console.log = () => {};
+    printSummary(summary);
+    console.log = actualLog;
+  } else {
+    printSummary(summary);
+  }
 
   if (summary.hasError) {
     process.exit(1);

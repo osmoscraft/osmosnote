@@ -1,4 +1,4 @@
-import { rootParser } from "./parsers";
+import { rootParser } from "./parsers/parsers";
 
 export function parse(input: string): Node[] {
   const start: Point = {
@@ -18,13 +18,17 @@ function parseRecursive(input: string, start: Point, parser: Parser, matchResult
   let remainingInput = input;
   let currentStart = start;
   let isMatched = false;
+  let isExitParserMatched = false;
   const children: Node[] = [];
 
-  while (remainingInput) {
+  while (remainingInput && !isExitParserMatched) {
     for (let childParser of parser.children!) {
       const matchResult = childParser.match(remainingInput);
       if (matchResult) {
         isMatched = true;
+        if (parser.childrenMatchToExit?.includes(childParser)) {
+          isExitParserMatched = true;
+        }
 
         const nodes = parseRecursive(remainingInput, currentStart, childParser, matchResult);
         children.push(...nodes);
@@ -32,7 +36,7 @@ function parseRecursive(input: string, start: Point, parser: Parser, matchResult
         const lastNode = nodes[nodes.length - 1];
         const end = lastNode.position.end;
         const length = end.offset - currentStart.offset;
-        if (lastNode.data?.isLineNode) {
+        if (lastNode.data?.isLine) {
           currentStart = {
             column: 1,
             line: end.line + 1,
@@ -62,8 +66,12 @@ export interface Parser {
   match: (input: string) => PositiveMatch | NegativeMatch;
   /** Mutually exclusive with `parseOnExit` */
   parseOnEnter?: (input: ParseInput) => Node[];
+  /** @todo Future API */
+  childrenMatchToEnter?: never;
   /** Required when `parseOnExit` */
   children?: Parser[];
+  /** Once matched, stop processing more input */
+  childrenMatchToExit?: Parser[];
   /** Mutually exclusive with `parseOnEnter` */
   parseOnExit?: (input: ParseInput) => Node[];
 }
@@ -90,7 +98,13 @@ export interface Node {
 }
 
 export interface NodeData {
-  isLineNode?: boolean;
+  isLine?: boolean;
+  /** available on links */
+  linkTarget?: string;
+  /** available on meta */
+  metaKey?: string;
+  /** available on meta */
+  metaValue?: string;
 }
 
 export interface Poisiton {

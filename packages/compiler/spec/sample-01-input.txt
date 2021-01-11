@@ -5,3 +5,6 @@ Preamble paragraph
 
 # Heading level 1
   # Heading level 2
+
+    Some paragraph with [link](123456) in the middle.
+    The end.
