@@ -1,26 +1,64 @@
-{
-  "type": "root",
-  "start": 0,
-  "end": 143,
-  "children": [
-    { "type": "LineMeta", "start": 0, "end": 37, "value": "#+title: Unit testing best practices\n" },
-    { "type": "LineMeta", "start": 37, "end": 85, "value": "#+tags: technique, unit test, quality assurance\n" },
-    { "type": "LineEmpty", "start": 85, "end": 86, "value": "\n" },
-    { "type": "LineParagraph", "start": 86, "end": 105, "children": [] },
-    { "type": "LineEmpty", "start": 105, "end": 106, "value": "\n" },
-    {
-      "type": "LineHeading",
-      "start": 106,
-      "end": 124,
-      "value": "# Heading level 1\n",
-      "data": { "indentWidth": 0, "sectionLevel": 0 }
-    },
-    {
-      "type": "LineHeading",
-      "start": 124,
-      "end": 143,
-      "value": "  # Heading level 2",
-      "data": { "indentWidth": 2, "sectionLevel": 0 }
-    }
-  ]
-}
+[
+  {
+    "type": "Root",
+    "children": [
+      {
+        "type": "MetaLine",
+        "position": {
+          "start": { "column": 1, "line": 1, "offset": 0 },
+          "end": { "column": 38, "line": 1, "offset": 37 }
+        },
+        "data": { "isLineNode": true }
+      },
+      {
+        "type": "MetaLine",
+        "position": {
+          "start": { "column": 1, "line": 2, "offset": 37 },
+          "end": { "column": 49, "line": 2, "offset": 85 }
+        },
+        "data": { "isLineNode": true }
+      },
+      {
+        "type": "BlankLine",
+        "position": {
+          "start": { "column": 1, "line": 3, "offset": 85 },
+          "end": { "column": 2, "line": 3, "offset": 86 }
+        },
+        "data": { "isLineNode": true }
+      },
+      {
+        "type": "ParagraphLine",
+        "position": {
+          "start": { "column": 1, "line": 4, "offset": 86 },
+          "end": { "column": 20, "line": 4, "offset": 105 }
+        },
+        "data": { "isLineNode": true }
+      },
+      {
+        "type": "BlankLine",
+        "position": {
+          "start": { "column": 1, "line": 5, "offset": 105 },
+          "end": { "column": 2, "line": 5, "offset": 106 }
+        },
+        "data": { "isLineNode": true }
+      },
+      {
+        "type": "HeadingLine",
+        "position": {
+          "start": { "column": 1, "line": 6, "offset": 106 },
+          "end": { "column": 19, "line": 6, "offset": 124 }
+        },
+        "data": { "isLineNode": true }
+      },
+      {
+        "type": "HeadingLine",
+        "position": {
+          "start": { "column": 1, "line": 7, "offset": 124 },
+          "end": { "column": 20, "line": 7, "offset": 143 }
+        },
+        "data": { "isLineNode": true }
+      }
+    ],
+    "position": { "start": { "column": 1, "line": 1, "offset": 0 }, "end": { "column": 20, "line": 7, "offset": 143 } }
+  }
+]

@@ -1,19 +1,13 @@
+import { parse } from "../src/compile";
+import { describe, expect, it } from "./helpers";
 import fs from "fs-extra";
 import path from "path";
-import { parse } from "../src";
-import type { LineEmptyNode } from "../src/nodes/line-empty";
-import type { LineHeadingNode } from "../src/nodes/line-heading";
-import type { LineMetaNode } from "../src/nodes/line-meta";
-import type { LineParagraphNode } from "../src/nodes/line-paragraph";
-import { describe, expect, it } from "./helpers";
 
 describe("Tokenization: empty state", () => {
   it("tokenizes empty input", () => {
     const page = "";
-    const result = parse(page);
-
-    expect(result.type).toBe("root");
-    expect(result.children.length).toBe(0);
+    const root = parse(page)[0];
+    expect(root.type).toBe("Root");
   });
 });
 
@@ -21,37 +15,37 @@ describe("Tokenization: single line", () => {
   it("tokenizes empty line", () => {
     const page = "\n";
 
-    const result = parse(page);
+    const root = parse(page)[0];
 
-    expect(result.children.length).toBe(1);
-    expect((result.children[0] as LineEmptyNode).type).toBe("LineEmpty");
-  });
-
-  it("tokenizers meta", () => {
-    const page = "#+title: Hello, world!";
-
-    const result = parse(page);
-
-    expect(result.children.length).toBe(1);
-    expect((result.children[0] as LineMetaNode).type).toBe("LineMeta");
+    expect(root.children?.length).toBe(1);
+    expect(root.children?.[0].type).toBe("BlankLine");
   });
 
   it("tokenizers heading", () => {
     const page = "### Hello, world!";
 
-    const result = parse(page);
+    const root = parse(page)[0];
 
-    expect(result.children.length).toBe(1);
-    expect((result.children[0] as LineHeadingNode).type).toBe("LineHeading");
+    expect(root.children?.length).toBe(1);
+    expect(root.children?.[0].type).toBe("HeadingLine");
+  });
+
+  it("tokenizers meta", () => {
+    const page = "#+title: Hello, world!";
+
+    const root = parse(page)[0];
+
+    expect(root.children?.length).toBe(1);
+    expect(root.children?.[0].type).toBe("MetaLine");
   });
 
   it("tokenizers paragraph", () => {
     const page = "Hello, world!";
 
-    const result = parse(page);
+    const root = parse(page)[0];
 
-    expect(result.children.length).toBe(1);
-    expect((result.children[0] as LineParagraphNode).type).toBe("LineParagraph");
+    expect(root.children?.length).toBe(1);
+    expect(root.children?.[0].type).toBe("ParagraphLine");
   });
 });
 
