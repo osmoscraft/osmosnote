@@ -3,8 +3,6 @@ import { describe, expect, it } from "./helpers";
 import fs from "fs-extra";
 import path from "path";
 
-import { performance } from "perf_hooks";
-
 describe("Tokenization: empty state", () => {
   it("tokenizes empty input", () => {
     const page = "";
@@ -67,9 +65,7 @@ describe("Tokenization: file", () => {
     expect(true).toBe(true);
     const page = fs.readFileSync(path.join(__dirname, "./sample-01-input.txt"), "utf-8");
 
-    const t1 = performance.now();
     const result = parse(page);
-    console.log("!!", performance.now() - t1);
 
     expect(JSON.stringify(result)).toBe(JSON.stringify(require("./sample-01-output")));
   });
