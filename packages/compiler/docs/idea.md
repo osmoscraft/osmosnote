@@ -1,0 +1,6 @@
+- `haiku` the language
+- `koan` the client
+- `tori` 
+- `satori` the system
+- `monk` the compiler
+- `soto` 
