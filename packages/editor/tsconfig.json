@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "module": "esnext",
+    "strict": true,
+    "importsNotUsedAsValues": "error",
+    "skipDefaultLibCheck": true,
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}

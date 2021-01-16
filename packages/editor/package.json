@@ -1,6 +1,6 @@
 {
-  "name": "@system-two/haiku",
-  "version": "1.0.0",
+  "name": "@system-two/editor",
+  "version": "0.0.1",
   "description": "",
   "scripts": {
     "dev": "parcel ./src/*.html --dist-dir ../server/public",
