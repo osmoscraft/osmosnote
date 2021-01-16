@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/main.js",
+  "types": "index.d.ts",
   "scripts": {
     "dev": "ts-node-dev --inspect=4321 --respawn --transpile-only src/main.ts",
     "serve": "node dist/main.js",
