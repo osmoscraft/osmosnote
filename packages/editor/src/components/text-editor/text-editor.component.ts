@@ -1,3 +1,5 @@
+import { astToHtml, parse } from "@system-two/compiler";
+
 export class TextEditorComponent extends HTMLElement {
   private editorRoot!: HTMLElement;
 
@@ -21,6 +23,10 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   setText(text: string) {
-    this.editorRoot.innerHTML = text; // TODO use compiler
+    const ast = parse(text);
+    console.log(ast);
+    const html = astToHtml(ast);
+
+    this.editorRoot.innerHTML = html; // TODO use compiler
   }
 }

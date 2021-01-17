@@ -2,6 +2,7 @@ import { ApiService } from "./services/api.service";
 import { di } from "./utils/dependency-injector";
 import { getNoteConfigFromUrl } from "./utils/url";
 import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
+import { parse, astToHtml } from "@system-two/compiler";
 import { ComponentReferenceService } from "./services/component-reference.service";
 
 di.registerClass(ComponentReferenceService, []);

@@ -1,8 +1,10 @@
 import type { Node, Parser } from "../parse";
 
 export const headingLineParser: Parser = {
-  match: (input: string) => input.match(/^(\s*)#+ .*\n?/),
+  match: (input: string) => input.match(/^(\s*)(#+) (.*)\n?/),
   parseOnEnter: ({ start, matchResult }) => {
+    const [_, spaces, hashes, text] = matchResult as RegExpMatchArray;
+
     const headingLineNode: Node = {
       type: "HeadingLine",
       position: {
@@ -15,6 +17,9 @@ export const headingLineParser: Parser = {
       },
       data: {
         isLine: true,
+        sectionLevel: spaces.length,
+        headingHashes: hashes,
+        titleText: text,
       },
     };
 

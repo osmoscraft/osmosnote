@@ -1,4 +1,4 @@
-import { rootParser } from "./parsers/parsers";
+import { rootParser } from "./lib/parsers";
 
 export function parse(input: string): Node[] {
   const start: Point = {
@@ -105,6 +105,12 @@ export interface NodeData {
   metaKey?: string;
   /** available on meta */
   metaValue?: string;
+  /** Heading level or the level of the nearest heading above */
+  sectionLevel?: number;
+  /** available to heading or list item  */
+  titleText?: string;
+  /** available to heading only */
+  headingHashes?: string;
 }
 
 export interface Poisiton {
