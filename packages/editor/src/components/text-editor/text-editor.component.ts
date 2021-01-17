@@ -8,7 +8,14 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   connectedCallback() {
-    this.shadowRoot!.innerHTML = /*html*/ `<div id="root"></div>`;
+    this.shadowRoot!.innerHTML = /*html*/ `
+    <style>
+    #root {
+      white-space: pre;
+    }
+    </style>
+    <div id="root" contenteditable></div>
+    `;
 
     this.editorRoot = this.shadowRoot!.getElementById("root") as HTMLElement;
   }

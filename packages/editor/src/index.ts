@@ -1,26 +1,30 @@
-import { ProxyService } from "./services/proxy.service";
+import { ApiService } from "./services/api.service";
 import { di } from "./utils/dependency-injector";
 import { getNoteConfigFromUrl } from "./utils/url";
-import type { GetNoteReply } from "@system-two/server";
+import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
 import { ComponentReferenceService } from "./services/component-reference.service";
 
 di.registerClass(ComponentReferenceService, []);
-di.registerClass(ProxyService, []);
+di.registerClass(ApiService, []);
 
 di.getSingleton(ComponentReferenceService).init();
 
 async function loadNote() {
-  const { id, title, content, url } = getNoteConfigFromUrl();
+  const { id } = getNoteConfigFromUrl();
 
-  const proxy = di.getSingleton(ProxyService);
+  const api = di.getSingleton(ApiService);
   const componentRefs = di.getSingleton(ComponentReferenceService);
 
   if (id) {
-    // load existing note
-    const result = await proxy.get<GetNoteReply>(`/api/notes/${encodeURIComponent(id)}`);
-    console.log(result);
+    const { data, error } = await api.fetch<GetNoteOutput, GetNoteInput>(`/api/get-note`, { id });
 
-    componentRefs.textEditor.setText(result.note.content);
+    if (data?.note) {
+      componentRefs.textEditor.setText(data.note);
+    }
+
+    if (error) {
+      console.error(error);
+    }
   }
 }
 
