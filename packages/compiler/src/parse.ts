@@ -91,7 +91,7 @@ export type NegativeMatch = null | false;
 
 export interface Node {
   type: string;
-  position: Poisiton;
+  position: Position;
   value?: string;
   data?: NodeData;
   children?: Node[];
@@ -113,7 +113,7 @@ export interface NodeData {
   headingHashes?: string;
 }
 
-export interface Poisiton {
+export interface Position {
   start: Point;
   end: Point;
 }
