@@ -5,6 +5,16 @@ export class TextEditorComponent extends HTMLElement {
   private editorRoot!: HTMLElement;
   private textEditorService: TextEditorService = new TextEditorService();
 
+  constructor() {
+    super();
+
+    this.textEditorService.handleEvents({
+      onUpdate: () => {
+        this.renderModel();
+      },
+    });
+  }
+
   connectedCallback() {
     this.innerHTML = /*html*/ `
 
@@ -13,14 +23,28 @@ export class TextEditorComponent extends HTMLElement {
 
     this.editorRoot = this.querySelector("#root") as HTMLElement;
 
-    this.editorRoot.addEventListener("click", (e) => {
-      console.log("click", e);
-    });
+    this.editorRoot.addEventListener("click", (e) => {});
 
     this.editorRoot.addEventListener("keydown", (e) => {
       switch (e.key) {
-        case "ArrowUp":
-        case "ArrowDown":
+        case "ArrowRight":
+          e.preventDefault();
+          this.textEditorService.cursorRight();
+          break;
+        case "ArrowLeft":
+          e.preventDefault();
+          this.textEditorService.cursorLeft();
+          break;
+      }
+
+      // handle literal insert (ASCII only)
+      // ref: https://stackoverflow.com/questions/1247762/regex-for-all-printable-characters
+      // TODO handle CJKT, and other unicode (such as emoji)
+      if (e.key && !e.altKey && !e.ctrlKey) {
+        if (e.key.match(/^[ -~]$/)) {
+          e.preventDefault();
+          this.textEditorService.insertAtCursor(e.key);
+        }
       }
     });
 
@@ -42,9 +66,37 @@ export class TextEditorComponent extends HTMLElement {
     });
   }
 
-  setText(text: string) {
-    this.textEditorService.initWithText(text);
+  loadText(text: string) {
+    this.textEditorService.setText(text);
+    this.textEditorService.resetCursor();
 
     this.editorRoot.innerHTML = this.textEditorService.getHtml();
+  }
+
+  private renderModel() {
+    this.renderModelContent();
+    this.renderModelCursor();
+  }
+
+  private renderModelContent() {
+    this.editorRoot.innerHTML = this.textEditorService.getHtml();
+  }
+
+  private renderModelCursor() {
+    const cursorDetails = this.textEditorService.getCursorDetails();
+
+    if (cursorDetails) {
+      const selector = `[data-path="${cursorDetails.pathToNode}"]`;
+      const domNode = this.editorRoot.querySelector(selector);
+      if (domNode) {
+        const sel = window.getSelection();
+        if (sel) {
+          sel.removeAllRanges();
+          const range = document.createRange();
+          range.setStart(domNode.childNodes[0], cursorDetails.offsetToNode);
+          sel.addRange(range);
+        }
+      }
+    }
   }
 }

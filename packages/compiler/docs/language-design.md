@@ -1,3 +1,8 @@
+# Guarantees
+
+- Idempotent (text -> ast -> text will not alter the text)
+- effects only propagate forward (a change cannot affect lines above it)
+
 # Tokens
 
 - meta

@@ -3,25 +3,25 @@ import type { Node } from "@system-two/compiler";
 
 const headingLineEmitter: Emitter = {
   emit: (node: Node, path: string) => {
-    return /*html*/ `<div data-path="${path}">${node.data?.headingHashes} ${node.data?.titleText}</div>`;
+    return `${node.data?.headingHashes} ${node.data?.titleText}\n`;
   },
 };
 
 const metaLineEmitter: Emitter = {
   emit: (node: Node, path: string) => {
-    return /*html*/ `<div data-path="${path}">#+${node.data?.metaKey}: ${node.data?.metaValue}</div>`;
+    return `#+${node.data?.metaKey}: ${node.data?.metaValue}\n`;
   },
 };
 
 const blankLineEmitter: Emitter = {
   emit: (node: Node, path: string) => {
-    return /*html*/ `<div data-path="${path}"><br></div>`;
+    return `\n`;
   },
 };
 
 const paragraphLineEmitter: Emitter = {
   emit: (node: Node, path: string, children: string = "") => {
-    return /*html*/ `<div data-path="${path}">${children}</div>`;
+    return `${children}`; // no new line as the textInline node will include it
   },
 };
 
@@ -37,7 +37,7 @@ const linkInlineEmitter: Emitter = {
   },
 };
 
-export const emitters = new Map<string, Emitter>([
+export const textEmitters = new Map<string, Emitter>([
   ["HeadingLine", headingLineEmitter],
   ["MetaLine", metaLineEmitter],
   ["BlankLine", blankLineEmitter],
