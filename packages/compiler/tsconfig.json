@@ -7,9 +7,10 @@
     "strict": true,
     "importsNotUsedAsValues": "error",
     "skipDefaultLibCheck": true,
+    "outDir": "dist",
+    "declaration": true
   },
   "include": [
     "src/**/*.ts",
-    "spec/**/*.ts",
   ]
 }

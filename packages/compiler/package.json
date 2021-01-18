@@ -2,11 +2,13 @@
   "name": "@system-two/compiler",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test:watch": "ts-node-dev --respawn --transpile-only spec/run-all.ts",
     "test:debug": "ts-node-dev --inspect-brk=4321 --respawn --transpile-only spec/run-all.ts",
-    "test": "ts-node-dev --transpile-only spec/run-all.ts"
+    "test": "ts-node-dev --transpile-only spec/run-all.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
