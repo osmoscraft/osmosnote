@@ -16,8 +16,9 @@ export const headingLineParser: Parser = {
         },
       },
       data: {
+        indent: hashes.length - 1,
         isLine: true,
-        sectionLevel: spaces.length,
+        sectionLevel: hashes.length,
         headingHashes: hashes,
         titleText: text,
       },
@@ -43,6 +44,7 @@ export const metaLineParser: Parser = {
         },
       },
       data: {
+        indent: 0,
         isLine: true,
         metaKey,
         metaValue,
@@ -67,6 +69,7 @@ export const blankLineParser: Parser = {
         },
       },
       data: {
+        indent: 0,
         isLine: true,
       },
     };
@@ -160,6 +163,7 @@ export const paragraphLineParser: Parser = {
         end,
       },
       data: {
+        indent: 0, // TODO need context to determine
         isLine: true,
       },
     };

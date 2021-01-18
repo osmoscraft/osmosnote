@@ -1,3 +1,11 @@
 .txte-content-host {
-  white-space: pre;
+  white-space: pre-wrap;
+}
+
+.ln {
+  display: flex;
+}
+
+.ln__indent {
+  flex-shrink: 0;
 }

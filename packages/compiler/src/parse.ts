@@ -111,6 +111,8 @@ export interface NodeData {
   titleText?: string;
   /** available to heading only */
   headingHashes?: string;
+  /** number of whitespace before the line starts. User can't select/change these spaces. Available on all line level nodes */
+  indent?: number;
 }
 
 export interface Position {

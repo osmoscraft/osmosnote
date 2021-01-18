@@ -3,6 +3,7 @@ import type { Node } from "@system-two/compiler";
 import { textEmitters } from "./lib/text-emitters";
 
 export function astToHtml(nodes: Node[]): string {
+  console.log(nodes);
   return emitRecursive(nodes, [], htmlEmitters);
 }
 
