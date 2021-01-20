@@ -26,7 +26,7 @@ function expandRecursive(node) {
 /**
  * @param {Node} node
  */
-export function lastLeafOf(node) {
+export function lastLeafNodeOf(node) {
   const allLeaf = flattenToLeafNodes(node);
   return allLeaf[allLeaf.length - 1];
 }
@@ -34,7 +34,7 @@ export function lastLeafOf(node) {
 /**
  * @param {Node} node
  */
-export function firstLeafOf(node) {
+export function firstLeafNodeOf(node) {
   const allLeaf = flattenToLeafNodes(node);
   return allLeaf[0];
 }

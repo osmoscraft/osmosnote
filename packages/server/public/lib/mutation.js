@@ -1,11 +1,11 @@
-import { firstLeafOf, flattenToLeafNodes, lastLeafOf } from "./tree.js";
+import { firstLeafNodeOf, flattenToLeafNodes, lastLeafNodeOf } from "./tree.js";
 
 /**
  * @param {HTMLElement} element
  * @param {HTMLElement} root
  */
 export function moveElementToRight(element, root) {
-  const lastLeafOfElement = lastLeafOf(element);
+  const lastLeafOfElement = lastLeafNodeOf(element);
 
   const allLeafNodes = flattenToLeafNodes(root);
 
@@ -40,7 +40,7 @@ export function moveElementToRight(element, root) {
  * @param {HTMLElement} root
  */
 export function moveElementToLeft(element, root) {
-  const firstLeafOfElement = firstLeafOf(element);
+  const firstLeafOfElement = firstLeafNodeOf(element);
 
   const allLeafNodes = flattenToLeafNodes(root);
 
