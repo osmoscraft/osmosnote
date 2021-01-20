@@ -13,16 +13,29 @@ export function renderDefaultCursor() {
   }
 }
 
+// TODO render collapsed cursor as a single div element
+
 /**
  * @param {Node} root
  */
 export function cursorRight(root) {
-  const { start, end } = getBracket();
+  const cursorBracket = getCursorBracket();
 
-  // TODO, cannot assume start is before end
-  if (isCollapsed(start, end)) {
-    moveElementToRight(end, root);
-    moveElementToRight(start, root);
+  if (isCollapsed(...cursorBracket)) {
+    const handle = document.createElement("div");
+    cursorBracket[0].parentNode.insertBefore(handle, cursorBracket[0]);
+
+    for (let cursor of cursorBracket) {
+      handle.appendChild(cursor);
+    }
+
+    moveElementToRight(handle, root);
+
+    for (let cursor of cursorBracket) {
+      handle.parentNode.insertBefore(cursor, handle);
+    }
+
+    handle.remove();
   }
 }
 
@@ -30,29 +43,36 @@ export function cursorRight(root) {
  * @param {Node} root
  */
 export function cursorLeft(root) {
-  const { start, end } = getBracket();
+  const cursorBracket = getCursorBracket();
 
-  // TODO, cannot assume start is before end
-  if (isCollapsed(start, end)) {
-    moveElementToLeft(start, root);
-    moveElementToLeft(end, root);
+  if (isCollapsed(...cursorBracket)) {
+    const handle = document.createElement("div");
+    cursorBracket[0].parentNode.insertBefore(handle, cursorBracket[0]);
+
+    for (let cursor of cursorBracket) {
+      handle.appendChild(cursor);
+    }
+
+    moveElementToLeft(handle, root);
+
+    for (let cursor of cursorBracket) {
+      handle.parentNode.insertBefore(cursor, handle);
+    }
+
+    handle.remove();
   }
 }
 
 /**
  *
- * @param {HTMLElement} start
- * @param {HTMLElement} end
+ * @param {HTMLElement} left
+ * @param {HTMLElement} right
  */
-function isCollapsed(start, end) {
-  return start.nextElementSibling === end;
+function isCollapsed(left, right) {
+  return left.nextElementSibling === right;
 }
 
-function getBracket() {
-  const start = document.querySelector(".cursor--start");
-  const end = document.querySelector(".cursor--end");
-  return {
-    start,
-    end,
-  };
+function getCursorBracket() {
+  const cursors = [...document.querySelectorAll(".cursor")];
+  return cursors;
 }
