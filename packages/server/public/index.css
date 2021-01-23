@@ -2,3 +2,8 @@
   white-space: pre-wrap;
   font-family: monospace;
 }
+
+[data-cursor] {
+  position: absolute;
+  backdrop-filter: invert(100%);
+}

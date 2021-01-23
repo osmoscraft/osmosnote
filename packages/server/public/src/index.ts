@@ -14,7 +14,7 @@ async function loadNote() {
 
       const dom = sourceToDom(data.note);
 
-      document.querySelector("#content-host").appendChild(dom);
+      (document.querySelector("#content-host") as HTMLElement).appendChild(dom);
       renderDefaultCursor();
 
       handleEvents();
@@ -29,10 +29,8 @@ async function loadNote() {
 loadNote();
 
 function handleEvents() {
-  const root = document.querySelector("#content-host");
+  const root = document.querySelector("#content-host") as HTMLElement;
   root.addEventListener("keydown", (event) => {
-    console.log(event);
-
     switch (event.key) {
       case "ArrowLeft":
         cursorLeft(root);

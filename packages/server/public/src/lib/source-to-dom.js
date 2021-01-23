@@ -28,7 +28,7 @@ export function sourceToDom(source) {
       lineDom.textContent = `${indent}${hashes} ${text}\n`;
     } else {
       const indent = ` `.repeat(context.level * 2);
-      lineDom.textContent = `${indent}${line ? line : `\n`}`;
+      lineDom.textContent = `${indent}${line ?? ""}\n`;
     }
 
     result.appendChild(lineDom);
