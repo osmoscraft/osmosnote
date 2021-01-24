@@ -3,25 +3,3 @@
   font-family: monospace;
   outline: none;
 }
-
-[data-cursor] {
-  position: absolute;
-  height: 16px;
-  width: 2px;
-  background-color: black;
-  animation: 1s blink step-end infinite;
-}
-
-[data-cursor][data-no-blink] {
-  animation: none;
-}
-
-@keyframes blink {
-  from,
-  to {
-    background-color: black;
-  }
-  50% {
-    background-color: transparent;
-  }
-}

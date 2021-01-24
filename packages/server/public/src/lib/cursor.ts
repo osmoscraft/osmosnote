@@ -1,146 +1,93 @@
-import {
-  firstInnerLeafNode,
-  firstInnerTextNode,
-  flattenToLeafNodes,
-  getInnerTextNode,
-  getOuterTextNode,
-  isTextNode,
-  moveToTextNode,
-} from "./dom-utils.js";
+import { firstInnerLeafNode, firstInnerTextNode, flattenToLeafNodes, isTextNode, seek } from "./dom-utils.js";
 import { createState } from "./global-state.js";
 
-export interface CursorElement extends HTMLSpanElement {
-  dataset: {
-    cursor: "start" | "end" | "collapsed";
-    noBlink?: "";
-  };
-}
-
 const [getIdealInlineOffset, setIdealtInlineOffset] = createState<null | number>(null);
-const [getNoBlinkTimer, setNoBlinkTimer] = createState<null | number>(null);
 
 export function renderDefaultCursor() {
   const lines = document.querySelectorAll("[data-line]");
 
   if (lines.length) {
-    const cursorCollapsed = document.createElement("span") as CursorElement;
-    cursorCollapsed.classList.add("cursor");
-    cursorCollapsed.dataset.cursor = "collapsed";
-    lines[0].prepend(cursorCollapsed);
+    const range = new Range();
+    const firstTextNode = firstInnerTextNode(lines[0]);
+    if (firstTextNode) {
+      range.setStart(firstTextNode, 0);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    }
   }
 }
 
 export function cursorRight(root: Node) {
-  const cursor = getCursor();
+  const cursorEnd = getCursor()?.end;
+  if (!cursorEnd) return;
 
-  if (!cursor.direction) {
-    const { node, offset } = getOuterTextNode(cursor.end, 1, root);
-    if (node !== null && offset !== null) {
-      const editablePosition = getNearestEditablePositionForward(node, offset);
-      moveToTextNode(cursor.end, editablePosition.node, editablePosition.offset);
-      updateIdealInlineOffset();
-    }
-  } else {
-    // TODO handle selection move
+  const seekOuput = seek({ source: cursorEnd.node, offset: cursorEnd.offset, seek: 1, root });
+  if (seekOuput) {
+    const editablePosition = getNearestEditablePositionForward(seekOuput.node, seekOuput.offset);
+    setCollapsedCursor(editablePosition.node, editablePosition.offset);
+    updateIdealInlineOffset();
   }
-
-  shortPauseBlinking();
 }
 
 export function cursorLeft(root: Node) {
-  const cursor = getCursor();
+  const cursorEnd = getCursor()?.end;
+  if (!cursorEnd) return;
 
-  if (!cursor.direction) {
-    const { node, offset } = getOuterTextNode(cursor.end, -1, root);
-    if (node !== null && offset !== null) {
-      moveToTextNode(cursor.end, node, offset);
-      updateIdealInlineOffset();
-    }
-  } else {
-    // TODO handle selection move
+  const seekOuput = seek({ source: cursorEnd.node, offset: cursorEnd.offset, seek: -1, root });
+  if (seekOuput) {
+    setCollapsedCursor(seekOuput.node, seekOuput.offset);
+    updateIdealInlineOffset();
   }
-
-  shortPauseBlinking();
-}
-
-export function shortPauseBlinking() {
-  const currentTimer = getNoBlinkTimer();
-  if (currentTimer) {
-    // already blinking
-    window.clearTimeout(currentTimer);
-  } else {
-    const cursor = getCursor();
-    if (cursor.direction === null) {
-      cursor.end.dataset.noBlink = "";
-      console.log("set");
-    }
-  }
-
-  const newTimer = window.setTimeout(() => {
-    const cursor = getCursor();
-    if (cursor.direction === null) {
-      delete cursor.end.dataset.noBlink;
-      setNoBlinkTimer(null);
-      console.log("store", null);
-    }
-  }, 500); // half the time of blink cycle is most natural
-
-  setNoBlinkTimer(newTimer);
-  console.log("store", newTimer);
 }
 
 function updateIdealInlineOffset() {
   const cursor = getCursor();
 
-  if (!cursor.direction) {
-    const cursorLeftEdgeIndex = getInlineOffset(cursor.end);
-    console.log(cursorLeftEdgeIndex);
+  if (cursor) {
+    const { node, offset } = cursor.end;
+    const cursorLeftEdgeIndex = getInlineOffset(node, offset);
     setIdealtInlineOffset(cursorLeftEdgeIndex);
-  } else {
-    // TODO how to handle selection?
   }
 }
 
 export function cursorDown() {
-  const cursor = getCursor();
+  const cursorEnd = getCursor()?.end;
 
-  if (!cursor.direction) {
+  if (cursorEnd) {
     // get offset relative to line start
-    const currentLine = getLine(cursor.end)!;
+    const currentLine = getLine(cursorEnd.node)!;
     const nextLine = getNextLine(currentLine);
 
     if (!nextLine) return;
 
-    const inlineOffset = getSensibleOffset(nextLine, getIdealInlineOffset() ?? getInlineOffset(cursor.end));
+    const inlineOffset = getSensibleOffset(
+      nextLine,
+      getIdealInlineOffset() ?? getInlineOffset(cursorEnd.node, cursorEnd.offset)
+    );
 
-    const { node, offset } = getInnerTextNode(nextLine, inlineOffset);
-    if (node !== null && offset !== null) {
-      moveToTextNode(cursor.end, node, offset);
-    }
+    const seekOuput = seek({ source: nextLine, offset: inlineOffset });
+    if (seekOuput) setCollapsedCursor(seekOuput.node, seekOuput.offset);
   }
-
-  shortPauseBlinking();
 }
 
 export function cursorUp() {
-  const cursor = getCursor();
+  const cursorEnd = getCursor()?.end;
 
-  if (!cursor.direction) {
+  if (cursorEnd) {
     // get offset relative to line start
-    const currentLine = getLine(cursor.end)!;
+    const currentLine = getLine(cursorEnd.node)!;
     const previousLine = getPreviousLine(currentLine);
+
     if (!previousLine) return;
 
-    const inlineOffset = getSensibleOffset(previousLine, getIdealInlineOffset() ?? getInlineOffset(cursor.end));
-
-    // get prev line
-    const { node, offset } = getInnerTextNode(previousLine, inlineOffset);
-    if (node !== null && offset !== null) {
-      moveToTextNode(cursor.end, node, offset);
-    }
+    const inlineOffset = getSensibleOffset(
+      previousLine,
+      getIdealInlineOffset() ?? getInlineOffset(cursorEnd.node, cursorEnd.offset)
+    );
+    const seekOuput = seek({ source: previousLine, offset: inlineOffset });
+    if (seekOuput) setCollapsedCursor(seekOuput.node, seekOuput.offset);
   }
-
-  shortPauseBlinking();
 }
 
 function getSensibleOffset(line: HTMLElement, ...candidates: number[]) {
@@ -157,34 +104,26 @@ function getSensibleOffset(line: HTMLElement, ...candidates: number[]) {
 }
 
 export interface Cursor {
-  direction: "backward" | "forward" | null;
-  start: CursorElement;
-  end: CursorElement;
+  end: {
+    node: Node;
+    offset: number;
+  };
 }
 
-export function getCursor(): Cursor {
-  const cursors = [...document.querySelectorAll(`[data-cursor]`)] as CursorElement[];
-  if (cursors.length === 1) {
-    return {
-      direction: null,
-      start: cursors[0],
-      end: cursors[0],
-    };
-  } else if (cursors.length === 2) {
-    let [start, end] = cursors;
-    const isBackward = start.dataset.cursor === "end";
-    if (isBackward) {
-      [start, end] = [end, start];
-    }
+export function getCursor(): Cursor | null {
+  const selection = window.getSelection();
+  if (!selection?.rangeCount) return null;
 
-    return {
-      direction: isBackward ? "backward" : "forward",
-      start,
-      end,
-    };
-  } else {
-    throw new Error("Invalid cursor detected");
-  }
+  const range = selection.getRangeAt(0);
+  const node = range.endContainer;
+  const offset = range.endOffset;
+
+  return {
+    end: {
+      node,
+      offset,
+    },
+  };
 }
 
 export function getNearestEditablePositionForward(node: Text, offset: number) {
@@ -210,21 +149,21 @@ export function getNearestEditablePositionForward(node: Text, offset: number) {
   }
 }
 
-export function getLineStartPosition(lineElement: HTMLElement) {
+function getLineStartPosition(lineElement: HTMLElement) {
   const firstLeafNode = firstInnerTextNode(lineElement);
 
   if (!firstLeafNode) throw new Error("Invalid line, no text node found");
 
   return {
     node: firstLeafNode,
-    offset: 0, // TODO trim space
+    offset: 0,
   };
 }
 
 /**
  * The offset of the left edge of the node, relative to the line it's in
  */
-export function getInlineOffset(node: Node): number {
+export function getInlineOffset(node: Node, offset: number = 0): number {
   const line = getLine(node);
   if (!line) {
     throw new Error("Cannot get inline offset because the node is not inside a line element");
@@ -240,7 +179,7 @@ export function getInlineOffset(node: Node): number {
     .slice(0, measureToIndex)
     .reduce((length, node) => length + (isTextNode(node) ? node.length : length), 0);
 
-  return inlineOffset;
+  return inlineOffset + offset;
 }
 
 function getLine(node: Node): HTMLElement | null {
@@ -262,4 +201,20 @@ function getPreviousLine(currentLine: HTMLElement): HTMLElement | null {
 
 function isAfterLineEnd(textNode: Text, offset: number) {
   return offset === textNode.length && textNode.data?.[offset - 1] === "\n";
+}
+
+function setCollapsedCursor(node: Node, offset: number = 0) {
+  const selection = window.getSelection();
+
+  if (!selection) return;
+
+  if (selection.rangeCount) {
+    selection.removeAllRanges();
+  }
+
+  const range = new Range();
+  range.setEnd(node, offset);
+  range.collapse();
+
+  selection.addRange(range);
 }

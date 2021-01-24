@@ -1,47 +1,23 @@
-/**
- * Given the current node and an offset, find a text node inside it at the given offset
- * and an offset relative to the beginning of that node.
- *
- * @param offset must be non-negative integer
- */
-export function getInnerTextNode(sourceNode: Node, offset: number) {
-  let targetNode = null;
-  let targetOffset = null;
-  let remainingDistance = offset;
-
-  const onVisit = (node: Node) => {
-    if (isTextNode(node)) {
-      if (node.length >= remainingDistance) {
-        return true;
-      } else {
-        remainingDistance = remainingDistance - node.length;
-      }
-    }
-  };
-
-  const foundNode = depthVisitLeafNodesForward(sourceNode, onVisit);
-  if (foundNode) {
-    targetNode = foundNode as Text;
-    targetOffset = remainingDistance;
-  }
-
-  return {
-    node: targetNode,
-    offset: targetOffset,
-  };
+export interface SeekInput {
+  source: Node;
+  offset?: number;
+  seek?: number;
+  root?: Node | null;
 }
 
-/**
- * Given the current node and an offset, find a text node before or after it
- * and an offset relative to the beginning of that node.
- *
- * Offset of `+0` and `-0` will be treated differently
- */
-export function getOuterTextNode(sourceNode: Node, offset: number, rootNode?: Node) {
+export interface SeekOutput {
+  node: Text;
+  offset: number;
+}
+
+export function seek(input: SeekInput): SeekOutput | null {
+  const { source, offset = 0, seek = 0, root = null } = input;
+
   let targetNode = null;
   let targetOffset = null;
-  let remainingDistance = Math.abs(offset);
-  let currentNode;
+  let currentNode: Node | null = source;
+  const offsetFromSourceNodeStartEdge = offset + seek;
+  let remainingDistance = Math.abs(offsetFromSourceNodeStartEdge);
 
   const onVisit = (node: Node) => {
     if (isTextNode(node)) {
@@ -53,23 +29,21 @@ export function getOuterTextNode(sourceNode: Node, offset: number, rootNode?: No
     }
   };
 
-  if (offset > 0 || Object.is(offset, +0)) {
-    currentNode = getClosestNextNode(sourceNode, rootNode);
-
+  if (offsetFromSourceNodeStartEdge >= 0) {
     while (currentNode && !targetNode) {
       const foundNode = depthVisitLeafNodesForward(currentNode, onVisit);
       if (foundNode) {
         targetNode = foundNode as Text;
         targetOffset = remainingDistance;
         break;
-      } else if (currentNode === rootNode) {
+      } else if (currentNode === root) {
         break;
       } else {
         currentNode = currentNode.nextSibling ?? currentNode.parentNode;
       }
     }
-  } else if (offset < 0 || Object.is(offset, -0)) {
-    currentNode = getClosestPreviousNode(sourceNode, rootNode);
+  } else {
+    currentNode = getClosestPreviousNode(source, root);
 
     while (currentNode && !targetNode) {
       const foundNode = depthVisitLeafNodesBackward(currentNode, onVisit);
@@ -77,7 +51,79 @@ export function getOuterTextNode(sourceNode: Node, offset: number, rootNode?: No
         targetNode = foundNode as Text;
         targetOffset = targetNode.length - remainingDistance;
         break;
-      } else if (currentNode === rootNode) {
+      } else if (currentNode === root) {
+        break;
+      } else {
+        currentNode = currentNode.previousSibling ?? currentNode.parentNode;
+      }
+    }
+  }
+
+  if (targetNode) {
+    return {
+      node: targetNode,
+      offset: targetOffset!,
+    };
+  } else {
+    return null;
+  }
+}
+
+export interface SeekOuterInput {
+  source: Node;
+  seek: number;
+  root?: Node | null;
+}
+
+/**
+ * From the start/end edge of a node, find a position using the given offset.
+ * When seek is +0 or positive, seek forward from the end edge of the node
+ * Week seek is -0 or negative, seek backward from the start edge of the node
+ */
+export function seekOuter(input: SeekOuterInput): SeekOutput | null {
+  const { source, seek, root = null } = input;
+
+  let targetNode = null;
+  let targetOffset = null;
+  let currentNode: Node | null = source;
+  const offsetFromSoureNodeEdge = seek;
+  let remainingDistance = Math.abs(offsetFromSoureNodeEdge);
+
+  const onVisit = (node: Node) => {
+    if (isTextNode(node)) {
+      if (node.length >= remainingDistance) {
+        return true;
+      } else {
+        remainingDistance = remainingDistance - node.length;
+      }
+    }
+  };
+
+  if (offsetFromSoureNodeEdge > 0 || Object.is(offsetFromSoureNodeEdge, +0)) {
+    currentNode = getClosestNextNode(source, root);
+
+    while (currentNode && !targetNode) {
+      const foundNode = depthVisitLeafNodesForward(currentNode, onVisit);
+      if (foundNode) {
+        targetNode = foundNode as Text;
+        targetOffset = remainingDistance;
+        break;
+      } else if (currentNode === root) {
+        break;
+      } else {
+        currentNode = currentNode.nextSibling ?? currentNode.parentNode;
+      }
+    }
+  } else if (offsetFromSoureNodeEdge < 0 || Object.is(offsetFromSoureNodeEdge, -0)) {
+    currentNode = getClosestPreviousNode(source, root);
+
+    while (currentNode && !targetNode) {
+      const foundNode = depthVisitLeafNodesBackward(currentNode, onVisit);
+      if (foundNode) {
+        targetNode = foundNode as Text;
+        targetOffset = targetNode.length - remainingDistance;
+        break;
+      } else if (currentNode === root) {
         break;
       } else {
         currentNode = currentNode.previousSibling ?? currentNode.parentNode;
@@ -87,10 +133,14 @@ export function getOuterTextNode(sourceNode: Node, offset: number, rootNode?: No
     throw new Error("Unexpected offset");
   }
 
-  return {
-    node: targetNode,
-    offset: targetOffset,
-  };
+  if (targetNode) {
+    return {
+      node: targetNode,
+      offset: targetOffset!,
+    };
+  } else {
+    return null;
+  }
 }
 
 /**
@@ -130,7 +180,7 @@ export function depthVisitLeafNodesBackward(node: Node, onVisit: (node: Node) =>
 /**
  * Get next sibling from the current node or from a nearest parent
  */
-export function getClosestNextNode(sourceNode: Node | null, rootNode?: Node): Node | null {
+export function getClosestNextNode(sourceNode: Node | null, rootNode?: Node | null): Node | null {
   if (!sourceNode) return null;
   if (sourceNode === rootNode) return null;
 
@@ -144,7 +194,7 @@ export function getClosestNextNode(sourceNode: Node | null, rootNode?: Node): No
 /**
  * Get next sibling from the current node or from a nearest parent
  */
-export function getClosestPreviousNode(sourceNode: Node | null, rootNode?: Node): Node | null {
+export function getClosestPreviousNode(sourceNode: Node | null, rootNode?: Node | null): Node | null {
   if (!sourceNode) return null;
   if (sourceNode === rootNode) return null;
 
@@ -220,7 +270,7 @@ export function cutTextBefore(node: Text, offset: number): string {
  * A Text node will be created if it doesn't exist
  * @return next sibling Text node
  */
-export function appendOuterText(node: Node, text: string): Text {
+function appendOuterText(node: Node, text: string): Text {
   let nextTextNode = node.nextSibling;
   if (!isTextNode(nextTextNode)) {
     nextTextNode = new Text();
@@ -237,7 +287,7 @@ export function appendOuterText(node: Node, text: string): Text {
  * A Text node will be created if it doesn't exist
  * @return previous sibling Text node
  */
-export function insertOuterText(node: Node, text: string): Text {
+function insertOuterText(node: Node, text: string): Text {
   let prevTextNode = node.previousSibling;
   if (!isTextNode(prevTextNode)) {
     prevTextNode = new Text();
@@ -249,7 +299,7 @@ export function insertOuterText(node: Node, text: string): Text {
   return prevTextNode as Text;
 }
 
-export function removeIfEmpty(textNode: Text): Text | null {
+function removeIfEmpty(textNode: Text): Text | null {
   if (!textNode.length) {
     textNode.remove();
     return textNode;
