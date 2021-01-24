@@ -1,4 +1,14 @@
-export function getNoteConfigFromUrl() {
+export interface UrlNoteConfig {
+  id: string | null;
+  title: string | null;
+  /**
+   * the initial content for the note, in plaintext, not markdown.
+   */
+  content: string | null;
+  url: string | null;
+}
+
+export function getNoteConfigFromUrl(): UrlNoteConfig {
   const url = new URL(location.href);
   const searchParams = new URLSearchParams(url.search);
 

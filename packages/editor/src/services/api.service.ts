@@ -1,4 +1,4 @@
-import type { OutputOrError } from "@system-two/server/src/lib/create-handler";
+import type { OutputOrError } from "@system-two/server";
 
 export class ApiService {
   async fetch<OutputType, InputType>(url: string, input: InputType): Promise<OutputOrError<OutputType>> {
