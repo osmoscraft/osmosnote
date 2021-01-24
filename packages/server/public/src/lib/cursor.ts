@@ -7,12 +7,17 @@ import {
   isTextNode,
   moveToTextNode,
 } from "./dom-utils.js";
+import { createState } from "./global-state.js";
 
 export interface CursorElement extends HTMLSpanElement {
   dataset: {
     cursor: "start" | "end" | "collapsed";
+    noBlink?: "";
   };
 }
+
+const [getIdealInlineOffset, setIdealtInlineOffset] = createState<null | number>(null);
+const [getNoBlinkTimer, setNoBlinkTimer] = createState<null | number>(null);
 
 export function renderDefaultCursor() {
   const lines = document.querySelectorAll("[data-line]");
@@ -20,7 +25,6 @@ export function renderDefaultCursor() {
   if (lines.length) {
     const cursorCollapsed = document.createElement("span") as CursorElement;
     cursorCollapsed.classList.add("cursor");
-    cursorCollapsed.innerText = " ";
     cursorCollapsed.dataset.cursor = "collapsed";
     lines[0].prepend(cursorCollapsed);
   }
@@ -32,12 +36,15 @@ export function cursorRight(root: Node) {
   if (!cursor.direction) {
     const { node, offset } = getOuterTextNode(cursor.end, 1, root);
     if (node !== null && offset !== null) {
-      const editablePosition = getNearestEditablePosition(node, offset);
+      const editablePosition = getNearestEditablePositionForward(node, offset);
       moveToTextNode(cursor.end, editablePosition.node, editablePosition.offset);
+      updateIdealInlineOffset();
     }
   } else {
     // TODO handle selection move
   }
+
+  shortPauseBlinking();
 }
 
 export function cursorLeft(root: Node) {
@@ -47,9 +54,50 @@ export function cursorLeft(root: Node) {
     const { node, offset } = getOuterTextNode(cursor.end, -1, root);
     if (node !== null && offset !== null) {
       moveToTextNode(cursor.end, node, offset);
+      updateIdealInlineOffset();
     }
   } else {
     // TODO handle selection move
+  }
+
+  shortPauseBlinking();
+}
+
+export function shortPauseBlinking() {
+  const currentTimer = getNoBlinkTimer();
+  if (currentTimer) {
+    // already blinking
+    window.clearTimeout(currentTimer);
+  } else {
+    const cursor = getCursor();
+    if (cursor.direction === null) {
+      cursor.end.dataset.noBlink = "";
+      console.log("set");
+    }
+  }
+
+  const newTimer = window.setTimeout(() => {
+    const cursor = getCursor();
+    if (cursor.direction === null) {
+      delete cursor.end.dataset.noBlink;
+      setNoBlinkTimer(null);
+      console.log("store", null);
+    }
+  }, 500); // half the time of blink cycle is most natural
+
+  setNoBlinkTimer(newTimer);
+  console.log("store", newTimer);
+}
+
+function updateIdealInlineOffset() {
+  const cursor = getCursor();
+
+  if (!cursor.direction) {
+    const cursorLeftEdgeIndex = getInlineOffset(cursor.end);
+    console.log(cursorLeftEdgeIndex);
+    setIdealtInlineOffset(cursorLeftEdgeIndex);
+  } else {
+    // TODO how to handle selection?
   }
 }
 
@@ -58,16 +106,20 @@ export function cursorDown() {
 
   if (!cursor.direction) {
     // get offset relative to line start
-    const inlineOffset = getInlineOffset(cursor.end);
     const currentLine = getLine(cursor.end)!;
     const nextLine = getNextLine(currentLine);
 
     if (!nextLine) return;
+
+    const inlineOffset = getSensibleOffset(nextLine, getIdealInlineOffset() ?? getInlineOffset(cursor.end));
+
     const { node, offset } = getInnerTextNode(nextLine, inlineOffset);
     if (node !== null && offset !== null) {
       moveToTextNode(cursor.end, node, offset);
     }
   }
+
+  shortPauseBlinking();
 }
 
 export function cursorUp() {
@@ -75,10 +127,11 @@ export function cursorUp() {
 
   if (!cursor.direction) {
     // get offset relative to line start
-    const inlineOffset = getInlineOffset(cursor.end);
     const currentLine = getLine(cursor.end)!;
     const previousLine = getPreviousLine(currentLine);
     if (!previousLine) return;
+
+    const inlineOffset = getSensibleOffset(previousLine, getIdealInlineOffset() ?? getInlineOffset(cursor.end));
 
     // get prev line
     const { node, offset } = getInnerTextNode(previousLine, inlineOffset);
@@ -86,12 +139,27 @@ export function cursorUp() {
       moveToTextNode(cursor.end, node, offset);
     }
   }
+
+  shortPauseBlinking();
+}
+
+function getSensibleOffset(line: HTMLElement, ...candidates: number[]) {
+  const lineLength = flattenToLeafNodes(line).reduce(
+    (length, node) => length + (isTextNode(node) ? node.length : 0),
+    0
+  );
+
+  const maxLineOffset = lineLength - 1;
+  if (maxLineOffset < 0) throw new Error("A line must have a least 1 character (including newline)");
+
+  const result = candidates.find((candidate) => candidate < maxLineOffset);
+  return result === undefined ? maxLineOffset : result;
 }
 
 export interface Cursor {
   direction: "backward" | "forward" | null;
-  start: HTMLElement;
-  end: HTMLElement;
+  start: CursorElement;
+  end: CursorElement;
 }
 
 export function getCursor(): Cursor {
@@ -119,7 +187,7 @@ export function getCursor(): Cursor {
   }
 }
 
-export function getNearestEditablePosition(node: Text, offset: number) {
+export function getNearestEditablePositionForward(node: Text, offset: number) {
   if (isAfterLineEnd(node, offset)) {
     // if beyond line end
     const currentLine = getLine(node)!;
