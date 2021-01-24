@@ -1,8 +1,43 @@
 /**
- * Given the current node and an offset, find a target node
+ * Given the current node and an offset, find a text node inside it at the given offset
  * and an offset relative to the beginning of that node.
+ *
+ * @param offset must be non-negative integer
  */
-export function getTextNodeByOffset(sourceNode: Node, offset: number, rootNode?: Node) {
+export function getInnerTextNode(sourceNode: Node, offset: number) {
+  let targetNode = null;
+  let targetOffset = null;
+  let remainingDistance = offset;
+
+  const onVisit = (node: Node) => {
+    if (isTextNode(node)) {
+      if (node.length >= remainingDistance) {
+        return true;
+      } else {
+        remainingDistance = remainingDistance - node.length;
+      }
+    }
+  };
+
+  const foundNode = depthVisitLeafNodesForward(sourceNode, onVisit);
+  if (foundNode) {
+    targetNode = foundNode as Text;
+    targetOffset = remainingDistance;
+  }
+
+  return {
+    node: targetNode,
+    offset: targetOffset,
+  };
+}
+
+/**
+ * Given the current node and an offset, find a text node before or after it
+ * and an offset relative to the beginning of that node.
+ *
+ * Offset of `+0` and `-0` will be treated differently
+ */
+export function getOuterTextNode(sourceNode: Node, offset: number, rootNode?: Node) {
   let targetNode = null;
   let targetOffset = null;
   let remainingDistance = Math.abs(offset);
@@ -18,10 +53,10 @@ export function getTextNodeByOffset(sourceNode: Node, offset: number, rootNode?:
     }
   };
 
-  if (offset > 0) {
+  if (offset > 0 || Object.is(offset, +0)) {
     currentNode = getClosestNextNode(sourceNode, rootNode);
 
-    while (currentNode && remainingDistance) {
+    while (currentNode && !targetNode) {
       const foundNode = depthVisitLeafNodesForward(currentNode, onVisit);
       if (foundNode) {
         targetNode = foundNode as Text;
@@ -33,10 +68,10 @@ export function getTextNodeByOffset(sourceNode: Node, offset: number, rootNode?:
         currentNode = currentNode.nextSibling ?? currentNode.parentNode;
       }
     }
-  } else if (offset < 0) {
+  } else if (offset < 0 || Object.is(offset, -0)) {
     currentNode = getClosestPreviousNode(sourceNode, rootNode);
 
-    while (currentNode && remainingDistance) {
+    while (currentNode && !targetNode) {
       const foundNode = depthVisitLeafNodesBackward(currentNode, onVisit);
       if (foundNode) {
         targetNode = foundNode as Text;
@@ -49,7 +84,7 @@ export function getTextNodeByOffset(sourceNode: Node, offset: number, rootNode?:
       }
     }
   } else {
-    throw new Error("Find within self is not implemented");
+    throw new Error("Unexpected offset");
   }
 
   return {
@@ -58,6 +93,9 @@ export function getTextNodeByOffset(sourceNode: Node, offset: number, rootNode?:
   };
 }
 
+/**
+ * @param onVisit return `true` to stop visiting more nodes
+ */
 export function depthVisitLeafNodesForward(node: Node, onVisit: (node: Node) => void | true): Node | null {
   if (!node.hasChildNodes()) {
     if (onVisit(node)) return node;
@@ -71,6 +109,10 @@ export function depthVisitLeafNodesForward(node: Node, onVisit: (node: Node) => 
 
   return null;
 }
+
+/**
+ * @param onVisit return `true` to stop visiting more nodes
+ */
 export function depthVisitLeafNodesBackward(node: Node, onVisit: (node: Node) => void | true): Node | null {
   if (!node.hasChildNodes()) {
     if (onVisit(node)) return node;
@@ -216,14 +258,22 @@ export function removeIfEmpty(textNode: Text): Text | null {
   }
 }
 
-export function lastTextNodeOf(node: Node): Text | null {
-  const allLeaf = flattenToLeafNodes(node).filter((node) => node.nodeType === node.TEXT_NODE) as Text[];
-  return allLeaf[allLeaf.length - 1] ?? null;
+export function lastInnerTextNode(node: Node): Text | null {
+  return lastInnerLeafNode(node, (node) => node.nodeType === node.TEXT_NODE) as Text | null;
 }
 
-export function firstTextNodeOf(node: Node): Text | null {
-  const allLeaf = flattenToLeafNodes(node).filter((node) => node.nodeType === node.TEXT_NODE) as Text[];
-  return allLeaf[0] ?? null;
+export function firstInnerTextNode(node: Node): Text | null {
+  return firstInnerLeafNode(node, (node) => node.nodeType === node.TEXT_NODE) as Text | null;
+}
+
+export function lastInnerLeafNode(node: Node, filterFn: (node: Node) => boolean = () => true): Node | null {
+  const results = flattenToLeafNodes(node).filter(filterFn);
+  return results[results.length - 1] ?? null;
+}
+
+export function firstInnerLeafNode(node: Node, filterFn: (node: Node) => boolean = () => true): Node | null {
+  const results = flattenToLeafNodes(node).filter(filterFn);
+  return results[0] ?? null;
 }
 
 export function flattenToLeafNodes(root: Node) {

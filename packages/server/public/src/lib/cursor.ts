@@ -1,4 +1,12 @@
-import { firstTextNodeOf, getTextNodeByOffset, moveToTextNode } from "./dom-utils.js";
+import {
+  firstInnerLeafNode,
+  firstInnerTextNode,
+  flattenToLeafNodes,
+  getInnerTextNode,
+  getOuterTextNode,
+  isTextNode,
+  moveToTextNode,
+} from "./dom-utils.js";
 
 export interface CursorElement extends HTMLSpanElement {
   dataset: {
@@ -22,7 +30,7 @@ export function cursorRight(root: Node) {
   const cursor = getCursor();
 
   if (!cursor.direction) {
-    const { node, offset } = getTextNodeByOffset(cursor.end, 1, root);
+    const { node, offset } = getOuterTextNode(cursor.end, 1, root);
     if (node !== null && offset !== null) {
       const editablePosition = getNearestEditablePosition(node, offset);
       moveToTextNode(cursor.end, editablePosition.node, editablePosition.offset);
@@ -36,12 +44,47 @@ export function cursorLeft(root: Node) {
   const cursor = getCursor();
 
   if (!cursor.direction) {
-    const { node, offset } = getTextNodeByOffset(cursor.end, -1, root);
+    const { node, offset } = getOuterTextNode(cursor.end, -1, root);
     if (node !== null && offset !== null) {
       moveToTextNode(cursor.end, node, offset);
     }
   } else {
     // TODO handle selection move
+  }
+}
+
+export function cursorDown() {
+  const cursor = getCursor();
+
+  if (!cursor.direction) {
+    // get offset relative to line start
+    const inlineOffset = getInlineOffset(cursor.end);
+    const currentLine = getLine(cursor.end)!;
+    const nextLine = getNextLine(currentLine);
+
+    if (!nextLine) return;
+    const { node, offset } = getInnerTextNode(nextLine, inlineOffset);
+    if (node !== null && offset !== null) {
+      moveToTextNode(cursor.end, node, offset);
+    }
+  }
+}
+
+export function cursorUp() {
+  const cursor = getCursor();
+
+  if (!cursor.direction) {
+    // get offset relative to line start
+    const inlineOffset = getInlineOffset(cursor.end);
+    const currentLine = getLine(cursor.end)!;
+    const previousLine = getPreviousLine(currentLine);
+    if (!previousLine) return;
+
+    // get prev line
+    const { node, offset } = getInnerTextNode(previousLine, inlineOffset);
+    if (node !== null && offset !== null) {
+      moveToTextNode(cursor.end, node, offset);
+    }
   }
 }
 
@@ -77,12 +120,13 @@ export function getCursor(): Cursor {
 }
 
 export function getNearestEditablePosition(node: Text, offset: number) {
-  if (offset === node.length && node.data?.[offset - 1] === "\n") {
+  if (isAfterLineEnd(node, offset)) {
     // if beyond line end
-    const currentLine = node.parentElement!.closest("[data-line]")!;
-    if (currentLine.nextElementSibling?.matches("[data-line]")) {
+    const currentLine = getLine(node)!;
+    const nextLine = getNextLine(currentLine);
+    if (nextLine) {
       // go to next line start
-      return getLineStartPosition(currentLine.nextElementSibling! as HTMLElement);
+      return getLineStartPosition(nextLine);
     } else {
       // if no next line, back to this line end before new line character
       return {
@@ -99,7 +143,7 @@ export function getNearestEditablePosition(node: Text, offset: number) {
 }
 
 export function getLineStartPosition(lineElement: HTMLElement) {
-  const firstLeafNode = firstTextNodeOf(lineElement);
+  const firstLeafNode = firstInnerTextNode(lineElement);
 
   if (!firstLeafNode) throw new Error("Invalid line, no text node found");
 
@@ -107,4 +151,47 @@ export function getLineStartPosition(lineElement: HTMLElement) {
     node: firstLeafNode,
     offset: 0, // TODO trim space
   };
+}
+
+/**
+ * The offset of the left edge of the node, relative to the line it's in
+ */
+export function getInlineOffset(node: Node): number {
+  const line = getLine(node);
+  if (!line) {
+    throw new Error("Cannot get inline offset because the node is not inside a line element");
+  }
+
+  const leafNodes = flattenToLeafNodes(line);
+  const measureToNode = firstInnerLeafNode(node)!;
+  const measureToIndex = leafNodes.indexOf(measureToNode);
+
+  if (measureToIndex < 0) throw new Error("Cannot locate node within the line element");
+
+  const inlineOffset = leafNodes
+    .slice(0, measureToIndex)
+    .reduce((length, node) => length + (isTextNode(node) ? node.length : length), 0);
+
+  return inlineOffset;
+}
+
+function getLine(node: Node): HTMLElement | null {
+  const line = node.parentElement!.closest("[data-line]") as HTMLElement | null;
+  return line;
+}
+
+function getNextLine(currentLine: HTMLElement): HTMLElement | null {
+  return currentLine.nextElementSibling?.matches("[data-line]")
+    ? (currentLine.nextElementSibling as HTMLElement)
+    : null;
+}
+
+function getPreviousLine(currentLine: HTMLElement): HTMLElement | null {
+  return currentLine.previousElementSibling?.matches("[data-line]")
+    ? (currentLine.previousElementSibling as HTMLElement)
+    : null;
+}
+
+function isAfterLineEnd(textNode: Text, offset: number) {
+  return offset === textNode.length && textNode.data?.[offset - 1] === "\n";
 }

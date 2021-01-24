@@ -1,7 +1,7 @@
 import { query } from "./lib/query.js";
 import { getNoteConfigFromUrl } from "./lib/route.js";
 import { sourceToDom } from "./lib/source-to-dom.js";
-import { cursorRight, cursorLeft, renderDefaultCursor } from "./lib/cursor.js";
+import { cursorRight, cursorLeft, renderDefaultCursor, cursorDown, cursorUp } from "./lib/cursor.js";
 
 async function loadNote() {
   const { id } = getNoteConfigFromUrl();
@@ -37,6 +37,12 @@ function handleEvents() {
         break;
       case "ArrowRight":
         cursorRight(root);
+        break;
+      case "ArrowDown":
+        cursorDown();
+        break;
+      case "ArrowUp":
+        cursorUp();
         break;
     }
   });
