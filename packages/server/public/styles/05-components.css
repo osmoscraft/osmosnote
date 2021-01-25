@@ -30,3 +30,14 @@
 [data-line="heading"][data-level="6"] {
   color: var(--theme-h3-color);
 }
+
+[data-link] .link--target {
+  color: var(--theme-text-color-secondary);
+}
+
+[data-link]:hover {
+  text-decoration: underline;
+}
+[data-link]:hover .link--target {
+  color: var(--theme-link-color);
+}
