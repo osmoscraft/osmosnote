@@ -3,6 +3,7 @@ import { getNoteConfigFromUrl } from "./lib/route.js";
 import { sourceToDom } from "./lib/source-to-dom.js";
 import { cursorRight, cursorLeft, renderDefaultCursor, cursorDown, cursorUp } from "./lib/cursor.js";
 import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
+import { formatAll } from "./lib/format.js";
 
 async function loadNote() {
   const { id } = getNoteConfigFromUrl();
@@ -13,7 +14,10 @@ async function loadNote() {
     if (data?.note) {
       const dom = sourceToDom(data.note);
 
-      (document.querySelector("#content-host") as HTMLElement).appendChild(dom);
+      const host = document.querySelector("#content-host") as HTMLElement;
+
+      host.appendChild(dom);
+      formatAll(host);
       renderDefaultCursor();
 
       handleEvents();

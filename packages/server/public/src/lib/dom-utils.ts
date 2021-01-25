@@ -39,7 +39,7 @@ export function seek(input: SeekInput): SeekOutput | null {
       } else if (currentNode === root) {
         break;
       } else {
-        currentNode = currentNode.nextSibling ?? currentNode.parentNode;
+        currentNode = getClosestNextNode(source, root);
       }
     }
   } else {
@@ -54,7 +54,7 @@ export function seek(input: SeekInput): SeekOutput | null {
       } else if (currentNode === root) {
         break;
       } else {
-        currentNode = currentNode.previousSibling ?? currentNode.parentNode;
+        currentNode = getClosestPreviousNode(source, root);
       }
     }
   }
@@ -111,7 +111,7 @@ export function seekOuter(input: SeekOuterInput): SeekOutput | null {
       } else if (currentNode === root) {
         break;
       } else {
-        currentNode = currentNode.nextSibling ?? currentNode.parentNode;
+        currentNode = getClosestNextNode(source, root);
       }
     }
   } else if (offsetFromSoureNodeEdge < 0 || Object.is(offsetFromSoureNodeEdge, -0)) {
@@ -126,7 +126,7 @@ export function seekOuter(input: SeekOuterInput): SeekOutput | null {
       } else if (currentNode === root) {
         break;
       } else {
-        currentNode = currentNode.previousSibling ?? currentNode.parentNode;
+        currentNode = getClosestPreviousNode(source, root);
       }
     }
   } else {
@@ -149,10 +149,14 @@ export function seekOuter(input: SeekOuterInput): SeekOutput | null {
 export function depthVisitLeafNodesForward(node: Node, onVisit: (node: Node) => void | true): Node | null {
   if (!node.hasChildNodes()) {
     if (onVisit(node)) return node;
-  } else if (node.hasChildNodes()) {
-    const foundNode = depthVisitLeafNodesForward(node.firstChild!, onVisit);
+  } else {
+    // search child
+    let foundNode = depthVisitLeafNodesForward(node.firstChild!, onVisit);
     if (foundNode) return foundNode;
-  } else if (node.nextSibling) {
+  }
+
+  // search sibling
+  if (node.nextSibling) {
     const foundNode = depthVisitLeafNodesForward(node.nextSibling, onVisit);
     if (foundNode) return foundNode;
   }
@@ -166,10 +170,14 @@ export function depthVisitLeafNodesForward(node: Node, onVisit: (node: Node) => 
 export function depthVisitLeafNodesBackward(node: Node, onVisit: (node: Node) => void | true): Node | null {
   if (!node.hasChildNodes()) {
     if (onVisit(node)) return node;
-  } else if (node.hasChildNodes()) {
+  } else {
+    // search child
     const foundNode = depthVisitLeafNodesBackward(node.lastChild!, onVisit);
     if (foundNode) return foundNode;
-  } else if (node.previousSibling) {
+  }
+
+  // search sibling
+  if (node.previousSibling) {
     const foundNode = depthVisitLeafNodesBackward(node.previousSibling, onVisit);
     if (foundNode) return foundNode;
   }

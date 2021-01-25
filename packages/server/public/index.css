@@ -3,3 +3,11 @@
   font-family: monospace;
   outline: none;
 }
+
+.text--ghost {
+  opacity: 0.1;
+}
+
+.text--bold {
+  font-weight: 700;
+}
