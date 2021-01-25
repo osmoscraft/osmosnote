@@ -1,0 +1,11 @@
+.t--ghost {
+  color: var(--theme-text-color-ghost);
+}
+
+.t--secondary {
+  color: var(--theme-text-color-secondary);
+}
+
+.t--bold {
+  font-weight: 700;
+}

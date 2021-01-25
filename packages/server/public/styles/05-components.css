@@ -1,0 +1,32 @@
+/* COMPONENTS */
+
+#content-host {
+  background-color: var(--theme-background-active);
+  white-space: pre-wrap;
+  font-family: monospace;
+  outline: none;
+  padding: 16px;
+}
+
+[data-line="meta"] [data-meta-value="title"] {
+  font-weight: 700;
+}
+
+[data-line="meta"] [data-meta-value="tags"] {
+  color: var(--theme-tag-color);
+}
+
+[data-line="heading"][data-level="1"],
+[data-line="heading"][data-level="4"] {
+  color: var(--theme-h1-color);
+}
+
+[data-line="heading"][data-level="2"],
+[data-line="heading"][data-level="5"] {
+  color: var(--theme-h2-color);
+}
+
+[data-line="heading"][data-level="3"],
+[data-line="heading"][data-level="6"] {
+  color: var(--theme-h3-color);
+}

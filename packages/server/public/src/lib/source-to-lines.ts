@@ -1,10 +1,11 @@
 export interface LineElement extends HTMLDivElement {
   dataset: {
-    line: "";
+    line: "" | "heading" | "meta";
+    meta?: "title" | "tags";
   };
 }
 
-export function sourceToDom(source: string) {
+export function sourceToLines(source: string) {
   const result = document.createDocumentFragment();
 
   const lines = source.split("\n");
