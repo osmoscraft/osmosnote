@@ -3,6 +3,7 @@ TODO
   - Handle `Enter` keydown
   - Handle select left/right
   - Handle `Delete`/`Backspace` keydown
+  - Render current line with highlight
   
 
 Ref
