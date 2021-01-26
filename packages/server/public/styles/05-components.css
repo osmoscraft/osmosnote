@@ -6,6 +6,11 @@
   font-family: monospace;
   outline: none;
   padding: 16px;
+  caret-color: var(--theme-text-color);
+}
+
+#content-host * {
+  caret-color: inherit;
 }
 
 [data-line="meta"] [data-meta-value="title"] {
@@ -31,13 +36,19 @@
   color: var(--theme-h3-color);
 }
 
-[data-link] .link--target {
+[data-link] .link--title {
+  font-weight: 700;
+  color: var(--theme-link-color);
+}
+
+[data-link] a {
   color: var(--theme-text-color-secondary);
 }
 
-[data-link]:hover {
+[data-link] a {
+  cursor: pointer;
   text-decoration: underline;
 }
-[data-link]:hover .link--target {
+[data-link] a:hover {
   color: var(--theme-link-color);
 }
