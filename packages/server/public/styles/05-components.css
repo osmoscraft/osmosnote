@@ -36,19 +36,16 @@
   color: var(--theme-h3-color);
 }
 
-[data-link] .link--title {
+[data-link] .link__title {
   font-weight: 700;
   color: var(--theme-link-color);
 }
 
-[data-link] a {
+[data-link] .link__target {
   color: var(--theme-text-color-secondary);
-}
-
-[data-link] a {
-  cursor: pointer;
   text-decoration: underline;
 }
-[data-link] a:hover {
+
+[data-link] .link__target:hover {
   color: var(--theme-link-color);
 }

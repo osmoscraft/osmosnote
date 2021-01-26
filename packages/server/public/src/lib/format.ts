@@ -64,7 +64,7 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
     if (match) {
       const [raw, plainText, linkTitle, linkTarget] = match;
       paragraphHtml += plainText;
-      paragraphHtml += `<span data-link class="t--ghost">[<span class="link--title">${linkTitle}</span>](<a href="/?id=${linkTarget}">${linkTarget}</a>)</span>`;
+      paragraphHtml += `<span data-link class="t--ghost">[<span class="link__title">${linkTitle}</span>](<span data-href="${linkTarget}" class="link__target">${linkTarget}</span>)</span>`;
 
       remainingText = remainingText.slice(raw.length);
       continue;
