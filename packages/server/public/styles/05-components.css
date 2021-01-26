@@ -37,15 +37,22 @@
 }
 
 [data-link] .link__title {
-  font-weight: 700;
   color: var(--theme-link-color);
 }
 
 [data-link] .link__target {
   color: var(--theme-text-color-secondary);
-  text-decoration: underline;
 }
 
 [data-link] .link__target:hover {
   color: var(--theme-link-color);
+  text-decoration: underline;
+}
+
+[data-url] {
+  color: var(--theme-link-color);
+}
+
+[data-url]:hover {
+  text-decoration: underline;
 }

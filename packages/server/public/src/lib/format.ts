@@ -60,11 +60,21 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
   let paragraphHtml = `<span>${indent}</span>`;
   let remainingText = rawText.trim();
   while (remainingText) {
-    const match = remainingText.match(/^(.*?)\[(.+?)\]\((.+?)\)/); // links
+    let match = remainingText.match(/^(.*?)\[(.+?)\]\((.+?)\)/); // links
     if (match) {
       const [raw, plainText, linkTitle, linkTarget] = match;
       paragraphHtml += plainText;
       paragraphHtml += `<span data-link class="t--ghost">[<span class="link__title">${linkTitle}</span>](<span data-href="${linkTarget}" class="link__target">${linkTarget}</span>)</span>`;
+
+      remainingText = remainingText.slice(raw.length);
+      continue;
+    }
+
+    match = remainingText.match(/^(.*?)(https?:\/\/[^\s/$.?#].[^\s]*)/); // raw URL
+    if (match) {
+      const [raw, plainText, url] = match;
+      paragraphHtml += plainText;
+      paragraphHtml += `<span data-url>${url}</span>`;
 
       remainingText = remainingText.slice(raw.length);
       continue;
