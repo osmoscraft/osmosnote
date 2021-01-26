@@ -16,9 +16,8 @@
 [data-line="meta"] [data-meta-value="title"] {
   font-weight: 700;
 }
-
-[data-line="meta"] [data-meta-value="tags"] {
-  color: var(--theme-tag-color);
+[data-line="meta"] [data-meta-value="title"] {
+  color: var(--theme-title-color);
 }
 
 [data-line="heading"][data-level="1"],

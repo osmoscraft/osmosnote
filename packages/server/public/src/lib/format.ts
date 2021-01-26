@@ -47,7 +47,20 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
 
     line.dataset.line = "meta";
 
-    line.innerHTML = `<span class="t--secondary">#+${metaKey}: </span><span data-meta-value="${metaKey}">${metaValue}</span>\n`;
+    switch (metaKey) {
+      case "url":
+        line.innerHTML = `<span class="t--secondary">#+${metaKey}: </span><span data-url>${metaValue}</span>\n`;
+        break;
+      case "title":
+        line.innerHTML = `<span class="t--secondary">#+${metaKey}: </span><span data-meta-value="title">${metaValue}</span>\n`;
+        break;
+      case "tags":
+        line.innerHTML = `<span class="t--secondary">#+${metaKey}: </span><span data-meta-value="tags">${metaValue}</span>\n`;
+        break;
+      default:
+        throw new Error(`Unsupported meta key ${metaKey}`);
+    }
+
     return;
   }
 
@@ -90,10 +103,4 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
 export function formatLineIncremental() {
   // TBD
   // format only if marked as dirty OR context has changed
-}
-
-function isValidMetaKey(key?: string): key is LineElement["dataset"]["meta"] {
-  if (!key) return false;
-
-  return ["title", "tags"].includes(key);
 }
