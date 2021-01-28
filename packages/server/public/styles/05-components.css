@@ -2,7 +2,7 @@
 
 #content-host {
   background-color: var(--theme-background-active);
-  white-space: pre-wrap;
+  white-space: break-spaces;
   word-break: break-all;
   font-family: monospace;
   outline: none;
