@@ -349,3 +349,10 @@ export function expandRecursive(node: Node): Node | any[] {
     return node;
   }
 }
+
+export function getNodeLength(node: Node): number {
+  if ((node as Text).length !== undefined) return (node as Text).length;
+  if ((node as HTMLElement).innerText !== undefined) return (node as HTMLElement).innerText.length;
+
+  throw new Error(`Unexpected node type ${node.nodeType}`);
+}
