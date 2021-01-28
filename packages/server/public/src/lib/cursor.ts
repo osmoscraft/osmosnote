@@ -1,5 +1,14 @@
-import { firstInnerLeafNode, firstInnerTextNode, flattenToLeafNodes, isTextNode, seek } from "./dom-utils.js";
+import {
+  firstInnerLeafNode,
+  firstInnerTextNode,
+  flattenToLeafNodes,
+  getNodeLength,
+  isTextNode,
+  lastInnerLeafNode,
+  seek,
+} from "./dom-utils.js";
 import { createState } from "./global-state.js";
+import { getMeasure } from "./line-measure.js";
 
 const [getIdealInlineOffset, setIdealtInlineOffset] = createState<null | number>(null);
 
@@ -55,18 +64,38 @@ export function cursorDown() {
   const cursorEnd = getCursor()?.end;
 
   if (cursorEnd) {
-    // get offset relative to line start
+    // get offset relative to line end
     const currentLine = getLine(cursorEnd.node)!;
-    const nextLine = getNextLine(currentLine);
+    const inlineOffsetBackward = getInlineOffsetBackward(cursorEnd.node, cursorEnd.offset);
+    const measure = getMeasure();
 
+    if (inlineOffsetBackward > measure) {
+      // TODO If total length has wrap, this condition can be false for last line
+      // So instead, we should use total length of line to determine line move strategy
+      // If remaining chars don't make up a whole line move, we just move to line end
+
+      // has wrap
+      const indent = getIndentSize(currentLine);
+      const apparentMeasure = measure - indent; // TODO this can be negative
+
+      // TODO handle cursor down when in indent zone
+      // TODO this is inefficient.
+      const inlineOffset = getInlineOffset(cursorEnd.node, cursorEnd.offset);
+      const target = seek({ source: currentLine, offset: inlineOffset, seek: apparentMeasure })!;
+
+      setCollapsedCursor(target.node, target.offset);
+      return;
+    }
+
+    const nextLine = getNextLine(currentLine);
     if (!nextLine) return;
 
-    const inlineOffset = getSensibleOffset(
+    const targetInlineOffset = getSensibleOffset(
       nextLine,
       getIdealInlineOffset() ?? getInlineOffset(cursorEnd.node, cursorEnd.offset)
     );
 
-    const seekOuput = seek({ source: nextLine, offset: inlineOffset });
+    const seekOuput = seek({ source: nextLine, offset: targetInlineOffset });
     if (seekOuput) setCollapsedCursor(seekOuput.node, seekOuput.offset);
   }
 }
@@ -77,15 +106,30 @@ export function cursorUp() {
   if (cursorEnd) {
     // get offset relative to line start
     const currentLine = getLine(cursorEnd.node)!;
+    const inlineOffset = getInlineOffset(cursorEnd.node, cursorEnd.offset);
+    const measure = getMeasure();
+
+    if (inlineOffset > measure) {
+      // has wrap
+      const indent = getIndentSize(currentLine);
+      const apparentMeasure = measure - indent; // TODO this can be negative
+      const target = seek({ source: currentLine, offset: inlineOffset, seek: -apparentMeasure })!;
+
+      setCollapsedCursor(target.node, target.offset);
+      return;
+    }
+
     const previousLine = getPreviousLine(currentLine);
 
     if (!previousLine) return;
 
-    const inlineOffset = getSensibleOffset(
+    // TODO first the last instance of the desired column
+
+    const targetInlineOffset = getSensibleOffset(
       previousLine,
       getIdealInlineOffset() ?? getInlineOffset(cursorEnd.node, cursorEnd.offset)
     );
-    const seekOuput = seek({ source: previousLine, offset: inlineOffset });
+    const seekOuput = seek({ source: previousLine, offset: targetInlineOffset });
     if (seekOuput) setCollapsedCursor(seekOuput.node, seekOuput.offset);
   }
 }
@@ -182,6 +226,32 @@ export function getInlineOffset(node: Node, offset: number = 0): number {
   return inlineOffset + offset;
 }
 
+/**
+ * Same as `getInlineOffset` except the reference point is the end of the line, including any whitespace character
+ * The return value is the absolute distance and can never be negative
+ */
+export function getInlineOffsetBackward(node: Node, offset: number = 0): number {
+  const line = getLine(node);
+  if (!line) {
+    throw new Error("Cannot get inline offset because the node is not inside a line element");
+  }
+
+  const leafNodes = flattenToLeafNodes(line);
+  const measureAfterNode = lastInnerLeafNode(node)!;
+  const measureAfterIndex = leafNodes.indexOf(measureAfterNode);
+
+  if (measureAfterIndex < 0) throw new Error("Cannot locate node within the line element");
+
+  const inlineOffset = leafNodes
+    .slice(measureAfterIndex + 1)
+    .reduce((length, node) => length + (isTextNode(node) ? node.length : length), 0);
+
+  const nodeRemainingLength = getNodeLength(node) - offset;
+  if (nodeRemainingLength < 0) throw new Error(`The given offset is outside of node`);
+
+  return inlineOffset + nodeRemainingLength;
+}
+
 function getLine(node: Node): HTMLElement | null {
   const line = node.parentElement!.closest("[data-line]") as HTMLElement | null;
   return line;
@@ -217,4 +287,8 @@ function setCollapsedCursor(node: Node, offset: number = 0) {
   range.collapse();
 
   selection.addRange(range);
+}
+
+function getIndentSize(line: HTMLElement): number {
+  return (line.querySelector("[data-indent]") as HTMLElement)?.innerText.length ?? 0;
 }

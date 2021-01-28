@@ -4,6 +4,7 @@
   background-color: var(--theme-background-active);
   white-space: break-spaces;
   word-break: break-all;
+  line-break: anywhere;
   font-family: monospace;
   outline: none;
   padding: 16px;
