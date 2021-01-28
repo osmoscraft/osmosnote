@@ -46,6 +46,8 @@ export function cursorLeft(root: Node) {
   const seekOuput = seek({ source: cursorEnd.node, offset: cursorEnd.offset, seek: -1, root });
   if (seekOuput) {
     setCollapsedCursor(seekOuput.node, seekOuput.offset);
+
+    // TODO when in wrapped line, ideal inline offset needs to be apparent column
     updateIdealInlineOffset();
   }
 }
