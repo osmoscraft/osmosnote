@@ -35,13 +35,15 @@ function getLineMeasureRecursive(host: HTMLElement, lower: number, upper: number
 }
 
 function getLineCount(host: HTMLElement, contentLength: number): number {
-  const probeString = ".".repeat(contentLength);
+  const probeString = "m".repeat(contentLength);
+  const probeContainer = document.createElement("div");
   const probeElement = document.createElement("span");
   probeElement.innerHTML = probeString;
-  probeElement.style.overflowWrap = "anywhere";
+  probeElement.style.wordBreak = "break-all";
+  probeContainer.appendChild(probeElement);
 
-  host.appendChild(probeElement);
+  host.appendChild(probeContainer);
   const lineCount = probeElement.getClientRects().length;
-  probeElement.remove();
+  probeContainer.remove();
   return lineCount;
 }

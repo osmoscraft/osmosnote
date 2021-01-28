@@ -3,7 +3,7 @@
 #content-host {
   background-color: var(--theme-background-active);
   white-space: pre-wrap;
-  word-break: break-word;
+  word-break: break-all;
   font-family: monospace;
   outline: none;
   padding: 16px;
@@ -12,6 +12,16 @@
 
 #content-host * {
   caret-color: inherit;
+}
+
+[data-line] {
+  display: flex;
+}
+[data-line] [data-indent] {
+  flex: 0 0 auto;
+}
+[data-line] [data-wrap] {
+  flex: 1 1 auto;
 }
 
 [data-line="meta"] [data-meta-value="title"] {

@@ -35,7 +35,7 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
     const indent = ` `.repeat(hashes.length - 1);
     const hiddenHashes = `#`.repeat(hashes.length - 1);
 
-    line.innerHTML = `<span>${indent}</span><span class="t--ghost">${hiddenHashes}</span><span class="t--bold"># ${text}</span>\n`;
+    line.innerHTML = `<span data-indent>${indent}</span><span data-wrap><span class="t--ghost">${hiddenHashes}</span><span class="t--bold"># ${text}</span>\n</span>`;
 
     return;
   }
@@ -49,13 +49,13 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
 
     switch (metaKey) {
       case "url":
-        line.innerHTML = `<span class="t--secondary">#+${metaKey}: </span><span data-url>${metaValue}</span>\n`;
+        line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-url>${metaValue}</span>\n</span>`;
         break;
       case "title":
-        line.innerHTML = `<span class="t--secondary">#+${metaKey}: </span><span data-meta-value="title">${metaValue}</span>\n`;
+        line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="title">${metaValue}</span>\n</span>`;
         break;
       case "tags":
-        line.innerHTML = `<span class="t--secondary">#+${metaKey}: </span><span data-meta-value="tags">${metaValue}</span>\n`;
+        line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="tags">${metaValue}</span>\n</span>`;
         break;
       default:
         throw new Error(`Unsupported meta key ${metaKey}`);
@@ -70,7 +70,7 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
   // paragraph
   const indent = ` `.repeat(context.level * 2);
 
-  let paragraphHtml = `<span>${indent}</span>`;
+  let paragraphHtml = "";
   let remainingText = rawText.trim();
   while (remainingText) {
     let match = remainingText.match(/^(.*?)\[(.+?)\]\((.+?)\)/); // links
@@ -97,7 +97,7 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
     remainingText = "";
   }
 
-  line.innerHTML = `${paragraphHtml}\n`;
+  line.innerHTML = `<span data-indent>${indent}</span><span data-wrap>${paragraphHtml}\n</span>`;
 }
 
 export function formatLineIncremental() {
