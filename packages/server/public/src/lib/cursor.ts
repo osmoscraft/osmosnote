@@ -177,6 +177,7 @@ function getLastRowIndexOfLine(line: HTMLElement, measure: number): number {
 /**
  * Calculate offset based on the 0-based column and row position within a wrapped line
  * When column overflows, last column on the row will be used
+ * When column underflows (possible when there is a wrap), first feasible column will be used
  * When row overflows, last position of line will be used
  */
 function getOffsetInWrappedLine(input: {
@@ -188,7 +189,7 @@ function getOffsetInWrappedLine(input: {
 }): number {
   const { lineLength, measure, indent = 0, column = 0, row = 0 } = input;
   const apparentLineLength = measure - indent;
-  const feasibleColumn = Math.min(measure, column);
+  const feasibleColumn = Math.max(indent, Math.min(measure, column));
   const offset = row * apparentLineLength + feasibleColumn;
   const feasibleOffset = Math.min(lineLength, offset);
 
