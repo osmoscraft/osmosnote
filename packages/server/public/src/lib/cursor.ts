@@ -1,12 +1,4 @@
-import {
-  firstInnerLeafNode,
-  firstInnerTextNode,
-  flattenToLeafNodes,
-  getNodeLength,
-  isTextNode,
-  lastInnerLeafNode,
-  seek,
-} from "./dom-utils.js";
+import { firstInnerLeafNode, firstInnerTextNode, flattenToLeafNodes, isTextNode, seek } from "./dom-utils.js";
 import { createState } from "./global-state.js";
 import { getMeasure } from "./line-measure.js";
 
@@ -77,8 +69,6 @@ export function cursorDown() {
     const lineLength = indent + wrappedLineLength;
 
     if (lineLength > measure) {
-      // TODO when last char is \n, lineLength can be 1 char longer than measure without wrap
-      // BUT we already -1??
       // has wrap
       const inlineOffset = getInlineOffset(cursorEnd.node, cursorEnd.offset);
       const apparentMeasure = measure - indent; // TODO this can be negative
@@ -93,6 +83,7 @@ export function cursorDown() {
         return;
       } else if (currentRowIndex < lastRowIndex) {
         // Has wrapped line below: Move to next wrapped line
+        // consider consolidate with cursor up sub routines
         const targetOffset = getOffsetInWrappedLine({
           lineLength,
           measure,
@@ -129,6 +120,7 @@ export function cursorUp() {
     const measure = getMeasure();
 
     if (inlineOffset > measure) {
+      // refactor repeating logic into function setColumnOfRow()
       const indent = getIndentSize(currentLine);
       const lineLength = getLineLength(currentLine);
       const apparentMeasure = measure - indent; // TODO this can be negative
@@ -145,13 +137,6 @@ export function cursorUp() {
       if (seekOuput) setCollapsedCursor(seekOuput.node, seekOuput.offset);
 
       return;
-      // has wrap
-      // const indent = getIndentSize(currentLine);
-      // const apparentMeasure = measure - indent; // TODO this can be negative
-      // const target = seek({ source: currentLine, offset: inlineOffset, seek: -apparentMeasure })!;
-
-      // setCollapsedCursor(target.node, target.offset);
-      // return;
     }
 
     const previousLine = getPreviousLine(currentLine);
