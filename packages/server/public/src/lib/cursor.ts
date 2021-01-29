@@ -83,8 +83,8 @@ export function cursorDown() {
       // has wrap
       const inlineOffset = getInlineOffset(cursorEnd.node, cursorEnd.offset);
       const apparentMeasure = measure - indent; // TODO this can be negative
-      const totalWrappedLineCount = Math.floor((lineLength - indent) / apparentMeasure);
-      const currentLineCount = Math.floor((inlineOffset - indent) / apparentMeasure);
+      const totalWrappedLineCount = Math.ceil((lineLength - indent) / apparentMeasure);
+      const currentLineCount = Math.ceil((inlineOffset - indent) / apparentMeasure);
 
       if (inlineOffset < indent) {
         // Inside initial indent: Move to 1st wrapped line start
@@ -138,28 +138,73 @@ export function cursorUp() {
 
     if (!previousLine) return;
 
-    // TODO first the last instance of the desired column
+    const indent = getIndentSize(previousLine);
+    const lineLength = getLineLength(previousLine);
+    const wrappedLineCount = getWrappedLineCount(previousLine, measure);
+    const targetOffset = getOffsetInWrappedLine({
+      lineLength,
+      measure,
+      indent,
+      column: getIdealInlineOffset() ?? getInlineOffset(cursorEnd.node, cursorEnd.offset),
+      row: wrappedLineCount - 1,
+    });
 
-    const targetInlineOffset = getSensibleOffset(
-      previousLine,
-      getIdealInlineOffset() ?? getInlineOffset(cursorEnd.node, cursorEnd.offset)
-    );
-    const seekOuput = seek({ source: previousLine, offset: targetInlineOffset });
+    const seekOuput = seek({ source: previousLine, offset: targetOffset });
     if (seekOuput) setCollapsedCursor(seekOuput.node, seekOuput.offset);
   }
 }
 
-function getSensibleOffset(line: HTMLElement, ...candidates: number[]) {
-  const lineLength = flattenToLeafNodes(line).reduce(
-    (length, node) => length + (isTextNode(node) ? node.length : 0),
-    0
-  );
+function getWrappedLineCount(line: HTMLElement, measure: number): number {
+  const indent = getIndentSize(line);
+  const wrappedLineLength = getWrappedLineLength(line);
+  const lineLength = indent + wrappedLineLength;
 
-  const maxLineOffset = lineLength - 1;
+  if (lineLength > measure) {
+    // has wrap
+    const apparentMeasure = measure - indent; // TODO this can be negative
+    const totalWrappedLineCount = Math.ceil(wrappedLineLength / apparentMeasure);
+    return totalWrappedLineCount;
+  } else {
+    return 1;
+  }
+}
+
+/**
+ * Calculate offset based on the 0-based column and row position within a wrapped line
+ * When column overflows, last column on the row will be used
+ * When row overflows, last position of line will be used
+ */
+function getOffsetInWrappedLine(input: {
+  lineLength: number;
+  measure: number;
+  indent?: number;
+  column?: number;
+  row?: number;
+}): number {
+  const { lineLength, measure, indent = 0, column = 0, row = 0 } = input;
+  const apparentLineLength = measure - indent;
+  const feasibleColumn = Math.min(measure, column);
+  const offset = row * apparentLineLength + feasibleColumn;
+  const feasibleOffset = Math.min(lineLength, offset);
+
+  return Math.min(feasibleOffset, offset);
+}
+
+function getSensibleOffset(line: HTMLElement, ...candidates: number[]) {
+  const lineLength = getLineLength(line);
+
+  const maxLineOffset = lineLength;
   if (maxLineOffset < 0) throw new Error("A line must have a least 1 character (including newline)");
 
   const result = candidates.find((candidate) => candidate < maxLineOffset);
   return result === undefined ? maxLineOffset : result;
+}
+
+function getLineLength(line: HTMLElement) {
+  const indent = getIndentSize(line);
+  const wrappedLineLength = getWrappedLineLength(line);
+
+  return indent + wrappedLineLength;
 }
 
 export interface Cursor {
