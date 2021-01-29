@@ -57,8 +57,12 @@ function updateIdealInlineOffset() {
 
   if (cursor) {
     const { node, offset } = cursor.end;
-    const cursorLeftEdgeIndex = getInlineOffset(node, offset);
-    setIdealtInlineOffset(cursorLeftEdgeIndex);
+    const inlineOffset = getInlineOffset(node, offset);
+    const currentLine = getLine(node)!;
+    const indent = getIndentSize(currentLine);
+    const measure = getMeasure();
+    const wrappedInlineOffset = ((inlineOffset - indent) % (measure - indent)) + indent;
+    setIdealtInlineOffset(wrappedInlineOffset);
   }
 }
 
@@ -68,25 +72,34 @@ export function cursorDown() {
   if (cursorEnd) {
     // get offset relative to line end
     const currentLine = getLine(cursorEnd.node)!;
-    const inlineOffsetBackward = getInlineOffsetBackward(cursorEnd.node, cursorEnd.offset);
+    // const inlineOffsetBackward = getInlineOffsetBackward(cursorEnd.node, cursorEnd.offset);
     const measure = getMeasure();
 
-    if (inlineOffsetBackward > measure) {
-      // TODO If total length has wrap, this condition can be false for last line
-      // So instead, we should use total length of line to determine line move strategy
-      // If remaining chars don't make up a whole line move, we just move to line end
+    const indent = getIndentSize(currentLine);
+    const wrappedLineLength = getWrappedLineLength(currentLine);
+    const lineLength = indent + wrappedLineLength;
 
+    if (lineLength > measure) {
       // has wrap
-      const indent = getIndentSize(currentLine);
-      const apparentMeasure = measure - indent; // TODO this can be negative
-
-      // TODO handle cursor down when in indent zone
-      // TODO this is inefficient.
       const inlineOffset = getInlineOffset(cursorEnd.node, cursorEnd.offset);
-      const target = seek({ source: currentLine, offset: inlineOffset, seek: apparentMeasure })!;
+      const apparentMeasure = measure - indent; // TODO this can be negative
+      const totalWrappedLineCount = Math.floor((lineLength - indent) / apparentMeasure);
+      const currentLineCount = Math.floor((inlineOffset - indent) / apparentMeasure);
 
-      setCollapsedCursor(target.node, target.offset);
-      return;
+      if (inlineOffset < indent) {
+        // Inside initial indent: Move to 1st wrapped line start
+        const target = seek({ source: currentLine, offset: measure })!;
+        setCollapsedCursor(target.node, target.offset);
+
+        return;
+      } else if (currentLineCount < totalWrappedLineCount) {
+        // Has wrapped line below: Move to next wrapped line
+        const targetOffset = Math.min(lineLength, inlineOffset + apparentMeasure);
+        const target = seek({ source: currentLine, offset: targetOffset })!;
+        setCollapsedCursor(target.node, target.offset);
+
+        return;
+      }
     }
 
     const nextLine = getNextLine(currentLine);
@@ -293,4 +306,14 @@ function setCollapsedCursor(node: Node, offset: number = 0) {
 
 function getIndentSize(line: HTMLElement): number {
   return (line.querySelector("[data-indent]") as HTMLElement)?.innerText.length ?? 0;
+}
+
+function getWrappedLineLength(line: HTMLElement): number {
+  const inlineText = (line.querySelector("[data-wrap]") as HTMLElement)?.innerText;
+  if (inlineText) {
+    const fullLength = inlineText.length;
+    return inlineText[fullLength - 1] === "\n" ? fullLength - 1 : fullLength;
+  }
+
+  return 0;
 }
