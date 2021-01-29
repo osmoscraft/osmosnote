@@ -70,11 +70,8 @@ export function cursorDown() {
   const cursorEnd = getCursor()?.end;
 
   if (cursorEnd) {
-    // get offset relative to line end
     const currentLine = getLine(cursorEnd.node)!;
-    // const inlineOffsetBackward = getInlineOffsetBackward(cursorEnd.node, cursorEnd.offset);
     const measure = getMeasure();
-
     const indent = getIndentSize(currentLine);
     const wrappedLineLength = getWrappedLineLength(currentLine);
     const lineLength = indent + wrappedLineLength;
@@ -83,7 +80,7 @@ export function cursorDown() {
       // has wrap
       const inlineOffset = getInlineOffset(cursorEnd.node, cursorEnd.offset);
       const apparentMeasure = measure - indent; // TODO this can be negative
-      const totalWrappedLineCount = Math.ceil((lineLength - indent) / apparentMeasure);
+      const totalWrappedLineCount = Math.ceil(wrappedLineLength / apparentMeasure);
       const currentLineCount = Math.ceil((inlineOffset - indent) / apparentMeasure);
 
       if (inlineOffset < indent) {
@@ -119,7 +116,6 @@ export function cursorUp() {
   const cursorEnd = getCursor()?.end;
 
   if (cursorEnd) {
-    // get offset relative to line start
     const currentLine = getLine(cursorEnd.node)!;
     const inlineOffset = getInlineOffset(cursorEnd.node, cursorEnd.offset);
     const measure = getMeasure();
@@ -284,32 +280,6 @@ export function getInlineOffset(node: Node, offset: number = 0): number {
     .reduce((length, node) => length + (isTextNode(node) ? node.length : length), 0);
 
   return inlineOffset + offset;
-}
-
-/**
- * Same as `getInlineOffset` except the reference point is the end of the line, including any whitespace character
- * The return value is the absolute distance and can never be negative
- */
-export function getInlineOffsetBackward(node: Node, offset: number = 0): number {
-  const line = getLine(node);
-  if (!line) {
-    throw new Error("Cannot get inline offset because the node is not inside a line element");
-  }
-
-  const leafNodes = flattenToLeafNodes(line);
-  const measureAfterNode = lastInnerLeafNode(node)!;
-  const measureAfterIndex = leafNodes.indexOf(measureAfterNode);
-
-  if (measureAfterIndex < 0) throw new Error("Cannot locate node within the line element");
-
-  const inlineOffset = leafNodes
-    .slice(measureAfterIndex + 1)
-    .reduce((length, node) => length + (isTextNode(node) ? node.length : length), 0);
-
-  const nodeRemainingLength = getNodeLength(node) - offset;
-  if (nodeRemainingLength < 0) throw new Error(`The given offset is outside of node`);
-
-  return inlineOffset + nodeRemainingLength;
 }
 
 function getLine(node: Node): HTMLElement | null {
