@@ -39,7 +39,7 @@ export function seek(input: SeekInput): SeekOutput | null {
       } else if (currentNode === root) {
         break;
       } else {
-        currentNode = getClosestNextNode(source, root);
+        currentNode = getClosestNextNode(currentNode, root);
       }
     }
   } else {
@@ -54,7 +54,7 @@ export function seek(input: SeekInput): SeekOutput | null {
       } else if (currentNode === root) {
         break;
       } else {
-        currentNode = getClosestPreviousNode(source, root);
+        currentNode = getClosestPreviousNode(currentNode, root);
       }
     }
   }
@@ -111,7 +111,7 @@ export function seekOuter(input: SeekOuterInput): SeekOutput | null {
       } else if (currentNode === root) {
         break;
       } else {
-        currentNode = getClosestNextNode(source, root);
+        currentNode = getClosestNextNode(currentNode, root);
       }
     }
   } else if (offsetFromSoureNodeEdge < 0 || Object.is(offsetFromSoureNodeEdge, -0)) {
@@ -126,7 +126,7 @@ export function seekOuter(input: SeekOuterInput): SeekOutput | null {
       } else if (currentNode === root) {
         break;
       } else {
-        currentNode = getClosestPreviousNode(source, root);
+        currentNode = getClosestPreviousNode(currentNode, root);
       }
     }
   } else {

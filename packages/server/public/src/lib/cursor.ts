@@ -77,11 +77,13 @@ export function cursorDown() {
     const lineLength = indent + wrappedLineLength;
 
     if (lineLength > measure) {
+      // TODO when last char is \n, lineLength can be 1 char longer than measure without wrap
+      // BUT we already -1??
       // has wrap
       const inlineOffset = getInlineOffset(cursorEnd.node, cursorEnd.offset);
       const apparentMeasure = measure - indent; // TODO this can be negative
-      const totalWrappedLineCount = Math.ceil(wrappedLineLength / apparentMeasure);
-      const currentLineCount = Math.ceil((inlineOffset - indent) / apparentMeasure);
+      const lastRowIndex = Math.floor(wrappedLineLength / apparentMeasure);
+      const currentRowIndex = Math.floor((inlineOffset - indent) / apparentMeasure);
 
       if (inlineOffset < indent) {
         // Inside initial indent: Move to 1st wrapped line start
@@ -89,9 +91,15 @@ export function cursorDown() {
         setCollapsedCursor(target.node, target.offset);
 
         return;
-      } else if (currentLineCount < totalWrappedLineCount) {
+      } else if (currentRowIndex < lastRowIndex) {
         // Has wrapped line below: Move to next wrapped line
-        const targetOffset = Math.min(lineLength, inlineOffset + apparentMeasure);
+        const targetOffset = getOffsetInWrappedLine({
+          lineLength,
+          measure,
+          indent,
+          column: getIdealInlineOffset() ?? getInlineOffset(cursorEnd.node, cursorEnd.offset),
+          row: currentRowIndex + 1,
+        });
         const target = seek({ source: currentLine, offset: targetOffset })!;
         setCollapsedCursor(target.node, target.offset);
 
@@ -121,13 +129,29 @@ export function cursorUp() {
     const measure = getMeasure();
 
     if (inlineOffset > measure) {
-      // has wrap
       const indent = getIndentSize(currentLine);
+      const lineLength = getLineLength(currentLine);
       const apparentMeasure = measure - indent; // TODO this can be negative
-      const target = seek({ source: currentLine, offset: inlineOffset, seek: -apparentMeasure })!;
+      const currentRowIndex = Math.floor((inlineOffset - indent) / apparentMeasure);
+      const targetOffset = getOffsetInWrappedLine({
+        lineLength,
+        measure,
+        indent,
+        column: getIdealInlineOffset() ?? getInlineOffset(cursorEnd.node, cursorEnd.offset),
+        row: currentRowIndex - 1,
+      });
 
-      setCollapsedCursor(target.node, target.offset);
+      const seekOuput = seek({ source: currentLine, offset: targetOffset });
+      if (seekOuput) setCollapsedCursor(seekOuput.node, seekOuput.offset);
+
       return;
+      // has wrap
+      // const indent = getIndentSize(currentLine);
+      // const apparentMeasure = measure - indent; // TODO this can be negative
+      // const target = seek({ source: currentLine, offset: inlineOffset, seek: -apparentMeasure })!;
+
+      // setCollapsedCursor(target.node, target.offset);
+      // return;
     }
 
     const previousLine = getPreviousLine(currentLine);
@@ -136,13 +160,13 @@ export function cursorUp() {
 
     const indent = getIndentSize(previousLine);
     const lineLength = getLineLength(previousLine);
-    const wrappedLineCount = getWrappedLineCount(previousLine, measure);
+    const lastRowIndex = getLastRowIndexOfLine(previousLine, measure);
     const targetOffset = getOffsetInWrappedLine({
       lineLength,
       measure,
       indent,
       column: getIdealInlineOffset() ?? getInlineOffset(cursorEnd.node, cursorEnd.offset),
-      row: wrappedLineCount - 1,
+      row: lastRowIndex,
     });
 
     const seekOuput = seek({ source: previousLine, offset: targetOffset });
@@ -150,7 +174,7 @@ export function cursorUp() {
   }
 }
 
-function getWrappedLineCount(line: HTMLElement, measure: number): number {
+function getLastRowIndexOfLine(line: HTMLElement, measure: number): number {
   const indent = getIndentSize(line);
   const wrappedLineLength = getWrappedLineLength(line);
   const lineLength = indent + wrappedLineLength;
@@ -158,10 +182,10 @@ function getWrappedLineCount(line: HTMLElement, measure: number): number {
   if (lineLength > measure) {
     // has wrap
     const apparentMeasure = measure - indent; // TODO this can be negative
-    const totalWrappedLineCount = Math.ceil(wrappedLineLength / apparentMeasure);
-    return totalWrappedLineCount;
+    const rowIndex = Math.floor(wrappedLineLength / apparentMeasure);
+    return rowIndex;
   } else {
-    return 1;
+    return 0;
   }
 }
 
