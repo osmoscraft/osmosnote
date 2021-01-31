@@ -1,39 +1,11 @@
-import { firstInnerLeafNode, flattenToLeafNodes, isTextNode } from "../dom-utils.js";
 import {
-  getPositionByOffset,
   getLine,
   getLineStartPosition,
   getNextLine,
   isAfterLineEnd,
   Position,
+  getNodeLinePosition,
 } from "../line-query.js";
-
-export function getCursorLinePosition(cursorPosition: CursorPosition): Position {
-  const { node, offset: cursorOffset } = cursorPosition;
-  const line = getLine(node);
-  if (!line) {
-    throw new Error("Cannot get inline offset because the node is not inside a line element");
-  }
-
-  const leafNodes = flattenToLeafNodes(line);
-  const measureToNode = firstInnerLeafNode(node)!;
-  const measureToIndex = leafNodes.indexOf(measureToNode);
-
-  if (measureToIndex < 0) throw new Error("Cannot locate node within the line element");
-
-  const inlineOffset = leafNodes
-    .slice(0, measureToIndex)
-    .reduce((length, node) => length + (isTextNode(node) ? node.length : length), 0);
-
-  const offset = inlineOffset + cursorOffset;
-  const { row, column } = getPositionByOffset(line, offset);
-
-  return {
-    offset,
-    row,
-    column,
-  };
-}
 
 export interface Cursor {
   end: CursorPosition;
@@ -42,6 +14,12 @@ export interface Cursor {
 export interface CursorPosition {
   node: Node;
   offset: number;
+}
+
+export function getCursorLinePosition(cursorPosition: CursorPosition): Position {
+  const { node, offset } = cursorPosition;
+  const position = getNodeLinePosition(node, offset);
+  return position;
 }
 
 export function getCursor(): Cursor | null {

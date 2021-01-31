@@ -5,7 +5,6 @@ import {
   getNextLine,
   getOffsetByVisualPosition,
   getPreviousLine,
-  Position,
   VisualPosition,
 } from "../line-query.js";
 import { getCursor, getCursorLinePosition, getNearestEditablePositionForward } from "./cursor-query.js";

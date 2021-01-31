@@ -59,12 +59,12 @@ export function getLineStartPosition(lineElement: HTMLElement) {
 }
 
 /**
- * The offset of the left edge of the node, relative to the line it's in
+ * Position of a node relative to the line that contains it
  */
-export function getInlineOffset(node: Node, offset: number = 0): number {
+export function getNodeLinePosition(node: Node, offsetFromNode: number = 0): Position {
   const line = getLine(node);
   if (!line) {
-    throw new Error("Cannot get inline offset because the node is not inside a line element");
+    throw new Error("Cannot get line position because the node is not inside a line element");
   }
 
   const leafNodes = flattenToLeafNodes(line);
@@ -77,7 +77,14 @@ export function getInlineOffset(node: Node, offset: number = 0): number {
     .slice(0, measureToIndex)
     .reduce((length, node) => length + (isTextNode(node) ? node.length : length), 0);
 
-  return inlineOffset + offset;
+  const offsetFromLine = inlineOffset + offsetFromNode;
+  const { row, column } = getPositionByOffset(line, offsetFromLine);
+
+  return {
+    offset: offsetFromLine,
+    row,
+    column,
+  };
 }
 
 export interface Position extends VisualPosition, LinearPosition {}
