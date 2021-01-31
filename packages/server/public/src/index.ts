@@ -1,10 +1,10 @@
 import { query } from "./lib/query.js";
 import { getNoteConfigFromUrl } from "./lib/route.js";
 import { sourceToLines } from "./lib/source-to-lines.js";
-import { cursorRight, cursorLeft, renderDefaultCursor, cursorDown, cursorUp } from "./lib/cursor.js";
 import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
 import { formatAll } from "./lib/format.js";
 import { calculateMeasure, getMeasure, setMeasure } from "./lib/line-measure.js";
+import { renderDefaultCursor, cursorLeft, cursorRight, cursorDown, cursorUp } from "./lib/curosr/cursor-select.js";
 
 async function loadNote() {
   const { id } = getNoteConfigFromUrl();
@@ -62,6 +62,9 @@ function handleEvents() {
         event.preventDefault();
         cursorUp();
         break;
+      // Inputs
+      case "Enter": // Enter
+        event.preventDefault();
     }
   });
 }
