@@ -1,5 +1,5 @@
 import { createState } from "../global-state.js";
-import { getGridPositionByOffset, getInlineOffset, getLine } from "../line-query.js";
+import { getPositionByOffset, getInlineOffset, getLine } from "../line-query.js";
 import { getCursor } from "./cursor-query.js";
 
 export const [getIdealColumn, setIdealColumn] = createState<null | number>(null);
@@ -11,7 +11,7 @@ export function updateIdealColumn() {
     const { node, offset } = cursor.end;
     const inlineOffset = getInlineOffset(node, offset);
     const currentLine = getLine(node)!;
-    const { column } = getGridPositionByOffset(currentLine, inlineOffset);
+    const { column } = getPositionByOffset(currentLine, inlineOffset);
     setIdealColumn(column);
   }
 }

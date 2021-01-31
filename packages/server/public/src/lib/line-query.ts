@@ -9,7 +9,7 @@ export function getLine(node: Node): HTMLElement | null {
 export interface LineMetrics {
   indent: number;
   /** Total length without any line end character */
-  editableLength: number;
+  selectableLength: number;
   /** Editable length without indent */
   wrappableLength: number;
   /** Screen width */
@@ -24,14 +24,14 @@ export function getLineMetrics(line: HTMLElement): LineMetrics {
   const indent = getIndentSize(line);
   const measure = getMeasure();
   const wrappableLength = getWrappedLineLength(line);
-  const editableLength = indent + wrappableLength;
+  const selectableLength = indent + wrappableLength;
   const apparentMeasure = measure - indent;
   const lastRowIndex = Math.floor(wrappableLength / apparentMeasure);
-  const isWrapped = editableLength > measure;
+  const isWrapped = selectableLength > measure;
 
   return {
     indent,
-    editableLength,
+    selectableLength: selectableLength,
     wrappableLength,
     measure,
     apparentMeasure,
@@ -80,9 +80,15 @@ export function getInlineOffset(node: Node, offset: number = 0): number {
   return inlineOffset + offset;
 }
 
-export interface GridPosition {
+export interface Position extends VisualPosition, LinearPosition {}
+
+export interface VisualPosition {
   row: number;
   column: number;
+}
+
+export interface LinearPosition {
+  offset: number;
 }
 
 /**
@@ -91,14 +97,41 @@ export interface GridPosition {
  * 1. The column may not be ediable, e.g. when line wraps, the vacumm area on left.
  * 2. If the length of the line is assumed to be infinite.
  */
-export function getGridPositionByOffset(line: HTMLElement, offset: number): GridPosition {
+export function getPositionByOffset(line: HTMLElement, offset: number): Position {
   const { indent, apparentMeasure } = getLineMetrics(line);
-  const column = ((offset - indent) % apparentMeasure) + indent;
-  const row = Math.floor((offset - indent) / apparentMeasure);
-  return {
-    row,
-    column,
-  };
+
+  if (offset < indent) {
+    return {
+      offset,
+      row: 0,
+      column: offset,
+    };
+  } else {
+    const column = ((offset - indent) % apparentMeasure) + indent;
+    const row = Math.floor((offset - indent) / apparentMeasure);
+    return {
+      offset,
+      row,
+      column,
+    };
+  }
+}
+
+/**
+ * Given column and row of a line, get the offset from the start of the line
+ * Note:
+ * 1. When column overflows, last column on the row will be used
+ * 2. When column underflows (possible when there is a wrap), first feasible column will be used
+ * 3. When row overflows, last position of line will be used
+ */
+export function getOffsetByVisualPosition(line: HTMLElement, visualPosition: VisualPosition): number {
+  const { column, row } = visualPosition;
+  const { indent, measure, apparentMeasure, selectableLength: editableLength } = getLineMetrics(line);
+  const feasibleColumn = Math.max(row > 0 ? indent : 0, Math.min(measure, column)); // only 1st row can use the indent
+  const offset = row * apparentMeasure + feasibleColumn;
+  const feasibleOffset = Math.min(editableLength, offset);
+
+  return Math.min(feasibleOffset, offset);
 }
 
 export function getNextLine(currentLine: HTMLElement): HTMLElement | null {

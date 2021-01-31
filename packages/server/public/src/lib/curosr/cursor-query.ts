@@ -1,35 +1,14 @@
 import { firstInnerLeafNode, flattenToLeafNodes, isTextNode } from "../dom-utils.js";
-import { getGridPositionByOffset, getLine, getLineStartPosition, getNextLine, isAfterLineEnd } from "../line-query.js";
+import {
+  getPositionByOffset,
+  getLine,
+  getLineStartPosition,
+  getNextLine,
+  isAfterLineEnd,
+  Position,
+} from "../line-query.js";
 
-/**
- * Calculate offset based on the 0-based column and row position within a wrapped line
- * When column overflows, last column on the row will be used
- * When column underflows (possible when there is a wrap), first feasible column will be used
- * When row overflows, last position of line will be used
- */
-export function getOffsetInWrappedLine(input: {
-  lineLength: number;
-  measure: number;
-  indent?: number;
-  column?: number;
-  row?: number;
-}): number {
-  const { lineLength, measure, indent = 0, column = 0, row = 0 } = input;
-  const apparentLineLength = measure - indent;
-  const feasibleColumn = Math.max(indent, Math.min(measure, column));
-  const offset = row * apparentLineLength + feasibleColumn;
-  const feasibleOffset = Math.min(lineLength, offset);
-
-  return Math.min(feasibleOffset, offset);
-}
-
-export interface CursorLinePosition {
-  offset: number;
-  row: number;
-  column: number;
-}
-
-export function getCursorLinePosition(cursorPosition: CursorPosition): CursorLinePosition {
+export function getCursorLinePosition(cursorPosition: CursorPosition): Position {
   const { node, offset: cursorOffset } = cursorPosition;
   const line = getLine(node);
   if (!line) {
@@ -47,7 +26,7 @@ export function getCursorLinePosition(cursorPosition: CursorPosition): CursorLin
     .reduce((length, node) => length + (isTextNode(node) ? node.length : length), 0);
 
   const offset = inlineOffset + cursorOffset;
-  const { row, column } = getGridPositionByOffset(line, offset);
+  const { row, column } = getPositionByOffset(line, offset);
 
   return {
     offset,
