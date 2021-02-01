@@ -23,10 +23,13 @@ export interface LineMetrics {
 export function getLineMetrics(line: HTMLElement): LineMetrics {
   const indent = getIndentSize(line);
   const measure = getMeasure();
-  const wrappableLength = getWrappedLineLength(line);
+  // This can be 0 whne line is empty, because new line character is not counted
+  const wrappableLength = getWrappableLineLength(line);
   const selectableLength = indent + wrappableLength;
   const apparentMeasure = measure - indent;
-  const lastRowIndex = Math.floor(wrappableLength / apparentMeasure);
+  const lineCount = Math.ceil(wrappableLength / apparentMeasure);
+  // when lineCount is 0, use 0 as row index
+  const lastRowIndex = Math.max(0, lineCount - 1);
   const isWrapped = selectableLength > measure;
 
   return {
@@ -42,7 +45,7 @@ export function getLineMetrics(line: HTMLElement): LineMetrics {
 
 export function getLineLength(line: HTMLElement) {
   const indent = getIndentSize(line);
-  const wrappedLineLength = getWrappedLineLength(line);
+  const wrappedLineLength = getWrappableLineLength(line);
 
   return indent + wrappedLineLength;
 }
@@ -155,7 +158,7 @@ export function getPreviousLine(currentLine: HTMLElement): HTMLElement | null {
 
 export function getLastRowIndexOfLine(line: HTMLElement, measure: number): number {
   const indent = getIndentSize(line);
-  const wrappedLineLength = getWrappedLineLength(line);
+  const wrappedLineLength = getWrappableLineLength(line);
   const lineLength = indent + wrappedLineLength;
 
   if (lineLength > measure) {
@@ -176,7 +179,7 @@ function getIndentSize(line: HTMLElement): number {
   return (line.querySelector("[data-indent]") as HTMLElement)?.innerText.length ?? 0;
 }
 
-function getWrappedLineLength(line: HTMLElement): number {
+function getWrappableLineLength(line: HTMLElement): number {
   const inlineText = (line.querySelector("[data-wrap]") as HTMLElement)?.innerText;
   if (inlineText) {
     const fullLength = inlineText.length;
