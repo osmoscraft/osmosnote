@@ -1,10 +1,11 @@
+import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
+import { openNodeId, openUrl } from "./lib/curosr/cursor-action.js";
+import { cursorDown, cursorLeft, cursorRight, cursorUp, renderDefaultCursor } from "./lib/curosr/cursor-select.js";
+import { formatAll } from "./lib/format.js";
+import { calculateMeasure, getMeasure, setMeasure } from "./lib/line-measure.js";
 import { query } from "./lib/query.js";
 import { getNoteConfigFromUrl } from "./lib/route.js";
 import { sourceToLines } from "./lib/source-to-lines.js";
-import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
-import { formatAll } from "./lib/format.js";
-import { calculateMeasure, getMeasure, setMeasure } from "./lib/line-measure.js";
-import { renderDefaultCursor, cursorLeft, cursorRight, cursorDown, cursorUp } from "./lib/curosr/cursor-select.js";
 
 async function loadNote() {
   const { id } = getNoteConfigFromUrl();
@@ -47,12 +48,16 @@ function handleEvents() {
         break;
       // Cursor movement
       case "ArrowLeft":
-        event.preventDefault();
-        cursorLeft(host);
+        if (!event.altKey) {
+          event.preventDefault();
+          cursorLeft(host);
+        }
         break;
       case "ArrowRight":
-        event.preventDefault();
-        cursorRight(host);
+        if (!event.altKey) {
+          event.preventDefault();
+          cursorRight(host);
+        }
         break;
       case "ArrowDown":
         event.preventDefault();
@@ -64,7 +69,25 @@ function handleEvents() {
         break;
       // Inputs
       case "Enter": // Enter
-        event.preventDefault();
+        // TODO improve efficiency
+        const cursorContainers = [...host.querySelectorAll("[data-cursor-in]")].reverse() as HTMLElement[];
+        for (let container of cursorContainers) {
+          if (container.dataset.noteId) {
+            // open internal id link
+            openNodeId(container.dataset.noteId, event);
+            event.preventDefault();
+            break;
+          } else if (container.dataset.url) {
+            // open external url
+            openUrl(container.dataset.url, event);
+            event.preventDefault();
+            break;
+          }
+        }
+
+        if (!event.defaultPrevented) {
+          // insert new line at point
+        }
     }
   });
 }

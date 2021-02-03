@@ -49,7 +49,7 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
 
     switch (metaKey) {
       case "url":
-        line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-url>${metaValue}</span>\n</span>`;
+        line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-url="${metaValue}">${metaValue}</span>\n</span>`;
         break;
       case "title":
         line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="title">${metaValue}</span>\n</span>`;
@@ -77,7 +77,7 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
     if (match) {
       const [raw, plainText, linkTitle, linkTarget] = match;
       paragraphHtml += plainText;
-      paragraphHtml += `<span data-link class="t--ghost">[<span class="link__title">${linkTitle}</span>](<span data-href="${linkTarget}" class="link__target">${linkTarget}</span>)</span>`;
+      paragraphHtml += `<span data-link class="t--ghost">[<span class="link__title">${linkTitle}</span>](<span data-note-id="${linkTarget}" class="link__target">${linkTarget}</span>)</span>`;
 
       remainingText = remainingText.slice(raw.length);
       continue;
@@ -87,7 +87,7 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
     if (match) {
       const [raw, plainText, url] = match;
       paragraphHtml += plainText;
-      paragraphHtml += `<span data-url>${url}</span>`;
+      paragraphHtml += `<span data-url="${url}">${url}</span>`;
 
       remainingText = remainingText.slice(raw.length);
       continue;
