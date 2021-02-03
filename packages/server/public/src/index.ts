@@ -19,7 +19,7 @@ async function loadNote() {
 
       host.appendChild(dom);
       formatAll(host);
-      renderDefaultCursor();
+      renderDefaultCursor(host);
 
       handleEvents();
     }
@@ -42,7 +42,7 @@ function handleEvents() {
           event.preventDefault();
           event.stopPropagation();
           formatAll(host); // TODO use incremental formatting
-          renderDefaultCursor(); // TODO restore cursor
+          renderDefaultCursor(host); // TODO restore cursor
         }
         break;
       // Cursor movement
@@ -56,11 +56,11 @@ function handleEvents() {
         break;
       case "ArrowDown":
         event.preventDefault();
-        cursorDown();
+        cursorDown(host);
         break;
       case "ArrowUp":
         event.preventDefault();
-        cursorUp();
+        cursorUp(host);
         break;
       // Inputs
       case "Enter": // Enter
