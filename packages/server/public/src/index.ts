@@ -95,8 +95,6 @@ function handleEvents() {
 function updateMeausre() {
   const measure = calculateMeasure(document.querySelector("#content-host") as HTMLElement);
   setMeasure(measure);
-
-  console.log(getMeasure());
 }
 
 window.addEventListener("resize", updateMeausre);
