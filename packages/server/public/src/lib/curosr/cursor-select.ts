@@ -14,7 +14,7 @@ export function renderDefaultCursor(root: HTMLElement) {
   const firstLine = document.querySelector("[data-line]") as HTMLElement;
 
   if (firstLine) {
-    setCollapsedCursorToIdealPosition(
+    setCollapsedCursorToSmartLinePosition(
       firstLine,
       {
         row: 0,
@@ -59,7 +59,7 @@ export function cursorDown(root: HTMLElement) {
     if (isWrapped) {
       if (inlineOffset < indent) {
         // Inside initial indent: Move to 1st wrapped line start
-        setCollapsedCursorToIdealPosition(
+        setCollapsedCursorToSmartLinePosition(
           currentLine,
           {
             row: cursorRow + 1,
@@ -71,7 +71,7 @@ export function cursorDown(root: HTMLElement) {
         return;
       } else if (cursorRow < lastRowIndex) {
         // Has wrapped line below: Move to next row
-        setCollapsedCursorToIdealPosition(
+        setCollapsedCursorToSmartLinePosition(
           currentLine,
           {
             row: cursorRow + 1,
@@ -87,7 +87,7 @@ export function cursorDown(root: HTMLElement) {
     const nextLine = getNextLine(currentLine);
     if (!nextLine) return;
 
-    setCollapsedCursorToIdealPosition(
+    setCollapsedCursorToSmartLinePosition(
       nextLine,
       {
         row: 0,
@@ -107,7 +107,7 @@ export function cursorUp(root: HTMLElement) {
 
     // move up wrapped line
     if (cursorRow > 0) {
-      setCollapsedCursorToIdealPosition(
+      setCollapsedCursorToSmartLinePosition(
         currentLine,
         {
           row: cursorRow - 1,
@@ -123,7 +123,7 @@ export function cursorUp(root: HTMLElement) {
     if (!previousLine) return;
 
     // move to line above
-    setCollapsedCursorToIdealPosition(
+    setCollapsedCursorToSmartLinePosition(
       previousLine,
       {
         row: getLineMetrics(previousLine).lastRowIndex,
@@ -138,7 +138,7 @@ export function cursorUp(root: HTMLElement) {
  * Set cursor to the given row and column of the line.
  * Any previously remembered ideal column will override the given column.
  */
-function setCollapsedCursorToIdealPosition(
+function setCollapsedCursorToSmartLinePosition(
   line: HTMLElement,
   fallbackPosition: VisualPosition,
   root: HTMLElement | null = null
@@ -158,7 +158,31 @@ function setCollapsedCursorToIdealPosition(
   }
 }
 
-function setCollapsedCursor(node: Node, offset: number = 0, root: HTMLElement | null = null) {
+/**
+ * Set cursor to the given row and column of the line.
+ * Ignore any existing ideal position
+ */
+export function setCollapsedCursorToLinePosition(
+  line: HTMLElement,
+  position: VisualPosition,
+  root: HTMLElement | null = null
+): SeekOutput | null {
+  const { row, column } = position;
+  const targetOffset = getOffsetByVisualPosition(line, {
+    row,
+    column,
+  });
+
+  const seekOutput = seek({ source: line, offset: targetOffset });
+  if (seekOutput) {
+    setCollapsedCursor(seekOutput.node, seekOutput.offset, root);
+    return seekOutput;
+  } else {
+    return null;
+  }
+}
+
+export function setCollapsedCursor(node: Node, offset: number = 0, root: HTMLElement | null = null) {
   const selection = window.getSelection();
 
   if (selection) {

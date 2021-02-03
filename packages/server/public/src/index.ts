@@ -1,5 +1,6 @@
 import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
 import { openNodeId, openUrl } from "./lib/curosr/cursor-action.js";
+import { insertNewLine } from "./lib/curosr/cursor-edit.js";
 import { cursorDown, cursorLeft, cursorRight, cursorUp, renderDefaultCursor } from "./lib/curosr/cursor-select.js";
 import { formatAll } from "./lib/format.js";
 import { calculateMeasure, getMeasure, setMeasure } from "./lib/line-measure.js";
@@ -86,6 +87,8 @@ function handleEvents() {
         }
 
         if (!event.defaultPrevented) {
+          insertNewLine();
+          event.preventDefault();
           // insert new line at point
         }
     }

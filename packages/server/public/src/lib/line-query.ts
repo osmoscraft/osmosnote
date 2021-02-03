@@ -175,6 +175,11 @@ export function isAfterLineEnd(textNode: Text, offset: number) {
   return offset === textNode.length && textNode.data?.[offset - 1] === "\n";
 }
 
+export function sliceLine(line: HTMLElement, start?: number, end?: number): string {
+  const rawText = line.textContent ?? "";
+  return rawText.slice(start, end);
+}
+
 function getIndentSize(line: HTMLElement): number {
   return (line.querySelector("[data-indent]") as HTMLElement)?.innerText.length ?? 0;
 }

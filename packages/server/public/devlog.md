@@ -14,6 +14,7 @@
 
 - All the characters map 1:1 between DOM and source
   - New line character must be literal too: "\n"
+  - Every line MUST end with "\n"
 - DOM is the source of truth
   - Avoid models
   - Avoid additional states (except for ones that are not stored in DOM, e.g. ideal column)

@@ -11,7 +11,7 @@ export interface FormattedLineElement extends LineElement {
   };
 }
 
-export function formatAll(root: HTMLElement) {
+export function formatAll(root: HTMLElement | DocumentFragment) {
   const lines = [...root.querySelectorAll("[data-line]")] as FormattedLineElement[];
   const context: FormatContext = {
     level: 0,
