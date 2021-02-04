@@ -6,6 +6,7 @@
       - open note by id
     - Handle insert new line
   - Handle `Delete`/`Backspace` keydown
+    - Handle cursor restore after global formatting
   - Render current line with highlight
 - DONE
   - Handle select left/right

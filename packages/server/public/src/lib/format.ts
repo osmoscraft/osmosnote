@@ -1,7 +1,12 @@
 import type { LineElement } from "./source-to-lines";
+import { removeLineEnding } from "./string.js";
 
 interface FormatContext {
   level: number;
+}
+
+export interface FormatConfig {
+  preserveIndent?: boolean;
 }
 
 export interface FormattedLineElement extends LineElement {
@@ -11,17 +16,19 @@ export interface FormattedLineElement extends LineElement {
   };
 }
 
-export function formatAll(root: HTMLElement | DocumentFragment) {
+const defaultConfig: FormatConfig = {};
+
+export function formatAll(root: HTMLElement | DocumentFragment, config = defaultConfig) {
   const lines = [...root.querySelectorAll("[data-line]")] as FormattedLineElement[];
   const context: FormatContext = {
     level: 0,
   };
 
-  lines.forEach((line) => formatLine(line, context));
+  lines.forEach((line) => formatLine(line, context, config));
 }
 
-export function formatLine(line: FormattedLineElement, context: FormatContext) {
-  const rawText = line.innerText;
+export function formatLine(line: FormattedLineElement, context: FormatContext, config: FormatConfig) {
+  const rawText = line.textContent ?? "";
 
   // heading
   let match = rawText.match(/^(\s*)(#+) (.*)\n?/);
@@ -32,7 +39,7 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
     line.dataset.level = hashes.length;
     line.dataset.line = "heading";
 
-    const indent = ` `.repeat(hashes.length - 1);
+    const indent = config.preserveIndent ? spaces : ` `.repeat(hashes.length - 1);
     const hiddenHashes = `#`.repeat(hashes.length - 1);
 
     line.innerHTML = `<span data-indent>${indent}</span><span data-wrap><span class="t--ghost">${hiddenHashes}</span><span class="t--bold"># ${text}</span>\n</span>`;
@@ -65,13 +72,30 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
   }
 
   // blank line
-  // TBD
+  match = rawText.match(/^(\s+)$/);
+  if (match) {
+    const [raw, spaces] = match;
+    const inlineSpaces = removeLineEnding(spaces);
+
+    const indent = config.preserveIndent ? inlineSpaces : ` `.repeat(context.level * 2);
+    line.innerHTML = `<span data-indent>${indent}</span><span>\n</span>`;
+
+    return;
+  }
 
   // paragraph
-  const indent = ` `.repeat(context.level * 2);
-
   let paragraphHtml = "";
-  let remainingText = rawText.trim();
+  let remainingText = removeLineEnding(rawText);
+  let indent: string;
+
+  if (config.preserveIndent) {
+    indent = remainingText.match(/^(\s+)/)?.[0] ?? "";
+    remainingText = remainingText.slice(indent.length);
+  } else {
+    indent = ` `.repeat(context.level * 2);
+    remainingText = remainingText.trimStart();
+  }
+
   while (remainingText) {
     let match = remainingText.match(/^(.*?)\[(.+?)\]\((.+?)\)/); // links
     if (match) {
@@ -98,9 +122,4 @@ export function formatLine(line: FormattedLineElement, context: FormatContext) {
   }
 
   line.innerHTML = `<span data-indent>${indent}</span><span data-wrap>${paragraphHtml}\n</span>`;
-}
-
-export function formatLineIncremental() {
-  // TBD
-  // format only if marked as dirty OR context has changed
 }

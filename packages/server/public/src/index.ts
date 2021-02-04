@@ -1,6 +1,6 @@
 import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
 import { openNodeId, openUrl } from "./lib/curosr/cursor-action.js";
-import { insertNewLine } from "./lib/curosr/cursor-edit.js";
+import { deleteBefore, insertNewLine } from "./lib/curosr/cursor-edit.js";
 import { cursorDown, cursorLeft, cursorRight, cursorUp, renderDefaultCursor } from "./lib/curosr/cursor-select.js";
 import { formatAll } from "./lib/format.js";
 import { calculateMeasure, getMeasure, setMeasure } from "./lib/line-measure.js";
@@ -69,6 +69,10 @@ function handleEvents() {
         cursorUp(host);
         break;
       // Inputs
+      case "Backspace": // Backspace
+        deleteBefore(host);
+        event.preventDefault();
+        break;
       case "Enter": // Enter
         // TODO improve efficiency
         const cursorContainers = [...host.querySelectorAll("[data-cursor-in]")].reverse() as HTMLElement[];
