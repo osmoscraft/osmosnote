@@ -57,7 +57,6 @@ export function deleteBefore(root: HTMLElement) {
 
       formatAll(root);
 
-      const lineMetrics = getLineMetrics(updatedPreviousLine);
       setCollapsedCursorToLinePosition(updatedPreviousLine, {
         row: previousLineEnd.row,
         column: previousLineEnd.column,
