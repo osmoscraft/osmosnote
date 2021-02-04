@@ -5,7 +5,7 @@ import { getCursor, getCursorLinePosition } from "./cursor-query.js";
 import { setCollapsedCursorToLinePosition } from "./cursor-select.js";
 import { updateIdealColumn } from "./ideal-column.js";
 
-export function insertNewLine() {
+export function insertNewLine(root: HTMLElement) {
   const cursor = getCursor();
   if (!cursor) return;
 
@@ -20,11 +20,10 @@ export function insertNewLine() {
   const newLines = sourceToLines(textBefore + "\n" + textAfterInline);
   const newSecondLine = newLines.children[1] as HTMLElement;
 
-  // TODO disable indentation formating
-  formatAll(newLines);
-
   currentLine.parentElement?.insertBefore(newLines, currentLine);
   currentLine.remove();
+
+  formatAll(root);
 
   // set cursor to next line start
   const lineMetrics = getLineMetrics(newSecondLine);

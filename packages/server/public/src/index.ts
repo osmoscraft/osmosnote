@@ -87,7 +87,7 @@ function handleEvents() {
         }
 
         if (!event.defaultPrevented) {
-          insertNewLine();
+          insertNewLine(host);
           event.preventDefault();
           // insert new line at point
         }
