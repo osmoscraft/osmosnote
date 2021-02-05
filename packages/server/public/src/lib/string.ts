@@ -5,3 +5,7 @@ export function removeLineEnding(text: string): string {
     return text;
   }
 }
+
+export function splice(text: string, start: number, deleteCount = 0, insert = "") {
+  return text.substring(0, start) + insert + text.substring(start + deleteCount);
+}

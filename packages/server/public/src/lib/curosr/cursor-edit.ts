@@ -1,8 +1,16 @@
 import { formatAll } from "../format.js";
-import { getLine, getLineMetrics, getPositionByOffset, getPreviousLine, sliceLine } from "../line-query.js";
+import {
+  getLine,
+  getLineMetrics,
+  getNextLine,
+  getPositionByOffset,
+  getPreviousLine,
+  sliceLine,
+} from "../line/line-query.js";
 import { sourceToLines } from "../source-to-lines.js";
+import { removeLineEnding, splice } from "../string.js";
 import { getCursor, getCursorLinePosition } from "./cursor-query.js";
-import { setCollapsedCursorToLinePosition } from "./cursor-select.js";
+import { setCollapsedCursorToLineOffset, setCollapsedCursorToLinePosition } from "./cursor-select.js";
 import { updateIdealColumn } from "./ideal-column.js";
 
 export function insertNewLine(root: HTMLElement) {
@@ -16,8 +24,7 @@ export function insertNewLine(root: HTMLElement) {
   const textBefore = sliceLine(currentLine, 0, offset);
   const textAfter = sliceLine(currentLine, offset);
 
-  const textAfterInline = textAfter.slice(0, -1); // we can guarantee there is "\n" in it
-  const newLines = sourceToLines(textBefore + "\n" + textAfterInline);
+  const newLines = sourceToLines(textBefore + "\n" + textAfter);
   const newSecondLine = newLines.children[1] as HTMLElement;
 
   currentLine.parentElement?.insertBefore(newLines, currentLine);
@@ -44,12 +51,9 @@ export function deleteBefore(root: HTMLElement) {
     const previousLine = getPreviousLine(currentLine);
     if (previousLine) {
       const previousLineText = sliceLine(previousLine, 0, -1); // remove \n
-      const currentLineRemainingText = sliceLine(currentLine, 0, -1); // remove \n
+      const currentLineRemainingText = currentLine.textContent;
       const newlines = sourceToLines(previousLineText + currentLineRemainingText);
       const updatedPreviousLine = newlines.children[0] as HTMLElement;
-
-      const previousLineMetrics = getLineMetrics(previousLine);
-      const previousLineEnd = getPositionByOffset(previousLine, previousLineMetrics.selectableLength);
 
       currentLine.remove();
       previousLine.parentElement?.insertBefore(newlines, previousLine);
@@ -57,14 +61,11 @@ export function deleteBefore(root: HTMLElement) {
 
       formatAll(root);
 
-      setCollapsedCursorToLinePosition(updatedPreviousLine, {
-        row: previousLineEnd.row,
-        column: previousLineEnd.column,
-      });
+      setCollapsedCursorToLineOffset(updatedPreviousLine, previousLineText.length);
       updateIdealColumn();
     }
   } else {
-    const remainingText = sliceLine(currentLine, 0, offset - 1) + sliceLine(currentLine, offset, -1); // remove \n
+    const remainingText = splice(currentLine.textContent!, offset - 1, 1);
 
     const newLines = sourceToLines(remainingText);
     const updatedLine = newLines.children[0] as HTMLElement;
@@ -75,10 +76,50 @@ export function deleteBefore(root: HTMLElement) {
     formatAll(root, { preserveIndent: true });
 
     // set cursor to the left edge of the deleted char
-    const newPosition = getPositionByOffset(updatedLine, offset - 1);
-    setCollapsedCursorToLinePosition(updatedLine, {
-      ...newPosition,
-    });
+    setCollapsedCursorToLineOffset(updatedLine, offset - 1);
+    updateIdealColumn();
+  }
+}
+
+export function deleteAfter(root: HTMLElement) {
+  const cursor = getCursor();
+  if (!cursor) return;
+
+  const { offset } = getCursorLinePosition(cursor.end);
+  const currentLine = getLine(cursor.end.node);
+  if (!currentLine) return;
+
+  const { selectableLength } = getLineMetrics(currentLine);
+  if (offset === selectableLength) {
+    const nextLine = getNextLine(currentLine);
+    if (!nextLine) return;
+
+    const nextLineText = nextLine.textContent!;
+    const joinedLineText = currentLine.textContent!.slice(0, -1).concat(nextLineText);
+
+    const newLines = sourceToLines(joinedLineText);
+    const updatedLine = newLines.children[0] as HTMLElement;
+
+    currentLine.parentElement?.insertBefore(newLines, currentLine);
+    currentLine.remove();
+    nextLine.remove();
+
+    formatAll(root);
+
+    setCollapsedCursorToLineOffset(updatedLine, offset);
+    updateIdealColumn();
+  } else {
+    const lineText = currentLine.textContent!;
+    const lineRemainingText = splice(lineText, offset, 1);
+    const newLines = sourceToLines(lineRemainingText);
+    const updatedLine = newLines.children[0] as HTMLElement;
+
+    currentLine.parentElement?.insertBefore(newLines, currentLine);
+    currentLine.remove();
+
+    formatAll(root, { preserveIndent: true });
+
+    setCollapsedCursorToLineOffset(updatedLine, offset);
     updateIdealColumn();
   }
 }

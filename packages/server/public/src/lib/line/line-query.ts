@@ -1,4 +1,4 @@
-import { firstInnerLeafNode, firstInnerTextNode, flattenToLeafNodes, isTextNode } from "./dom-utils.js";
+import { firstInnerLeafNode, firstInnerTextNode, flattenToLeafNodes, isTextNode } from "../dom-utils.js";
 import { getMeasure } from "./line-measure.js";
 
 export function getLine(node: Node): HTMLElement | null {
@@ -78,7 +78,7 @@ export function getNodeLinePosition(node: Node, offsetFromNode: number = 0): Pos
 
   const inlineOffset = leafNodes
     .slice(0, measureToIndex)
-    .reduce((length, node) => length + (isTextNode(node) ? node.length : length), 0);
+    .reduce((length, node) => length + (isTextNode(node) ? node.length : 0), 0);
 
   const offsetFromLine = inlineOffset + offsetFromNode;
   const { row, column } = getPositionByOffset(line, offsetFromLine);

@@ -4,9 +4,10 @@ import {
   getLineMetrics,
   getNextLine,
   getOffsetByVisualPosition,
+  getPositionByOffset,
   getPreviousLine,
   VisualPosition,
-} from "../line-query.js";
+} from "../line/line-query.js";
 import { getCursor, getCursorLinePosition, getNearestEditablePositionForward } from "./cursor-query.js";
 import { getIdealColumn, updateIdealColumn } from "./ideal-column.js";
 
@@ -156,6 +157,21 @@ function setCollapsedCursorToSmartLinePosition(
   } else {
     return null;
   }
+}
+
+export function setCollapsedCursorToLineOffset(
+  line: HTMLElement,
+  offset: number,
+  root: HTMLElement | null = null
+): SeekOutput | null {
+  const newPosition = getPositionByOffset(line, offset);
+  return setCollapsedCursorToLinePosition(
+    line,
+    {
+      ...newPosition,
+    },
+    root
+  );
 }
 
 /**

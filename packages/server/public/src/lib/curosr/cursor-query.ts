@@ -5,7 +5,7 @@ import {
   isAfterLineEnd,
   Position,
   getNodeLinePosition,
-} from "../line-query.js";
+} from "../line/line-query.js";
 
 export interface Cursor {
   end: CursorPosition;

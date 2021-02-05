@@ -1,9 +1,9 @@
 import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
 import { openNodeId, openUrl } from "./lib/curosr/cursor-action.js";
-import { deleteBefore, insertNewLine } from "./lib/curosr/cursor-edit.js";
+import { deleteAfter, deleteBefore, insertNewLine } from "./lib/curosr/cursor-edit.js";
 import { cursorDown, cursorLeft, cursorRight, cursorUp, renderDefaultCursor } from "./lib/curosr/cursor-select.js";
 import { formatAll } from "./lib/format.js";
-import { calculateMeasure, getMeasure, setMeasure } from "./lib/line-measure.js";
+import { calculateMeasure, getMeasure, setMeasure } from "./lib/line/line-measure.js";
 import { query } from "./lib/query.js";
 import { getNoteConfigFromUrl } from "./lib/route.js";
 import { sourceToLines } from "./lib/source-to-lines.js";
@@ -69,7 +69,11 @@ function handleEvents() {
         cursorUp(host);
         break;
       // Inputs
-      case "Backspace": // Backspace
+      case "Delete":
+        deleteAfter(host);
+        event.preventDefault();
+        break;
+      case "Backspace":
         deleteBefore(host);
         event.preventDefault();
         break;
