@@ -1,19 +1,30 @@
+# Roadmap
+
+## TextEngine MVP
 - TODO
-  - Handle dirty marking and incremental parsing
-  - Handle `Enter` keydown
-    - Cursor action: open link
-      - open absolute url
-      - open note by id
-    - Handle insert new line
-  - Handle `Delete`/`Backspace` keydown
   - Render current line with highlight
   - Incremental formatting
     - parse() that add syntax hightlight and calculate semantic levels
     - format() that updates padding using semantics levels
     - on edit, parse() changed lines, format() all
-    - Handle cursor restore after global formatting
+  - Handle cursor restore after global formatting
+    - parse() OK to lose cursor. The caller of parse is responsible to set cursor after parse
+    - format() must restore curosr
+      - save the line that contains cursor, when updating indent, if cursor within padding, no move, if cursor after padding, shift cursor accordingly
+  - Handle shift + arrow for selection
+  - Handle ctrl + arrow for word move
+  - Handle ctrl + shift + arrow for word select
+  - Handle home/end move and selection
+  - Handle copy/paste/cut
+  - Handle cut entire line when cursor is collapsed
 - DONE
+  - Handle `Delete`/`Backspace` keydown
   - Handle select left/right
+  - Handle `Enter` keydown
+    - Cursor action: open link
+      - open absolute url
+      - open note by id
+    - Handle insert new line
 
 # Principles
 
