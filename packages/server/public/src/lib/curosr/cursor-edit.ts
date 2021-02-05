@@ -1,14 +1,7 @@
 import { formatAll } from "../format.js";
-import {
-  getLine,
-  getLineMetrics,
-  getNextLine,
-  getPositionByOffset,
-  getPreviousLine,
-  sliceLine,
-} from "../line/line-query.js";
+import { getLine, getLineMetrics, getNextLine, getPreviousLine, sliceLine } from "../line/line-query.js";
 import { sourceToLines } from "../source-to-lines.js";
-import { removeLineEnding, splice } from "../string.js";
+import { splice } from "../string.js";
 import { getCursor, getCursorLinePosition } from "./cursor-query.js";
 import { setCollapsedCursorToLineOffset, setCollapsedCursorToLinePosition } from "./cursor-select.js";
 import { updateIdealColumn } from "./ideal-column.js";

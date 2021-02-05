@@ -6,8 +6,12 @@
       - open note by id
     - Handle insert new line
   - Handle `Delete`/`Backspace` keydown
-    - Handle cursor restore after global formatting
   - Render current line with highlight
+  - Incremental formatting
+    - parse() that add syntax hightlight and calculate semantic levels
+    - format() that updates padding using semantics levels
+    - on edit, parse() changed lines, format() all
+    - Handle cursor restore after global formatting
 - DONE
   - Handle select left/right
 
