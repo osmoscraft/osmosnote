@@ -7,7 +7,7 @@ export function updateIdealColumn() {
   const cursor = getCursor();
 
   if (cursor) {
-    const { column } = getCursorLinePosition(cursor.end);
+    const { column } = getCursorLinePosition(cursor.focus);
     setIdealColumn(column);
   }
 }

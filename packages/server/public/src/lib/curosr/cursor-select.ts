@@ -27,30 +27,23 @@ export function renderDefaultCursor(root: HTMLElement) {
 }
 
 export function cursorRight(root: HTMLElement) {
-  const cursorEnd = getCursor()?.end;
-  if (!cursorEnd) return;
+  moveCursorCollapsed(1, root);
+}
 
-  const seekOuput = seek({ source: cursorEnd.node, offset: cursorEnd.offset, seek: 1, root });
-  if (seekOuput) {
-    const editablePosition = getNearestEditablePositionForward(seekOuput.node, seekOuput.offset);
-    setCollapsedCursor(editablePosition.node, editablePosition.offset, root);
-    updateIdealColumn();
-  }
+export function cursorSelectRight(root: HTMLElement) {
+  extendCursorFocus(1, root);
 }
 
 export function cursorLeft(root: HTMLElement) {
-  const cursorEnd = getCursor()?.end;
-  if (!cursorEnd) return;
+  moveCursorCollapsed(-1, root);
+}
 
-  const seekOuput = seek({ source: cursorEnd.node, offset: cursorEnd.offset, seek: -1, root });
-  if (seekOuput) {
-    setCollapsedCursor(seekOuput.node, seekOuput.offset, root);
-    updateIdealColumn();
-  }
+export function cursorSelectLeft(root: HTMLElement) {
+  extendCursorFocus(-1, root);
 }
 
 export function cursorDown(root: HTMLElement) {
-  const cursorEnd = getCursor()?.end;
+  const cursorEnd = getCursor()?.focus;
 
   if (cursorEnd) {
     const currentLine = getLine(cursorEnd.node)!;
@@ -100,7 +93,7 @@ export function cursorDown(root: HTMLElement) {
 }
 
 export function cursorUp(root: HTMLElement) {
-  const cursorEnd = getCursor()?.end;
+  const cursorEnd = getCursor()?.focus;
 
   if (cursorEnd) {
     const currentLine = getLine(cursorEnd.node)!;
@@ -152,7 +145,7 @@ function setCollapsedCursorToSmartLinePosition(
 
   const seekOutput = seek({ source: line, offset: targetOffset });
   if (seekOutput) {
-    setCollapsedCursor(seekOutput.node, seekOutput.offset, root);
+    setCursorCollapsed(seekOutput.node, seekOutput.offset, root);
     return seekOutput;
   } else {
     return null;
@@ -191,14 +184,14 @@ export function setCollapsedCursorToLinePosition(
 
   const seekOutput = seek({ source: line, offset: targetOffset });
   if (seekOutput) {
-    setCollapsedCursor(seekOutput.node, seekOutput.offset, root);
+    setCursorCollapsed(seekOutput.node, seekOutput.offset, root);
     return seekOutput;
   } else {
     return null;
   }
 }
 
-export function setCollapsedCursor(node: Node, offset: number = 0, root: HTMLElement | null = null) {
+export function setCursorCollapsed(node: Node, offset: number = 0, root: HTMLElement | null = null) {
   const selection = window.getSelection();
 
   if (selection) {
@@ -213,20 +206,71 @@ export function setCollapsedCursor(node: Node, offset: number = 0, root: HTMLEle
     selection.addRange(range);
   }
 
-  updateContainerState(root);
+  updateCursorDomTracker(root);
+}
+
+function extendCursorFocus(offset: number, root: HTMLElement | null = null) {
+  const cursor = getCursor();
+  if (!cursor) return;
+  const { anchor, focus } = cursor;
+
+  let newFocus = seek({ source: focus.node, offset: focus.offset, seek: offset, root });
+  if (!newFocus) return;
+
+  if (offset > 0) newFocus = getNearestEditablePositionForward(newFocus.node, newFocus.offset);
+
+  const selection = window.getSelection()!;
+  selection.setBaseAndExtent(anchor.node, anchor.offset, newFocus.node, newFocus.offset);
+
+  updateIdealColumn();
+  updateCursorDomTracker(root);
 }
 
 /**
- * Mark all parent elements of the cursor
+ * If already collapsed, move the cursor by offset.
+ * If not collapsed, collapse to the direction of movement.
  */
-function updateContainerState(root: HTMLElement | Document | null = document) {
+function moveCursorCollapsed(offset: number, root: HTMLElement | null = null) {
+  const cursor = getCursor();
+  if (!cursor) return;
+  const { focus, isCollapsed } = cursor;
+  const selection = window.getSelection()!;
+  if (!selection) return;
+
+  if (!isCollapsed) {
+    if (offset > 0) {
+      selection.collapseToEnd();
+    } else {
+      selection.collapseToStart();
+    }
+  } else {
+    let newFocus = seek({ source: focus.node, offset: focus.offset, seek: offset, root });
+    if (!newFocus) return;
+
+    if (offset > 0) newFocus = getNearestEditablePositionForward(newFocus.node, newFocus.offset);
+
+    selection.collapse(newFocus.node, newFocus.offset);
+  }
+
+  updateIdealColumn();
+  updateCursorDomTracker(root);
+}
+
+/**
+ * Mark all parent elements of the collapsed cursor
+ */
+function updateCursorDomTracker(root: HTMLElement | Document | null = document) {
   // TODO improve perf by diffing the add/remove of dataset values
   // remove all previous states
-  root?.querySelectorAll("[data-cursor-in]").forEach((container) => delete (container as HTMLElement).dataset.cursorIn);
+  root
+    ?.querySelectorAll("[data-cursor-collapsed]")
+    .forEach((container) => delete (container as HTMLElement).dataset.cursorCollapsed);
 
   const cursor = getCursor();
   if (cursor) {
-    updateContainerStateRecursive(cursor.end.node, root);
+    if (cursor.isCollapsed) {
+      updateContainerStateRecursive(cursor.focus.node, root);
+    }
   }
 }
 
@@ -235,7 +279,7 @@ function updateContainerStateRecursive(currentNode: Node | null, root: Node | nu
     return;
   } else {
     if ((currentNode as HTMLElement).dataset) {
-      (currentNode as HTMLElement).dataset.cursorIn = "";
+      (currentNode as HTMLElement).dataset.cursorCollapsed = "";
     }
 
     if (currentNode === root) return;

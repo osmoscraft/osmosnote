@@ -8,7 +8,9 @@ import {
 } from "../line/line-query.js";
 
 export interface Cursor {
-  end: CursorPosition;
+  anchor: CursorPosition;
+  focus: CursorPosition;
+  isCollapsed: boolean;
 }
 
 export interface CursorPosition {
@@ -24,17 +26,21 @@ export function getCursorLinePosition(cursorPosition: CursorPosition): Position 
 
 export function getCursor(): Cursor | null {
   const selection = window.getSelection();
-  if (!selection?.rangeCount) return null;
+  if (!selection) return null;
 
-  const range = selection.getRangeAt(0);
-  const node = range.endContainer;
-  const offset = range.endOffset;
+  const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
+  if (!anchorNode || !focusNode) return null;
 
   return {
-    end: {
-      node,
-      offset,
+    anchor: {
+      node: anchorNode,
+      offset: anchorOffset,
     },
+    focus: {
+      node: focusNode,
+      offset: focusOffset,
+    },
+    isCollapsed: selection.isCollapsed,
   };
 }
 

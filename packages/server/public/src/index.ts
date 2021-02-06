@@ -1,7 +1,15 @@
 import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
 import { openNodeId, openUrl } from "./lib/curosr/cursor-action.js";
 import { deleteAfter, deleteBefore, insertNewLine } from "./lib/curosr/cursor-edit.js";
-import { cursorDown, cursorLeft, cursorRight, cursorUp, renderDefaultCursor } from "./lib/curosr/cursor-select.js";
+import {
+  cursorDown,
+  cursorLeft,
+  cursorRight,
+  cursorSelectLeft,
+  cursorSelectRight,
+  cursorUp,
+  renderDefaultCursor,
+} from "./lib/curosr/cursor-select.js";
 import { formatAll } from "./lib/format.js";
 import { calculateMeasure, getMeasure, setMeasure } from "./lib/line/line-measure.js";
 import { query } from "./lib/query.js";
@@ -51,13 +59,21 @@ function handleEvents() {
       case "ArrowLeft":
         if (!event.altKey) {
           event.preventDefault();
-          cursorLeft(host);
+          if (event.shiftKey) {
+            cursorSelectLeft(host);
+          } else {
+            cursorLeft(host);
+          }
         }
         break;
       case "ArrowRight":
         if (!event.altKey) {
           event.preventDefault();
-          cursorRight(host);
+          if (event.shiftKey) {
+            cursorSelectRight(host);
+          } else {
+            cursorRight(host);
+          }
         }
         break;
       case "ArrowDown":
@@ -79,8 +95,8 @@ function handleEvents() {
         break;
       case "Enter": // Enter
         // TODO improve efficiency
-        const cursorContainers = [...host.querySelectorAll("[data-cursor-in]")].reverse() as HTMLElement[];
-        for (let container of cursorContainers) {
+        const collapsedCursorParents = [...host.querySelectorAll(`[data-cursor="both"]`)].reverse() as HTMLElement[];
+        for (let container of collapsedCursorParents) {
           if (container.dataset.noteId) {
             // open internal id link
             openNodeId(container.dataset.noteId, event);

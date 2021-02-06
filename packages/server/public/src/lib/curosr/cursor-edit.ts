@@ -10,8 +10,8 @@ export function insertNewLine(root: HTMLElement) {
   const cursor = getCursor();
   if (!cursor) return;
 
-  const { offset } = getCursorLinePosition(cursor.end);
-  const currentLine = getLine(cursor.end.node);
+  const { offset } = getCursorLinePosition(cursor.focus);
+  const currentLine = getLine(cursor.focus.node);
   if (!currentLine) return;
 
   const textBefore = sliceLine(currentLine, 0, offset);
@@ -35,8 +35,8 @@ export function deleteBefore(root: HTMLElement) {
   const cursor = getCursor();
   if (!cursor) return;
 
-  const { offset } = getCursorLinePosition(cursor.end);
-  const currentLine = getLine(cursor.end.node);
+  const { offset } = getCursorLinePosition(cursor.focus);
+  const currentLine = getLine(cursor.focus.node);
   if (!currentLine) return;
 
   if (offset === 0) {
@@ -78,8 +78,8 @@ export function deleteAfter(root: HTMLElement) {
   const cursor = getCursor();
   if (!cursor) return;
 
-  const { offset } = getCursorLinePosition(cursor.end);
-  const currentLine = getLine(cursor.end.node);
+  const { offset } = getCursorLinePosition(cursor.focus);
+  const currentLine = getLine(cursor.focus.node);
   if (!currentLine) return;
 
   const { selectableLength } = getLineMetrics(currentLine);
