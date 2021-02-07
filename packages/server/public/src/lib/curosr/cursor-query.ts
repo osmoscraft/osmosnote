@@ -11,8 +11,9 @@ import {
   getOffsetByVisualPosition,
   getPreviousLine,
   sliceLine,
+  getReversedLine,
 } from "../line/line-query.js";
-import { removeLineEnding } from "../string.js";
+import { ensureLineEnding, removeLineEnding, reverse } from "../string.js";
 import { getIdealColumn } from "./ideal-column.js";
 
 export interface Cursor {
@@ -68,22 +69,47 @@ export function getDefaultCursorPosition(): SeekOutput | null {
 export function getWordEndPositionFromCursor(cursor: Cursor): SeekOutput | null {
   const currentLine = getLine(cursor.focus.node)!;
   const currentLineMetrics = getLineMetrics(currentLine);
-  const { offset } = getCursorLinePosition(cursor.focus);
+  const { offset: cursorOffset } = getCursorLinePosition(cursor.focus);
 
-  if (offset === currentLineMetrics.selectableLength) {
+  if (cursorOffset === currentLineMetrics.selectableLength) {
     // if at line end, search next line
     const nextLine = getNextLine(currentLine);
     if (nextLine) {
-      const nextLineTrimmed = removeLineEnding(nextLine.textContent!);
-      const wordEndOffset = getWordEndOffset(nextLineTrimmed);
+      const wordEndOffset = getWordEndOffset(nextLine.textContent!);
       const foundPosition = seek({ source: nextLine, offset: wordEndOffset })!;
       return foundPosition;
     }
   } else {
     // search current line (a result is guaranteed)
-    const lineRemainingText = removeLineEnding(sliceLine(currentLine, offset));
-    const wordEndOffset = getWordEndOffset(lineRemainingText);
-    const foundPosition = seek({ source: currentLine, offset: offset + wordEndOffset })!;
+    const textAfterCursor = sliceLine(currentLine, cursorOffset);
+    const wordEndOffset = getWordEndOffset(textAfterCursor);
+    const foundPosition = seek({ source: currentLine, offset: cursorOffset + wordEndOffset })!;
+    return foundPosition;
+  }
+
+  return null;
+}
+
+export function getWordStartPositionFromCursor(cursor: Cursor): SeekOutput | null {
+  const currentLine = getLine(cursor.focus.node)!;
+  const { offset: cursorOffset } = getCursorLinePosition(cursor.focus);
+
+  if (cursorOffset === 0) {
+    // if at line start, search previous line
+    const previousLine = getPreviousLine(currentLine);
+    if (previousLine) {
+      const previousLineBackward = getReversedLine(previousLine);
+      const wordEndOffsetBackward = getWordEndOffset(previousLineBackward);
+      const previousLineMetrics = getLineMetrics(previousLine);
+      const wordEndOffset = previousLineMetrics.selectableLength - wordEndOffsetBackward;
+      const foundPosition = seek({ source: previousLine, offset: wordEndOffset })!;
+      return foundPosition;
+    }
+  } else {
+    // search current line (a result is guaranteed)
+    const textBeforeCursorBackward = ensureLineEnding(reverse(sliceLine(currentLine, 0, cursorOffset)));
+    const wordEndOffsetBackward = getWordEndOffset(textBeforeCursorBackward);
+    const foundPosition = seek({ source: currentLine, offset: cursorOffset - wordEndOffsetBackward })!;
     return foundPosition;
   }
 
@@ -91,7 +117,7 @@ export function getWordEndPositionFromCursor(cursor: Cursor): SeekOutput | null 
 }
 
 /**
- * The input must not contain new line character
+ * The input must ends with a new line character
  */
 function getWordEndOffset(text: string): number {
   let wordEndMatch = text.match(/^(\s*?)(\w+|[^\w\s]+)(\w|\s|[^\w\s])/);

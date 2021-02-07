@@ -1,4 +1,5 @@
 import { firstInnerLeafNode, firstInnerTextNode, flattenToLeafNodes, isTextNode, SeekOutput } from "../dom-utils.js";
+import { ensureLineEnding, removeLineEnding, reverse } from "../string.js";
 import { getMeasure } from "./line-measure.js";
 
 export function getLine(node: Node): HTMLElement | null {
@@ -178,6 +179,10 @@ export function isAfterLineEnd(textNode: Text, offset: number) {
 export function sliceLine(line: HTMLElement, start?: number, end?: number): string {
   const rawText = line.textContent ?? "";
   return rawText.slice(start, end);
+}
+
+export function getReversedLine(line: HTMLElement): string {
+  return ensureLineEnding(reverse(removeLineEnding(line.textContent!)));
 }
 
 function getIndentSize(line: HTMLElement): number {

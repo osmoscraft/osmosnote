@@ -10,8 +10,10 @@ import {
   cursorSelectRight,
   cursorSelectUp,
   cursorSelectWordEnd,
+  cursorSelectWordStart,
   cursorUp,
   cursorWordEnd,
+  cursorWordStart,
   renderDefaultCursor,
 } from "./lib/curosr/cursor-select.js";
 import { formatAll } from "./lib/format.js";
@@ -61,27 +63,31 @@ function handleEvents() {
         break;
       // Cursor movement
       case "ArrowLeft":
-        if (!event.altKey) {
-          event.preventDefault();
-          if (event.shiftKey) {
-            cursorSelectLeft(host);
-          } else {
-            cursorLeft(host);
-          }
+        if (event.altKey) break;
+
+        event.preventDefault();
+        if (!event.ctrlKey && !event.shiftKey) {
+          cursorLeft(host);
+        } else if (!event.ctrlKey && event.shiftKey) {
+          cursorSelectLeft(host);
+        } else if (event.ctrlKey && !event.shiftKey) {
+          cursorWordStart(host);
+        } else if (event.ctrlKey && event.shiftKey) {
+          cursorSelectWordStart(host);
         }
         break;
       case "ArrowRight":
-        if (!event.altKey) {
-          event.preventDefault();
-          if (event.ctrlKey && !event.shiftKey) {
-            cursorWordEnd(host);
-          } else if (event.ctrlKey && event.shiftKey) {
-            cursorSelectWordEnd(host);
-          } else if (!event.ctrlKey && event.shiftKey) {
-            cursorSelectRight(host);
-          } else if (!event.ctrlKey && !event.shiftKey) {
-            cursorRight(host);
-          }
+        if (event.altKey) break;
+
+        event.preventDefault();
+        if (!event.ctrlKey && !event.shiftKey) {
+          cursorRight(host);
+        } else if (!event.ctrlKey && event.shiftKey) {
+          cursorSelectRight(host);
+        } else if (event.ctrlKey && !event.shiftKey) {
+          cursorWordEnd(host);
+        } else if (event.ctrlKey && event.shiftKey) {
+          cursorSelectWordEnd(host);
         }
         break;
       case "ArrowDown":

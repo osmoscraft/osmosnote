@@ -8,6 +8,7 @@ import {
   getPositionAboveCursor,
   getPositionBelowCursor,
   getWordEndPositionFromCursor,
+  getWordStartPositionFromCursor,
 } from "./cursor-query.js";
 import { updateIdealColumn } from "./ideal-column.js";
 
@@ -43,6 +44,18 @@ export function cursorLeft(root: HTMLElement) {
 
 export function cursorSelectLeft(root: HTMLElement) {
   extendCursorFocusByOffset(-1, root);
+}
+
+export function cursorWordStart(root: HTMLElement) {
+  moveCursorCollapsed({
+    seeker: getWordStartPositionFromCursor,
+    requireCollapseTo: "start",
+    root,
+  });
+}
+
+export function cursorSelectWordStart(root: HTMLElement) {
+  extendCursorFocus({ seeker: getWordStartPositionFromCursor, root });
 }
 
 export function cursorDown(root: HTMLElement) {
