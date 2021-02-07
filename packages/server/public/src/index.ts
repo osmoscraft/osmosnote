@@ -5,8 +5,10 @@ import {
   cursorDown,
   cursorLeft,
   cursorRight,
+  cursorSelectDown,
   cursorSelectLeft,
   cursorSelectRight,
+  cursorSelectUp,
   cursorUp,
   renderDefaultCursor,
 } from "./lib/curosr/cursor-select.js";
@@ -78,11 +80,19 @@ function handleEvents() {
         break;
       case "ArrowDown":
         event.preventDefault();
-        cursorDown(host);
+        if (event.shiftKey) {
+          cursorSelectDown(host);
+        } else {
+          cursorDown(host);
+        }
         break;
       case "ArrowUp":
         event.preventDefault();
-        cursorUp(host);
+        if (event.shiftKey) {
+          cursorSelectUp(host);
+        } else {
+          cursorUp(host);
+        }
         break;
       // Inputs
       case "Delete":

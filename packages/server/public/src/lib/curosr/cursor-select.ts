@@ -1,14 +1,12 @@
 import { seek, SeekOutput } from "../dom-utils.js";
+import { getOffsetByVisualPosition, getPositionByOffset, VisualPosition } from "../line/line-query.js";
 import {
-  getLine,
-  getLineMetrics,
-  getNextLine,
-  getOffsetByVisualPosition,
-  getPositionByOffset,
-  getPreviousLine,
-  VisualPosition,
-} from "../line/line-query.js";
-import { getCursor, getCursorLinePosition, getNearestEditablePositionForward } from "./cursor-query.js";
+  Cursor,
+  getCursor,
+  getNearestEditablePositionForward,
+  getPositionAboveCursor,
+  getPositionBelowCursor,
+} from "./cursor-query.js";
 import { getIdealColumn, updateIdealColumn } from "./ideal-column.js";
 
 export function renderDefaultCursor(root: HTMLElement) {
@@ -27,129 +25,43 @@ export function renderDefaultCursor(root: HTMLElement) {
 }
 
 export function cursorRight(root: HTMLElement) {
-  moveCursorCollapsed(1, root);
+  moveCursorCollapsedByOffset(1, root);
 }
 
 export function cursorSelectRight(root: HTMLElement) {
-  extendCursorFocus(1, root);
+  extendCursorFocusByOffset(1, root);
 }
 
 export function cursorLeft(root: HTMLElement) {
-  moveCursorCollapsed(-1, root);
+  moveCursorCollapsedByOffset(-1, root);
 }
 
 export function cursorSelectLeft(root: HTMLElement) {
-  extendCursorFocus(-1, root);
+  extendCursorFocusByOffset(-1, root);
 }
 
 export function cursorDown(root: HTMLElement) {
-  const cursorEnd = getCursor()?.focus;
+  moveCursorCollapsed({
+    seeker: getPositionBelowCursor,
+    requireCollapseTo: "end",
+    root,
+  });
+}
 
-  if (cursorEnd) {
-    const currentLine = getLine(cursorEnd.node)!;
-    const { indent, lastRowIndex, isWrapped } = getLineMetrics(currentLine);
-    const { offset: inlineOffset, row: cursorRow, column: cursorColumn } = getCursorLinePosition(cursorEnd);
-
-    if (isWrapped) {
-      if (inlineOffset < indent) {
-        // Inside initial indent: Move to 1st wrapped line start
-        setCollapsedCursorToSmartLinePosition(
-          currentLine,
-          {
-            row: cursorRow + 1,
-            column: indent,
-          },
-          root
-        );
-
-        return;
-      } else if (cursorRow < lastRowIndex) {
-        // Has wrapped line below: Move to next row
-        setCollapsedCursorToSmartLinePosition(
-          currentLine,
-          {
-            row: cursorRow + 1,
-            column: cursorColumn,
-          },
-          root
-        );
-
-        return;
-      }
-    }
-
-    const nextLine = getNextLine(currentLine);
-    if (!nextLine) return;
-
-    setCollapsedCursorToSmartLinePosition(
-      nextLine,
-      {
-        row: 0,
-        column: cursorColumn,
-      },
-      root
-    );
-  }
+export function cursorSelectDown(root: HTMLElement) {
+  extendCursorFocus(getPositionBelowCursor, root);
 }
 
 export function cursorUp(root: HTMLElement) {
-  const cursorEnd = getCursor()?.focus;
-
-  if (cursorEnd) {
-    const currentLine = getLine(cursorEnd.node)!;
-    const { row: cursorRow, column: cursorColumn } = getCursorLinePosition(cursorEnd);
-
-    // move up wrapped line
-    if (cursorRow > 0) {
-      setCollapsedCursorToSmartLinePosition(
-        currentLine,
-        {
-          row: cursorRow - 1,
-          column: cursorColumn,
-        },
-        root
-      );
-
-      return;
-    }
-
-    const previousLine = getPreviousLine(currentLine);
-    if (!previousLine) return;
-
-    // move to line above
-    setCollapsedCursorToSmartLinePosition(
-      previousLine,
-      {
-        row: getLineMetrics(previousLine).lastRowIndex,
-        column: cursorColumn,
-      },
-      root
-    );
-  }
+  moveCursorCollapsed({
+    seeker: getPositionAboveCursor,
+    requireCollapseTo: "start",
+    root,
+  });
 }
 
-/**
- * Set cursor to the given row and column of the line.
- * Any previously remembered ideal column will override the given column.
- */
-function setCollapsedCursorToSmartLinePosition(
-  line: HTMLElement,
-  fallbackPosition: VisualPosition,
-  root: HTMLElement | null = null
-): SeekOutput | null {
-  const { row, column } = fallbackPosition;
-  const targetOffset = getOffsetByVisualPosition(line, {
-    row,
-    column: getIdealColumn() ?? column,
-  });
-
-  const seekOutput = seek({ source: line, offset: targetOffset });
-  if (seekOutput) {
-    setCursorCollapsed(seekOutput.node, seekOutput.offset, root);
-    return seekOutput;
-  } else {
-    return null;
-  }
+export function cursorSelectUp(root: HTMLElement) {
+  extendCursorFocus(getPositionAboveCursor, root);
 }
 
 export function setCollapsedCursorToLineOffset(
@@ -209,7 +121,7 @@ export function setCursorCollapsed(node: Node, offset: number = 0, root: HTMLEle
   updateCursorDomTracker(root);
 }
 
-function extendCursorFocus(offset: number, root: HTMLElement | null = null) {
+function extendCursorFocusByOffset(offset: number, root: HTMLElement | null = null) {
   const cursor = getCursor();
   if (!cursor) return;
   const { anchor, focus } = cursor;
@@ -226,11 +138,52 @@ function extendCursorFocus(offset: number, root: HTMLElement | null = null) {
   updateCursorDomTracker(root);
 }
 
+function extendCursorFocus(
+  seeker: (cursor: Cursor) => SeekOutput | null,
+  root: HTMLElement | null = null,
+  saveIdealColumn = false
+) {
+  const cursor = getCursor();
+  if (!cursor) return;
+  const newFocus = seeker(cursor);
+  if (!newFocus) return;
+
+  const selection = window.getSelection()!;
+  selection.setBaseAndExtent(cursor.anchor.node, cursor.anchor.offset, newFocus.node, newFocus.offset);
+
+  if (saveIdealColumn) updateIdealColumn();
+  updateCursorDomTracker(root);
+}
+
+/**
+ * Set cursor to the given row and column of the line.
+ * Any previously remembered ideal column will override the given column.
+ */
+function setCollapsedCursorToSmartLinePosition(
+  line: HTMLElement,
+  fallbackPosition: VisualPosition,
+  root: HTMLElement | null = null
+): SeekOutput | null {
+  const { row, column } = fallbackPosition;
+  const targetOffset = getOffsetByVisualPosition(line, {
+    row,
+    column: getIdealColumn() ?? column,
+  });
+
+  const seekOutput = seek({ source: line, offset: targetOffset });
+  if (seekOutput) {
+    setCursorCollapsed(seekOutput.node, seekOutput.offset, root);
+    return seekOutput;
+  } else {
+    return null;
+  }
+}
+
 /**
  * If already collapsed, move the cursor by offset.
  * If not collapsed, collapse to the direction of movement.
  */
-function moveCursorCollapsed(offset: number, root: HTMLElement | null = null) {
+function moveCursorCollapsedByOffset(offset: number, root: HTMLElement | null = null) {
   const cursor = getCursor();
   if (!cursor) return;
   const { focus, isCollapsed } = cursor;
@@ -254,6 +207,32 @@ function moveCursorCollapsed(offset: number, root: HTMLElement | null = null) {
 
   updateIdealColumn();
   updateCursorDomTracker(root);
+}
+
+function moveCursorCollapsed(config: {
+  seeker: (cursor: Cursor) => SeekOutput | null;
+  requireCollapseTo?: "start" | "end";
+  root: HTMLElement | null;
+}) {
+  const { seeker, root = null, requireCollapseTo } = config;
+  const cursor = getCursor();
+  if (!cursor) return;
+
+  if (!cursor.isCollapsed && requireCollapseTo !== undefined) {
+    const selection = getSelection();
+    if (!selection) return;
+
+    if (requireCollapseTo === "start") {
+      selection.collapseToStart();
+    } else if (requireCollapseTo === "end") {
+      selection.collapseToEnd();
+    }
+  } else {
+    const newFocus = seeker(cursor);
+    if (!newFocus) return;
+
+    setCursorCollapsed(newFocus.node, newFocus.offset, root);
+  }
 }
 
 /**

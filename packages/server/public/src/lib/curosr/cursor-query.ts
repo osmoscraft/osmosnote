@@ -1,3 +1,4 @@
+import { seek, SeekOutput } from "../dom-utils.js";
 import {
   getLine,
   getLineStartPosition,
@@ -5,7 +6,12 @@ import {
   isAfterLineEnd,
   Position,
   getNodeLinePosition,
+  getLineMetrics,
+  VisualPosition,
+  getOffsetByVisualPosition,
+  getPreviousLine,
 } from "../line/line-query.js";
+import { getIdealColumn } from "./ideal-column.js";
 
 export interface Cursor {
   anchor: CursorPosition;
@@ -42,6 +48,80 @@ export function getCursor(): Cursor | null {
     },
     isCollapsed: selection.isCollapsed,
   };
+}
+
+export function getPositionAboveCursor(cursor: Cursor): SeekOutput | null {
+  const currentLine = getLine(cursor.focus.node)!;
+  const { row: cursorRow, column: cursorColumn } = getCursorLinePosition(cursor.focus);
+
+  // wrapped line above
+  if (cursorRow > 0) {
+    return getCursorSmartLinePosition(currentLine, {
+      row: cursorRow - 1,
+      column: cursorColumn,
+    });
+  }
+
+  const previousLine = getPreviousLine(currentLine);
+  if (!previousLine) return null;
+
+  // line above
+  return getCursorSmartLinePosition(previousLine, {
+    row: getLineMetrics(previousLine).lastRowIndex,
+    column: cursorColumn,
+  });
+}
+
+export function getPositionBelowCursor(cursor: Cursor): SeekOutput | null {
+  const currentLine = getLine(cursor.focus.node)!;
+  const { indent, lastRowIndex, isWrapped } = getLineMetrics(currentLine);
+  const { offset: inlineOffset, row: cursorRow, column: cursorColumn } = getCursorLinePosition(cursor.focus);
+
+  if (isWrapped) {
+    if (inlineOffset < indent) {
+      // (inside initial indent) 1st wrapped line below
+      return getCursorSmartLinePosition(currentLine, {
+        row: cursorRow + 1,
+        column: indent,
+      });
+    } else if (cursorRow < lastRowIndex) {
+      // wrapped line below:
+      return getCursorSmartLinePosition(currentLine, {
+        row: cursorRow + 1,
+        column: cursorColumn,
+      });
+    }
+  }
+
+  const nextLine = getNextLine(currentLine);
+  if (!nextLine) return null;
+
+  return getCursorSmartLinePosition(nextLine, {
+    row: 0,
+    column: cursorColumn,
+  });
+}
+
+function getCursorSmartLinePosition(line: HTMLElement, fallbackPosition: VisualPosition): SeekOutput | null {
+  const cursor = getCursor();
+  if (!cursor) return null;
+  const { anchor } = cursor;
+
+  const { row, column } = fallbackPosition;
+  const targetOffset = getOffsetByVisualPosition(line, {
+    row,
+    column: getIdealColumn() ?? column,
+  });
+
+  const newFocus = seek({ source: line, offset: targetOffset });
+  if (newFocus) {
+    const selection = window.getSelection()!;
+    selection.setBaseAndExtent(anchor.node, anchor.offset, newFocus.node, newFocus.offset);
+
+    return newFocus;
+  } else {
+    return null;
+  }
 }
 
 export function getNearestEditablePositionForward(node: Text, offset: number) {
