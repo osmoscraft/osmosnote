@@ -115,10 +115,6 @@ export function getPositionBelowCursor(cursor: Cursor): SeekOutput | null {
  * Any previously saved ideal column will override the given column.
  */
 function getCursorSmartLinePosition(line: HTMLElement, fallbackPosition: VisualPosition): SeekOutput | null {
-  const cursor = getCursor();
-  if (!cursor) return null;
-  const { anchor } = cursor;
-
   const { row, column } = fallbackPosition;
   const targetOffset = getOffsetByVisualPosition(line, {
     row,
@@ -126,14 +122,7 @@ function getCursorSmartLinePosition(line: HTMLElement, fallbackPosition: VisualP
   });
 
   const newFocus = seek({ source: line, offset: targetOffset });
-  if (newFocus) {
-    const selection = window.getSelection()!;
-    selection.setBaseAndExtent(anchor.node, anchor.offset, newFocus.node, newFocus.offset);
-
-    return newFocus;
-  } else {
-    return null;
-  }
+  return newFocus;
 }
 
 export function getNearestEditablePositionForward(node: Text, offset: number) {

@@ -1,8 +1,8 @@
 # Roadmap
 
 ## TextEngine MVP
+
 - TODO
-  - Render current line with highlight
   - Incremental formatting
     - parse() that add syntax hightlight and calculate semantic levels
     - format() that updates padding using semantics levels
@@ -11,13 +11,15 @@
     - parse() OK to lose cursor. The caller of parse is responsible to set cursor after parse
     - format() must restore curosr
       - save the line that contains cursor, when updating indent, if cursor within padding, no move, if cursor after padding, shift cursor accordingly
-  - Handle shift + arrow for selection
   - Handle ctrl + arrow for word move
   - Handle ctrl + shift + arrow for word select
+  - Handle ctrl + a to select all
   - Handle home/end move and selection
   - Handle copy/paste/cut
   - Handle cut entire line when cursor is collapsed
 - DONE
+  - Render current line with highlight
+  - Handle shift + arrow for selection
   - Handle `Delete`/`Backspace` keydown
   - Handle select left/right
   - Handle `Enter` keydown

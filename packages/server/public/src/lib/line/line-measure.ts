@@ -37,6 +37,7 @@ function getLineMeasureRecursive(host: HTMLElement, lower: number, upper: number
 function getLineCount(host: HTMLElement, contentLength: number): number {
   const probeString = "m".repeat(contentLength);
   const probeContainer = document.createElement("div");
+  probeContainer.dataset.measurableLine = ""; // Must get same css as the real ine
   const probeElement = document.createElement("span");
   probeElement.innerHTML = probeString;
   probeElement.style.wordBreak = "break-all";

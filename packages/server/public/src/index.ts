@@ -105,7 +105,7 @@ function handleEvents() {
         break;
       case "Enter": // Enter
         // TODO improve efficiency
-        const collapsedCursorParents = [...host.querySelectorAll(`[data-cursor="both"]`)].reverse() as HTMLElement[];
+        const collapsedCursorParents = [...host.querySelectorAll(`[data-cursor-collapsed]`)].reverse() as HTMLElement[];
         for (let container of collapsedCursorParents) {
           if (container.dataset.noteId) {
             // open internal id link

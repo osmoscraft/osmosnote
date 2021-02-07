@@ -15,6 +15,9 @@
   caret-color: inherit;
 }
 
+[data-measurable-line] {
+  padding: 0 16px;
+}
 [data-line] {
   padding: 0 16px;
   display: flex;
