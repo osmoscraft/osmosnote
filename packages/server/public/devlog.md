@@ -32,6 +32,7 @@
 
 - TODO
   - Test (need real dom: playwright/cypress)
+    - How to mock dom measure?
     - Port testing helpers to browser
 
 # Principles

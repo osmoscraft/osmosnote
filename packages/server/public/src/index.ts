@@ -9,7 +9,9 @@ import {
   cursorSelectLeft,
   cursorSelectRight,
   cursorSelectUp,
+  cursorSelectWordEnd,
   cursorUp,
+  cursorWordEnd,
   renderDefaultCursor,
 } from "./lib/curosr/cursor-select.js";
 import { formatAll } from "./lib/format.js";
@@ -71,9 +73,13 @@ function handleEvents() {
       case "ArrowRight":
         if (!event.altKey) {
           event.preventDefault();
-          if (event.shiftKey) {
+          if (event.ctrlKey && !event.shiftKey) {
+            cursorWordEnd(host);
+          } else if (event.ctrlKey && event.shiftKey) {
+            cursorSelectWordEnd(host);
+          } else if (!event.ctrlKey && event.shiftKey) {
             cursorSelectRight(host);
-          } else {
+          } else if (!event.ctrlKey && !event.shiftKey) {
             cursorRight(host);
           }
         }

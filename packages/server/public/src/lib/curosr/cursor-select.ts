@@ -7,6 +7,7 @@ import {
   getNearestEditablePositionForward,
   getPositionAboveCursor,
   getPositionBelowCursor,
+  getWordEndPositionFromCursor,
 } from "./cursor-query.js";
 import { updateIdealColumn } from "./ideal-column.js";
 
@@ -22,6 +23,18 @@ export function cursorRight(root: HTMLElement) {
 
 export function cursorSelectRight(root: HTMLElement) {
   extendCursorFocusByOffset(1, root);
+}
+
+export function cursorWordEnd(root: HTMLElement) {
+  moveCursorCollapsed({
+    seeker: getWordEndPositionFromCursor,
+    requireCollapseTo: "end",
+    root,
+  });
+}
+
+export function cursorSelectWordEnd(root: HTMLElement) {
+  extendCursorFocus({ seeker: getWordEndPositionFromCursor, root });
 }
 
 export function cursorLeft(root: HTMLElement) {

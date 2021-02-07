@@ -1,4 +1,4 @@
-import { firstInnerLeafNode, firstInnerTextNode, flattenToLeafNodes, isTextNode } from "../dom-utils.js";
+import { firstInnerLeafNode, firstInnerTextNode, flattenToLeafNodes, isTextNode, SeekOutput } from "../dom-utils.js";
 import { getMeasure } from "./line-measure.js";
 
 export function getLine(node: Node): HTMLElement | null {
@@ -50,7 +50,7 @@ export function getLineLength(line: HTMLElement) {
   return indent + wrappedLineLength;
 }
 
-export function getLineStartPosition(lineElement: HTMLElement) {
+export function getLineStartPosition(lineElement: HTMLElement): SeekOutput {
   const firstLeafNode = firstInnerTextNode(lineElement);
 
   if (!firstLeafNode) throw new Error("Invalid line, no text node found");

@@ -10,7 +10,9 @@ import {
   VisualPosition,
   getOffsetByVisualPosition,
   getPreviousLine,
+  sliceLine,
 } from "../line/line-query.js";
+import { removeLineEnding } from "../string.js";
 import { getIdealColumn } from "./ideal-column.js";
 
 export interface Cursor {
@@ -56,6 +58,50 @@ export function getDefaultCursorPosition(): SeekOutput | null {
   if (!firstLine) return null;
 
   return getLineStartPosition(firstLine);
+}
+
+/**
+ * Get the position of the next word end.
+ * If the cursor starts at a word end, the search will start from next character
+ * If no word end found, null is returned
+ */
+export function getWordEndPositionFromCursor(cursor: Cursor): SeekOutput | null {
+  const currentLine = getLine(cursor.focus.node)!;
+  const currentLineMetrics = getLineMetrics(currentLine);
+  const { offset } = getCursorLinePosition(cursor.focus);
+
+  if (offset === currentLineMetrics.selectableLength) {
+    // if at line end, search next line
+    const nextLine = getNextLine(currentLine);
+    if (nextLine) {
+      const nextLineTrimmed = removeLineEnding(nextLine.textContent!);
+      const wordEndOffset = getWordEndOffset(nextLineTrimmed);
+      const foundPosition = seek({ source: nextLine, offset: wordEndOffset })!;
+      return foundPosition;
+    }
+  } else {
+    // search current line (a result is guaranteed)
+    const lineRemainingText = removeLineEnding(sliceLine(currentLine, offset));
+    const wordEndOffset = getWordEndOffset(lineRemainingText);
+    const foundPosition = seek({ source: currentLine, offset: offset + wordEndOffset })!;
+    return foundPosition;
+  }
+
+  return null;
+}
+
+/**
+ * The input must not contain new line character
+ */
+function getWordEndOffset(text: string): number {
+  let wordEndMatch = text.match(/^(\s*?)(\w+|[^\w\s]+)(\w|\s|[^\w\s])/);
+  if (wordEndMatch) {
+    const [raw, spaces, chunk, suffix] = wordEndMatch;
+    const moveDistance = spaces.length + chunk.length;
+    return moveDistance;
+  }
+
+  return text.length;
 }
 
 export function getPositionAboveCursor(cursor: Cursor): SeekOutput | null {
