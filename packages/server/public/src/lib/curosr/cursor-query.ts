@@ -1,7 +1,7 @@
 import { seek, SeekOutput } from "../dom-utils.js";
 import {
   getLine,
-  getLineStartPosition,
+  seekToLineStart,
   getNextLine,
   isAfterLineEnd,
   Position,
@@ -12,6 +12,8 @@ import {
   getPreviousLine,
   sliceLine,
   getReversedLine,
+  seekToIndentEnd,
+  seekToLineEnd,
 } from "../line/line-query.js";
 import { ensureLineEnding, removeLineEnding, reverse } from "../string.js";
 import { getIdealColumn } from "./ideal-column.js";
@@ -58,7 +60,7 @@ export function getDefaultCursorPosition(): SeekOutput | null {
 
   if (!firstLine) return null;
 
-  return getLineStartPosition(firstLine);
+  return seekToLineStart(firstLine);
 }
 
 /**
@@ -114,6 +116,43 @@ export function getWordStartPositionFromCursor(cursor: Cursor): SeekOutput | nul
   }
 
   return null;
+}
+
+/**
+ * If after indent, get indent end position
+ * If within indent, get line start
+ * If at line start, return null
+ */
+export function getHomePositionFromCursor(cursor: Cursor): SeekOutput | null {
+  const currentLine = getLine(cursor.focus.node)!;
+  const { offset: cursorOffset } = getCursorLinePosition(cursor.focus);
+  const currentLineMetrics = getLineMetrics(currentLine);
+
+  if (cursorOffset > currentLineMetrics.indent) {
+    // if after indent, move to indent
+    return seekToIndentEnd(currentLine);
+  } else if (cursorOffset > 0) {
+    // if within indent, move to line start
+    return seekToLineStart(currentLine);
+  } else {
+    return null;
+  }
+}
+
+/**
+ * If before line end, get line end
+ * If at line end, return null
+ */
+export function getEndPositionFromCursor(cursor: Cursor): SeekOutput | null {
+  const currentLine = getLine(cursor.focus.node)!;
+  const { offset: cursorOffset } = getCursorLinePosition(cursor.focus);
+  const currentLineMetrics = getLineMetrics(currentLine);
+
+  if (cursorOffset < currentLineMetrics.selectableLength) {
+    return seekToLineEnd(currentLine);
+  } else {
+    return null;
+  }
 }
 
 /**
@@ -204,7 +243,7 @@ export function getNearestEditablePositionForward(node: Text, offset: number) {
     const nextLine = getNextLine(currentLine);
     if (nextLine) {
       // go to next line start
-      return getLineStartPosition(nextLine);
+      return seekToLineStart(nextLine);
     } else {
       // if no next line, back to this line end before new line character
       return {

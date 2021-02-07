@@ -15,6 +15,10 @@ import {
   cursorWordEnd,
   cursorWordStart,
   renderDefaultCursor,
+  cursorHome,
+  cursorHomeSelect,
+  cursorEndSelect,
+  cursorEnd,
 } from "./lib/curosr/cursor-select.js";
 import { formatAll } from "./lib/format.js";
 import { calculateMeasure, getMeasure, setMeasure } from "./lib/line/line-measure.js";
@@ -88,6 +92,22 @@ function handleEvents() {
           cursorWordEnd(host);
         } else if (event.ctrlKey && event.shiftKey) {
           cursorWordEndSelect(host);
+        }
+        break;
+      case "Home":
+        event.preventDefault();
+        if (!event.shiftKey) {
+          cursorHome(host);
+        } else if (event.shiftKey) {
+          cursorHomeSelect(host);
+        }
+        break;
+      case "End":
+        event.preventDefault();
+        if (!event.shiftKey) {
+          cursorEnd(host);
+        } else if (event.shiftKey) {
+          cursorEndSelect(host);
         }
         break;
       case "ArrowDown":

@@ -1,4 +1,11 @@
-import { firstInnerLeafNode, firstInnerTextNode, flattenToLeafNodes, isTextNode, SeekOutput } from "../dom-utils.js";
+import {
+  firstInnerLeafNode,
+  firstInnerTextNode,
+  flattenToLeafNodes,
+  isTextNode,
+  seek,
+  SeekOutput,
+} from "../dom-utils.js";
 import { ensureLineEnding, removeLineEnding, reverse } from "../string.js";
 import { getMeasure } from "./line-measure.js";
 
@@ -51,7 +58,7 @@ export function getLineLength(line: HTMLElement) {
   return indent + wrappedLineLength;
 }
 
-export function getLineStartPosition(lineElement: HTMLElement): SeekOutput {
+export function seekToLineStart(lineElement: HTMLElement): SeekOutput {
   const firstLeafNode = firstInnerTextNode(lineElement);
 
   if (!firstLeafNode) throw new Error("Invalid line, no text node found");
@@ -60,6 +67,18 @@ export function getLineStartPosition(lineElement: HTMLElement): SeekOutput {
     node: firstLeafNode,
     offset: 0,
   };
+}
+
+export function seekToIndentEnd(lineElement: HTMLElement): SeekOutput {
+  const lineMetrics = getLineMetrics(lineElement);
+
+  return seek({ source: lineElement, seek: lineMetrics.indent })!;
+}
+
+export function seekToLineEnd(lineElement: HTMLElement): SeekOutput {
+  const lineMetrics = getLineMetrics(lineElement);
+
+  return seek({ source: lineElement, seek: lineMetrics.selectableLength })!;
 }
 
 /**
