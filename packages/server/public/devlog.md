@@ -28,6 +28,12 @@
       - open note by id
     - Handle insert new line
 
+## Saner dev MVP
+
+- TODO
+  - Test (need real dom: playwright/cypress)
+    - Port testing helpers to browser
+
 # Principles
 
 - All the characters map 1:1 between DOM and source
