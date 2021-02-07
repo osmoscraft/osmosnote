@@ -12,10 +12,10 @@
     - format() must restore curosr
       - save the line that contains cursor, when updating indent, if cursor within padding, no move, if cursor after padding, shift cursor accordingly
   - Handle ctrl + a to select all
-  - Handle home/end move and selection
   - Handle copy/paste/cut
   - Handle cut entire line when cursor is collapsed
 - DONE
+  - Handle home/end move and selection
   - Handle ctrl + arrow for word move
   - Handle ctrl + shift + arrow for word select
   - Render current line with highlight
