@@ -3,25 +3,17 @@ import { getOffsetByVisualPosition, getPositionByOffset, VisualPosition } from "
 import {
   Cursor,
   getCursor,
+  getDefaultCursorPosition,
   getNearestEditablePositionForward,
   getPositionAboveCursor,
   getPositionBelowCursor,
 } from "./cursor-query.js";
-import { getIdealColumn, updateIdealColumn } from "./ideal-column.js";
+import { updateIdealColumn } from "./ideal-column.js";
 
 export function renderDefaultCursor(root: HTMLElement) {
-  const firstLine = document.querySelector("[data-line]") as HTMLElement;
-
-  if (firstLine) {
-    setCollapsedCursorToSmartLinePosition(
-      firstLine,
-      {
-        row: 0,
-        column: 0,
-      },
-      root
-    );
-  }
+  const defaultPosition = getDefaultCursorPosition();
+  if (!defaultPosition) return;
+  setCursorCollapsed(defaultPosition.node, defaultPosition.offset, root);
 }
 
 export function cursorRight(root: HTMLElement) {
@@ -45,11 +37,12 @@ export function cursorDown(root: HTMLElement) {
     seeker: getPositionBelowCursor,
     requireCollapseTo: "end",
     root,
+    rememberColumn: false,
   });
 }
 
 export function cursorSelectDown(root: HTMLElement) {
-  extendCursorFocus(getPositionBelowCursor, root);
+  extendCursorFocus({ seeker: getPositionBelowCursor, root, rememberColumn: false });
 }
 
 export function cursorUp(root: HTMLElement) {
@@ -57,37 +50,47 @@ export function cursorUp(root: HTMLElement) {
     seeker: getPositionAboveCursor,
     requireCollapseTo: "start",
     root,
+    rememberColumn: false,
   });
 }
 
 export function cursorSelectUp(root: HTMLElement) {
-  extendCursorFocus(getPositionAboveCursor, root);
+  extendCursorFocus({ seeker: getPositionAboveCursor, root, rememberColumn: false });
 }
 
-export function setCollapsedCursorToLineOffset(
-  line: HTMLElement,
-  offset: number,
-  root: HTMLElement | null = null
-): SeekOutput | null {
+export function setCollapsedCursorToLineOffset(config: {
+  line: HTMLElement;
+  offset: number;
+  root?: HTMLElement | null;
+  /** @default true */
+  rememberColumn?: boolean;
+}): SeekOutput | null {
+  const { line, offset, root = null, rememberColumn = true } = config;
+
   const newPosition = getPositionByOffset(line, offset);
-  return setCollapsedCursorToLinePosition(
+  return setCollapsedCursorToLinePosition({
     line,
-    {
+    position: {
       ...newPosition,
     },
-    root
-  );
+    root,
+    rememberColumn,
+  });
 }
 
 /**
  * Set cursor to the given row and column of the line.
  * Ignore any existing ideal position
  */
-export function setCollapsedCursorToLinePosition(
-  line: HTMLElement,
-  position: VisualPosition,
-  root: HTMLElement | null = null
-): SeekOutput | null {
+export function setCollapsedCursorToLinePosition(config: {
+  line: HTMLElement;
+  position: VisualPosition;
+  root?: HTMLElement | null;
+  /** @default true */
+  rememberColumn?: boolean;
+}): SeekOutput | null {
+  const { line, position, root = null, rememberColumn = true } = config;
+
   const { row, column } = position;
   const targetOffset = getOffsetByVisualPosition(line, {
     row,
@@ -95,12 +98,15 @@ export function setCollapsedCursorToLinePosition(
   });
 
   const seekOutput = seek({ source: line, offset: targetOffset });
-  if (seekOutput) {
-    setCursorCollapsed(seekOutput.node, seekOutput.offset, root);
-    return seekOutput;
-  } else {
+  if (!seekOutput) {
     return null;
   }
+
+  setCursorCollapsed(seekOutput.node, seekOutput.offset, root);
+
+  if (rememberColumn) updateIdealColumn();
+  updateCursorDomTracker(root);
+  return seekOutput;
 }
 
 export function setCursorCollapsed(node: Node, offset: number = 0, root: HTMLElement | null = null) {
@@ -138,11 +144,14 @@ function extendCursorFocusByOffset(offset: number, root: HTMLElement | null = nu
   updateCursorDomTracker(root);
 }
 
-function extendCursorFocus(
-  seeker: (cursor: Cursor) => SeekOutput | null,
-  root: HTMLElement | null = null,
-  saveIdealColumn = false
-) {
+function extendCursorFocus(config: {
+  seeker: (cursor: Cursor) => SeekOutput | null;
+  root: HTMLElement | null;
+  /** @default true */
+  rememberColumn?: boolean;
+}) {
+  const { seeker, root = null, rememberColumn = true } = config;
+
   const cursor = getCursor();
   if (!cursor) return;
   const newFocus = seeker(cursor);
@@ -151,32 +160,8 @@ function extendCursorFocus(
   const selection = window.getSelection()!;
   selection.setBaseAndExtent(cursor.anchor.node, cursor.anchor.offset, newFocus.node, newFocus.offset);
 
-  if (saveIdealColumn) updateIdealColumn();
+  if (rememberColumn) updateIdealColumn();
   updateCursorDomTracker(root);
-}
-
-/**
- * Set cursor to the given row and column of the line.
- * Any previously remembered ideal column will override the given column.
- */
-function setCollapsedCursorToSmartLinePosition(
-  line: HTMLElement,
-  fallbackPosition: VisualPosition,
-  root: HTMLElement | null = null
-): SeekOutput | null {
-  const { row, column } = fallbackPosition;
-  const targetOffset = getOffsetByVisualPosition(line, {
-    row,
-    column: getIdealColumn() ?? column,
-  });
-
-  const seekOutput = seek({ source: line, offset: targetOffset });
-  if (seekOutput) {
-    setCursorCollapsed(seekOutput.node, seekOutput.offset, root);
-    return seekOutput;
-  } else {
-    return null;
-  }
 }
 
 /**
@@ -213,8 +198,10 @@ function moveCursorCollapsed(config: {
   seeker: (cursor: Cursor) => SeekOutput | null;
   requireCollapseTo?: "start" | "end";
   root: HTMLElement | null;
+  /** @default true */
+  rememberColumn?: boolean;
 }) {
-  const { seeker, root = null, requireCollapseTo } = config;
+  const { seeker, root = null, requireCollapseTo, rememberColumn = true } = config;
   const cursor = getCursor();
   if (!cursor) return;
 
@@ -233,6 +220,9 @@ function moveCursorCollapsed(config: {
 
     setCursorCollapsed(newFocus.node, newFocus.offset, root);
   }
+
+  if (rememberColumn) updateIdealColumn();
+  updateCursorDomTracker(root);
 }
 
 /**

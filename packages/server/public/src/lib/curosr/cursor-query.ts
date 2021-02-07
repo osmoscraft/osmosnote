@@ -50,6 +50,14 @@ export function getCursor(): Cursor | null {
   };
 }
 
+export function getDefaultCursorPosition(): SeekOutput | null {
+  const firstLine = document.querySelector("[data-line]") as HTMLElement;
+
+  if (!firstLine) return null;
+
+  return getLineStartPosition(firstLine);
+}
+
 export function getPositionAboveCursor(cursor: Cursor): SeekOutput | null {
   const currentLine = getLine(cursor.focus.node)!;
   const { row: cursorRow, column: cursorColumn } = getCursorLinePosition(cursor.focus);
@@ -102,6 +110,10 @@ export function getPositionBelowCursor(cursor: Cursor): SeekOutput | null {
   });
 }
 
+/**
+ * Locate cursor to the given row and column of the line.
+ * Any previously saved ideal column will override the given column.
+ */
 function getCursorSmartLinePosition(line: HTMLElement, fallbackPosition: VisualPosition): SeekOutput | null {
   const cursor = getCursor();
   if (!cursor) return null;

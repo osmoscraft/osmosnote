@@ -1,14 +1,14 @@
 /* COMPONENTS */
 
 #content-host {
-  background-color: var(--theme-background-active);
+  background-color: var(--theme-background-rest);
   white-space: break-spaces;
   word-break: break-all;
   line-break: anywhere;
   font-family: monospace;
   outline: none;
-  padding: 16px;
   caret-color: var(--theme-text-color);
+  padding: 16px 0;
 }
 
 #content-host * {
@@ -16,6 +16,7 @@
 }
 
 [data-line] {
+  padding: 0 16px;
   display: flex;
 }
 [data-line] [data-indent] {
@@ -23,6 +24,9 @@
 }
 [data-line] [data-wrap] {
   flex: 1 1 auto;
+}
+[data-line][data-cursor-collapsed] {
+  background-color: var(--theme-background-active);
 }
 
 [data-line="meta"] [data-meta-value="title"] {

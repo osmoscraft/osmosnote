@@ -27,8 +27,10 @@ export function insertNewLine(root: HTMLElement) {
 
   // set cursor to next line start
   const lineMetrics = getLineMetrics(newSecondLine);
-  setCollapsedCursorToLinePosition(newSecondLine, { row: 0, column: lineMetrics.indent });
-  updateIdealColumn();
+  setCollapsedCursorToLinePosition({
+    line: newSecondLine,
+    position: { row: 0, column: lineMetrics.indent },
+  });
 }
 
 export function deleteBefore(root: HTMLElement) {
@@ -54,8 +56,10 @@ export function deleteBefore(root: HTMLElement) {
 
       formatAll(root);
 
-      setCollapsedCursorToLineOffset(updatedPreviousLine, previousLineText.length);
-      updateIdealColumn();
+      setCollapsedCursorToLineOffset({
+        line: updatedPreviousLine,
+        offset: previousLineText.length,
+      });
     }
   } else {
     const remainingText = splice(currentLine.textContent!, offset - 1, 1);
@@ -69,8 +73,10 @@ export function deleteBefore(root: HTMLElement) {
     formatAll(root, { preserveIndent: true });
 
     // set cursor to the left edge of the deleted char
-    setCollapsedCursorToLineOffset(updatedLine, offset - 1);
-    updateIdealColumn();
+    setCollapsedCursorToLineOffset({
+      line: updatedLine,
+      offset: offset - 1,
+    });
   }
 }
 
@@ -99,8 +105,7 @@ export function deleteAfter(root: HTMLElement) {
 
     formatAll(root);
 
-    setCollapsedCursorToLineOffset(updatedLine, offset);
-    updateIdealColumn();
+    setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
   } else {
     const lineText = currentLine.textContent!;
     const lineRemainingText = splice(lineText, offset, 1);
@@ -112,7 +117,6 @@ export function deleteAfter(root: HTMLElement) {
 
     formatAll(root, { preserveIndent: true });
 
-    setCollapsedCursorToLineOffset(updatedLine, offset);
-    updateIdealColumn();
+    setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
   }
 }
