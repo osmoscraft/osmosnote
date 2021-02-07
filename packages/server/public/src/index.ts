@@ -5,12 +5,12 @@ import {
   cursorDown,
   cursorLeft,
   cursorRight,
-  cursorSelectDown,
-  cursorSelectLeft,
-  cursorSelectRight,
-  cursorSelectUp,
-  cursorSelectWordEnd,
-  cursorSelectWordStart,
+  cursorDownSelect,
+  cursorLeftSelect,
+  cursorRightSelect,
+  cursorUpSelect,
+  cursorWordEndSelect,
+  cursorWordStartSelect,
   cursorUp,
   cursorWordEnd,
   cursorWordStart,
@@ -69,11 +69,11 @@ function handleEvents() {
         if (!event.ctrlKey && !event.shiftKey) {
           cursorLeft(host);
         } else if (!event.ctrlKey && event.shiftKey) {
-          cursorSelectLeft(host);
+          cursorLeftSelect(host);
         } else if (event.ctrlKey && !event.shiftKey) {
           cursorWordStart(host);
         } else if (event.ctrlKey && event.shiftKey) {
-          cursorSelectWordStart(host);
+          cursorWordStartSelect(host);
         }
         break;
       case "ArrowRight":
@@ -83,17 +83,17 @@ function handleEvents() {
         if (!event.ctrlKey && !event.shiftKey) {
           cursorRight(host);
         } else if (!event.ctrlKey && event.shiftKey) {
-          cursorSelectRight(host);
+          cursorRightSelect(host);
         } else if (event.ctrlKey && !event.shiftKey) {
           cursorWordEnd(host);
         } else if (event.ctrlKey && event.shiftKey) {
-          cursorSelectWordEnd(host);
+          cursorWordEndSelect(host);
         }
         break;
       case "ArrowDown":
         event.preventDefault();
         if (event.shiftKey) {
-          cursorSelectDown(host);
+          cursorDownSelect(host);
         } else {
           cursorDown(host);
         }
@@ -101,7 +101,7 @@ function handleEvents() {
       case "ArrowUp":
         event.preventDefault();
         if (event.shiftKey) {
-          cursorSelectUp(host);
+          cursorUpSelect(host);
         } else {
           cursorUp(host);
         }

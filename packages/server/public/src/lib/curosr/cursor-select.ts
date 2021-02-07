@@ -22,7 +22,7 @@ export function cursorRight(root: HTMLElement) {
   moveCursorCollapsedByOffset(1, root);
 }
 
-export function cursorSelectRight(root: HTMLElement) {
+export function cursorRightSelect(root: HTMLElement) {
   extendCursorFocusByOffset(1, root);
 }
 
@@ -34,7 +34,7 @@ export function cursorWordEnd(root: HTMLElement) {
   });
 }
 
-export function cursorSelectWordEnd(root: HTMLElement) {
+export function cursorWordEndSelect(root: HTMLElement) {
   extendCursorFocus({ seeker: getWordEndPositionFromCursor, root });
 }
 
@@ -42,7 +42,7 @@ export function cursorLeft(root: HTMLElement) {
   moveCursorCollapsedByOffset(-1, root);
 }
 
-export function cursorSelectLeft(root: HTMLElement) {
+export function cursorLeftSelect(root: HTMLElement) {
   extendCursorFocusByOffset(-1, root);
 }
 
@@ -54,7 +54,7 @@ export function cursorWordStart(root: HTMLElement) {
   });
 }
 
-export function cursorSelectWordStart(root: HTMLElement) {
+export function cursorWordStartSelect(root: HTMLElement) {
   extendCursorFocus({ seeker: getWordStartPositionFromCursor, root });
 }
 
@@ -67,7 +67,7 @@ export function cursorDown(root: HTMLElement) {
   });
 }
 
-export function cursorSelectDown(root: HTMLElement) {
+export function cursorDownSelect(root: HTMLElement) {
   extendCursorFocus({ seeker: getPositionBelowCursor, root, rememberColumn: false });
 }
 
@@ -80,7 +80,7 @@ export function cursorUp(root: HTMLElement) {
   });
 }
 
-export function cursorSelectUp(root: HTMLElement) {
+export function cursorUpSelect(root: HTMLElement) {
   extendCursorFocus({ seeker: getPositionAboveCursor, root, rememberColumn: false });
 }
 
