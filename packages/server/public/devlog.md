@@ -30,6 +30,14 @@
       - open note by id
     - Handle insert new line
 
+## IDE MVP
+
+- TODO
+  - Save to disk
+  - Insert note
+  - Capture new
+  - Capture from bookmarklet
+
 ## Saner dev MVP
 
 - TODO
