@@ -11,6 +11,8 @@ import {
   getNearestEditablePositionForward,
   getPositionAboveCursor,
   getPositionBelowCursor,
+  getVisualEndPositionFromCursor,
+  getVisualHomePositionFromCursor,
   getWordEndPositionFromCursor,
   getWordStartPositionFromCursor,
 } from "./cursor-query.js";
@@ -64,26 +66,26 @@ export function cursorWordStartSelect(root: HTMLElement) {
 
 export function cursorHome(root: HTMLElement) {
   moveCursorCollapsed({
-    seeker: getHomePositionFromCursor,
+    seeker: getVisualHomePositionFromCursor,
     requireCollapseTo: "start",
     root,
   });
 }
 
 export function cursorHomeSelect(root: HTMLElement) {
-  extendCursorFocus({ seeker: getHomePositionFromCursor, root });
+  extendCursorFocus({ seeker: getVisualHomePositionFromCursor, root });
 }
 
 export function cursorEnd(root: HTMLElement) {
   moveCursorCollapsed({
-    seeker: getEndPositionFromCursor,
+    seeker: getVisualEndPositionFromCursor,
     requireCollapseTo: "end",
     root,
   });
 }
 
 export function cursorEndSelect(root: HTMLElement) {
-  extendCursorFocus({ seeker: getEndPositionFromCursor, root });
+  extendCursorFocus({ seeker: getVisualEndPositionFromCursor, root });
 }
 
 export function cursorBlockStart(root: HTMLElement) {

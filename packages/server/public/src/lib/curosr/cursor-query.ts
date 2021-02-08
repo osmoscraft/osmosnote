@@ -156,6 +156,34 @@ export function getHomePositionFromCursor(cursor: Cursor): SeekOutput | null {
 }
 
 /**
+ * Same as getHomePosition, except when line wraps, it only moves within the current visual row
+ * and when it's already at a visual row start, it will continue seeking the row above
+ */
+export function getVisualHomePositionFromCursor(cursor: Cursor): SeekOutput | null {
+  const currentLine = getLine(cursor.focus.node)!;
+  const { offset: cursorOffset, row, column } = getCursorLinePosition(cursor.focus);
+  const currentLineMetrics = getLineMetrics(currentLine);
+
+  // at line start, no result
+  if (cursorOffset === 0) return null;
+
+  // within first row's indent, use line start
+  if (row === 0 && cursorOffset <= currentLineMetrics.indent) {
+    return seekToLineStart(currentLine);
+  }
+
+  // at a wrapped row's beginning, use row above
+  if (row > 0 && column <= currentLineMetrics.indent) {
+    const offset = getOffsetByVisualPosition(currentLine, { row: row - 1, column: currentLineMetrics.indent });
+    return seek({ source: currentLine, offset });
+  }
+
+  // within the content on some row, use the column where visual indent ends
+  const offset = getOffsetByVisualPosition(currentLine, { row, column: currentLineMetrics.indent });
+  return seek({ source: currentLine, offset });
+}
+
+/**
  * If before line end, get line end
  * If at line end, return null
  */
@@ -169,6 +197,23 @@ export function getEndPositionFromCursor(cursor: Cursor): SeekOutput | null {
   } else {
     return null;
   }
+}
+
+/**
+ * Same as getEndPosition, except when line wraps, it only moves within the current visual row
+ * and when it's already at a visual row end, it will continue seeking the row below
+ */
+export function getVisualEndPositionFromCursor(cursor: Cursor): SeekOutput | null {
+  const currentLine = getLine(cursor.focus.node)!;
+  const { offset: cursorOffset, row, column } = getCursorLinePosition(cursor.focus);
+  const currentLineMetrics = getLineMetrics(currentLine);
+
+  // at line end, no result
+  if (cursorOffset === currentLineMetrics.selectableLength) return null;
+
+  // within the content on some row, go to last column (ok to overflow)
+  const offset = getOffsetByVisualPosition(currentLine, { row, column: currentLineMetrics.measure });
+  return seek({ source: currentLine, offset });
 }
 
 /**
