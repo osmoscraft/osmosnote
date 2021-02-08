@@ -75,6 +75,9 @@ export function formatLine(line: FormattedLineElement, context: FormatContext, c
   match = rawText.match(/^(\s+)$/);
   if (match) {
     const [raw, spaces] = match;
+
+    line.dataset.line = "blank";
+
     const inlineSpaces = removeLineEnding(spaces);
 
     const indent = config.preserveIndent ? inlineSpaces : ` `.repeat(context.level * 2);

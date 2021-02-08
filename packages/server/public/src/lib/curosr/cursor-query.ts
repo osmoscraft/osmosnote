@@ -14,6 +14,8 @@ import {
   getReversedLine,
   seekToIndentEnd,
   seekToLineEnd,
+  getBlockEndLine,
+  getBlockStartLine,
 } from "../line/line-query.js";
 import { ensureLineEnding, removeLineEnding, reverse } from "../string.js";
 import { getIdealColumn } from "./ideal-column.js";
@@ -119,6 +121,20 @@ export function getWordStartPositionFromCursor(cursor: Cursor): SeekOutput | nul
 }
 
 /**
+ * The input must ends with a new line character
+ */
+function getWordEndOffset(text: string): number {
+  let wordEndMatch = text.match(/^(\s*?)(\w+|[^\w\s]+)(\w|\s|[^\w\s])/);
+  if (wordEndMatch) {
+    const [raw, spaces, chunk, suffix] = wordEndMatch;
+    const moveDistance = spaces.length + chunk.length;
+    return moveDistance;
+  }
+
+  return text.length;
+}
+
+/**
  * If after indent, get indent end position
  * If within indent, get line start
  * If at line start, return null
@@ -156,17 +172,52 @@ export function getEndPositionFromCursor(cursor: Cursor): SeekOutput | null {
 }
 
 /**
- * The input must ends with a new line character
+ * Get the nearest non-empty line start above that's after an emptying line or page start
  */
-function getWordEndOffset(text: string): number {
-  let wordEndMatch = text.match(/^(\s*?)(\w+|[^\w\s]+)(\w|\s|[^\w\s])/);
-  if (wordEndMatch) {
-    const [raw, spaces, chunk, suffix] = wordEndMatch;
-    const moveDistance = spaces.length + chunk.length;
-    return moveDistance;
+export function getBlockStartPositionFromCursor(cursor: Cursor): SeekOutput | null {
+  const currentLine = getLine(cursor.focus.node)!;
+
+  let blockStartLine = getBlockStartLine(currentLine);
+
+  if (blockStartLine === currentLine) {
+    const cursorPosition = getCursorLinePosition(cursor.focus);
+    if (cursorPosition.offset === 0) {
+      const previousLine = getPreviousLine(currentLine);
+      // cursor is exactly at current block start. Continue search
+      if (previousLine) {
+        blockStartLine = getBlockStartLine(previousLine);
+      } else {
+        return null;
+      }
+    }
   }
 
-  return text.length;
+  return seekToLineStart(blockStartLine);
+}
+
+/**
+ * Get the nearest non-empty line end below that's before an emptying line or page end
+ */
+export function getBlockEndPositionFromCursor(cursor: Cursor): SeekOutput | null {
+  const currentLine = getLine(cursor.focus.node)!;
+
+  let blockEndLine = getBlockEndLine(currentLine);
+
+  if (blockEndLine === currentLine) {
+    const lineMetrics = getLineMetrics(currentLine);
+    const cursorPosition = getCursorLinePosition(cursor.focus);
+    if (cursorPosition.offset === lineMetrics.selectableLength) {
+      const nextLine = getNextLine(currentLine);
+      // cursor is exactly at current block end. Continue search
+      if (nextLine) {
+        blockEndLine = getBlockEndLine(nextLine);
+      } else {
+        return null;
+      }
+    }
+  }
+
+  return seekToLineEnd(blockEndLine);
 }
 
 export function getPositionAboveCursor(cursor: Cursor): SeekOutput | null {

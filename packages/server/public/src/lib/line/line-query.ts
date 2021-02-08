@@ -6,6 +6,7 @@ import {
   seek,
   SeekOutput,
 } from "../dom-utils.js";
+import type { LineElement } from "../source-to-lines.js";
 import { ensureLineEnding, removeLineEnding, reverse } from "../string.js";
 import { getMeasure } from "./line-measure.js";
 
@@ -79,6 +80,34 @@ export function seekToLineEnd(lineElement: HTMLElement): SeekOutput {
   const lineMetrics = getLineMetrics(lineElement);
 
   return seek({ source: lineElement, seek: lineMetrics.selectableLength })!;
+}
+
+export function getBlockStartLine(lineElement: HTMLElement, isInBlock = false): HTMLElement {
+  let candidateLine = lineElement;
+  if ((candidateLine as LineElement).dataset.line !== "blank") {
+    isInBlock = true;
+  }
+  let previousLine = getPreviousLine(candidateLine) as LineElement | null;
+
+  if (isInBlock && previousLine?.dataset.line === "blank") return candidateLine;
+
+  if (!previousLine) return candidateLine;
+
+  return getBlockStartLine(previousLine, isInBlock);
+}
+export function getBlockEndLine(lineElement: HTMLElement, isInBlock = false): HTMLElement {
+  let candidateLine = lineElement;
+  if ((candidateLine as LineElement).dataset.line !== "blank") {
+    isInBlock = true;
+  }
+
+  let nextLine = getNextLine(candidateLine) as LineElement | null;
+
+  if (isInBlock && nextLine?.dataset.line === "blank") return candidateLine;
+
+  if (!nextLine) return candidateLine;
+
+  return getBlockEndLine(nextLine, isInBlock);
 }
 
 /**

@@ -2,6 +2,8 @@ import { seek, SeekOutput } from "../dom-utils.js";
 import { getOffsetByVisualPosition, getPositionByOffset, VisualPosition } from "../line/line-query.js";
 import {
   Cursor,
+  getBlockEndPositionFromCursor,
+  getBlockStartPositionFromCursor,
   getCursor,
   getDefaultCursorPosition,
   getEndPositionFromCursor,
@@ -71,6 +73,7 @@ export function cursorHome(root: HTMLElement) {
 export function cursorHomeSelect(root: HTMLElement) {
   extendCursorFocus({ seeker: getHomePositionFromCursor, root });
 }
+
 export function cursorEnd(root: HTMLElement) {
   moveCursorCollapsed({
     seeker: getEndPositionFromCursor,
@@ -81,6 +84,30 @@ export function cursorEnd(root: HTMLElement) {
 
 export function cursorEndSelect(root: HTMLElement) {
   extendCursorFocus({ seeker: getEndPositionFromCursor, root });
+}
+
+export function cursorBlockStart(root: HTMLElement) {
+  moveCursorCollapsed({
+    seeker: getBlockStartPositionFromCursor,
+    requireCollapseTo: "start",
+    root,
+  });
+}
+
+export function cursorBlockStartSelect(root: HTMLElement) {
+  extendCursorFocus({ seeker: getBlockStartPositionFromCursor, root });
+}
+
+export function cursorBlockEnd(root: HTMLElement) {
+  moveCursorCollapsed({
+    seeker: getBlockEndPositionFromCursor,
+    requireCollapseTo: "end",
+    root,
+  });
+}
+
+export function cursorBlockEndSelect(root: HTMLElement) {
+  extendCursorFocus({ seeker: getBlockEndPositionFromCursor, root });
 }
 
 export function cursorDown(root: HTMLElement) {

@@ -19,6 +19,10 @@ import {
   cursorHomeSelect,
   cursorEndSelect,
   cursorEnd,
+  cursorBlockEnd,
+  cursorBlockEndSelect,
+  cursorBlockStartSelect,
+  cursorBlockStart,
 } from "./lib/curosr/cursor-select.js";
 import { formatAll } from "./lib/format.js";
 import { calculateMeasure, getMeasure, setMeasure } from "./lib/line/line-measure.js";
@@ -124,6 +128,22 @@ function handleEvents() {
           cursorUpSelect(host);
         } else {
           cursorUp(host);
+        }
+        break;
+      case "PageDown":
+        event.preventDefault();
+        if (event.shiftKey) {
+          cursorBlockEndSelect(host);
+        } else {
+          cursorBlockEnd(host);
+        }
+        break;
+      case "PageUp":
+        event.preventDefault();
+        if (event.shiftKey) {
+          cursorBlockStartSelect(host);
+        } else {
+          cursorBlockStart(host);
         }
         break;
       // Inputs

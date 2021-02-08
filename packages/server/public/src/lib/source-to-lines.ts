@@ -2,7 +2,7 @@ import { removeLineEnding } from "./string.js";
 
 export interface LineElement extends HTMLDivElement {
   dataset: {
-    line: "" | "heading" | "meta";
+    line: "" | "heading" | "meta" | "blank";
     meta?: "title" | "tags";
   };
 }

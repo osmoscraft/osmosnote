@@ -14,8 +14,8 @@
   - Handle ctrl + a to select all
   - Handle copy/paste/cut
   - Handle cut entire line when cursor is collapsed
-  - Handle paragraph movement (default bind to PgUp/PgDown)
 - DONE
+  - Handle paragraph movement (default bind to PgUp/PgDown)
   - Handle home/end move and selection
   - Handle ctrl + arrow for word move
   - Handle ctrl + shift + arrow for word select
