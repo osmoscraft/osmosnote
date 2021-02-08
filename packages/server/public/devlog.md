@@ -14,6 +14,8 @@
   - Handle ctrl + a to select all
   - Handle copy/paste/cut
   - Handle cut entire line when cursor is collapsed
+  - Use keydown to handle non-input events (Open, cursor movement)
+  - Use beforeinput to handle input events (research into "data" field for IME compatibility)
 - DONE
   - Scroll cursor into view
   - Handle paragraph movement (default bind to PgUp/PgDown)
