@@ -1,5 +1,5 @@
 import { seek, SeekOutput } from "../dom-utils.js";
-import { getOffsetByVisualPosition, getPositionByOffset, VisualPosition } from "../line/line-query.js";
+import { getLine, getOffsetByVisualPosition, getPositionByOffset, VisualPosition } from "../line/line-query.js";
 import {
   Cursor,
   getBlockEndPositionFromCursor,
@@ -183,7 +183,7 @@ export function setCollapsedCursorToLinePosition(config: {
   setCursorCollapsed(seekOutput.node, seekOutput.offset, root);
 
   if (rememberColumn) updateIdealColumn();
-  updateCursorDomTracker(root);
+  updateCursorInDom(root);
   return seekOutput;
 }
 
@@ -202,7 +202,7 @@ export function setCursorCollapsed(node: Node, offset: number = 0, root: HTMLEle
     selection.addRange(range);
   }
 
-  updateCursorDomTracker(root);
+  updateCursorInDom(root);
 }
 
 function extendCursorFocusByOffset(offset: number, root: HTMLElement | null = null) {
@@ -219,7 +219,7 @@ function extendCursorFocusByOffset(offset: number, root: HTMLElement | null = nu
   selection.setBaseAndExtent(anchor.node, anchor.offset, newFocus.node, newFocus.offset);
 
   updateIdealColumn();
-  updateCursorDomTracker(root);
+  updateCursorInDom(root);
 }
 
 function extendCursorFocus(config: {
@@ -239,7 +239,7 @@ function extendCursorFocus(config: {
   selection.setBaseAndExtent(cursor.anchor.node, cursor.anchor.offset, newFocus.node, newFocus.offset);
 
   if (rememberColumn) updateIdealColumn();
-  updateCursorDomTracker(root);
+  updateCursorInDom(root);
 }
 
 /**
@@ -269,7 +269,7 @@ function moveCursorCollapsedByOffset(offset: number, root: HTMLElement | null = 
   }
 
   updateIdealColumn();
-  updateCursorDomTracker(root);
+  updateCursorInDom(root);
 }
 
 function moveCursorCollapsed(config: {
@@ -300,13 +300,13 @@ function moveCursorCollapsed(config: {
   }
 
   if (rememberColumn) updateIdealColumn();
-  updateCursorDomTracker(root);
+  updateCursorInDom(root);
 }
 
 /**
  * Mark all parent elements of the collapsed cursor
  */
-function updateCursorDomTracker(root: HTMLElement | Document | null = document) {
+function updateCursorInDom(root: HTMLElement | Document | null = document) {
   // TODO improve perf by diffing the add/remove of dataset values
   // remove all previous states
   root
@@ -318,6 +318,9 @@ function updateCursorDomTracker(root: HTMLElement | Document | null = document) 
     if (cursor.isCollapsed) {
       updateContainerStateRecursive(cursor.focus.node, root);
     }
+
+    const line = getLine(cursor.focus.node);
+    line?.scrollIntoView({ behavior: "smooth" });
   }
 }
 

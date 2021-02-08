@@ -4,7 +4,6 @@ import { sourceToLines } from "../source-to-lines.js";
 import { splice } from "../string.js";
 import { getCursor, getCursorLinePosition } from "./cursor-query.js";
 import { setCollapsedCursorToLineOffset, setCollapsedCursorToLinePosition } from "./cursor-select.js";
-import { updateIdealColumn } from "./ideal-column.js";
 
 export function insertNewLine(root: HTMLElement) {
   const cursor = getCursor();

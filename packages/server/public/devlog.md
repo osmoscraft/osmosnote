@@ -15,6 +15,7 @@
   - Handle copy/paste/cut
   - Handle cut entire line when cursor is collapsed
 - DONE
+  - Scroll cursor into view
   - Handle paragraph movement (default bind to PgUp/PgDown)
   - Handle home/end move and selection
   - Handle ctrl + arrow for word move

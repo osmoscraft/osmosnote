@@ -9,6 +9,7 @@
   outline: none;
   caret-color: var(--theme-text-color);
   padding: 16px 0;
+  overflow-y: scroll;
 }
 
 #content-host * {
@@ -17,10 +18,12 @@
 
 [data-measurable-line] {
   padding: 0 16px;
+  scroll-margin: 32px 0;
 }
 [data-line] {
   padding: 0 16px;
   display: flex;
+  scroll-margin: 32px 0;
 }
 [data-line] [data-indent] {
   flex: 0 0 auto;
