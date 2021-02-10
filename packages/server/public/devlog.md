@@ -3,20 +3,21 @@
 ## TextEngine MVP
 
 - TODO
-  - Incremental formatting
-    - parse() that add syntax hightlight and calculate semantic levels
-    - format() that updates padding using semantics levels
-    - on edit, parse() changed lines, format() all
   - Handle cursor restore after global formatting
     - parse() OK to lose cursor. The caller of parse is responsible to set cursor after parse
     - format() must restore curosr
       - save the line that contains cursor, when updating indent, if cursor within padding, no move, if cursor after padding, shift cursor accordingly
   - Handle ctrl + a to select all
+  - Handle ctrl + delete/backspace
   - Handle copy/paste/cut
   - Handle cut entire line when cursor is collapsed
+- DONE
+  - Incremental formatting
+    - parse() that add syntax hightlight and calculate semantic levels
+    - format() that updates padding using semantics levels
+    - on edit, parse() changed lines, format() all
   - Use keydown to handle non-input events (Open, cursor movement)
   - Use beforeinput to handle input events (research into "data" field for IME compatibility)
-- DONE
   - Scroll cursor into view
   - Handle paragraph movement (default bind to PgUp/PgDown)
   - Handle home/end move and selection

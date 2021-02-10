@@ -1,9 +1,30 @@
-import { formatAll } from "../format.js";
+import { formatSyntaxOnly } from "../format.js";
 import { getLine, getLineMetrics, getNextLine, getPreviousLine, sliceLine } from "../line/line-query.js";
 import { sourceToLines } from "../source-to-lines.js";
 import { splice } from "../string.js";
 import { getCursor, getCursorLinePosition } from "./cursor-query.js";
 import { setCollapsedCursorToLineOffset, setCollapsedCursorToLinePosition } from "./cursor-select.js";
+
+export function insertText(text: string, root: HTMLElement) {
+  const cursor = getCursor();
+  if (!cursor) return;
+
+  const { offset } = getCursorLinePosition(cursor.focus);
+  const currentLine = getLine(cursor.focus.node);
+  if (!currentLine) return;
+
+  const lineText = currentLine.textContent!;
+  const lineUpdatedText = splice(lineText, offset, 0, text);
+  const newLines = sourceToLines(lineUpdatedText);
+  const updatedLine = newLines.children[0] as HTMLElement;
+
+  currentLine.parentElement?.insertBefore(newLines, currentLine);
+  currentLine.remove();
+
+  formatSyntaxOnly(root);
+
+  setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset + text.length });
+}
 
 export function insertNewLine(root: HTMLElement) {
   const cursor = getCursor();
@@ -22,7 +43,7 @@ export function insertNewLine(root: HTMLElement) {
   currentLine.parentElement?.insertBefore(newLines, currentLine);
   currentLine.remove();
 
-  formatAll(root);
+  formatSyntaxOnly(root);
 
   // set cursor to next line start
   const lineMetrics = getLineMetrics(newSecondLine);
@@ -53,7 +74,7 @@ export function deleteBefore(root: HTMLElement) {
       previousLine.parentElement?.insertBefore(newlines, previousLine);
       previousLine.remove();
 
-      formatAll(root);
+      formatSyntaxOnly(root);
 
       setCollapsedCursorToLineOffset({
         line: updatedPreviousLine,
@@ -69,7 +90,7 @@ export function deleteBefore(root: HTMLElement) {
     currentLine.parentElement?.insertBefore(newLines, currentLine);
     currentLine.remove();
 
-    formatAll(root, { preserveIndent: true });
+    formatSyntaxOnly(root);
 
     // set cursor to the left edge of the deleted char
     setCollapsedCursorToLineOffset({
@@ -102,7 +123,7 @@ export function deleteAfter(root: HTMLElement) {
     currentLine.remove();
     nextLine.remove();
 
-    formatAll(root);
+    formatSyntaxOnly(root);
 
     setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
   } else {
@@ -114,7 +135,7 @@ export function deleteAfter(root: HTMLElement) {
     currentLine.parentElement?.insertBefore(newLines, currentLine);
     currentLine.remove();
 
-    formatAll(root, { preserveIndent: true });
+    formatSyntaxOnly(root);
 
     setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
   }

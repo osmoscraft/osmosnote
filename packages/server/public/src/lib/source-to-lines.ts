@@ -4,6 +4,8 @@ export interface LineElement extends HTMLDivElement {
   dataset: {
     line: "" | "heading" | "meta" | "blank";
     meta?: "title" | "tags";
+    dirtySyntax?: "";
+    dirtyIndent?: "";
   };
 }
 
@@ -16,6 +18,8 @@ export function sourceToLines(source: string) {
   lines.forEach((line) => {
     const lineDom = document.createElement("div") as LineElement;
     lineDom.dataset.line = "";
+    lineDom.dataset.dirtySyntax = "";
+    lineDom.dataset.dirtyIndent = "";
 
     lineDom.textContent = `${line}\n`;
 

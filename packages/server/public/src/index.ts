@@ -1,31 +1,31 @@
 import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
 import { openNodeId, openUrl } from "./lib/curosr/cursor-action.js";
-import { deleteAfter, deleteBefore, insertNewLine } from "./lib/curosr/cursor-edit.js";
+import { deleteAfter, deleteBefore, insertNewLine, insertText } from "./lib/curosr/cursor-edit.js";
 import {
-  cursorDown,
-  cursorLeft,
-  cursorRight,
-  cursorDownSelect,
-  cursorLeftSelect,
-  cursorRightSelect,
-  cursorUpSelect,
-  cursorWordEndSelect,
-  cursorWordStartSelect,
-  cursorUp,
-  cursorWordEnd,
-  cursorWordStart,
-  renderDefaultCursor,
-  cursorHome,
-  cursorHomeSelect,
-  cursorEndSelect,
-  cursorEnd,
   cursorBlockEnd,
   cursorBlockEndSelect,
-  cursorBlockStartSelect,
   cursorBlockStart,
+  cursorBlockStartSelect,
+  cursorDown,
+  cursorDownSelect,
+  cursorEnd,
+  cursorEndSelect,
+  cursorHome,
+  cursorHomeSelect,
+  cursorLeft,
+  cursorLeftSelect,
+  cursorRight,
+  cursorRightSelect,
+  cursorUp,
+  cursorUpSelect,
+  cursorWordEnd,
+  cursorWordEndSelect,
+  cursorWordStart,
+  cursorWordStartSelect,
+  renderDefaultCursor,
 } from "./lib/curosr/cursor-select.js";
 import { formatAll } from "./lib/format.js";
-import { calculateMeasure, getMeasure, setMeasure } from "./lib/line/line-measure.js";
+import { calculateMeasure, setMeasure } from "./lib/line/line-measure.js";
 import { query } from "./lib/query.js";
 import { getNoteConfigFromUrl } from "./lib/route.js";
 import { sourceToLines } from "./lib/source-to-lines.js";
@@ -65,7 +65,7 @@ function handleEvents() {
         if (event.ctrlKey) {
           event.preventDefault();
           event.stopPropagation();
-          formatAll(host); // TODO use incremental formatting
+          formatAll(host);
           renderDefaultCursor(host); // TODO restore cursor
         }
         break;
@@ -173,10 +173,18 @@ function handleEvents() {
         }
 
         if (!event.defaultPrevented) {
+          // insert new line at point
           insertNewLine(host);
           event.preventDefault();
-          // insert new line at point
         }
+    }
+  });
+
+  host.addEventListener("beforeinput", (event) => {
+    const insertedText = (event as InputEvent).data;
+    if (insertedText) {
+      event.preventDefault();
+      insertText(insertedText, host);
     }
   });
 }

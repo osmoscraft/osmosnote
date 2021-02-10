@@ -3,31 +3,100 @@ import { removeLineEnding } from "./string.js";
 
 interface FormatContext {
   level: number;
-}
-
-export interface FormatConfig {
-  preserveIndent?: boolean;
+  isLevelDirty: boolean;
 }
 
 export interface FormattedLineElement extends LineElement {
   dataset: {
     line: LineElement["dataset"]["line"];
+    dirtySyntax: LineElement["dataset"]["dirtySyntax"];
+    dirtyIndent: LineElement["dataset"]["dirtyIndent"];
     level: number;
   };
 }
 
-const defaultConfig: FormatConfig = {};
+/**
+ * Format all lines with dirty syntax flag. Indent will be kept dirty.
+ */
+export function formatSyntaxOnly(root: HTMLElement | DocumentFragment) {
+  const lines = [...root.querySelectorAll("[data-line]")] as FormattedLineElement[];
+  const context: FormatContext = {
+    level: 0, // level doesn't matter as we won't update indentation
+    isLevelDirty: false, // doesn't matter
+  };
 
-export function formatAll(root: HTMLElement | DocumentFragment, config = defaultConfig) {
+  lines.forEach((line) => {
+    if (line.dataset.dirtySyntax !== undefined) {
+      formatLine(line, context, { syntaxOnly: true });
+      delete line.dataset.dirtySyntax;
+    }
+  });
+}
+
+export function formatAll(root: HTMLElement | DocumentFragment) {
   const lines = [...root.querySelectorAll("[data-line]")] as FormattedLineElement[];
   const context: FormatContext = {
     level: 0,
+    isLevelDirty: false,
   };
 
-  lines.forEach((line) => formatLine(line, context, config));
+  lines.forEach((line) => {
+    const isLineClean = line.dataset.dirtyIndent === undefined && line.dataset.dirtySyntax === undefined;
+
+    // update context without formatting when context and line are both clean
+    if (!context.isLevelDirty && isLineClean) {
+      updateContextFromLine(line, context);
+      return;
+    }
+
+    // otherwise, format the line
+    const { isLevelChanged: isLevelChanged } = formatLine(line, context);
+    // update line dirty state (this is independent from context)
+    delete line.dataset.dirtyIndent;
+    delete line.dataset.dirtySyntax;
+
+    // update context dirty state
+    if (!context.isLevelDirty && !isLineClean && isLevelChanged) {
+      // when context is clean, a dirty heading line pollutes context
+      context.isLevelDirty = true;
+    } else if (context.isLevelDirty && isLineClean && isLevelChanged) {
+      // when context is dirty, a clean heading line cleans context
+      context.isLevelDirty = false;
+    }
+  });
 }
 
-export function formatLine(line: FormattedLineElement, context: FormatContext, config: FormatConfig) {
+export function updateContextFromLine(line: FormattedLineElement, context: FormatContext) {
+  const rawText = line.textContent ?? "";
+
+  // heading
+  let match = rawText.match(/^(\s*)(#+) (.*)\n?/);
+  if (match) {
+    const [raw, spaces, hashes, text] = match;
+
+    context.level = hashes.length;
+
+    return {
+      isContextSet: true,
+    };
+  }
+
+  return {};
+}
+
+interface FormatLineSummary {
+  isLevelChanged?: boolean;
+}
+
+export interface FormatConfig {
+  syntaxOnly?: boolean;
+}
+
+export function formatLine(
+  line: FormattedLineElement,
+  context: FormatContext,
+  config: FormatConfig = {}
+): FormatLineSummary {
   const rawText = line.textContent ?? "";
 
   // heading
@@ -39,12 +108,14 @@ export function formatLine(line: FormattedLineElement, context: FormatContext, c
     line.dataset.level = hashes.length;
     line.dataset.line = "heading";
 
-    const indent = config.preserveIndent ? spaces : ` `.repeat(hashes.length - 1);
+    const indent = config.syntaxOnly ? spaces : ` `.repeat(hashes.length - 1);
     const hiddenHashes = `#`.repeat(hashes.length - 1);
 
     line.innerHTML = `<span data-indent>${indent}</span><span data-wrap><span class="t--ghost">${hiddenHashes}</span><span class="t--bold"># ${text}</span>\n</span>`;
 
-    return;
+    return {
+      isLevelChanged: true,
+    };
   }
 
   // meta
@@ -68,7 +139,7 @@ export function formatLine(line: FormattedLineElement, context: FormatContext, c
         throw new Error(`Unsupported meta key ${metaKey}`);
     }
 
-    return;
+    return {};
   }
 
   // blank line
@@ -80,10 +151,10 @@ export function formatLine(line: FormattedLineElement, context: FormatContext, c
 
     const inlineSpaces = removeLineEnding(spaces);
 
-    const indent = config.preserveIndent ? inlineSpaces : ` `.repeat(context.level * 2);
+    const indent = config.syntaxOnly ? inlineSpaces : ` `.repeat(context.level * 2);
     line.innerHTML = `<span data-indent>${indent}</span><span>\n</span>`;
 
-    return;
+    return {};
   }
 
   // paragraph
@@ -91,7 +162,7 @@ export function formatLine(line: FormattedLineElement, context: FormatContext, c
   let remainingText = removeLineEnding(rawText);
   let indent: string;
 
-  if (config.preserveIndent) {
+  if (config.syntaxOnly) {
     indent = remainingText.match(/^(\s+)/)?.[0] ?? "";
     remainingText = remainingText.slice(indent.length);
   } else {
@@ -125,4 +196,6 @@ export function formatLine(line: FormattedLineElement, context: FormatContext, c
   }
 
   line.innerHTML = `<span data-indent>${indent}</span><span data-wrap>${paragraphHtml}\n</span>`;
+
+  return {};
 }
