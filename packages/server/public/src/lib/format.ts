@@ -65,7 +65,7 @@ export function formatAll(root: HTMLElement | DocumentFragment) {
     }
 
     // otherwise, format the line
-    const { indentDifference, isIndentReset } = formatLine(line, context);
+    const { lengthChange, isIndentReset } = formatLine(line, context);
     // update line dirty state (this is independent from context)
     delete line.dataset.dirtyIndent;
     delete line.dataset.dirtySyntax;
@@ -81,7 +81,7 @@ export function formatAll(root: HTMLElement | DocumentFragment) {
 
     // restore cursor
     if ((line as any) === cursorLine) {
-      const newOffset = Math.max(0, previousCursorOffset! + indentDifference);
+      const newOffset = Math.max(0, previousCursorOffset! + lengthChange);
       setCollapsedCursorToLineOffset({ line: cursorLine, offset: newOffset });
     }
   });
@@ -106,7 +106,7 @@ export function updateContextFromLine(line: FormattedLineElement, context: Forma
 }
 
 interface FormatLineSummary {
-  indentDifference: number;
+  lengthChange: number;
   isIndentReset?: boolean;
 }
 
@@ -136,7 +136,7 @@ export function formatLine(
     line.innerHTML = `<span data-indent>${indent}</span><span data-wrap><span class="t--ghost">${hiddenHashes}</span><span class="t--bold"># ${text}</span>\n</span>`;
 
     return {
-      indentDifference: hashes.length - 1 - spaces.length,
+      lengthChange: indent.length + hiddenHashes.length + 2 + text.length + 1 - raw.length,
       isIndentReset: true,
     };
   }
@@ -163,7 +163,7 @@ export function formatLine(
     }
 
     return {
-      indentDifference: 0,
+      lengthChange: 2 + metaKey.length + 2 + metaValue.length + 1 - raw.length,
     };
   }
 
@@ -180,7 +180,7 @@ export function formatLine(
     line.innerHTML = `<span data-indent>${indent}</span><span>\n</span>`;
 
     return {
-      indentDifference: 0,
+      lengthChange: indent.length + 1 - raw.length,
     };
   }
 
@@ -189,6 +189,7 @@ export function formatLine(
   let remainingText = removeLineEnding(rawText);
   let indent: string;
   let actualIndent = remainingText.match(/^(\s+)/)?.[0] ?? "";
+  let paragraphLength = 0;
 
   if (config.syntaxOnly) {
     indent = actualIndent;
@@ -197,6 +198,8 @@ export function formatLine(
     indent = ` `.repeat(context.level * 2);
     remainingText = remainingText.trimStart();
   }
+
+  paragraphLength = remainingText.length;
 
   while (remainingText) {
     let match = remainingText.match(/^(.*?)\[(.+?)\]\((.+?)\)/); // links
@@ -226,6 +229,6 @@ export function formatLine(
   line.innerHTML = `<span data-indent>${indent}</span><span data-wrap>${paragraphHtml}\n</span>`;
 
   return {
-    indentDifference: context.level * 2 - actualIndent.length,
+    lengthChange: indent.length + paragraphLength + 1 - rawText.length,
   };
 }
