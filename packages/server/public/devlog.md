@@ -60,6 +60,10 @@
   - Handle list indentation
   - Handle list auto numbering
 
+## TextEngine North star
+
+- CJK support (need pixel based column calc or unicode char visual length detection)
+
 # Principles
 
 - All the characters map 1:1 between DOM and source
