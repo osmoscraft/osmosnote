@@ -1,6 +1,13 @@
 import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
 import { openNodeId, openUrl } from "./lib/curosr/cursor-action.js";
-import { deleteAfter, deleteBefore, insertNewLine, insertText } from "./lib/curosr/cursor-edit.js";
+import {
+  deleteAfter,
+  deleteBefore,
+  deleteWordAfter,
+  deleteWordBefore,
+  insertNewLine,
+  insertText,
+} from "./lib/curosr/cursor-edit.js";
 import {
   cursorBlockEnd,
   cursorBlockEndSelect,
@@ -147,11 +154,19 @@ function handleEvents() {
         break;
       // Inputs
       case "Delete":
-        deleteAfter(host);
+        if (event.ctrlKey) {
+          deleteWordAfter(host);
+        } else {
+          deleteAfter(host);
+        }
         event.preventDefault();
         break;
       case "Backspace":
-        deleteBefore(host);
+        if (event.ctrlKey) {
+          deleteWordBefore(host);
+        } else {
+          deleteBefore(host);
+        }
         event.preventDefault();
         break;
       case "Enter": // Enter

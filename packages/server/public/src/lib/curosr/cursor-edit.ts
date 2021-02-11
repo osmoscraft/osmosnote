@@ -3,10 +3,16 @@ import { getLine, getLineMetrics, getLines, getNextLine, getPreviousLine, sliceL
 import { LineElement, sourceToLines } from "../source-to-lines.js";
 import { splice } from "../string.js";
 import { getCursor, getCursorLinePosition } from "./cursor-query.js";
-import { setCollapsedCursorToLineOffset, setCollapsedCursorToLinePosition } from "./cursor-select.js";
+import {
+  cursorEndSelect,
+  cursorWordEndSelect,
+  cursorWordStartSelect,
+  setCollapsedCursorToLineOffset,
+  setCollapsedCursorToLinePosition,
+} from "./cursor-select.js";
 
 export function insertText(text: string, root: HTMLElement) {
-  cursorDeleteSelection(root);
+  deleteSelection(root);
 
   const cursor = getCursor();
   if (!cursor) return;
@@ -29,7 +35,7 @@ export function insertText(text: string, root: HTMLElement) {
 }
 
 export function insertNewLine(root: HTMLElement) {
-  cursorDeleteSelection(root);
+  deleteSelection(root);
 
   const cursor = getCursor();
   if (!cursor) return;
@@ -62,7 +68,7 @@ export function deleteBefore(root: HTMLElement) {
   if (!cursor) return;
 
   if (!cursor.isCollapsed) {
-    cursorDeleteSelection(root);
+    deleteSelection(root);
     return;
   }
 
@@ -114,7 +120,7 @@ export function deleteAfter(root: HTMLElement) {
   if (!cursor) return;
 
   if (!cursor.isCollapsed) {
-    cursorDeleteSelection(root);
+    deleteSelection(root);
     return;
   }
 
@@ -155,10 +161,36 @@ export function deleteAfter(root: HTMLElement) {
   }
 }
 
+export function deleteWordBefore(root: HTMLElement) {
+  const cursor = getCursor();
+  if (!cursor) return;
+
+  if (!cursor.isCollapsed) {
+    deleteSelection(root);
+    return;
+  }
+
+  cursorWordStartSelect(root);
+  deleteSelection(root);
+}
+
+export function deleteWordAfter(root: HTMLElement) {
+  const cursor = getCursor();
+  if (!cursor) return;
+
+  if (!cursor.isCollapsed) {
+    deleteSelection(root);
+    return;
+  }
+
+  cursorWordEndSelect(root);
+  deleteSelection(root);
+}
+
 /**
  * Delete selection if there is any. No op otherwise
  */
-export function cursorDeleteSelection(root: HTMLElement) {
+export function deleteSelection(root: HTMLElement) {
   const cursor = getCursor();
   if (!cursor) return;
   if (cursor.isCollapsed) return;

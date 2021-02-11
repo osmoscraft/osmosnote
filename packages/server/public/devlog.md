@@ -5,12 +5,12 @@
 - TODO
   - Handle Undo/redo
   - Handle ctrl + a to select all
-  - Handle ctrl + delete/backspace
-    - Compose cursor select word end/start with cursor delete selection
   - Handle copy/paste/cut
   - Handle cut entire line when cursor is collapsed
   - Apply smart indent when inserting a new line
 - DONE
+  - Handle ctrl + delete/backspace
+    - Compose cursor select word end/start with cursor delete selection
   - Handle cursor edit in selection mode
     - Insertion = delete selection + insertion
     - Deletion = delete selection only
