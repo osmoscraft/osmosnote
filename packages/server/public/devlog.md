@@ -54,6 +54,12 @@
     - How to mock dom measure?
     - Port testing helpers to browser
 
+## TextEngine V2
+
+- TODO
+  - Handle list indentation
+  - Handle list auto numbering
+
 # Principles
 
 - All the characters map 1:1 between DOM and source
