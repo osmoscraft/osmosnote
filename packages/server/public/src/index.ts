@@ -66,7 +66,6 @@ function handleEvents() {
           event.preventDefault();
           event.stopPropagation();
           formatAll(host);
-          renderDefaultCursor(host); // TODO restore cursor
         }
         break;
       // Cursor movement

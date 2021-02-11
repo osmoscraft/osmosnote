@@ -6,8 +6,6 @@ import {
   getBlockStartPositionFromCursor,
   getCursor,
   getDefaultCursorPosition,
-  getEndPositionFromCursor,
-  getHomePositionFromCursor,
   getNearestEditablePositionForward,
   getPositionAboveCursor,
   getPositionBelowCursor,

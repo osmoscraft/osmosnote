@@ -1,4 +1,7 @@
-import type { LineElement } from "./source-to-lines";
+import { getCursor, getCursorLinePosition } from "./curosr/cursor-query.js";
+import { setCollapsedCursorToLineOffset } from "./curosr/cursor-select.js";
+import { getLine } from "./line/line-query.js";
+import type { LineElement } from "./source-to-lines.js";
 import { removeLineEnding } from "./string.js";
 
 interface FormatContext {
@@ -19,6 +22,8 @@ export interface FormattedLineElement extends LineElement {
  * Format all lines with dirty syntax flag. Indent will be kept dirty.
  */
 export function formatSyntaxOnly(root: HTMLElement | DocumentFragment) {
+  // TODO handle cursor restore. Expose config to allow manual cursor restore
+
   const lines = [...root.querySelectorAll("[data-line]")] as FormattedLineElement[];
   const context: FormatContext = {
     level: 0, // level doesn't matter as we won't update indentation
@@ -34,6 +39,16 @@ export function formatSyntaxOnly(root: HTMLElement | DocumentFragment) {
 }
 
 export function formatAll(root: HTMLElement | DocumentFragment) {
+  const cursor = getCursor();
+  let cursorLine: HTMLElement;
+  let previousCursorOffset: number | null = null;
+
+  if (cursor) {
+    cursorLine = getLine(cursor.focus.node)!;
+    const { offset } = getCursorLinePosition(cursor.focus);
+    previousCursorOffset = offset;
+  }
+
   const lines = [...root.querySelectorAll("[data-line]")] as FormattedLineElement[];
   const context: FormatContext = {
     level: 0,
@@ -50,18 +65,24 @@ export function formatAll(root: HTMLElement | DocumentFragment) {
     }
 
     // otherwise, format the line
-    const { isLevelChanged: isLevelChanged } = formatLine(line, context);
+    const { indentDifference } = formatLine(line, context);
     // update line dirty state (this is independent from context)
     delete line.dataset.dirtyIndent;
     delete line.dataset.dirtySyntax;
 
     // update context dirty state
-    if (!context.isLevelDirty && !isLineClean && isLevelChanged) {
+    if (!context.isLevelDirty && !isLineClean && indentDifference) {
       // when context is clean, a dirty heading line pollutes context
       context.isLevelDirty = true;
-    } else if (context.isLevelDirty && isLineClean && isLevelChanged) {
+    } else if (context.isLevelDirty && isLineClean && indentDifference) {
       // when context is dirty, a clean heading line cleans context
       context.isLevelDirty = false;
+    }
+
+    // restore cursor
+    if ((line as any) === cursorLine) {
+      const newOffset = Math.max(0, previousCursorOffset! + indentDifference);
+      setCollapsedCursorToLineOffset({ line: cursorLine, offset: newOffset });
     }
   });
 }
@@ -85,7 +106,7 @@ export function updateContextFromLine(line: FormattedLineElement, context: Forma
 }
 
 interface FormatLineSummary {
-  isLevelChanged?: boolean;
+  indentDifference: number;
 }
 
 export interface FormatConfig {
@@ -114,7 +135,7 @@ export function formatLine(
     line.innerHTML = `<span data-indent>${indent}</span><span data-wrap><span class="t--ghost">${hiddenHashes}</span><span class="t--bold"># ${text}</span>\n</span>`;
 
     return {
-      isLevelChanged: true,
+      indentDifference: hashes.length - 1 - spaces.length,
     };
   }
 
@@ -139,7 +160,9 @@ export function formatLine(
         throw new Error(`Unsupported meta key ${metaKey}`);
     }
 
-    return {};
+    return {
+      indentDifference: 0,
+    };
   }
 
   // blank line
@@ -154,16 +177,19 @@ export function formatLine(
     const indent = config.syntaxOnly ? inlineSpaces : ` `.repeat(context.level * 2);
     line.innerHTML = `<span data-indent>${indent}</span><span>\n</span>`;
 
-    return {};
+    return {
+      indentDifference: 0,
+    };
   }
 
   // paragraph
   let paragraphHtml = "";
   let remainingText = removeLineEnding(rawText);
   let indent: string;
+  let actualIndent = remainingText.match(/^(\s+)/)?.[0] ?? "";
 
   if (config.syntaxOnly) {
-    indent = remainingText.match(/^(\s+)/)?.[0] ?? "";
+    indent = actualIndent;
     remainingText = remainingText.slice(indent.length);
   } else {
     indent = ` `.repeat(context.level * 2);
@@ -197,5 +223,7 @@ export function formatLine(
 
   line.innerHTML = `<span data-indent>${indent}</span><span data-wrap>${paragraphHtml}\n</span>`;
 
-  return {};
+  return {
+    indentDifference: context.level * 2 - actualIndent.length,
+  };
 }
