@@ -3,15 +3,21 @@
 ## TextEngine MVP
 
 - TODO
+  - Handle Undo/redo
+  - Handle ctrl + a to select all
+  - Handle ctrl + delete/backspace
+    - Compose cursor select word end/start with cursor delete selection
+  - Handle copy/paste/cut
+  - Handle cut entire line when cursor is collapsed
+  - Apply smart indent when inserting a new line
+- DONE
+  - Handle cursor edit in selection mode
+    - Insertion = delete selection + insertion
+    - Deletion = delete selection only
   - Handle cursor restore after global formatting
     - parse() OK to lose cursor. The caller of parse is responsible to set cursor after parse
     - format() must restore curosr
       - save the line that contains cursor, when updating indent, if cursor within padding, no move, if cursor after padding, shift cursor accordingly
-  - Handle ctrl + a to select all
-  - Handle ctrl + delete/backspace
-  - Handle copy/paste/cut
-  - Handle cut entire line when cursor is collapsed
-- DONE
   - Incremental formatting
     - parse() that add syntax hightlight and calculate semantic levels
     - format() that updates padding using semantics levels

@@ -1,28 +1,30 @@
 import { seek, SeekOutput } from "../dom-utils.js";
 import {
-  getLine,
-  seekToLineStart,
-  getNextLine,
-  isAfterLineEnd,
-  Position,
-  getNodeLinePosition,
-  getLineMetrics,
-  VisualPosition,
-  getOffsetByVisualPosition,
-  getPreviousLine,
-  sliceLine,
-  getReversedLine,
-  seekToIndentEnd,
-  seekToLineEnd,
   getBlockEndLine,
   getBlockStartLine,
+  getLine,
+  getLineMetrics,
+  getNextLine,
+  getNodeLinePosition,
+  getOffsetByVisualPosition,
+  getPreviousLine,
+  getReversedLine,
+  isAfterLineEnd,
+  Position,
+  seekToIndentEnd,
+  seekToLineEnd,
+  seekToLineStart,
+  sliceLine,
+  VisualPosition,
 } from "../line/line-query.js";
-import { ensureLineEnding, removeLineEnding, reverse } from "../string.js";
+import { ensureLineEnding, reverse } from "../string.js";
 import { getIdealColumn } from "./ideal-column.js";
 
 export interface Cursor {
   anchor: CursorPosition;
   focus: CursorPosition;
+  start: CursorPosition;
+  end: CursorPosition;
   isCollapsed: boolean;
 }
 
@@ -44,6 +46,9 @@ export function getCursor(): Cursor | null {
   const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
   if (!anchorNode || !focusNode) return null;
 
+  if (!selection.rangeCount) return null;
+  const range = selection.getRangeAt(0);
+
   return {
     anchor: {
       node: anchorNode,
@@ -52,6 +57,14 @@ export function getCursor(): Cursor | null {
     focus: {
       node: focusNode,
       offset: focusOffset,
+    },
+    start: {
+      node: range.startContainer,
+      offset: range.startOffset,
+    },
+    end: {
+      node: range.endContainer,
+      offset: range.endOffset,
     },
     isCollapsed: selection.isCollapsed,
   };

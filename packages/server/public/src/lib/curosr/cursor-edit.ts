@@ -1,11 +1,13 @@
-import { formatSyntaxOnly } from "../format.js";
-import { getLine, getLineMetrics, getNextLine, getPreviousLine, sliceLine } from "../line/line-query.js";
-import { sourceToLines } from "../source-to-lines.js";
+import { formatSyntaxOnly, isIndentSettingLine } from "../format.js";
+import { getLine, getLineMetrics, getLines, getNextLine, getPreviousLine, sliceLine } from "../line/line-query.js";
+import { LineElement, sourceToLines } from "../source-to-lines.js";
 import { splice } from "../string.js";
 import { getCursor, getCursorLinePosition } from "./cursor-query.js";
 import { setCollapsedCursorToLineOffset, setCollapsedCursorToLinePosition } from "./cursor-select.js";
 
 export function insertText(text: string, root: HTMLElement) {
+  cursorDeleteSelection(root);
+
   const cursor = getCursor();
   if (!cursor) return;
 
@@ -27,6 +29,8 @@ export function insertText(text: string, root: HTMLElement) {
 }
 
 export function insertNewLine(root: HTMLElement) {
+  cursorDeleteSelection(root);
+
   const cursor = getCursor();
   if (!cursor) return;
 
@@ -56,6 +60,11 @@ export function insertNewLine(root: HTMLElement) {
 export function deleteBefore(root: HTMLElement) {
   const cursor = getCursor();
   if (!cursor) return;
+
+  if (!cursor.isCollapsed) {
+    cursorDeleteSelection(root);
+    return;
+  }
 
   const { offset } = getCursorLinePosition(cursor.focus);
   const currentLine = getLine(cursor.focus.node);
@@ -104,6 +113,11 @@ export function deleteAfter(root: HTMLElement) {
   const cursor = getCursor();
   if (!cursor) return;
 
+  if (!cursor.isCollapsed) {
+    cursorDeleteSelection(root);
+    return;
+  }
+
   const { offset } = getCursorLinePosition(cursor.focus);
   const currentLine = getLine(cursor.focus.node);
   if (!currentLine) return;
@@ -139,4 +153,67 @@ export function deleteAfter(root: HTMLElement) {
 
     setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
   }
+}
+
+/**
+ * Delete selection if there is any. No op otherwise
+ */
+export function cursorDeleteSelection(root: HTMLElement) {
+  const cursor = getCursor();
+  if (!cursor) return;
+  if (cursor.isCollapsed) return;
+
+  const selectedLines = getLines(cursor.start.node, cursor.end.node);
+  const { offset: cursorStartOffset } = getCursorLinePosition(cursor.start);
+  const { offset: cursorEndOffset } = getCursorLinePosition(cursor.end);
+
+  const isIndentDirty = selectedLines.some(isIndentReset);
+  let updatedLine: HTMLElement | undefined = undefined;
+
+  // if start and end are on the same line, update line content
+  if (selectedLines.length === 1) {
+    // remove content between start and end
+    const currentLine = selectedLines[0];
+
+    const lineText = currentLine.textContent!;
+    const lineUpdatedText = lineText.slice(0, cursorStartOffset) + lineText.slice(cursorEndOffset);
+    const newLines = sourceToLines(lineUpdatedText);
+    updatedLine = newLines.children[0] as HTMLElement;
+
+    currentLine.parentElement?.insertBefore(newLines, currentLine);
+    currentLine.remove();
+  } else if (selectedLines.length > 1) {
+    const startLine = selectedLines[0];
+    const startLineText = startLine.textContent!;
+
+    const endLine = selectedLines[selectedLines.length - 1];
+    const endLineText = endLine.textContent!;
+
+    const joinedLineText = startLineText.slice(0, cursorStartOffset) + endLineText.slice(cursorEndOffset);
+    const newLines = sourceToLines(joinedLineText);
+    updatedLine = newLines.children[0] as HTMLElement;
+
+    startLine.parentElement?.insertBefore(updatedLine, startLine);
+    selectedLines.forEach((line) => line.remove());
+  }
+
+  if (!updatedLine) {
+    console.error("There must be at least one selected lines when cursor is not collapsed.");
+    return;
+  }
+
+  formatSyntaxOnly(root);
+  setCollapsedCursorToLineOffset({ line: updatedLine, offset: cursorStartOffset });
+
+  if (isIndentDirty && updatedLine) {
+    let dirtyLine = getNextLine(updatedLine);
+    while (dirtyLine && !isIndentReset(dirtyLine)) {
+      (dirtyLine as LineElement).dataset.dirtyIndent = "";
+      dirtyLine = getNextLine(dirtyLine);
+    }
+  }
+}
+
+function isIndentReset(line: HTMLElement): boolean {
+  return isIndentSettingLine((line as LineElement).dataset?.line);
 }

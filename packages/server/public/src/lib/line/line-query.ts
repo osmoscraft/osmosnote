@@ -15,6 +15,27 @@ export function getLine(node: Node): HTMLElement | null {
   return line;
 }
 
+export function getLines(startNode: Node, endNode: Node): HTMLElement[] {
+  const startLine = getLine(startNode);
+  const endLine = getLine(endNode);
+  if (!startLine || !endLine) return [];
+
+  const results = [startLine];
+  let currentLine: HTMLElement = startLine;
+  while (currentLine !== endLine) {
+    const nextLine = getNextLine(currentLine);
+    if (nextLine) {
+      currentLine = nextLine;
+    } else {
+      console.error("the end node is not a sibling after the start node");
+      break;
+    }
+    results.push(currentLine);
+  }
+
+  return results;
+}
+
 export interface LineMetrics {
   indent: number;
   /** Total length without any line end character */

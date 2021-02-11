@@ -1,7 +1,7 @@
 import { getCursor, getCursorLinePosition } from "./curosr/cursor-query.js";
 import { setCollapsedCursorToLineOffset } from "./curosr/cursor-select.js";
 import { getLine } from "./line/line-query.js";
-import type { LineElement } from "./source-to-lines.js";
+import type { LineElement, LineType } from "./source-to-lines.js";
 import { removeLineEnding } from "./string.js";
 
 interface FormatContext {
@@ -11,7 +11,7 @@ interface FormatContext {
 
 export interface FormattedLineElement extends LineElement {
   dataset: {
-    line: LineElement["dataset"]["line"];
+    line: LineType;
     dirtySyntax: LineElement["dataset"]["dirtySyntax"];
     dirtyIndent: LineElement["dataset"]["dirtyIndent"];
     level: number;
@@ -65,7 +65,8 @@ export function formatAll(root: HTMLElement | DocumentFragment) {
     }
 
     // otherwise, format the line
-    const { lengthChange, isIndentReset } = formatLine(line, context);
+    const { lengthChange, lineType } = formatLine(line, context);
+    const isIndentReset = isIndentSettingLine(lineType);
     // update line dirty state (this is independent from context)
     delete line.dataset.dirtyIndent;
     delete line.dataset.dirtySyntax;
@@ -107,7 +108,7 @@ export function updateContextFromLine(line: FormattedLineElement, context: Forma
 
 interface FormatLineSummary {
   lengthChange: number;
-  isIndentReset?: boolean;
+  lineType: LineType;
 }
 
 export interface FormatConfig {
@@ -137,7 +138,7 @@ export function formatLine(
 
     return {
       lengthChange: indent.length + hiddenHashes.length + 2 + text.length + 1 - raw.length,
-      isIndentReset: true,
+      lineType: "heading",
     };
   }
 
@@ -164,6 +165,7 @@ export function formatLine(
 
     return {
       lengthChange: 2 + metaKey.length + 2 + metaValue.length + 1 - raw.length,
+      lineType: "meta",
     };
   }
 
@@ -181,6 +183,7 @@ export function formatLine(
 
     return {
       lengthChange: indent.length + 1 - raw.length,
+      lineType: "",
     };
   }
 
@@ -230,5 +233,10 @@ export function formatLine(
 
   return {
     lengthChange: indent.length + paragraphLength + 1 - rawText.length,
+    lineType: "",
   };
+}
+
+export function isIndentSettingLine(lineType: string): boolean {
+  return (lineType as LineType) === "heading";
 }

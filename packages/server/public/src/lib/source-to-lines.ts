@@ -1,8 +1,10 @@
 import { removeLineEnding } from "./string.js";
 
+export type LineType = "" | "heading" | "meta" | "blank";
+
 export interface LineElement extends HTMLDivElement {
   dataset: {
-    line: "" | "heading" | "meta" | "blank";
+    line: LineType;
     meta?: "title" | "tags";
     dirtySyntax?: "";
     dirtyIndent?: "";
