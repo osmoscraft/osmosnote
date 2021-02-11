@@ -4,7 +4,6 @@ import { LineElement, sourceToLines } from "../source-to-lines.js";
 import { splice } from "../string.js";
 import { getCursor, getCursorLinePosition } from "./cursor-query.js";
 import {
-  cursorEndSelect,
   cursorWordEndSelect,
   cursorWordStartSelect,
   setCollapsedCursorToLineOffset,
