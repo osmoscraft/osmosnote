@@ -65,16 +65,16 @@ export function formatAll(root: HTMLElement | DocumentFragment) {
     }
 
     // otherwise, format the line
-    const { indentDifference } = formatLine(line, context);
+    const { indentDifference, isIndentReset } = formatLine(line, context);
     // update line dirty state (this is independent from context)
     delete line.dataset.dirtyIndent;
     delete line.dataset.dirtySyntax;
 
     // update context dirty state
-    if (!context.isLevelDirty && !isLineClean && indentDifference) {
+    if (!context.isLevelDirty && !isLineClean && isIndentReset) {
       // when context is clean, a dirty heading line pollutes context
       context.isLevelDirty = true;
-    } else if (context.isLevelDirty && isLineClean && indentDifference) {
+    } else if (context.isLevelDirty && isLineClean && isIndentReset) {
       // when context is dirty, a clean heading line cleans context
       context.isLevelDirty = false;
     }
@@ -107,6 +107,7 @@ export function updateContextFromLine(line: FormattedLineElement, context: Forma
 
 interface FormatLineSummary {
   indentDifference: number;
+  isIndentReset?: boolean;
 }
 
 export interface FormatConfig {
@@ -136,6 +137,7 @@ export function formatLine(
 
     return {
       indentDifference: hashes.length - 1 - spaces.length,
+      isIndentReset: true,
     };
   }
 
