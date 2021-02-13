@@ -3,12 +3,12 @@
 ## TextEngine MVP
 
 - TODO
-  - Handle copy/paste/cut
-  - Handle cut entire line when cursor is collapsed
-  - Handle ctrl + a to select all
   - Apply smart indent when inserting a new line
   - Handle Undo/redo
 - DONE
+  - Handle copy/paste/cut
+  - Handle cut entire line when cursor is collapsed
+  - Handle ctrl + a to select all
   - Handle ctrl + delete/backspace
     - Compose cursor select word end/start with cursor delete selection
   - Handle cursor edit in selection mode
