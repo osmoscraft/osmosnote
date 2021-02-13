@@ -5,7 +5,8 @@ import {
   getBlockEndPositionFromCursor,
   getBlockStartPositionFromCursor,
   getCursor,
-  getDefaultCursorPosition,
+  getDocumentEndPosition,
+  getDocumentStartPosition,
   getNearestEditablePositionForward,
   getPositionAboveCursor,
   getPositionBelowCursor,
@@ -17,7 +18,7 @@ import {
 import { updateIdealColumn } from "./ideal-column.js";
 
 export function renderDefaultCursor(root: HTMLElement) {
-  const defaultPosition = getDefaultCursorPosition();
+  const defaultPosition = getDocumentStartPosition();
   if (!defaultPosition) return;
   setCursorCollapsed(defaultPosition.node, defaultPosition.offset, root);
 }
@@ -136,14 +137,24 @@ export function cursorUpSelect(root: HTMLElement) {
   extendCursorFocus({ seeker: getPositionAboveCursor, root, rememberColumn: false });
 }
 
+export function cursorDocumentSelect(root: HTMLElement) {
+  moveCursorCollapsed({
+    seeker: getDocumentStartPosition,
+    root,
+  });
+
+  extendCursorFocus({ seeker: getDocumentEndPosition, root });
+}
+
 export function setCollapsedCursorToLineOffset(config: {
   line: HTMLElement;
-  offset: number;
+  /** @default 0 */
+  offset?: number;
   root?: HTMLElement | null;
   /** @default true */
   rememberColumn?: boolean;
 }): SeekOutput | null {
-  const { line, offset, root = null, rememberColumn = true } = config;
+  const { line, offset = 0, root = null, rememberColumn = true } = config;
 
   const newPosition = getPositionByOffset(line, offset);
   return setCollapsedCursorToLinePosition({

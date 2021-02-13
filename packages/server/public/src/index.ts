@@ -1,7 +1,9 @@
 import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
 import { openNodeId, openUrl } from "./lib/curosr/cursor-action.js";
 import {
-  copySelection,
+  cursorCopy,
+  cursorCut,
+  cursorPaste,
   deleteAfter,
   deleteBefore,
   deleteWordAfter,
@@ -10,6 +12,7 @@ import {
   insertText,
 } from "./lib/curosr/cursor-edit.js";
 import {
+  cursorDocumentSelect,
   cursorBlockEnd,
   cursorBlockEndSelect,
   cursorBlockStart,
@@ -69,11 +72,39 @@ function handleEvents() {
 
   host.addEventListener("copy", (event) => {
     event.preventDefault();
-    copySelection();
+    cursorCopy();
+  });
+
+  host.addEventListener("cut", (event) => {
+    event.preventDefault();
+    cursorCut(host);
+  });
+
+  host.addEventListener("paste", (event) => {
+    event.preventDefault();
+
+    const pasteText = event.clipboardData?.getData("text");
+    cursorPaste(pasteText, host);
   });
 
   host.addEventListener("keydown", (event) => {
     switch (event.key) {
+      // select all
+      case "a":
+        if (event.ctrlKey) {
+          event.preventDefault();
+          cursorDocumentSelect(host);
+        }
+        break;
+
+      // cut empty line
+      case "x":
+        if (event.ctrlKey) {
+          event.preventDefault();
+          cursorCut(host);
+        }
+        break;
+
       // Global shortcuts
       case "s": // save
         if (event.ctrlKey) {

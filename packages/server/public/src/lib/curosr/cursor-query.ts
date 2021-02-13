@@ -70,12 +70,20 @@ export function getCursor(): Cursor | null {
   };
 }
 
-export function getDefaultCursorPosition(): SeekOutput | null {
+export function getDocumentStartPosition(): SeekOutput | null {
   const firstLine = document.querySelector("[data-line]") as HTMLElement;
 
   if (!firstLine) return null;
 
   return seekToLineStart(firstLine);
+}
+
+export function getDocumentEndPosition(): SeekOutput | null {
+  const lastLine = [...document.querySelectorAll("[data-line]")].pop() as HTMLElement;
+
+  if (!lastLine) return null;
+
+  return seekToLineEnd(lastLine);
 }
 
 /**

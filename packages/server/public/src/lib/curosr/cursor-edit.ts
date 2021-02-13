@@ -1,5 +1,6 @@
-import { parseSyntaxOnly, isIndentSettingLine } from "../parse.js";
+import { writeClipboardText } from "../clipboard.js";
 import { getLine, getLineMetrics, getLines, getNextLine, getPreviousLine, sliceLine } from "../line/line-query.js";
+import { isIndentSettingLine, parseSyntaxOnly } from "../parse.js";
 import { LineElement, sourceToLines } from "../source-to-lines.js";
 import { splice } from "../string.js";
 import { getCursor, getCursorLinePosition } from "./cursor-query.js";
@@ -9,10 +10,9 @@ import {
   setCollapsedCursorToLineOffset,
   setCollapsedCursorToLinePosition,
 } from "./cursor-select.js";
-import { writeClipboardText } from "../clipboard.js";
 
 export function insertText(text: string, root: HTMLElement) {
-  deleteSelection(root);
+  deleteSelectionExplicit(root);
 
   const cursor = getCursor();
   if (!cursor) return;
@@ -35,7 +35,7 @@ export function insertText(text: string, root: HTMLElement) {
 }
 
 export function insertNewLine(root: HTMLElement) {
-  deleteSelection(root);
+  deleteSelectionExplicit(root);
 
   const cursor = getCursor();
   if (!cursor) return;
@@ -68,7 +68,7 @@ export function deleteBefore(root: HTMLElement) {
   if (!cursor) return;
 
   if (!cursor.isCollapsed) {
-    deleteSelection(root);
+    deleteSelectionExplicit(root);
     return;
   }
 
@@ -120,7 +120,7 @@ export function deleteAfter(root: HTMLElement) {
   if (!cursor) return;
 
   if (!cursor.isCollapsed) {
-    deleteSelection(root);
+    deleteSelectionExplicit(root);
     return;
   }
 
@@ -166,12 +166,12 @@ export function deleteWordBefore(root: HTMLElement) {
   if (!cursor) return;
 
   if (!cursor.isCollapsed) {
-    deleteSelection(root);
+    deleteSelectionExplicit(root);
     return;
   }
 
   cursorWordStartSelect(root);
-  deleteSelection(root);
+  deleteSelectionExplicit(root);
 }
 
 export function deleteWordAfter(root: HTMLElement) {
@@ -179,18 +179,58 @@ export function deleteWordAfter(root: HTMLElement) {
   if (!cursor) return;
 
   if (!cursor.isCollapsed) {
-    deleteSelection(root);
+    deleteSelectionExplicit(root);
     return;
   }
 
   cursorWordEndSelect(root);
-  deleteSelection(root);
+  deleteSelectionExplicit(root);
+}
+
+/**
+ * If there is selection, selection will be deleted.
+ * If there is no selction, current line will be deleted.
+ */
+export function deleteSelection(root: HTMLElement) {
+  const cursor = getCursor();
+  if (!cursor) return;
+  if (cursor.isCollapsed) {
+    deleteSelectedLines();
+  } else {
+    deleteSelectionExplicit(root);
+  }
+}
+
+function deleteSelectedLines() {
+  const cursor = getCursor();
+  if (!cursor) return;
+
+  const selectedLines = getLines(cursor.start.node, cursor.end.node);
+  if (!selectedLines.length) return;
+
+  let newFocusLine = getNextLine(selectedLines[selectedLines.length - 1]);
+  if (!newFocusLine) {
+    newFocusLine = getPreviousLine(selectedLines[0]);
+  }
+
+  if (!newFocusLine) {
+    // document will be empty after deletion. Create an empty line so we can set focus to it
+    const newLines = sourceToLines("");
+    newFocusLine = newLines.children[0] as HTMLElement;
+    parseSyntaxOnly(newLines);
+
+    selectedLines[0].parentElement?.insertBefore(newLines, selectedLines[0]);
+  }
+
+  selectedLines.forEach((line) => line.remove());
+
+  setCollapsedCursorToLineOffset({ line: newFocusLine });
 }
 
 /**
  * Delete selection if there is any. No op otherwise
  */
-export function deleteSelection(root: HTMLElement) {
+export function deleteSelectionExplicit(root: HTMLElement) {
   const cursor = getCursor();
   if (!cursor) return;
   if (cursor.isCollapsed) return;
@@ -246,7 +286,7 @@ export function deleteSelection(root: HTMLElement) {
   }
 }
 
-export function copySelection() {
+export async function cursorCopy() {
   const cursor = getCursor();
   if (!cursor) return;
 
@@ -256,7 +296,7 @@ export function copySelection() {
     if (!currentLine) return;
     const lineMetrics = getLineMetrics(currentLine);
     const portableText = currentLine.textContent!.slice(lineMetrics.indent);
-    writeClipboardText(portableText);
+    await writeClipboardText(portableText);
   } else {
     // copy the selection
     const selectedLines = getLines(cursor.start.node, cursor.end.node);
@@ -273,10 +313,29 @@ export function copySelection() {
       })
       .join("");
 
-    writeClipboardText(selectedText);
+    await writeClipboardText(selectedText);
   }
 }
 
-function isIndentReset(line: HTMLElement): boolean {
+export async function cursorCut(root: HTMLElement) {
+  const cursor = getCursor();
+  if (!cursor) return;
+
+  await cursorCopy();
+  deleteSelection(root);
+}
+
+export async function cursorPaste(text: string | undefined, root: HTMLElement) {
+  if (!text) return;
+
+  const cursor = getCursor();
+  if (!cursor) return;
+
+  const textWithNormalizedLineEnding = text.replace("\r\n", "\n").replace("\r", "\n");
+
+  insertText(textWithNormalizedLineEnding, root);
+}
+
+export function isIndentReset(line: HTMLElement): boolean {
   return isIndentSettingLine((line as LineElement).dataset?.line);
 }
