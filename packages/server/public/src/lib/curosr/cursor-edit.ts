@@ -331,7 +331,7 @@ export async function cursorPaste(text: string | undefined, root: HTMLElement) {
   const cursor = getCursor();
   if (!cursor) return;
 
-  const textWithNormalizedLineEnding = text.replace("\r\n", "\n").replace("\r", "\n");
+  const textWithNormalizedLineEnding = text.replace(/\r\n?/g, "\n");
 
   insertText(textWithNormalizedLineEnding, root);
 }
