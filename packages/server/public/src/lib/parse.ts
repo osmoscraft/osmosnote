@@ -21,7 +21,7 @@ export interface FormattedLineElement extends LineElement {
 /**
  * Format all lines with dirty syntax flag. Indent will be kept dirty.
  */
-export function parseSyntaxOnly(root: HTMLElement | DocumentFragment) {
+export function parseLines(root: HTMLElement | DocumentFragment) {
   // TODO handle cursor restore. Expose config to allow manual cursor restore
 
   const lines = [...root.querySelectorAll("[data-line]")] as FormattedLineElement[];
@@ -38,7 +38,7 @@ export function parseSyntaxOnly(root: HTMLElement | DocumentFragment) {
   });
 }
 
-export function parseAll(root: HTMLElement | DocumentFragment) {
+export function parseDocument(root: HTMLElement | DocumentFragment) {
   const cursor = getCursor();
   let cursorLine: HTMLElement;
   let previousCursorOffset: number | null = null;

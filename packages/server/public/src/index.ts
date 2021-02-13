@@ -35,7 +35,7 @@ import {
   cursorWordStartSelect,
   renderDefaultCursor,
 } from "./lib/curosr/cursor-select.js";
-import { parseAll } from "./lib/parse.js";
+import { parseDocument } from "./lib/parse.js";
 import { calculateMeasure, setMeasure } from "./lib/line/line-measure.js";
 import { query } from "./lib/query.js";
 import { getNoteConfigFromUrl } from "./lib/route.js";
@@ -53,7 +53,7 @@ async function loadNote() {
       const host = document.querySelector("#content-host") as HTMLElement;
 
       host.appendChild(dom);
-      parseAll(host);
+      parseDocument(host);
       renderDefaultCursor(host);
 
       handleEvents();
@@ -110,7 +110,7 @@ function handleEvents() {
         if (event.ctrlKey) {
           event.preventDefault();
           event.stopPropagation();
-          parseAll(host);
+          parseDocument(host);
         }
         break;
 
