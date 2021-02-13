@@ -1,4 +1,4 @@
-import { formatSyntaxOnly, isIndentSettingLine } from "../format.js";
+import { parseSyntaxOnly, isIndentSettingLine } from "../parse.js";
 import { getLine, getLineMetrics, getLines, getNextLine, getPreviousLine, sliceLine } from "../line/line-query.js";
 import { LineElement, sourceToLines } from "../source-to-lines.js";
 import { splice } from "../string.js";
@@ -9,6 +9,7 @@ import {
   setCollapsedCursorToLineOffset,
   setCollapsedCursorToLinePosition,
 } from "./cursor-select.js";
+import { writeClipboardText } from "../clipboard.js";
 
 export function insertText(text: string, root: HTMLElement) {
   deleteSelection(root);
@@ -28,7 +29,7 @@ export function insertText(text: string, root: HTMLElement) {
   currentLine.parentElement?.insertBefore(newLines, currentLine);
   currentLine.remove();
 
-  formatSyntaxOnly(root);
+  parseSyntaxOnly(root);
 
   setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset + text.length });
 }
@@ -52,7 +53,7 @@ export function insertNewLine(root: HTMLElement) {
   currentLine.parentElement?.insertBefore(newLines, currentLine);
   currentLine.remove();
 
-  formatSyntaxOnly(root);
+  parseSyntaxOnly(root);
 
   // set cursor to next line start
   const lineMetrics = getLineMetrics(newSecondLine);
@@ -88,7 +89,7 @@ export function deleteBefore(root: HTMLElement) {
       previousLine.parentElement?.insertBefore(newlines, previousLine);
       previousLine.remove();
 
-      formatSyntaxOnly(root);
+      parseSyntaxOnly(root);
 
       setCollapsedCursorToLineOffset({
         line: updatedPreviousLine,
@@ -104,7 +105,7 @@ export function deleteBefore(root: HTMLElement) {
     currentLine.parentElement?.insertBefore(newLines, currentLine);
     currentLine.remove();
 
-    formatSyntaxOnly(root);
+    parseSyntaxOnly(root);
 
     // set cursor to the left edge of the deleted char
     setCollapsedCursorToLineOffset({
@@ -142,7 +143,7 @@ export function deleteAfter(root: HTMLElement) {
     currentLine.remove();
     nextLine.remove();
 
-    formatSyntaxOnly(root);
+    parseSyntaxOnly(root);
 
     setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
   } else {
@@ -154,7 +155,7 @@ export function deleteAfter(root: HTMLElement) {
     currentLine.parentElement?.insertBefore(newLines, currentLine);
     currentLine.remove();
 
-    formatSyntaxOnly(root);
+    parseSyntaxOnly(root);
 
     setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
   }
@@ -233,7 +234,7 @@ export function deleteSelection(root: HTMLElement) {
     return;
   }
 
-  formatSyntaxOnly(root);
+  parseSyntaxOnly(root);
   setCollapsedCursorToLineOffset({ line: updatedLine, offset: cursorStartOffset });
 
   if (isIndentDirty && updatedLine) {
@@ -242,6 +243,37 @@ export function deleteSelection(root: HTMLElement) {
       (dirtyLine as LineElement).dataset.dirtyIndent = "";
       dirtyLine = getNextLine(dirtyLine);
     }
+  }
+}
+
+export function copySelection() {
+  const cursor = getCursor();
+  if (!cursor) return;
+
+  if (cursor.isCollapsed) {
+    // copy the entire line
+    const currentLine = getLine(cursor.focus.node);
+    if (!currentLine) return;
+    const lineMetrics = getLineMetrics(currentLine);
+    const portableText = currentLine.textContent!.slice(lineMetrics.indent);
+    writeClipboardText(portableText);
+  } else {
+    // copy the selection
+    const selectedLines = getLines(cursor.start.node, cursor.end.node);
+    const { offset: cursorStartOffset } = getCursorLinePosition(cursor.start);
+    const { offset: cursorEndOffset } = getCursorLinePosition(cursor.end);
+
+    const selectedText = selectedLines
+      .map((line, index) => {
+        const metrics = getLineMetrics(line);
+        const startOffset = index === 0 ? Math.max(metrics.indent, cursorStartOffset) : metrics.indent;
+        const endOffset = index === selectedLines.length - 1 ? cursorEndOffset : undefined;
+
+        return line.textContent!.slice(startOffset, endOffset);
+      })
+      .join("");
+
+    writeClipboardText(selectedText);
   }
 }
 

@@ -1,6 +1,7 @@
 import type { GetNoteInput, GetNoteOutput } from "@system-two/server";
 import { openNodeId, openUrl } from "./lib/curosr/cursor-action.js";
 import {
+  copySelection,
   deleteAfter,
   deleteBefore,
   deleteWordAfter,
@@ -31,7 +32,7 @@ import {
   cursorWordStartSelect,
   renderDefaultCursor,
 } from "./lib/curosr/cursor-select.js";
-import { formatAll } from "./lib/format.js";
+import { parseAll } from "./lib/parse.js";
 import { calculateMeasure, setMeasure } from "./lib/line/line-measure.js";
 import { query } from "./lib/query.js";
 import { getNoteConfigFromUrl } from "./lib/route.js";
@@ -49,7 +50,7 @@ async function loadNote() {
       const host = document.querySelector("#content-host") as HTMLElement;
 
       host.appendChild(dom);
-      formatAll(host);
+      parseAll(host);
       renderDefaultCursor(host);
 
       handleEvents();
@@ -65,6 +66,12 @@ loadNote();
 
 function handleEvents() {
   const host = document.querySelector("#content-host") as HTMLElement;
+
+  host.addEventListener("copy", (event) => {
+    event.preventDefault();
+    copySelection();
+  });
+
   host.addEventListener("keydown", (event) => {
     switch (event.key) {
       // Global shortcuts
@@ -72,9 +79,10 @@ function handleEvents() {
         if (event.ctrlKey) {
           event.preventDefault();
           event.stopPropagation();
-          formatAll(host);
+          parseAll(host);
         }
         break;
+
       // Cursor movement
       case "ArrowLeft":
         if (event.altKey) break;

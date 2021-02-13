@@ -3,11 +3,11 @@
 ## TextEngine MVP
 
 - TODO
-  - Handle Undo/redo
-  - Handle ctrl + a to select all
   - Handle copy/paste/cut
   - Handle cut entire line when cursor is collapsed
+  - Handle ctrl + a to select all
   - Apply smart indent when inserting a new line
+  - Handle Undo/redo
 - DONE
   - Handle ctrl + delete/backspace
     - Compose cursor select word end/start with cursor delete selection
@@ -43,6 +43,7 @@
 
 - TODO
   - Save to disk
+    - Serialization
   - Insert note
   - Capture new
   - Capture from bookmarklet
