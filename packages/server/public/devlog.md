@@ -3,9 +3,9 @@
 ## TextEngine MVP
 
 - TODO
-  - Apply smart indent when inserting a new line
   - Handle Undo/redo
 - DONE
+  - Apply smart indent when inserting a new line
   - Handle copy/paste/cut
   - Handle cut entire line when cursor is collapsed
   - Handle ctrl + a to select all

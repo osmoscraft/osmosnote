@@ -4,7 +4,7 @@ import { getLine } from "./line/line-query.js";
 import type { LineElement, LineType } from "./source-to-lines.js";
 import { removeLineEnding } from "./string.js";
 
-interface FormatContext {
+export interface FormatContext {
   level: number;
   isLevelDirty: boolean;
 }
@@ -14,25 +14,36 @@ export interface FormattedLineElement extends LineElement {
     line: LineType;
     dirtySyntax: LineElement["dataset"]["dirtySyntax"];
     dirtyIndent: LineElement["dataset"]["dirtyIndent"];
-    level: number;
+    level: string;
   };
 }
+
+export interface ParseLinesConfig {
+  /**
+   * When provided, indent will be updated based on the given context.
+   * Otherwise, parser will not update indent and only parse syntax
+   */
+  indentWithContext?: FormatContext;
+}
+
+const PARSE_LINES_DEFAULT_CONTEXT: FormatContext = {
+  level: 0,
+  isLevelDirty: false,
+};
 
 /**
  * Format all lines with dirty syntax flag. Indent will be kept dirty.
  */
-export function parseLines(root: HTMLElement | DocumentFragment) {
+export function parseLines(root: HTMLElement | DocumentFragment, config: ParseLinesConfig = {}) {
   // TODO handle cursor restore. Expose config to allow manual cursor restore
+  const isSyntaxOnly = config.indentWithContext === undefined;
+  const { indentWithContext: context = PARSE_LINES_DEFAULT_CONTEXT } = config;
 
   const lines = [...root.querySelectorAll("[data-line]")] as FormattedLineElement[];
-  const context: FormatContext = {
-    level: 0, // level doesn't matter as we won't update indentation
-    isLevelDirty: false, // doesn't matter
-  };
 
   lines.forEach((line) => {
     if (line.dataset.dirtySyntax !== undefined) {
-      formatLine(line, context, { syntaxOnly: true });
+      formatLine(line, context, { syntaxOnly: isSyntaxOnly });
       delete line.dataset.dirtySyntax;
     }
   });
@@ -66,7 +77,7 @@ export function parseDocument(root: HTMLElement | DocumentFragment) {
 
     // otherwise, format the line
     const { lengthChange, lineType } = formatLine(line, context);
-    const isIndentReset = isIndentSettingLine(lineType);
+    const isIndentReset = isIndentSettingLineType(lineType);
     // update line dirty state (this is independent from context)
     delete line.dataset.dirtyIndent;
     delete line.dataset.dirtySyntax;
@@ -128,7 +139,7 @@ export function formatLine(
     const [raw, spaces, hashes, text] = match;
 
     context.level = hashes.length;
-    line.dataset.level = hashes.length;
+    line.dataset.level = hashes.length.toString();
     line.dataset.line = "heading";
 
     const indent = config.syntaxOnly ? spaces : ` `.repeat(hashes.length - 1);
@@ -237,6 +248,10 @@ export function formatLine(
   };
 }
 
-export function isIndentSettingLine(lineType: string): boolean {
+export function isIndentSettingLineType(lineType?: string): boolean {
   return (lineType as LineType) === "heading";
+}
+
+export function isIndentSettingLine(line?: HTMLElement | null): line is FormattedLineElement {
+  return (line as FormattedLineElement)?.dataset?.line === "heading";
 }

@@ -1,6 +1,14 @@
 import { writeClipboardText } from "../clipboard.js";
-import { getLine, getLineMetrics, getLines, getNextLine, getPreviousLine, sliceLine } from "../line/line-query.js";
-import { isIndentSettingLine, parseLines } from "../parse.js";
+import {
+  getFormatContext,
+  getLine,
+  getLineMetrics,
+  getLines,
+  getNextLine,
+  getPreviousLine,
+  sliceLine,
+} from "../line/line-query.js";
+import { isIndentSettingLineType, parseLines } from "../parse.js";
 import { LineElement, sourceToLines } from "../source-to-lines.js";
 import { splice } from "../string.js";
 import { getCursor, getCursorLinePosition } from "./cursor-query.js";
@@ -22,16 +30,22 @@ export function insertText(text: string, root: HTMLElement) {
   if (!currentLine) return;
 
   const lineText = currentLine.textContent!;
+
+  const distanceToEnd = lineText.length - offset;
+
   const lineUpdatedText = splice(lineText, offset, 0, text);
   const newLines = sourceToLines(lineUpdatedText);
-  const updatedLine = newLines.children[0] as HTMLElement;
+  const lastUpdatedLine = newLines.lastElementChild as HTMLElement;
 
   currentLine.parentElement?.insertBefore(newLines, currentLine);
   currentLine.remove();
 
   parseLines(root);
 
-  setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset + text.length });
+  setCollapsedCursorToLineOffset({
+    line: lastUpdatedLine,
+    offset: lastUpdatedLine.textContent!.length - distanceToEnd,
+  });
 }
 
 export function insertNewLine(root: HTMLElement) {
@@ -53,7 +67,8 @@ export function insertNewLine(root: HTMLElement) {
   currentLine.parentElement?.insertBefore(newLines, currentLine);
   currentLine.remove();
 
-  parseLines(root);
+  const context = getFormatContext(newSecondLine);
+  parseLines(root, { indentWithContext: context });
 
   // set cursor to next line start
   const lineMetrics = getLineMetrics(newSecondLine);
@@ -337,5 +352,5 @@ export async function cursorPaste(text: string | undefined, root: HTMLElement) {
 }
 
 export function isIndentReset(line: HTMLElement): boolean {
-  return isIndentSettingLine((line as LineElement).dataset?.line);
+  return isIndentSettingLineType((line as LineElement).dataset?.line);
 }

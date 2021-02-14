@@ -6,6 +6,7 @@ import {
   seek,
   SeekOutput,
 } from "../dom-utils.js";
+import { FormatContext, FormattedLineElement, isIndentSettingLine, isIndentSettingLineType } from "../parse.js";
 import type { LineElement } from "../source-to-lines.js";
 import { ensureLineEnding, removeLineEnding, reverse } from "../string.js";
 import { getMeasure } from "./line-measure.js";
@@ -252,6 +253,34 @@ export function sliceLine(line: HTMLElement, start?: number, end?: number): stri
 
 export function getReversedLine(line: HTMLElement): string {
   return ensureLineEnding(reverse(removeLineEnding(line.textContent!)));
+}
+
+export function getFormatContext(line: HTMLElement): FormatContext {
+  const indentSettingLine = getNearestIndentSettingLine(line);
+  if (indentSettingLine) {
+    return {
+      level: parseInt(indentSettingLine.dataset.level),
+      isLevelDirty: indentSettingLine.dataset.dirtyIndent === "",
+    };
+  }
+
+  return {
+    level: 0,
+    isLevelDirty: false,
+  };
+}
+
+function getNearestIndentSettingLine(line: HTMLElement): FormattedLineElement | null {
+  let currentLine: HTMLElement | null = line;
+  while (currentLine) {
+    if (isIndentSettingLine(currentLine)) {
+      return currentLine;
+    }
+
+    currentLine = getPreviousLine(currentLine);
+  }
+
+  return null;
 }
 
 function getIndentSize(line: HTMLElement): number {
