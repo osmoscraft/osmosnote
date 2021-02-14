@@ -31,10 +31,8 @@ export class HistoryService {
   }
 
   undo(root: HTMLElement) {
-    // if a newer version isn't available, try save current version and undo it.
-    if (this.stack.length === 1) {
-      this.save(root);
-    }
+    // before undo, always save, in case this is unsaved changes
+    this.save(root);
 
     const snapshot = this.stack.undo();
 
