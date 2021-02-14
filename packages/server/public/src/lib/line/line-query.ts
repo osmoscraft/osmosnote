@@ -6,7 +6,7 @@ import {
   seek,
   SeekOutput,
 } from "../dom-utils.js";
-import { FormatContext, FormattedLineElement, isIndentSettingLine, isIndentSettingLineType } from "../parse.js";
+import { FormatContext, isIndentSettingLine } from "../parse.js";
 import type { LineElement } from "../source-to-lines.js";
 import { ensureLineEnding, removeLineEnding, reverse } from "../string.js";
 import { getMeasure } from "./line-measure.js";
@@ -273,7 +273,7 @@ export function getFormatContext(line: HTMLElement): FormatContext {
   const indentSettingLine = getNearestIndentSettingLine(line);
   if (indentSettingLine) {
     return {
-      level: parseInt(indentSettingLine.dataset.level),
+      level: parseInt(indentSettingLine.dataset.level!),
       isLevelDirty: indentSettingLine.dataset.dirtyIndent === "",
     };
   }
@@ -284,7 +284,7 @@ export function getFormatContext(line: HTMLElement): FormatContext {
   };
 }
 
-function getNearestIndentSettingLine(line: HTMLElement): FormattedLineElement | null {
+function getNearestIndentSettingLine(line: HTMLElement): LineElement | null {
   let currentLine: HTMLElement | null = line;
   while (currentLine) {
     if (isIndentSettingLine(currentLine)) {

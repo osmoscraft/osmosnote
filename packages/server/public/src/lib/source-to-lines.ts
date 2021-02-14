@@ -5,9 +5,13 @@ export type LineType = "" | "heading" | "meta" | "blank";
 export interface LineElement extends HTMLDivElement {
   dataset: {
     line: LineType;
+    /** Exists on indent setting lines */
+    level?: string;
     meta?: "title" | "tags";
     dirtySyntax?: "";
     dirtyIndent?: "";
+    /** Exists on the line that has collapsed cursor */
+    cursorCollapsed?: "";
   };
 }
 

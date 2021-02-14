@@ -3,46 +3,44 @@ export interface IsEqual<T> {
 }
 
 export class HistoryStack<T = string> {
-  private stack: T[] = [];
-  private currentIndex = -1;
+  private pastStack: T[] = [];
+  private present: T | null = null;
+  private futureStack: T[] = [];
 
-  get length() {
-    return this.stack.length;
-  }
-
-  /**
-   * This will wipe out future versions
-   */
   push(value: T) {
-    this.stack = this.stack.slice(0, this.currentIndex + 1); // remove future
-    this.stack.push(value);
-    this.currentIndex = this.stack.length - 1;
-  }
+    if (this.present) {
+      this.pastStack.push(this.present);
+    }
+    this.present = value;
 
-  /**
-   * This will wipe out current and future verions
-   */
-  replace(value: T) {
-    this.stack = this.stack.slice(0, this.currentIndex);
-    this.stack.push(value);
+    this.futureStack = [];
   }
 
   peek(): T | null {
-    if (this.currentIndex < 0) return null;
-    return this.stack[this.currentIndex];
+    return this.present;
   }
 
   undo(): T | null {
-    if (this.currentIndex === -1) return null; // not initialized
-    if (this.currentIndex === 0) return null; // already at earliest version
+    if (!this.present) return null;
 
-    return this.stack[--this.currentIndex];
+    const past = this.pastStack.pop();
+    if (!past) return null;
+
+    this.futureStack.push(this.present);
+    this.present = past;
+
+    return this.present;
   }
 
   redo(): T | null {
-    if (this.currentIndex === -1) return null; // not initialized
-    if (this.currentIndex === this.stack.length - 1) return null; // already at latest
+    if (!this.present) return null;
 
-    return this.stack[++this.currentIndex];
+    const future = this.futureStack.pop();
+    if (!future) return null;
+
+    this.pastStack.push(this.present);
+    this.present = future;
+
+    return this.present;
   }
 }

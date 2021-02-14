@@ -4,13 +4,14 @@ import { restoreSnapshot } from "./restore-snapshot.js";
 
 export interface Snapshot {
   documentHtml: string;
+  textContent: string;
   cursorLineIndex: number;
   cursorLineOffset: number;
 }
 
 const compareSnapshots = (a: Snapshot | null, b: Snapshot | null) => {
   return (
-    a?.documentHtml === b?.documentHtml &&
+    a?.textContent === b?.textContent &&
     a?.cursorLineIndex === b?.cursorLineIndex &&
     a?.cursorLineOffset === b?.cursorLineOffset
   );

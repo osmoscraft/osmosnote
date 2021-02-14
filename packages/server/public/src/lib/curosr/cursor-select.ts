@@ -320,10 +320,17 @@ function moveCursorCollapsed(config: {
 function updateCursorInDom(root: HTMLElement | Document | null = document) {
   // TODO improve perf by diffing the add/remove of dataset values
   // remove all previous states
+  clearCursorInDom(root);
+  showCursorInDom(root);
+}
+
+export function clearCursorInDom(root: HTMLElement | Document | null = document) {
   root
     ?.querySelectorAll("[data-cursor-collapsed]")
     .forEach((container) => delete (container as HTMLElement).dataset.cursorCollapsed);
+}
 
+export function showCursorInDom(root: HTMLElement | Document | null = document) {
   const cursor = getCursor();
   if (cursor) {
     if (cursor.isCollapsed) {

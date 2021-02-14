@@ -9,15 +9,6 @@ export interface FormatContext {
   isLevelDirty: boolean;
 }
 
-export interface FormattedLineElement extends LineElement {
-  dataset: {
-    line: LineType;
-    dirtySyntax: LineElement["dataset"]["dirtySyntax"];
-    dirtyIndent: LineElement["dataset"]["dirtyIndent"];
-    level: string;
-  };
-}
-
 export interface ParseLinesConfig {
   /**
    * When provided, indent will be updated based on the given context.
@@ -39,7 +30,7 @@ export function parseLines(root: HTMLElement | DocumentFragment, config: ParseLi
   const isSyntaxOnly = config.indentWithContext === undefined;
   const { indentWithContext: context = PARSE_LINES_DEFAULT_CONTEXT } = config;
 
-  const lines = [...root.querySelectorAll("[data-line]")] as FormattedLineElement[];
+  const lines = [...root.querySelectorAll("[data-line]")] as LineElement[];
 
   lines.forEach((line) => {
     if (line.dataset.dirtySyntax !== undefined) {
@@ -60,7 +51,7 @@ export function parseDocument(root: HTMLElement | DocumentFragment) {
     previousCursorOffset = offset;
   }
 
-  const lines = [...root.querySelectorAll("[data-line]")] as FormattedLineElement[];
+  const lines = [...root.querySelectorAll("[data-line]")] as LineElement[];
   const context: FormatContext = {
     level: 0,
     isLevelDirty: false,
@@ -99,7 +90,7 @@ export function parseDocument(root: HTMLElement | DocumentFragment) {
   });
 }
 
-export function updateContextFromLine(line: FormattedLineElement, context: FormatContext) {
+export function updateContextFromLine(line: LineElement, context: FormatContext) {
   const rawText = line.textContent ?? "";
 
   // heading
@@ -126,11 +117,7 @@ export interface FormatConfig {
   syntaxOnly?: boolean;
 }
 
-export function formatLine(
-  line: FormattedLineElement,
-  context: FormatContext,
-  config: FormatConfig = {}
-): FormatLineSummary {
+export function formatLine(line: LineElement, context: FormatContext, config: FormatConfig = {}): FormatLineSummary {
   const rawText = line.textContent ?? "";
 
   // heading
@@ -171,7 +158,8 @@ export function formatLine(
         line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="tags">${metaValue}</span>\n</span>`;
         break;
       default:
-        throw new Error(`Unsupported meta key ${metaKey}`);
+        line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value>${metaValue}</span>\n</span>`;
+        console.error(`Unsupported meta key ${metaKey}`);
     }
 
     return {
@@ -252,6 +240,6 @@ export function isIndentSettingLineType(lineType?: string): boolean {
   return (lineType as LineType) === "heading";
 }
 
-export function isIndentSettingLine(line?: HTMLElement | null): line is FormattedLineElement {
-  return (line as FormattedLineElement)?.dataset?.line === "heading";
+export function isIndentSettingLine(line?: HTMLElement | null): line is LineElement {
+  return (line as LineElement)?.dataset?.line === "heading";
 }
