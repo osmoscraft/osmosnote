@@ -12,11 +12,11 @@ import {
   insertText,
 } from "./lib/curosr/cursor-edit.js";
 import {
-  cursorDocumentSelect,
   cursorBlockEnd,
   cursorBlockEndSelect,
   cursorBlockStart,
   cursorBlockStartSelect,
+  cursorDocumentSelect,
   cursorDown,
   cursorDownSelect,
   cursorEnd,
@@ -35,8 +35,9 @@ import {
   cursorWordStartSelect,
   renderDefaultCursor,
 } from "./lib/curosr/cursor-select.js";
-import { parseDocument } from "./lib/parse.js";
+import { historyService } from "./lib/history/history-service.js";
 import { calculateMeasure, setMeasure } from "./lib/line/line-measure.js";
+import { parseDocument } from "./lib/parse.js";
 import { query } from "./lib/query.js";
 import { getNoteConfigFromUrl } from "./lib/route.js";
 import { sourceToLines } from "./lib/source-to-lines.js";
@@ -55,6 +56,8 @@ async function loadNote() {
       host.appendChild(dom);
       parseDocument(host);
       renderDefaultCursor(host);
+
+      historyService.save(host);
 
       handleEvents();
     }
@@ -78,6 +81,7 @@ function handleEvents() {
   host.addEventListener("cut", (event) => {
     event.preventDefault();
     cursorCut(host);
+    historyService.save(host);
   });
 
   host.addEventListener("paste", (event) => {
@@ -85,10 +89,26 @@ function handleEvents() {
 
     const pasteText = event.clipboardData?.getData("text");
     cursorPaste(pasteText, host);
+    historyService.save(host);
   });
 
   host.addEventListener("keydown", (event) => {
     switch (event.key) {
+      // undo/redo
+      case "z":
+        if (event.ctrlKey && !event.shiftKey) {
+          historyService.undo(host);
+          event.preventDefault();
+        }
+        break;
+
+      case "Z":
+        if (event.ctrlKey && event.shiftKey) {
+          historyService.redo(host);
+          event.preventDefault();
+        }
+        break;
+
       // select all
       case "a":
         if (event.ctrlKey) {
@@ -102,6 +122,7 @@ function handleEvents() {
         if (event.ctrlKey) {
           event.preventDefault();
           cursorCut(host);
+          historyService.save(host);
         }
         break;
 
@@ -111,6 +132,7 @@ function handleEvents() {
           event.preventDefault();
           event.stopPropagation();
           parseDocument(host);
+          historyService.save(host);
         }
         break;
 
@@ -129,6 +151,7 @@ function handleEvents() {
           cursorWordStartSelect(host);
         }
         break;
+
       case "ArrowRight":
         if (event.altKey) break;
 
@@ -143,6 +166,7 @@ function handleEvents() {
           cursorWordEndSelect(host);
         }
         break;
+
       case "Home":
         event.preventDefault();
         if (!event.shiftKey) {
@@ -151,6 +175,7 @@ function handleEvents() {
           cursorHomeSelect(host);
         }
         break;
+
       case "End":
         event.preventDefault();
         if (!event.shiftKey) {
@@ -159,6 +184,7 @@ function handleEvents() {
           cursorEndSelect(host);
         }
         break;
+
       case "ArrowDown":
         event.preventDefault();
         if (event.shiftKey) {
@@ -167,6 +193,7 @@ function handleEvents() {
           cursorDown(host);
         }
         break;
+
       case "ArrowUp":
         event.preventDefault();
         if (event.shiftKey) {
@@ -175,6 +202,7 @@ function handleEvents() {
           cursorUp(host);
         }
         break;
+
       case "PageDown":
         event.preventDefault();
         if (event.shiftKey) {
@@ -183,6 +211,7 @@ function handleEvents() {
           cursorBlockEnd(host);
         }
         break;
+
       case "PageUp":
         event.preventDefault();
         if (event.shiftKey) {
@@ -191,25 +220,31 @@ function handleEvents() {
           cursorBlockStart(host);
         }
         break;
+
       // Inputs
       case "Delete":
         if (event.ctrlKey) {
           deleteWordAfter(host);
+          historyService.save(host);
         } else {
           deleteAfter(host);
+          historyService.save(host);
         }
         event.preventDefault();
         break;
+
       case "Backspace":
         if (event.ctrlKey) {
           deleteWordBefore(host);
+          historyService.save(host);
         } else {
           deleteBefore(host);
+          historyService.save(host);
         }
         event.preventDefault();
         break;
+
       case "Enter": // Enter
-        // TODO improve efficiency
         const collapsedCursorParents = [...host.querySelectorAll(`[data-cursor-collapsed]`)].reverse() as HTMLElement[];
         for (let container of collapsedCursorParents) {
           if (container.dataset.noteId) {
@@ -228,8 +263,10 @@ function handleEvents() {
         if (!event.defaultPrevented) {
           // insert new line at point
           insertNewLine(host);
+          historyService.save(host);
           event.preventDefault();
         }
+        break;
     }
   });
 
@@ -238,6 +275,10 @@ function handleEvents() {
     if (insertedText) {
       event.preventDefault();
       insertText(insertedText, host);
+
+      if (insertedText.match(/\s|,|\./)) {
+        historyService.save(host);
+      }
     }
   });
 }

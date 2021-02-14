@@ -5,6 +5,7 @@ import {
   getLineMetrics,
   getLines,
   getNextLine,
+  getPortableText,
   getPreviousLine,
   sliceLine,
 } from "../line/line-query.js";
@@ -318,15 +319,7 @@ export async function cursorCopy() {
     const { offset: cursorStartOffset } = getCursorLinePosition(cursor.start);
     const { offset: cursorEndOffset } = getCursorLinePosition(cursor.end);
 
-    const selectedText = selectedLines
-      .map((line, index) => {
-        const metrics = getLineMetrics(line);
-        const startOffset = index === 0 ? Math.max(metrics.indent, cursorStartOffset) : metrics.indent;
-        const endOffset = index === selectedLines.length - 1 ? cursorEndOffset : undefined;
-
-        return line.textContent!.slice(startOffset, endOffset);
-      })
-      .join("");
+    const selectedText = getPortableText(selectedLines, cursorStartOffset, cursorEndOffset);
 
     await writeClipboardText(selectedText);
   }

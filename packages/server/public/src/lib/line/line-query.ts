@@ -37,6 +37,20 @@ export function getLines(startNode: Node, endNode: Node): HTMLElement[] {
   return results;
 }
 
+export function getPortableText(lines: HTMLElement[], startLineOffset = 0, endLineOffset?: number): string {
+  const text = lines
+    .map((line, index) => {
+      const metrics = getLineMetrics(line);
+      const startOffset = index === 0 ? Math.max(metrics.indent, startLineOffset) : metrics.indent;
+      const endOffset = index === lines.length - 1 ? endLineOffset : undefined;
+
+      return line.textContent!.slice(startOffset, endOffset);
+    })
+    .join("");
+
+  return text;
+}
+
 export interface LineMetrics {
   indent: number;
   /** Total length without any line end character */

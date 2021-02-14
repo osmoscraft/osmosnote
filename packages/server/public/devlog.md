@@ -1,44 +1,5 @@
 # Roadmap
 
-## TextEngine MVP
-
-- TODO
-  - Handle Undo/redo
-- DONE
-  - Apply smart indent when inserting a new line
-  - Handle copy/paste/cut
-  - Handle cut entire line when cursor is collapsed
-  - Handle ctrl + a to select all
-  - Handle ctrl + delete/backspace
-    - Compose cursor select word end/start with cursor delete selection
-  - Handle cursor edit in selection mode
-    - Insertion = delete selection + insertion
-    - Deletion = delete selection only
-  - Handle cursor restore after global formatting
-    - parse() OK to lose cursor. The caller of parse is responsible to set cursor after parse
-    - format() must restore curosr
-      - save the line that contains cursor, when updating indent, if cursor within padding, no move, if cursor after padding, shift cursor accordingly
-  - Incremental formatting
-    - parse() that add syntax hightlight and calculate semantic levels
-    - format() that updates padding using semantics levels
-    - on edit, parse() changed lines, format() all
-  - Use keydown to handle non-input events (Open, cursor movement)
-  - Use beforeinput to handle input events (research into "data" field for IME compatibility)
-  - Scroll cursor into view
-  - Handle paragraph movement (default bind to PgUp/PgDown)
-  - Handle home/end move and selection
-  - Handle ctrl + arrow for word move
-  - Handle ctrl + shift + arrow for word select
-  - Render current line with highlight
-  - Handle shift + arrow for selection
-  - Handle `Delete`/`Backspace` keydown
-  - Handle select left/right
-  - Handle `Enter` keydown
-    - Cursor action: open link
-      - open absolute url
-      - open note by id
-    - Handle insert new line
-
 ## IDE MVP
 
 - TODO
@@ -81,3 +42,42 @@
 # Ref
 
 Map mouse click to cursor position: https://stackoverflow.com/questions/45332637/how-to-get-character-position-when-click-on-text-in-javascript/45333785
+
+# Archive
+
+## TextEngine MVP
+
+- Handle Undo/redo
+- Apply smart indent when inserting a new line
+- Handle copy/paste/cut
+- Handle cut entire line when cursor is collapsed
+- Handle ctrl + a to select all
+- Handle ctrl + delete/backspace
+  - Compose cursor select word end/start with cursor delete selection
+- Handle cursor edit in selection mode
+  - Insertion = delete selection + insertion
+  - Deletion = delete selection only
+- Handle cursor restore after global formatting
+  - parse() OK to lose cursor. The caller of parse is responsible to set cursor after parse
+  - format() must restore curosr
+    - save the line that contains cursor, when updating indent, if cursor within padding, no move, if cursor after padding, shift cursor accordingly
+- Incremental formatting
+  - parse() that add syntax hightlight and calculate semantic levels
+  - format() that updates padding using semantics levels
+  - on edit, parse() changed lines, format() all
+- Use keydown to handle non-input events (Open, cursor movement)
+- Use beforeinput to handle input events (research into "data" field for IME compatibility)
+- Scroll cursor into view
+- Handle paragraph movement (default bind to PgUp/PgDown)
+- Handle home/end move and selection
+- Handle ctrl + arrow for word move
+- Handle ctrl + shift + arrow for word select
+- Render current line with highlight
+- Handle shift + arrow for selection
+- Handle `Delete`/`Backspace` keydown
+- Handle select left/right
+- Handle `Enter` keydown
+  - Cursor action: open link
+    - open absolute url
+    - open note by id
+  - Handle insert new line
