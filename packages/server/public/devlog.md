@@ -60,6 +60,7 @@
 - TODO
   - Handle list indentation
   - Handle list auto numbering
+  - Move # into the padding so heading lines can wrap without breaking indentation
 
 ## TextEngine North star
 
