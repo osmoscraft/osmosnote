@@ -1,4 +1,4 @@
-import { seek, SeekOutput } from "../dom-utils.js";
+import { seek, SeekOutput } from "../dom.js";
 import { getLine, getOffsetByVisualPosition, getPositionByOffset, VisualPosition } from "../line/line-query.js";
 import {
   Cursor,

@@ -1,6 +1,6 @@
-import { getSnapshot } from "./get-snapshot.js";
-import { HistoryStack } from "./history-stack.js";
-import { restoreSnapshot } from "./restore-snapshot.js";
+import { getSnapshot } from "./helpers/get-snapshot.js";
+import { HistoryStack } from "./helpers/history-stack.js";
+import { restoreSnapshot } from "./helpers/restore-snapshot.js";
 
 export interface Snapshot {
   documentHtml: string;
@@ -53,9 +53,3 @@ export class HistoryService {
     return this.stack.peek();
   }
 }
-
-export const historyService = new HistoryService();
-(window as any).s2 = {
-  ...(window as any).s2,
-  history: historyService,
-};

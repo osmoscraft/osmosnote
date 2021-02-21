@@ -1,11 +1,4 @@
-import {
-  firstInnerLeafNode,
-  firstInnerTextNode,
-  flattenToLeafNodes,
-  isTextNode,
-  seek,
-  SeekOutput,
-} from "../dom-utils.js";
+import { firstInnerLeafNode, firstInnerTextNode, flattenToLeafNodes, isTextNode, seek, SeekOutput } from "../dom.js";
 import { FormatContext, isIndentSettingLine } from "../parse.js";
 import type { LineElement } from "../source-to-lines.js";
 import { ensureLineEnding, removeLineEnding, reverse } from "../string.js";

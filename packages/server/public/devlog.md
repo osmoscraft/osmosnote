@@ -3,11 +3,13 @@
 ## IDE MVP
 
 - TODO
-  - Save to disk
-    - Serialization
-  - Insert note
+  - Search and open
+  - Search and insert
   - Capture new
   - Capture from bookmarklet
+- DONE
+  - Save to disk
+    - Serialization
 
 ## Saner dev MVP
 

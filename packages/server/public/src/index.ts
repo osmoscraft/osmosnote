@@ -1,15 +1,19 @@
-import { handleEvents } from "./lib/input/handle-events.js";
-import { calculateMeasure, setMeasure } from "./lib/line/line-measure.js";
-import { loadNote } from "./lib/note/load-note.js";
+import { CommandBarComponent } from "./components/command-bar/command-bar.component.js";
+import { TextEditorComponent } from "./components/text-editor/text-editor.component.js";
+import { TextEditorService } from "./components/text-editor/text-editor.service.js";
+import { ComponentReferenceService } from "./services/component-reference/component-reference.service.js";
+import { HistoryService } from "./services/history/history.service.js";
+import { InputService } from "./services/input/input.service.js";
+import { NoteService } from "./services/note/note.service.js";
+import { ProxyService } from "./services/proxy/proxy.service.js";
+import { di } from "./utils/dependency-injector.js";
 
-loadNote().then(() => {
-  handleEvents();
-});
+di.registerClass(ComponentReferenceService, []);
+di.registerClass(HistoryService, []);
+di.registerClass(ProxyService, []);
+di.registerClass(NoteService, [HistoryService, ProxyService]);
+di.registerClass(InputService, [HistoryService, NoteService]);
+di.registerClass(TextEditorService, [NoteService, InputService]);
 
-function updateMeausre() {
-  const measure = calculateMeasure(document.querySelector("#content-host") as HTMLElement);
-  setMeasure(measure);
-}
-
-window.addEventListener("resize", updateMeausre);
-updateMeausre();
+customElements.define("s2-command-bar", CommandBarComponent);
+customElements.define("s2-text-editor", TextEditorComponent);

@@ -1,4 +1,4 @@
-import { writeClipboardText } from "../clipboard.js";
+import { writeClipboardText } from "../../../utils/clipboard.js";
 import {
   getFormatContext,
   getLine,
