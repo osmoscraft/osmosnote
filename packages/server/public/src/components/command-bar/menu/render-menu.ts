@@ -1,4 +1,4 @@
-import type { SearchNoteOutput } from "@system-two/server";
+import type { SearchNoteOutput, ListNotesOutput } from "@system-two/server";
 import { filenameToId } from "../../../utils/id.js";
 import type { RegisteredCommand } from "../command-bar.component.js";
 
@@ -40,6 +40,52 @@ export function renderSearchResultSectionForInsert(searchReply: SearchNoteOutput
   ${isSearchError ? /*html*/ `<s2-menu-row data-kind="message" data-label="Error searching"></s2-menu-row>` : ""}
   ${isSearchEmpty ? /*html*/ `<s2-menu-row data-kind="message" data-label="No items found"></s2-menu-row>` : ""}
   ${searchReply.items
+    .map(
+      (item) =>
+        /*html*/ `<s2-menu-row data-insert-text="[${item.title}](${filenameToId(
+          item.filename
+        )})" data-kind="option" data-label="${item.title}"></s2-menu-row>`
+    )
+    .join("")}
+  `;
+}
+
+export function renderRecentNotesForOpen(listNotesOutput: ListNotesOutput): string {
+  const isRecentError = !listNotesOutput?.notes;
+  const isRecentEmpty = listNotesOutput.notes && !listNotesOutput.notes.length;
+
+  return /*html */ `
+  <s2-menu-row data-kind="header" data-label="Recent"></s2-menu-row>
+  ${
+    isRecentError
+      ? /*html*/ `<s2-menu-row data-kind="message" data-label="Error finding recent items"></s2-menu-row>`
+      : ""
+  }
+  ${isRecentEmpty ? /*html*/ `<s2-menu-row data-kind="message" data-label="No items found"></s2-menu-row>` : ""}
+  ${listNotesOutput.notes
+    .map(
+      (item) =>
+        /*html*/ `<s2-menu-row data-open-url="${`/?id=${filenameToId(
+          item.filename
+        )}`}" data-kind="option" data-label="${item.title}"></s2-menu-row>`
+    )
+    .join("")}
+  `;
+}
+
+export function renderRecentNotesForInsert(listNotesOutput: ListNotesOutput): string {
+  const isRecentError = !listNotesOutput?.notes;
+  const isRecentEmpty = listNotesOutput.notes && !listNotesOutput.notes.length;
+
+  return /*html */ `
+  <s2-menu-row data-kind="header" data-label="Recent"></s2-menu-row>
+  ${
+    isRecentError
+      ? /*html*/ `<s2-menu-row data-kind="message" data-label="Error finding recent items"></s2-menu-row>`
+      : ""
+  }
+  ${isRecentEmpty ? /*html*/ `<s2-menu-row data-kind="message" data-label="No items found"></s2-menu-row>` : ""}
+  ${listNotesOutput.notes
     .map(
       (item) =>
         /*html*/ `<s2-menu-row data-insert-text="[${item.title}](${filenameToId(

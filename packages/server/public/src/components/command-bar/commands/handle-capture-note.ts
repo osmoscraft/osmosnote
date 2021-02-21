@@ -1,6 +1,11 @@
-import type { SearchNoteInput, SearchNoteOutput } from "@system-two/server";
+import type { SearchNoteInput, SearchNoteOutput, ListNotesInput, ListNotesOutput } from "@system-two/server";
 import type { CommandHandler } from "../command-bar.component.js";
-import { renderHeaderRow, renderMessageRow, renderSearchResultSectionForOpen } from "../menu/render-menu.js";
+import {
+  renderHeaderRow,
+  renderMessageRow,
+  renderRecentNotesForOpen,
+  renderSearchResultSectionForOpen,
+} from "../menu/render-menu.js";
 import { getDefaultTitle } from "../../../utils/get-default-title.js";
 
 export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
@@ -19,8 +24,13 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
       )}"></s2-menu-row>`;
 
       if (!phrase?.length) {
-        optionsHtml += renderMessageRow("Type to search");
+        const result = await context.proxyService.query<ListNotesOutput, ListNotesInput>(`/api/list-notes`, {});
 
+        if (result.data) {
+          optionsHtml += renderRecentNotesForOpen(result.data);
+        } else {
+          optionsHtml += renderMessageRow("Something went wrong");
+        }
         return optionsHtml;
       }
 
@@ -30,12 +40,10 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
 
       if (result.data) {
         optionsHtml += renderSearchResultSectionForOpen(result.data);
-
-        return optionsHtml;
       } else {
         optionsHtml += renderMessageRow("Something went wrong");
-        return optionsHtml;
       }
+      return optionsHtml;
     },
     runOnCommit: () => {
       // treating input as title to create a new note
