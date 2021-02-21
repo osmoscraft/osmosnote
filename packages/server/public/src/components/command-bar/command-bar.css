@@ -1,0 +1,79 @@
+s2-command-bar {
+  --command-bar-height: 32px;
+
+  height: var(--command-bar-height);
+  opacity: 0;
+  pointer-events: none;
+}
+
+s2-command-bar[data-active] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cmdbr-input {
+  width: 100%;
+  height: 32px;
+  background-color: var(--base01);
+  color: var(--base06);
+  border: none;
+  outline: none;
+  font-family: monospace;
+  padding: 0 16px;
+  border-radius: 0px;
+}
+
+.cmdbr-input:focus {
+  background-color: var(--theme-background-active);
+  outline: 1px solid var(--theme-outline-color);
+  outline-offset: -1px;
+}
+
+.cmdbr-dropdown {
+  --theme-scrollbar-background: var(--theme-menu-option-background-rest);
+  /* options never receive real focus. force it to adopt focus command bar style */
+  --theme-scrollbar-blur-thumb-rest: var(--theme-scrollbar-focus-thumb-rest);
+  --theme-scrollbar-blur-thumb-hover: var(--theme-scrollbar-focus-thumb-hover);
+
+  margin: 0;
+
+  display: grid;
+  max-height: calc(100vh - var(--command-bar-height));
+  overflow: auto;
+}
+
+.cmdbr-dropdown:empty {
+  display: none;
+}
+
+.cmdbr-dropdown-row {
+  background-color: var(--theme-menu-option-background-rest);
+  font-family: monospace;
+  height: 32px;
+  padding: 0 16px;
+  align-items: center;
+  display: flex;
+}
+
+.cmdbr-dropdown-row--header {
+  color: var(--base0A);
+  font-weight: bold;
+}
+
+.cmdbr-dropdown-row--message {
+  color: var(--theme-text-color-secondary);
+}
+
+.cmdbr-dropdown-row--btn {
+  color: var(--theme-text-color);
+  border: none;
+  text-align: start;
+  outline: none;
+  border-radius: 0px;
+}
+
+.cmdbr-dropdown-row--btn[data-active] {
+  font-weight: bold;
+  color: var(--theme-text-color-knockout);
+  background-color: var(--theme-menu-option-background-active);
+}

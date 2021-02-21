@@ -1,3 +1,4 @@
+import type { ComponentRefService } from "../component-reference/component-ref.service.js";
 import type { HistoryService } from "../history/history.service.js";
 import type { NoteService } from "../note/note.service.js";
 import { openNodeId, openUrl } from "../shared/curosr/cursor-action.js";
@@ -38,7 +39,11 @@ import {
 import { parseDocument } from "../shared/parse.js";
 
 export class InputService {
-  constructor(private historyService: HistoryService, private noteService: NoteService) {}
+  constructor(
+    private historyService: HistoryService,
+    private noteService: NoteService,
+    private componentRefService: ComponentRefService
+  ) {}
 
   handleEvents() {
     const host = document.querySelector("#content-host") as HTMLElement;
@@ -75,6 +80,14 @@ export class InputService {
         case "Z":
           if (event.ctrlKey && event.shiftKey) {
             this.historyService.redo(host);
+            event.preventDefault();
+          }
+          break;
+
+        // command bar
+        case "k":
+          if (event.ctrlKey) {
+            this.componentRefService.commandBar.enterCommandMode();
             event.preventDefault();
           }
           break;

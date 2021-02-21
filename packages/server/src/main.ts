@@ -4,12 +4,14 @@ import path from "path";
 import { handleGetNote } from "./routes/get-note";
 import { getConfig } from "./config";
 import { handleUpdateNote } from "./routes/update-note";
+import { handleSearchNote } from "./routes/search-note";
 
 async function run() {
   const server = fastify();
 
   server.post("/api/get-note", handleGetNote);
   server.post("/api/update-note", handleUpdateNote);
+  server.post("/api/search-note", handleSearchNote);
 
   const publicPath = path.join(__dirname, "../public");
   server.register(fastifyStatic, { root: publicPath });
