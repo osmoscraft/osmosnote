@@ -3,15 +3,17 @@
 ## IDE MVP
 
 - TODO
-  - Search and open
   - Search and insert
+    - Window bridge
   - Capture new
   - Capture from bookmarklet
   - Handle tag search
-  - Open backlinks
   - Sync mouse click to cursor location
   - Compress timestamp to 8 digit with a-z0-9 and epoch time with ms precision
+  - Add createdOn timestamp metadata field
 - DONE
+  - Search and open
+  - Open backlinks
   - Save to disk
     - Serialization
 
