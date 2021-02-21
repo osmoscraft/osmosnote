@@ -24,18 +24,11 @@ export function createHandler<OutputType, InputType>(sourceHandler: (input: Inpu
   return decoratedHandler;
 }
 
-export type OutputSuccessOrError<T> = OutputSuccess<T> | OutputError;
-
-export type OutputSuccess<T> = {
-  data: T;
-  error?: undefined;
-};
-
-export type OutputError = {
-  data?: undefined;
-  error: {
+export interface OutputSuccessOrError<T> {
+  data?: T;
+  error?: {
     name?: string;
     message?: string;
     stack?: string;
   };
-};
+}

@@ -13,7 +13,7 @@ async function run() {
 
   server.post("/api/get-note", handleGetNote);
   server.post("/api/update-note", handleUpdateNote);
-  server.post("/api/search-note", handleSearchNote);
+  server.post("/api/search-notes", handleSearchNote);
   server.post("/api/list-notes", handleListNotes);
   server.post("/api/get-mentions", handleGetMentions);
 

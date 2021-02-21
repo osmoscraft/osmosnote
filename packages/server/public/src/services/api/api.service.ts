@@ -9,8 +9,8 @@ import type {
   SearchNoteOutput,
   UpdateNoteInput,
   UpdateNoteOutput,
+  OutputSuccessOrError,
 } from "@system-two/server";
-import type { OutputSuccessOrError } from "../../../../src/lib/create-handler.js";
 import { getPortableText } from "../../components/text-editor/helpers/line/line-query.js";
 import type { HistoryService } from "../history/history.service.js";
 import type { QueryService } from "../query/query.service.js";
@@ -64,6 +64,6 @@ export class ApiService {
   private getSuccessData<T>(output: OutputSuccessOrError<T>): T {
     if (output.error) throw output.error;
 
-    return output.data;
+    return output.data!;
   }
 }
