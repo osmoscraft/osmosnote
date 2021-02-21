@@ -8,6 +8,8 @@
   - Capture new
   - Capture from bookmarklet
   - Handle tag search
+  - Fix editor focus restore issue
+    - encapsulate logic in editor component. Use "focus" and "blur" as trigger
   - Sync mouse click to cursor location
   - Compress timestamp to 8 digit with a-z0-9 and epoch time with ms precision
   - Add createdOn timestamp metadata field
