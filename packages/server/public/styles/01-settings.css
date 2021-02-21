@@ -49,4 +49,9 @@
   --theme-scrollbar-blur-thumb-hover: transparent;
   --theme-scrollbar-focus-thumb-rest: var(--base01);
   --theme-scrollbar-focus-thumb-hover: var(--base03);
+
+  /* typograph */
+  --theme-font-monospace: monospace;
+  --theme-font-propotional: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+    "Helvetica Neue", sans-serif;
 }

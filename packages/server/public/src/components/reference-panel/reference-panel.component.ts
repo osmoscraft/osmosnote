@@ -2,6 +2,7 @@ import type { Mention } from "@system-two/server";
 import { ApiService } from "../../services/api/api.service.js";
 import { RouteService } from "../../services/route/route.service.js";
 import { di } from "../../utils/dependency-injector.js";
+import { filenameToId } from "../../utils/id.js";
 
 export class ReferencePanelComponent extends HTMLElement {
   private listDom!: HTMLUListElement;
@@ -40,9 +41,9 @@ export class ReferencePanelComponent extends HTMLElement {
       .map(
         (note, index) => /*html*/ `
     <li>
-      <a class="refpnl-link" data-index="${index}" tabindex="${index === 0 ? 0 : -1}" href="/?filename=${
+      <a class="refpnl-link" data-index="${index}" tabindex="${index === 0 ? 0 : -1}" href="/?id=${filenameToId(
           note.filename
-        }">${note.title}</a>
+        )}">${note.title}</a>
     </li>
     `
       )

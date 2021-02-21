@@ -1,6 +1,5 @@
 import { ApiService } from "../../services/api/api.service.js";
 import { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
-import { QueryService } from "../../services/query/query.service.js";
 import { di } from "../../utils/dependency-injector.js";
 import { idToFilename } from "../../utils/id.js";
 import { commandTree } from "./command-tree.js";

@@ -1,6 +1,5 @@
 s2-reference-panel {
   background-color: var(--theme-background-rest);
-  padding: 16px 0;
   overflow-y: scroll;
 }
 
@@ -11,10 +10,14 @@ s2-reference-panel:focus-within {
 
 .refpnl-list {
   margin: 0;
-  padding: 0;
+  padding: 16px 0;
   list-style: none;
   display: grid;
   gap: 8px;
+}
+
+.refpnl-list:empty {
+  display: none;
 }
 
 .refpnl-link {

@@ -7,6 +7,7 @@ body {
   margin: 0;
   background-color: var(--theme-divider-color); /* negative space becomes gap */
   color: var(--theme-text-color);
+  font-family: var(--theme-font-propotional);
 }
 
 * {

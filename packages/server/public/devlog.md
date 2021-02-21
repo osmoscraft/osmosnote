@@ -10,13 +10,15 @@
   - Handle tag search
   - Open backlinks
   - Sync mouse click to cursor location
+  - Compress timestamp to 8 digit with a-z0-9 and epoch time with ms precision
 - DONE
   - Save to disk
     - Serialization
 
-## Saner dev MVP
+## Technical debt MVP
 
 - TODO
+  - Move all filename to id conversion to server side
   - Test (need real dom: playwright/cypress)
     - How to mock dom measure?
     - Port testing helpers to browser

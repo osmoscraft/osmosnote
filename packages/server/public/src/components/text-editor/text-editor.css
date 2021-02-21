@@ -3,7 +3,7 @@
   white-space: break-spaces;
   word-break: break-all;
   line-break: anywhere;
-  font-family: monospace;
+  font-family: var(--theme-font-monospace);
   outline: none;
   caret-color: var(--theme-text-color);
   padding: 16px 0;
