@@ -1,11 +1,11 @@
-import type { OutputOrError } from "@system-two/server";
+import type { OutputSuccessOrError } from "@system-two/server";
 
-export class ProxyService {
+export class QueryService {
   /**
    * @param {string} url
    * @param {any} input
    */
-  async query<OutputType, InputType>(url: string, input: InputType): Promise<OutputOrError<OutputType>> {
+  async query<OutputType, InputType>(url: string, input: InputType): Promise<OutputSuccessOrError<OutputType>> {
     try {
       const response = await fetch(url, {
         method: "POST",

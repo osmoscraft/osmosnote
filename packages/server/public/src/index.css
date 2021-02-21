@@ -28,6 +28,7 @@ s2-text-editor {
 
 s2-reference-panel {
   grid-area: aside;
+  max-height: 25vh;
 }
 
 s2-status-bar {

@@ -7,6 +7,9 @@
   - Search and insert
   - Capture new
   - Capture from bookmarklet
+  - Handle tag search
+  - Open backlinks
+  - Sync mouse click to cursor location
 - DONE
   - Save to disk
     - Serialization
@@ -17,6 +20,10 @@
   - Test (need real dom: playwright/cypress)
     - How to mock dom measure?
     - Port testing helpers to browser
+
+## IDE V2
+
+- Assisted tag insertion
 
 ## TextEngine V2
 

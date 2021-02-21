@@ -4,7 +4,7 @@ export function createHandler<OutputType, InputType>(sourceHandler: (input: Inpu
   const decoratedHandler = async (
     request: FastifyRequest<{
       Body: InputType;
-      Reply: OutputOrError<OutputType>;
+      Reply: OutputSuccessOrError<OutputType>;
     }>
   ) => {
     try {
@@ -24,9 +24,16 @@ export function createHandler<OutputType, InputType>(sourceHandler: (input: Inpu
   return decoratedHandler;
 }
 
-export type OutputOrError<T> = {
-  data?: T;
-  error?: {
+export type OutputSuccessOrError<T> = OutputSuccess<T> | OutputError;
+
+export type OutputSuccess<T> = {
+  data: T;
+  error?: undefined;
+};
+
+export type OutputError = {
+  data?: undefined;
+  error: {
     name?: string;
     message?: string;
     stack?: string;

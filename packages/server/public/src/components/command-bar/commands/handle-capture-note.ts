@@ -24,25 +24,21 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
       )}"></s2-menu-row>`;
 
       if (!phrase?.length) {
-        const result = await context.proxyService.query<ListNotesOutput, ListNotesInput>(`/api/list-notes`, {});
-
-        if (result.data) {
-          optionsHtml += renderRecentNotesForOpen(result.data);
-        } else {
-          optionsHtml += renderMessageRow("Something went wrong");
+        try {
+          const notes = await context.apiService.listNotes();
+          optionsHtml += renderRecentNotesForOpen(notes);
+        } catch (error) {
+          optionsHtml += renderMessageRow("Error loading recent notes");
         }
-        return optionsHtml;
-      }
-
-      const result = await context.proxyService.query<SearchNoteOutput, SearchNoteInput>(`/api/search-note`, {
-        phrase,
-      });
-
-      if (result.data) {
-        optionsHtml += renderSearchResultSectionForOpen(result.data);
       } else {
-        optionsHtml += renderMessageRow("Something went wrong");
+        try {
+          const notes = await context.apiService.searchNotes(phrase);
+          optionsHtml += renderSearchResultSectionForOpen(notes);
+        } catch (error) {
+          optionsHtml += renderMessageRow("Error searching notes");
+        }
       }
+
       return optionsHtml;
     },
     runOnCommit: () => {

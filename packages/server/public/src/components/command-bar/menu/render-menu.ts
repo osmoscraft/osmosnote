@@ -23,9 +23,9 @@ export function renderSearchResultSectionForOpen(searchReply: SearchNoteOutput):
   ${searchReply.items
     .map(
       (item) =>
-        /*html*/ `<s2-menu-row data-open-url="${`/?filename=${item.filename}`}" data-kind="option" data-label="${
-          item.title
-        }"></s2-menu-row>`
+        /*html*/ `<s2-menu-row data-open-url="${`/?id=${filenameToId(
+          item.filename
+        )}`}" data-kind="option" data-label="${item.title}"></s2-menu-row>`
     )
     .join("")}
   `;

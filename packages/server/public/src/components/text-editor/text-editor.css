@@ -8,6 +8,7 @@
   caret-color: var(--theme-text-color);
   padding: 16px 0;
   overflow-y: scroll;
+  height: 100%;
 }
 
 #content-host * {

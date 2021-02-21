@@ -1,6 +1,8 @@
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
 import type { HistoryService } from "../../services/history/history.service.js";
-import type { NoteService } from "../../services/note/note.service.js";
+import type { ApiService } from "../../services/api/api.service.js";
+import type { NotificationService } from "../../services/notification/notification.service.js";
+import type { RouteService } from "../../services/route/route.service.js";
 import { openNodeId, openUrl } from "./helpers/curosr/cursor-action.js";
 import {
   cursorCopy,
@@ -41,7 +43,9 @@ import { parseDocument } from "./helpers/parse.js";
 export class InputService {
   constructor(
     private historyService: HistoryService,
-    private noteService: NoteService,
+    private noteService: ApiService,
+    private routeService: RouteService,
+    private notificationService: NotificationService,
     private componentRefService: ComponentRefService
   ) {}
 
@@ -115,8 +119,16 @@ export class InputService {
             event.preventDefault();
             event.stopPropagation();
             parseDocument(host);
-            this.noteService.updateNote();
-            this.historyService.save(host);
+            const { id } = this.routeService.getNoteConfigFromUrl();
+            if (id) {
+              try {
+                this.noteService.updateNote(id);
+                this.historyService.save(host);
+                this.notificationService.displayMessage("Saved");
+              } catch (error) {
+                this.notificationService.displayMessage("Error saving note");
+              }
+            }
           }
           break;
 

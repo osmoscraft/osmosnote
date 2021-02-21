@@ -1,5 +1,6 @@
+import { ApiService } from "../../services/api/api.service.js";
 import { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
-import { ProxyService } from "../../services/proxy/proxy.service.js";
+import { QueryService } from "../../services/query/query.service.js";
 import { di } from "../../utils/dependency-injector.js";
 import { idToFilename } from "../../utils/id.js";
 import { commandTree } from "./command-tree.js";
@@ -19,7 +20,7 @@ export const EMPTY_COMMAND: CommandInput = {
 
 export interface CommandHandlerContext {
   componentRefs: ComponentRefService;
-  proxyService: ProxyService;
+  apiService: ApiService;
 }
 
 export interface CommandHandler {
@@ -65,8 +66,8 @@ export class CommandBarComponent extends HTMLElement {
   commandOptionsDom!: HTMLElement;
   commandTree!: RegisteredCommand;
 
-  componentRefs = di.getSingleton(ComponentRefService);
-  proxyService = di.getSingleton(ProxyService);
+  private componentRefs = di.getSingleton(ComponentRefService);
+  private apiService = di.getSingleton(ApiService);
 
   private triggeringElement: Element | null = null;
 
@@ -356,7 +357,7 @@ export class CommandBarComponent extends HTMLElement {
         input: currentInput,
         context: {
           componentRefs: this.componentRefs,
-          proxyService: this.proxyService,
+          apiService: this.apiService,
         },
       });
 
