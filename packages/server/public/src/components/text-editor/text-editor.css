@@ -1,0 +1,78 @@
+#content-host {
+  background-color: var(--theme-background-rest);
+  white-space: break-spaces;
+  word-break: break-all;
+  line-break: anywhere;
+  font-family: monospace;
+  outline: none;
+  caret-color: var(--theme-text-color);
+  padding: 16px 0;
+  overflow-y: scroll;
+}
+
+#content-host * {
+  caret-color: inherit;
+}
+
+[data-measurable-line] {
+  padding: 0 16px;
+  scroll-margin: 32px 0;
+}
+[data-line] {
+  padding: 0 16px;
+  display: flex;
+  scroll-margin: 32px 0;
+}
+[data-line] [data-indent] {
+  flex: 0 0 auto;
+}
+[data-line] [data-wrap] {
+  flex: 1 1 auto;
+}
+[data-line][data-cursor-collapsed] {
+  background-color: var(--theme-background-active);
+}
+
+[data-line="meta"] [data-meta-value="title"] {
+  font-weight: 700;
+}
+[data-line="meta"] [data-meta-value="title"] {
+  color: var(--theme-title-color);
+}
+
+[data-line="heading"][data-level="1"],
+[data-line="heading"][data-level="4"] {
+  color: var(--theme-h1-color);
+}
+
+[data-line="heading"][data-level="2"],
+[data-line="heading"][data-level="5"] {
+  color: var(--theme-h2-color);
+}
+
+[data-line="heading"][data-level="3"],
+[data-line="heading"][data-level="6"] {
+  color: var(--theme-h3-color);
+}
+
+[data-link] .link__title {
+  color: var(--theme-link-color);
+}
+
+[data-link] .link__target {
+  color: var(--theme-text-color-secondary);
+}
+
+[data-link] :is(.link__target[data-cursor-collapsed], .link__target:hover) {
+  color: var(--theme-link-color);
+  text-decoration: underline;
+}
+
+[data-url] {
+  color: var(--theme-link-color);
+}
+
+[data-url][data-cursor-collapsed],
+[data-url]:hover {
+  text-decoration: underline;
+}

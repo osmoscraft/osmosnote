@@ -1,4 +1,4 @@
-import { createState } from "../../../utils/global-state-factory.js";
+import { createState } from "../../../../utils/global-state-factory.js";
 
 export function calculateMeasure(host: HTMLElement) {
   const [lower, upper] = getLineMeasureBounds(host);

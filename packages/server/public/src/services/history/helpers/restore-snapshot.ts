@@ -1,5 +1,5 @@
-import { setCollapsedCursorToLinePosition } from "../../shared/curosr/cursor-select.js";
-import { getPositionByOffset } from "../../shared/line/line-query.js";
+import { setCollapsedCursorToLinePosition } from "../../../components/text-editor/helpers/curosr/cursor-select.js";
+import { getPositionByOffset } from "../../../components/text-editor/helpers/line/line-query.js";
 import type { Snapshot } from "../history.service.js";
 
 export function restoreSnapshot(snapshot: Snapshot, root: HTMLElement) {

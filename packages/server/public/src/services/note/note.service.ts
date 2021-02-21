@@ -2,11 +2,11 @@ import type { GetNoteInput, GetNoteOutput, UpdateNoteInput, UpdateNoteOutput } f
 import { getNoteConfigFromUrl } from "./route.js";
 import type { HistoryService } from "../history/history.service.js";
 import type { ProxyService } from "../proxy/proxy.service.js";
-import { renderDefaultCursor } from "../shared/curosr/cursor-select.js";
-import { calculateMeasure, setMeasure } from "../shared/line/line-measure.js";
-import { getPortableText } from "../shared/line/line-query.js";
-import { parseDocument } from "../shared/parse.js";
-import { sourceToLines } from "../shared/source-to-lines.js";
+import { renderDefaultCursor } from "../../components/text-editor/helpers/curosr/cursor-select.js";
+import { calculateMeasure, setMeasure } from "../../components/text-editor/helpers/line/line-measure.js";
+import { getPortableText } from "../../components/text-editor/helpers/line/line-query.js";
+import { parseDocument } from "../../components/text-editor/helpers/parse.js";
+import { sourceToLines } from "../../components/text-editor/helpers/source-to-lines.js";
 
 export class NoteService {
   constructor(private historySerivce: HistoryService, private proxyService: ProxyService) {}

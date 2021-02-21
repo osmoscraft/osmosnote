@@ -1,6 +1,6 @@
-import { getCursor, getCursorLinePosition } from "../../shared/curosr/cursor-query.js";
-import { getLine } from "../../shared/line/line-query.js";
-import type { LineElement } from "../../shared/source-to-lines.js";
+import { getCursor, getCursorLinePosition } from "../../../components/text-editor/helpers/curosr/cursor-query.js";
+import { getLine } from "../../../components/text-editor/helpers/line/line-query.js";
+import type { LineElement } from "../../../components/text-editor/helpers/source-to-lines.js";
 import type { Snapshot } from "../history.service.js";
 
 export function getSnapshot(root: HTMLElement): Snapshot {

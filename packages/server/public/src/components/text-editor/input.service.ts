@@ -1,7 +1,7 @@
-import type { ComponentRefService } from "../component-reference/component-ref.service.js";
-import type { HistoryService } from "../history/history.service.js";
-import type { NoteService } from "../note/note.service.js";
-import { openNodeId, openUrl } from "../shared/curosr/cursor-action.js";
+import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
+import type { HistoryService } from "../../services/history/history.service.js";
+import type { NoteService } from "../../services/note/note.service.js";
+import { openNodeId, openUrl } from "./helpers/curosr/cursor-action.js";
 import {
   cursorCopy,
   cursorCut,
@@ -12,7 +12,7 @@ import {
   deleteBefore,
   insertNewLine,
   insertText,
-} from "../shared/curosr/cursor-edit.js";
+} from "./helpers/curosr/cursor-edit.js";
 import {
   cursorDocumentSelect,
   cursorLeft,
@@ -35,8 +35,8 @@ import {
   cursorBlockEnd,
   cursorBlockStartSelect,
   cursorBlockStart,
-} from "../shared/curosr/cursor-select.js";
-import { parseDocument } from "../shared/parse.js";
+} from "./helpers/curosr/cursor-select.js";
+import { parseDocument } from "./helpers/parse.js";
 
 export class InputService {
   constructor(
@@ -85,7 +85,7 @@ export class InputService {
           break;
 
         // command bar
-        case "k":
+        case " ":
           if (event.ctrlKey) {
             this.componentRefService.commandBar.enterCommandMode();
             event.preventDefault();

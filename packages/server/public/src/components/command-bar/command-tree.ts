@@ -96,9 +96,5 @@ export const commandTree: RegisteredCommand = {
         },
       ],
     },
-    {
-      name: "Slash",
-      key: "/",
-    },
   ],
 };
