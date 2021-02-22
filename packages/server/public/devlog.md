@@ -12,12 +12,23 @@
     - encapsulate logic in editor component. Use "focus" and "blur" as trigger
   - Sync mouse click to cursor location
   - Compress timestamp to 8 digit with a-z0-9 and epoch time with ms precision
+    - Why not sequential id?
   - Add createdOn timestamp metadata field
 - DONE
   - Search and open
   - Open backlinks
   - Save to disk
     - Serialization
+
+## Bootstrap system
+
+- PEND
+  - Convert selection to new note
+  - Note id system
+  - Timestamp in metadata
+- TODO
+  - Migrate all org-roam notes
+  - Migrate all markdown notes
 
 ## Technical debt MVP
 
