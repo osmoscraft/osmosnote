@@ -18,7 +18,6 @@ export const handleUpdateNote = createHandler<UpdateNoteOutput, UpdateNoteInput>
   await writeNote(filename, note);
 
   return {
-    filename,
     note,
   };
 });

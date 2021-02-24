@@ -2,6 +2,7 @@ import fastify from "fastify";
 import fastifyStatic from "fastify-static";
 import path from "path";
 import { getConfig } from "./config";
+import { handleCreateNote } from "./routes/create-note";
 import { handleGetMentions } from "./routes/get-mentions";
 import { handleGetNote } from "./routes/get-note";
 import { handleListNotes } from "./routes/list-notes";
@@ -11,6 +12,7 @@ import { handleUpdateNote } from "./routes/update-note";
 async function run() {
   const server = fastify();
 
+  server.post("/api/create-note", handleCreateNote);
   server.post("/api/get-note", handleGetNote);
   server.post("/api/update-note", handleUpdateNote);
   server.post("/api/search-notes", handleSearchNote);
