@@ -9,6 +9,9 @@
   - Fix editor focus restore issue
     - encapsulate logic in editor component. Use "focus" and "blur" as trigger
   - Sync mouse click to cursor location
+  - Use fixed digit ISO timestamp
+  - Consider support local timezone offset in ISO output
+  - Consider support shortcut to insert current time (northstar?)
 
 ---
 
