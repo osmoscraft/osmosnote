@@ -39,6 +39,7 @@ import {
   cursorBlockStart,
 } from "./helpers/curosr/cursor-select.js";
 import { parseDocument } from "./helpers/parse.js";
+import { getPortableText } from "./helpers/line/line-query.js";
 
 export class InputService {
   constructor(
@@ -71,7 +72,7 @@ export class InputService {
       this.historyService.save(host);
     });
 
-    host.addEventListener("keydown", (event) => {
+    host.addEventListener("keydown", async (event) => {
       switch (event.key) {
         // undo/redo
         case "z":
@@ -119,15 +120,22 @@ export class InputService {
             event.preventDefault();
             event.stopPropagation();
             parseDocument(host);
+            const lines = [...host.querySelectorAll("[data-line]")] as HTMLElement[];
+            const note = getPortableText(lines);
+            // TODO ensure any required metadata fields, e.g. title and ctime
+
             const { id } = this.routeService.getNoteConfigFromUrl();
-            if (id) {
-              try {
-                this.noteService.updateNote(id);
+            try {
+              if (id) {
+                this.noteService.updateNote(id, note);
                 this.historyService.save(host);
                 this.notificationService.displayMessage("Saved");
-              } catch (error) {
-                this.notificationService.displayMessage("Error saving note");
+              } else {
+                const result = await this.noteService.createNote(note);
+                location.href = `/?id=${result.id}`;
               }
+            } catch (error) {
+              this.notificationService.displayMessage("Error saving note");
             }
           }
           break;

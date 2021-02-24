@@ -5,16 +5,19 @@
 - TODO
   - Search and insert
     - Window bridge
-  - Capture new
-  - Capture from bookmarklet
   - Handle tag search
   - Fix editor focus restore issue
     - encapsulate logic in editor component. Use "focus" and "blur" as trigger
   - Sync mouse click to cursor location
+
+---
+
+- DONE
   - Compress timestamp to 8 digit with a-z0-9 and epoch time with ms precision
     - Why not sequential id?
   - Add createdOn timestamp metadata field
-- DONE
+  - Capture new
+  - Capture from bookmarklet
   - Search and open
   - Open backlinks
   - Save to disk

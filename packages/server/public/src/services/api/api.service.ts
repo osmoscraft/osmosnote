@@ -1,24 +1,23 @@
 import type {
+  CreateNoteInput,
+  CreateNoteOutput,
   GetMentionsInput,
   GetMentionsOuput,
   GetNoteInput,
   GetNoteOutput,
   ListNotesInput,
   ListNotesOutput,
+  OutputSuccessOrError,
   SearchNoteInput,
   SearchNoteOutput,
   UpdateNoteInput,
   UpdateNoteOutput,
-  OutputSuccessOrError,
 } from "@system-two/server";
-import { getPortableText } from "../../components/text-editor/helpers/line/line-query.js";
 import type { HistoryService } from "../history/history.service.js";
 import type { QueryService } from "../query/query.service.js";
 
 export class ApiService {
   constructor(private historySerivce: HistoryService, private proxyService: QueryService) {}
-
-  // TODO - refactor all DOM manipulation into components
 
   async loadNote(id: string) {
     const output = await this.proxyService.query<GetNoteOutput, GetNoteInput>(`/api/get-note`, { id });
@@ -40,11 +39,16 @@ export class ApiService {
     return this.getSuccessData(output);
   }
 
-  async updateNote(id: string) {
-    const host = document.querySelector("#content-host") as HTMLElement;
-    const lines = [...host.querySelectorAll("[data-line]")] as HTMLElement[];
-    const note = getPortableText(lines);
+  async createNote(note: string) {
+    const output = await this.proxyService.query<CreateNoteOutput, CreateNoteInput>("/api/create-note", {
+      note,
+    });
 
+    return this.getSuccessData(output);
+  }
+
+  // TODO - refactor all DOM manipulation into components
+  async updateNote(id: string, note: string) {
     const output = await this.proxyService.query<UpdateNoteOutput, UpdateNoteInput>(`/api/update-note`, {
       id,
       note,

@@ -1,11 +1,11 @@
 export interface UrlNoteConfig {
-  id: string | null;
-  title: string | null;
+  id?: string;
+  title?: string;
   /**
    * the initial content for the note, in plaintext, not markdown.
    */
-  content: string | null;
-  url: string | null;
+  content?: string;
+  url?: string;
 }
 
 export class RouteService {
@@ -19,10 +19,10 @@ export class RouteService {
     const rawUrl = searchParams.get("url")?.trim();
 
     // a parameter must have length
-    const title = rawTitle ? rawTitle : null;
-    const id = rawId ? rawId : null;
-    const content = rawContent ? rawContent : null;
-    const metadataUrl = rawUrl ? rawUrl : null;
+    const title = rawTitle ? rawTitle : undefined;
+    const id = rawId ? rawId : undefined;
+    const content = rawContent ? rawContent : undefined;
+    const metadataUrl = rawUrl ? rawUrl : undefined;
 
     return {
       title,

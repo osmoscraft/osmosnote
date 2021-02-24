@@ -6,6 +6,7 @@ import { renderDefaultCursor } from "./helpers/curosr/cursor-select.js";
 import { calculateMeasure, setMeasure } from "./helpers/line/line-measure.js";
 import { parseDocument } from "./helpers/parse.js";
 import { sourceToLines } from "./helpers/source-to-lines.js";
+import { getNoteFromTemplate } from "./helpers/template.js";
 import { InputService } from "./input.service.js";
 
 export class TextEditorComponent extends HTMLElement {
@@ -27,21 +28,26 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   async init() {
-    const { id } = this.routeService.getNoteConfigFromUrl();
+    const { id, url, content, title } = this.routeService.getNoteConfigFromUrl();
+    let note = "";
     if (id) {
       const data = await this.noteService.loadNote(id);
-      const dom = sourceToLines(data.note);
-
-      const host = document.querySelector("#content-host") as HTMLElement;
-
-      host.appendChild(dom);
-      parseDocument(host);
-      renderDefaultCursor(host);
-
-      this.historyService.save(host);
-
-      this.inputService.handleEvents();
+      note = data.note;
+    } else {
+      note = getNoteFromTemplate({ title, url, content });
     }
+
+    const dom = sourceToLines(note);
+
+    const host = document.querySelector("#content-host") as HTMLElement;
+
+    host.appendChild(dom);
+    parseDocument(host);
+    renderDefaultCursor(host);
+
+    this.historyService.save(host);
+
+    this.inputService.handleEvents();
 
     window.addEventListener("resize", this.updateMeausre);
     this.updateMeausre();
