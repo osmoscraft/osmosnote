@@ -34,5 +34,6 @@ export function getWordEndOffset(text: string): number {
     return moveDistance;
   }
 
-  return text.length;
+  // if there is no match, the line must be empty. Set to the character before line end
+  return text.indexOf("\n");
 }
