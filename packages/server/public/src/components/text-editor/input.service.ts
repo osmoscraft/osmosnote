@@ -6,8 +6,8 @@ import type { RouteService } from "../../services/route/route.service.js";
 import type { WindowReferenceService } from "../../services/window-reference/window.service.js";
 import type { CaretService } from "./caret.service.js";
 import type { EditService } from "./edit.service.js";
+import type { FormatService } from "./format.service.js";
 import { getPortableText } from "./helpers/line/line-query.js";
-import { parseDocument } from "./helpers/parse.js";
 
 export class InputService {
   constructor(
@@ -18,6 +18,7 @@ export class InputService {
     private routeService: RouteService,
     private notificationService: NotificationService,
     private componentRefService: ComponentRefService,
+    private formatService: FormatService,
     private windowRef: WindowReferenceService
   ) {}
 
@@ -116,7 +117,7 @@ export class InputService {
         if (event.ctrlKey) {
           event.preventDefault();
           event.stopPropagation();
-          parseDocument(host);
+          this.formatService.parseDocument(host);
           const lines = [...host.querySelectorAll("[data-line]")] as HTMLElement[];
           const note = getPortableText(lines);
           // TODO ensure any required metadata fields, e.g. title and ctime

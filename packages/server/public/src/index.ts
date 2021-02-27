@@ -15,6 +15,7 @@ import { RemoteClientService } from "./services/remote/remote-client.service.js"
 import { CaretService } from "./components/text-editor/caret.service.js";
 import { WindowReferenceService } from "./services/window-reference/window.service.js";
 import { EditService } from "./components/text-editor/edit.service.js";
+import { FormatService } from "./components/text-editor/format.service.js";
 
 di.registerClass(ComponentRefService, []);
 di.registerClass(HistoryService, []);
@@ -24,7 +25,8 @@ di.registerClass(NotificationService, [ComponentRefService]);
 di.registerClass(ApiService, [QueryService]);
 di.registerClass(WindowReferenceService, []);
 di.registerClass(CaretService, [ComponentRefService, WindowReferenceService]);
-di.registerClass(EditService, [CaretService]);
+di.registerClass(FormatService, [CaretService]);
+di.registerClass(EditService, [CaretService, FormatService]);
 di.registerClass(InputService, [
   CaretService,
   EditService,
@@ -33,6 +35,7 @@ di.registerClass(InputService, [
   RouteService,
   NotificationService,
   ComponentRefService,
+  FormatService,
   WindowReferenceService,
 ]);
 di.registerClass(RemoteHostService, [ComponentRefService]);

@@ -12,6 +12,9 @@
   - Use fixed digit ISO timestamp
   - Consider support local timezone offset in ISO output
   - Consider support shortcut to insert current time (northstar?)
+  - Handle unsaved changes
+    - Track change dirty state
+    - Indicate unsaved changes in tab and/or status bar
 
 ---
 

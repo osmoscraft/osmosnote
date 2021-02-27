@@ -6,6 +6,7 @@ import {
   getBlockStartPositionFromCursor,
   getDocumentEndPosition,
   getDocumentStartPosition,
+  getNearestEditablePositionForward,
   getPositionAboveCursor,
   getPositionBelowCursor,
   getVisualEndPositionFromCursor,
@@ -13,14 +14,10 @@ import {
   getWordEndPositionFromCursor,
   getWordStartPositionFromCursor,
 } from "./helpers/curosr/cursor-query.js";
-import {
-  clearCursorInDom,
-  extendCursorFocus,
-  extendCursorFocusByOffset,
-  moveCursorCollapsed,
-  moveCursorCollapsedByOffset,
-  showCursorInDom,
-} from "./helpers/curosr/cursor-select.js";
+import { clearCursorInDom, showCursorInDom } from "./helpers/curosr/cursor-select.js";
+import { updateIdealColumn } from "./helpers/curosr/ideal-column.js";
+import { seek, SeekOutput } from "./helpers/dom.js";
+import { getOffsetByVisualPosition, getPositionByOffset, VisualPosition } from "./helpers/line/line-query.js";
 
 export interface Caret {
   anchor: CaretPosition;
@@ -52,21 +49,30 @@ export class CaretService {
 
   constructor(private componentRef: ComponentRefService, private windowRef: WindowReferenceService) {}
 
+  /**
+   * initialize and render cursor to default position
+   */
+  init(root: HTMLElement) {
+    const defaultPosition = getDocumentStartPosition();
+    if (!defaultPosition) return;
+    this.setCursorCollapsed(defaultPosition.node, defaultPosition.offset, root);
+  }
+
   catchUpToDom() {
     this.updateModelFromDom();
     this.renderModel();
   }
 
   moveRight(root: HTMLElement) {
-    moveCursorCollapsedByOffset(1, root);
+    this.moveCursorCollapsedByOffset(1, root);
   }
 
   selectRight(root: HTMLElement) {
-    extendCursorFocusByOffset(1, root);
+    this.extendCursorFocusByOffset(1, root);
   }
 
   moveWordEnd(root: HTMLElement) {
-    moveCursorCollapsed({
+    this.moveCursorCollapsed({
       seeker: getWordEndPositionFromCursor,
       requireCollapseTo: "end",
       root,
@@ -74,19 +80,19 @@ export class CaretService {
   }
 
   selectWordEnd(root: HTMLElement) {
-    extendCursorFocus({ seeker: getWordEndPositionFromCursor, root });
+    this.extendCursorFocus({ seeker: getWordEndPositionFromCursor, root });
   }
 
   moveLeft(root: HTMLElement) {
-    moveCursorCollapsedByOffset(-1, root);
+    this.moveCursorCollapsedByOffset(-1, root);
   }
 
   selectLeft(root: HTMLElement) {
-    extendCursorFocusByOffset(-1, root);
+    this.extendCursorFocusByOffset(-1, root);
   }
 
   moveWordStart(root: HTMLElement) {
-    moveCursorCollapsed({
+    this.moveCursorCollapsed({
       seeker: getWordStartPositionFromCursor,
       requireCollapseTo: "start",
       root,
@@ -94,11 +100,11 @@ export class CaretService {
   }
 
   selectWordStart(root: HTMLElement) {
-    extendCursorFocus({ seeker: getWordStartPositionFromCursor, root });
+    this.extendCursorFocus({ seeker: getWordStartPositionFromCursor, root });
   }
 
   moveHome(root: HTMLElement) {
-    moveCursorCollapsed({
+    this.moveCursorCollapsed({
       seeker: getVisualHomePositionFromCursor,
       requireCollapseTo: "start",
       root,
@@ -106,11 +112,11 @@ export class CaretService {
   }
 
   selectHome(root: HTMLElement) {
-    extendCursorFocus({ seeker: getVisualHomePositionFromCursor, root });
+    this.extendCursorFocus({ seeker: getVisualHomePositionFromCursor, root });
   }
 
   moveEnd(root: HTMLElement) {
-    moveCursorCollapsed({
+    this.moveCursorCollapsed({
       seeker: getVisualEndPositionFromCursor,
       requireCollapseTo: "end",
       root,
@@ -118,11 +124,11 @@ export class CaretService {
   }
 
   selectEnd(root: HTMLElement) {
-    extendCursorFocus({ seeker: getVisualEndPositionFromCursor, root });
+    this.extendCursorFocus({ seeker: getVisualEndPositionFromCursor, root });
   }
 
   moveBlockStart(root: HTMLElement) {
-    moveCursorCollapsed({
+    this.moveCursorCollapsed({
       seeker: getBlockStartPositionFromCursor,
       requireCollapseTo: "start",
       root,
@@ -130,11 +136,11 @@ export class CaretService {
   }
 
   selectBlockStart(root: HTMLElement) {
-    extendCursorFocus({ seeker: getBlockStartPositionFromCursor, root });
+    this.extendCursorFocus({ seeker: getBlockStartPositionFromCursor, root });
   }
 
   moveBlockEnd(root: HTMLElement) {
-    moveCursorCollapsed({
+    this.moveCursorCollapsed({
       seeker: getBlockEndPositionFromCursor,
       requireCollapseTo: "end",
       root,
@@ -142,11 +148,11 @@ export class CaretService {
   }
 
   selectBlockEnd(root: HTMLElement) {
-    extendCursorFocus({ seeker: getBlockEndPositionFromCursor, root });
+    this.extendCursorFocus({ seeker: getBlockEndPositionFromCursor, root });
   }
 
   moveDown(root: HTMLElement) {
-    moveCursorCollapsed({
+    this.moveCursorCollapsed({
       seeker: getPositionBelowCursor,
       requireCollapseTo: "end",
       root,
@@ -155,11 +161,11 @@ export class CaretService {
   }
 
   selectDown(root: HTMLElement) {
-    extendCursorFocus({ seeker: getPositionBelowCursor, root, rememberColumn: false });
+    this.extendCursorFocus({ seeker: getPositionBelowCursor, root, rememberColumn: false });
   }
 
   moveUp(root: HTMLElement) {
-    moveCursorCollapsed({
+    this.moveCursorCollapsed({
       seeker: getPositionAboveCursor,
       requireCollapseTo: "start",
       root,
@@ -168,16 +174,68 @@ export class CaretService {
   }
 
   selectUp(root: HTMLElement) {
-    extendCursorFocus({ seeker: getPositionAboveCursor, root, rememberColumn: false });
+    this.extendCursorFocus({ seeker: getPositionAboveCursor, root, rememberColumn: false });
   }
 
   selectAll(root: HTMLElement) {
-    moveCursorCollapsed({
+    this.moveCursorCollapsed({
       seeker: getDocumentStartPosition,
       root,
     });
 
-    extendCursorFocus({ seeker: getDocumentEndPosition, root });
+    this.extendCursorFocus({ seeker: getDocumentEndPosition, root });
+  }
+
+  setCollapsedCursorToLineOffset(config: {
+    line: HTMLElement;
+    /** @default 0 */
+    offset?: number;
+    root?: HTMLElement | null;
+    /** @default true */
+    rememberColumn?: boolean;
+  }): SeekOutput | null {
+    const { line, offset = 0, root = null, rememberColumn = true } = config;
+
+    const newPosition = getPositionByOffset(line, offset);
+    return this.setCollapsedCursorToLinePosition({
+      line,
+      position: {
+        ...newPosition,
+      },
+      root,
+      rememberColumn,
+    });
+  }
+
+  /**
+   * Set cursor to the given row and column of the line.
+   * Ignore any existing ideal position
+   */
+  setCollapsedCursorToLinePosition(config: {
+    line: HTMLElement;
+    position: VisualPosition;
+    root?: HTMLElement | null;
+    /** @default true */
+    rememberColumn?: boolean;
+  }): SeekOutput | null {
+    const { line, position, root = null, rememberColumn = true } = config;
+
+    const { row, column } = position;
+    const targetOffset = getOffsetByVisualPosition(line, {
+      row,
+      column,
+    });
+
+    const seekOutput = seek({ source: line, offset: targetOffset });
+    if (!seekOutput) {
+      return null;
+    }
+
+    this.setCursorCollapsed(seekOutput.node, seekOutput.offset, root);
+
+    if (rememberColumn) updateIdealColumn();
+    this.catchUpToDom();
+    return seekOutput;
   }
 
   private updateModelFromDom() {
@@ -223,5 +281,121 @@ export class CaretService {
       },
       isCollapsed: selection.isCollapsed,
     };
+  }
+
+  /**
+   * If already collapsed, move the cursor by offset.
+   * If not collapsed, collapse to the direction of movement.
+   */
+  private moveCursorCollapsedByOffset(offset: number, root: HTMLElement | null = null) {
+    const cursor = this.caret;
+    if (!cursor) return;
+    const { focus, isCollapsed } = cursor;
+    const selection = this.windowRef.window.getSelection()!;
+    if (!selection) return;
+
+    if (!isCollapsed) {
+      if (offset > 0) {
+        selection.collapseToEnd();
+      } else {
+        selection.collapseToStart();
+      }
+    } else {
+      let newFocus = seek({ source: focus.node, offset: focus.offset, seek: offset, root });
+      if (!newFocus) return;
+
+      if (offset > 0) newFocus = getNearestEditablePositionForward(newFocus.node, newFocus.offset);
+
+      selection.collapse(newFocus.node, newFocus.offset);
+    }
+
+    updateIdealColumn();
+    this.catchUpToDom();
+  }
+
+  private extendCursorFocusByOffset(offset: number, root: HTMLElement | null = null) {
+    const cursor = this.caret;
+    if (!cursor) return;
+    const { anchor, focus } = cursor;
+
+    let newFocus = seek({ source: focus.node, offset: focus.offset, seek: offset, root });
+    if (!newFocus) return;
+
+    if (offset > 0) newFocus = getNearestEditablePositionForward(newFocus.node, newFocus.offset);
+
+    const selection = this.windowRef.window.getSelection()!;
+    selection.setBaseAndExtent(anchor.node, anchor.offset, newFocus.node, newFocus.offset);
+
+    updateIdealColumn();
+    this.catchUpToDom();
+  }
+
+  private extendCursorFocus(config: {
+    seeker: (cursor: Cursor) => SeekOutput | null;
+    root: HTMLElement | null;
+    /** @default true */
+    rememberColumn?: boolean;
+  }) {
+    const { seeker, root = null, rememberColumn = true } = config;
+
+    const cursor = this.caret;
+    if (!cursor) return;
+    const newFocus = seeker(cursor);
+    if (!newFocus) return;
+
+    const selection = window.getSelection()!;
+    selection.setBaseAndExtent(cursor.anchor.node, cursor.anchor.offset, newFocus.node, newFocus.offset);
+
+    if (rememberColumn) updateIdealColumn();
+    this.catchUpToDom();
+  }
+
+  private moveCursorCollapsed(config: {
+    seeker: (cursor: Cursor) => SeekOutput | null;
+    requireCollapseTo?: "start" | "end";
+    root: HTMLElement | null;
+    /** @default true */
+    rememberColumn?: boolean;
+  }) {
+    const { seeker, root = null, requireCollapseTo, rememberColumn = true } = config;
+    const cursor = this.caret;
+    if (!cursor) return;
+
+    if (!cursor.isCollapsed && requireCollapseTo !== undefined) {
+      const selection = getSelection();
+      if (!selection) return;
+
+      if (requireCollapseTo === "start") {
+        selection.collapseToStart();
+      } else if (requireCollapseTo === "end") {
+        selection.collapseToEnd();
+      }
+    } else {
+      const newFocus = seeker(cursor);
+      if (!newFocus) return;
+
+      this.setCursorCollapsed(newFocus.node, newFocus.offset, root);
+    }
+
+    if (rememberColumn) updateIdealColumn();
+    this.catchUpToDom();
+  }
+
+  private setCursorCollapsed(node: Node, offset: number = 0, root: HTMLElement | null = null) {
+    const selection = this.windowRef.window.getSelection();
+
+    if (selection) {
+      if (selection.rangeCount) {
+        selection.removeAllRanges();
+      }
+
+      const range = new Range();
+      range.setEnd(node, offset);
+      range.collapse();
+
+      selection.addRange(range);
+    }
+
+    this.catchUpToDom();
   }
 }

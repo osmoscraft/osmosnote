@@ -12,15 +12,15 @@ import {
   getPreviousLine,
   sliceLine,
 } from "./helpers/line/line-query.js";
-import { isIndentSettingLineType, parseLines } from "./helpers/parse.js";
 import { LineElement, sourceToLines } from "./helpers/source-to-lines.js";
 import { splice } from "./helpers/string.js";
+import type { FormatService } from "./format.service.js";
 
 /**
  * Change the content in the editor
  */
 export class EditService {
-  constructor(private caretService: CaretService) {}
+  constructor(private caretService: CaretService, private formatService: FormatService) {}
 
   insertText(text: string, root: HTMLElement) {
     this.deleteSelectionExplicit(root);
@@ -43,7 +43,7 @@ export class EditService {
     currentLine.parentElement?.insertBefore(newLines, currentLine);
     currentLine.remove();
 
-    parseLines(root);
+    this.formatService.parseLines(root);
 
     setCollapsedCursorToLineOffset({
       line: lastUpdatedLine,
@@ -71,7 +71,7 @@ export class EditService {
     currentLine.remove();
 
     const context = getFormatContext(newSecondLine);
-    parseLines(root, { indentWithContext: context });
+    this.formatService.parseLines(root, { indentWithContext: context });
 
     // set cursor to next line start
     const lineMetrics = getLineMetrics(newSecondLine);
@@ -107,7 +107,7 @@ export class EditService {
         previousLine.parentElement?.insertBefore(newlines, previousLine);
         previousLine.remove();
 
-        parseLines(root);
+        this.formatService.parseLines(root);
 
         setCollapsedCursorToLineOffset({
           line: updatedPreviousLine,
@@ -123,7 +123,7 @@ export class EditService {
       currentLine.parentElement?.insertBefore(newLines, currentLine);
       currentLine.remove();
 
-      parseLines(root);
+      this.formatService.parseLines(root);
 
       // set cursor to the left edge of the deleted char
       setCollapsedCursorToLineOffset({
@@ -161,7 +161,7 @@ export class EditService {
       currentLine.remove();
       nextLine.remove();
 
-      parseLines(root);
+      this.formatService.parseLines(root);
 
       setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
     } else {
@@ -173,7 +173,7 @@ export class EditService {
       currentLine.parentElement?.insertBefore(newLines, currentLine);
       currentLine.remove();
 
-      parseLines(root);
+      this.formatService.parseLines(root);
 
       setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
     }
@@ -235,7 +235,7 @@ export class EditService {
       // document will be empty after deletion. Create an empty line so we can set focus to it
       const newLines = sourceToLines("");
       newFocusLine = newLines.children[0] as HTMLElement;
-      parseLines(newLines);
+      this.formatService.parseLines(newLines);
 
       selectedLines[0].parentElement?.insertBefore(newLines, selectedLines[0]);
     }
@@ -292,7 +292,7 @@ export class EditService {
       return;
     }
 
-    parseLines(root);
+    this.formatService.parseLines(root);
     setCollapsedCursorToLineOffset({ line: updatedLine, offset: cursorStartOffset });
 
     if (isIndentDirty && updatedLine) {
@@ -347,6 +347,6 @@ export class EditService {
   }
 
   private isIndentReset(line: HTMLElement): boolean {
-    return isIndentSettingLineType((line as LineElement).dataset?.line);
+    return this.formatService.isIndentSettingLineType((line as LineElement).dataset?.line);
   }
 }

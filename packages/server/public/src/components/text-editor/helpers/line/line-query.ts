@@ -1,5 +1,5 @@
+import type { FormatContext } from "../../format.service.js";
 import { firstInnerLeafNode, firstInnerTextNode, flattenToLeafNodes, isTextNode, seek, SeekOutput } from "../dom.js";
-import { FormatContext, isIndentSettingLine } from "../parse.js";
 import type { LineElement } from "../source-to-lines.js";
 import { ensureLineEnding, removeLineEnding, reverse } from "../string.js";
 import { getMeasure } from "./line-measure.js";
@@ -302,4 +302,8 @@ function getWrappableLineLength(line: HTMLElement): number {
   }
 
   return 0;
+}
+
+function isIndentSettingLine(line?: HTMLElement | null): line is LineElement {
+  return (line as LineElement)?.dataset?.line === "heading";
 }
