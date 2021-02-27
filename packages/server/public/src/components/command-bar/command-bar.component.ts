@@ -1,5 +1,6 @@
 import { ApiService } from "../../services/api/api.service.js";
 import { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
+import { RemoteHostService } from "../../services/remote/remote-host.service.js";
 import { di } from "../../utils/dependency-injector.js";
 import { idToFilename } from "../../utils/id.js";
 import { commandTree } from "./command-tree.js";
@@ -20,6 +21,7 @@ export const EMPTY_COMMAND: CommandInput = {
 export interface CommandHandlerContext {
   componentRefs: ComponentRefService;
   apiService: ApiService;
+  remoteHostService: RemoteHostService;
 }
 
 export interface CommandHandler {
@@ -67,6 +69,7 @@ export class CommandBarComponent extends HTMLElement {
 
   private componentRefs = di.getSingleton(ComponentRefService);
   private apiService = di.getSingleton(ApiService);
+  private remoteHostService = di.getSingleton(RemoteHostService);
 
   private triggeringElement: Element | null = null;
 
@@ -325,20 +328,20 @@ export class CommandBarComponent extends HTMLElement {
         return true;
       }
 
-      // if (targetDataset.insertText) {
-      //   this.componentRefs.textEditor.insertAtCursor(targetDataset.insertText);
-      //   this.componentRefs.statusBar.setMessage(`[command-bar] inserted "${targetDataset.insertText}"`);
-      //   this.exitCommandMode();
+      if (targetDataset.insertText) {
+        this.componentRefs.textEditor.pasteText(targetDataset.insertText);
+        this.componentRefs.statusBar.setMessage(`[command-bar] inserted "${targetDataset.insertText}"`);
+        this.exitCommandMode();
 
-      //   return true;
-      // }
+        return true;
+      }
 
-      // if (targetDataset.insertOnSave) {
-      //   this.windowBridge.insertNoteLinkAfterCreated(targetDataset.insertOnSave);
-      //   this.exitCommandMode();
+      if (targetDataset.insertOnSave) {
+        this.remoteHostService.insertNoteLinkAfterCreated(targetDataset.insertOnSave);
+        this.exitCommandMode();
 
-      //   return true;
-      // }
+        return true;
+      }
     }
 
     return false;
@@ -357,6 +360,7 @@ export class CommandBarComponent extends HTMLElement {
         context: {
           componentRefs: this.componentRefs,
           apiService: this.apiService,
+          remoteHostService: this.remoteHostService,
         },
       });
 

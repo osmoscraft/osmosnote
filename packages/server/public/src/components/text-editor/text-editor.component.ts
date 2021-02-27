@@ -2,6 +2,7 @@ import { ApiService } from "../../services/api/api.service.js";
 import { HistoryService } from "../../services/history/history.service.js";
 import { RouteService } from "../../services/route/route.service.js";
 import { di } from "../../utils/dependency-injector.js";
+import { cursorPaste } from "./helpers/curosr/cursor-edit.js";
 import { renderDefaultCursor } from "./helpers/curosr/cursor-select.js";
 import { calculateMeasure, setMeasure } from "./helpers/line/line-measure.js";
 import { parseDocument } from "./helpers/parse.js";
@@ -10,10 +11,15 @@ import { getNoteFromTemplate } from "./helpers/template.js";
 import { InputService } from "./input.service.js";
 
 export class TextEditorComponent extends HTMLElement {
+  get host() {
+    return this.#host;
+  }
+
   private routeService!: RouteService;
   private noteService!: ApiService;
   private inputService!: InputService;
   private historyService!: HistoryService;
+  #host!: HTMLElement;
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
@@ -23,6 +29,8 @@ export class TextEditorComponent extends HTMLElement {
     this.noteService = di.getSingleton(ApiService);
     this.inputService = di.getSingleton(InputService);
     this.historyService = di.getSingleton(HistoryService);
+
+    this.#host = this.querySelector("#content-host") as HTMLElement;
 
     this.init();
   }
@@ -39,13 +47,11 @@ export class TextEditorComponent extends HTMLElement {
 
     const dom = sourceToLines(note);
 
-    const host = document.querySelector("#content-host") as HTMLElement;
+    this.host.appendChild(dom);
+    parseDocument(this.host);
+    renderDefaultCursor(this.host);
 
-    host.appendChild(dom);
-    parseDocument(host);
-    renderDefaultCursor(host);
-
-    this.historyService.save(host);
+    this.historyService.save(this.host);
 
     this.inputService.handleEvents();
 
@@ -53,8 +59,13 @@ export class TextEditorComponent extends HTMLElement {
     this.updateMeausre();
   }
 
+  pasteText(text: string) {
+    cursorPaste(text, this.host);
+    this.historyService.save(this.host);
+  }
+
   private updateMeausre() {
-    const measure = calculateMeasure(document.querySelector("#content-host") as HTMLElement);
+    const measure = calculateMeasure(this.host);
     setMeasure(measure);
   }
 }

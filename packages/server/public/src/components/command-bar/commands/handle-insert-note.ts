@@ -3,11 +3,11 @@ import type { CommandHandler } from "../command-bar.component.js";
 import {
   renderHeaderRow,
   renderMessageRow,
-  renderRecentNotesForOpen,
-  renderSearchResultSectionForOpen,
+  renderRecentNotesForInsert,
+  renderSearchResultSectionForInsert,
 } from "../menu/render-menu.js";
 
-export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
+export const handleInsertNote: CommandHandler = async ({ input, context }) => {
   const phrase = input.args?.trim();
 
   const searchParams = new URLSearchParams();
@@ -18,21 +18,21 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
     updateDropdownOnInput: async () => {
       let optionsHtml = renderHeaderRow("Create");
 
-      optionsHtml += /*html*/ `<s2-menu-row data-kind="option" data-open-url="${openUrl}" data-label="${getDefaultTitle(
+      optionsHtml += /*html*/ `<s2-menu-row data-kind="option" data-insert-on-save="${openUrl}" data-label="${getDefaultTitle(
         phrase
       )}"></s2-menu-row>`;
 
       if (!phrase?.length) {
         try {
           const notes = await context.apiService.listNotes();
-          optionsHtml += renderRecentNotesForOpen(notes);
+          optionsHtml += renderRecentNotesForInsert(notes);
         } catch (error) {
           optionsHtml += renderMessageRow("Error loading recent notes");
         }
       } else {
         try {
           const notes = await context.apiService.searchNotes(phrase);
-          optionsHtml += renderSearchResultSectionForOpen(notes);
+          optionsHtml += renderSearchResultSectionForInsert(notes);
         } catch (error) {
           optionsHtml += renderMessageRow("Error searching notes");
         }
@@ -43,9 +43,9 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
     runOnCommit: () => {
       // treating input as title to create a new note
       if (phrase?.length) {
-        window.open(`/?title=${phrase}`, `_self`);
+        context.remoteHostService.insertNoteLinkAfterCreated(`/?title=${phrase}`);
       } else {
-        window.open(`/`, `_self`);
+        context.remoteHostService.insertNoteLinkAfterCreated(`/`);
       }
     },
   };

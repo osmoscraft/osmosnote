@@ -39,7 +39,7 @@ export function getCursorLinePosition(cursorPosition: CursorPosition): Position 
   return position;
 }
 
-export function getCursor(): Cursor | null {
+export function getCursorFromDom(): Cursor | null {
   const selection = window.getSelection();
   if (!selection) return null;
 

@@ -1,5 +1,6 @@
 import type { RegisteredCommand } from "./command-bar.component.js";
 import { handleCaptureNote } from "./commands/handle-capture-note.js";
+import { handleInsertNote } from "./commands/handle-insert-note.js";
 
 export const commandTree: RegisteredCommand = {
   name: "All commands",
@@ -53,6 +54,7 @@ export const commandTree: RegisteredCommand = {
         {
           name: "Note",
           key: "n",
+          handler: handleInsertNote,
         },
         {
           name: "URL",

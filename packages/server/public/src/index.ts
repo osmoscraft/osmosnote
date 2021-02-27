@@ -10,6 +10,9 @@ import { NotificationService } from "./services/notification/notification.servic
 import { QueryService } from "./services/query/query.service.js";
 import { RouteService } from "./services/route/route.service.js";
 import { di } from "./utils/dependency-injector.js";
+import { RemoteHostService } from "./services/remote/remote-host.service.js";
+import { RemoteClientService } from "./services/remote/remote-client.service.js";
+import { CaretService } from "./components/text-editor/caret.service.js";
 
 di.registerClass(ComponentRefService, []);
 di.registerClass(HistoryService, []);
@@ -17,7 +20,17 @@ di.registerClass(QueryService, []);
 di.registerClass(RouteService, []);
 di.registerClass(NotificationService, [ComponentRefService]);
 di.registerClass(ApiService, [HistoryService, QueryService]);
-di.registerClass(InputService, [HistoryService, ApiService, RouteService, NotificationService, ComponentRefService]);
+di.registerClass(CaretService, [ComponentRefService]);
+di.registerClass(InputService, [
+  CaretService,
+  HistoryService,
+  ApiService,
+  RouteService,
+  NotificationService,
+  ComponentRefService,
+]);
+di.registerClass(RemoteHostService, [ComponentRefService]);
+di.registerClass(RemoteClientService, []);
 
 customElements.define("s2-command-bar", CommandBarComponent);
 customElements.define("s2-text-editor", TextEditorComponent);

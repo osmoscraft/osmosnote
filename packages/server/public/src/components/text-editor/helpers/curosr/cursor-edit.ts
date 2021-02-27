@@ -12,7 +12,7 @@ import {
 import { isIndentSettingLineType, parseLines } from "../parse.js";
 import { LineElement, sourceToLines } from "../source-to-lines.js";
 import { splice } from "../string.js";
-import { getCursor, getCursorLinePosition } from "./cursor-query.js";
+import { getCursorFromDom, getCursorLinePosition } from "./cursor-query.js";
 import {
   cursorWordEndSelect,
   cursorWordStartSelect,
@@ -23,7 +23,7 @@ import {
 export function insertText(text: string, root: HTMLElement) {
   deleteSelectionExplicit(root);
 
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
 
   const { offset } = getCursorLinePosition(cursor.focus);
@@ -52,7 +52,7 @@ export function insertText(text: string, root: HTMLElement) {
 export function insertNewLine(root: HTMLElement) {
   deleteSelectionExplicit(root);
 
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
 
   const { offset } = getCursorLinePosition(cursor.focus);
@@ -80,7 +80,7 @@ export function insertNewLine(root: HTMLElement) {
 }
 
 export function deleteBefore(root: HTMLElement) {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
 
   if (!cursor.isCollapsed) {
@@ -132,7 +132,7 @@ export function deleteBefore(root: HTMLElement) {
 }
 
 export function deleteAfter(root: HTMLElement) {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
 
   if (!cursor.isCollapsed) {
@@ -178,7 +178,7 @@ export function deleteAfter(root: HTMLElement) {
 }
 
 export function deleteWordBefore(root: HTMLElement) {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
 
   if (!cursor.isCollapsed) {
@@ -191,7 +191,7 @@ export function deleteWordBefore(root: HTMLElement) {
 }
 
 export function deleteWordAfter(root: HTMLElement) {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
 
   if (!cursor.isCollapsed) {
@@ -208,7 +208,7 @@ export function deleteWordAfter(root: HTMLElement) {
  * If there is no selction, current line will be deleted.
  */
 export function deleteSelection(root: HTMLElement) {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
   if (cursor.isCollapsed) {
     deleteSelectedLines();
@@ -218,7 +218,7 @@ export function deleteSelection(root: HTMLElement) {
 }
 
 function deleteSelectedLines() {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
 
   const selectedLines = getLines(cursor.start.node, cursor.end.node);
@@ -247,7 +247,7 @@ function deleteSelectedLines() {
  * Delete selection if there is any. No op otherwise
  */
 export function deleteSelectionExplicit(root: HTMLElement) {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
   if (cursor.isCollapsed) return;
 
@@ -303,7 +303,7 @@ export function deleteSelectionExplicit(root: HTMLElement) {
 }
 
 export async function cursorCopy() {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
 
   if (cursor.isCollapsed) {
@@ -326,7 +326,7 @@ export async function cursorCopy() {
 }
 
 export async function cursorCut(root: HTMLElement) {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
 
   await cursorCopy();
@@ -336,7 +336,7 @@ export async function cursorCut(root: HTMLElement) {
 export async function cursorPaste(text: string | undefined, root: HTMLElement) {
   if (!text) return;
 
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
 
   const textWithNormalizedLineEnding = text.replace(/\r\n?/g, "\n");

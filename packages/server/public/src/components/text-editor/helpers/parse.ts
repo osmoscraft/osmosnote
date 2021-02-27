@@ -1,4 +1,4 @@
-import { getCursor, getCursorLinePosition } from "./curosr/cursor-query.js";
+import { getCursorFromDom, getCursorLinePosition } from "./curosr/cursor-query.js";
 import { setCollapsedCursorToLineOffset } from "./curosr/cursor-select.js";
 import { getLine } from "./line/line-query.js";
 import type { LineElement, LineType } from "./source-to-lines.js";
@@ -41,7 +41,7 @@ export function parseLines(root: HTMLElement | DocumentFragment, config: ParseLi
 }
 
 export function parseDocument(root: HTMLElement | DocumentFragment) {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   let cursorLine: HTMLElement;
   let previousCursorOffset: number | null = null;
 

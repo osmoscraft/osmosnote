@@ -4,7 +4,7 @@ import {
   Cursor,
   getBlockEndPositionFromCursor,
   getBlockStartPositionFromCursor,
-  getCursor,
+  getCursorFromDom,
   getDocumentEndPosition,
   getDocumentStartPosition,
   getNearestEditablePositionForward,
@@ -217,7 +217,7 @@ export function setCursorCollapsed(node: Node, offset: number = 0, root: HTMLEle
 }
 
 function extendCursorFocusByOffset(offset: number, root: HTMLElement | null = null) {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
   const { anchor, focus } = cursor;
 
@@ -241,7 +241,7 @@ function extendCursorFocus(config: {
 }) {
   const { seeker, root = null, rememberColumn = true } = config;
 
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
   const newFocus = seeker(cursor);
   if (!newFocus) return;
@@ -258,7 +258,7 @@ function extendCursorFocus(config: {
  * If not collapsed, collapse to the direction of movement.
  */
 function moveCursorCollapsedByOffset(offset: number, root: HTMLElement | null = null) {
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
   const { focus, isCollapsed } = cursor;
   const selection = window.getSelection()!;
@@ -291,7 +291,7 @@ function moveCursorCollapsed(config: {
   rememberColumn?: boolean;
 }) {
   const { seeker, root = null, requireCollapseTo, rememberColumn = true } = config;
-  const cursor = getCursor();
+  const cursor = getCursorFromDom();
   if (!cursor) return;
 
   if (!cursor.isCollapsed && requireCollapseTo !== undefined) {
@@ -316,12 +316,16 @@ function moveCursorCollapsed(config: {
 
 /**
  * Mark all parent elements of the collapsed cursor
+ * @deprecated use caret service `updateModelFromDom`
  */
-function updateCursorInDom(root: HTMLElement | Document | null = document) {
+export function updateCursorInDom(root: HTMLElement | Document | null = document) {
   // TODO improve perf by diffing the add/remove of dataset values
   // remove all previous states
   clearCursorInDom(root);
-  showCursorInDom(root);
+  const cursor = getCursorFromDom();
+  if (cursor) {
+    showCursorInDom(cursor, root);
+  }
 }
 
 export function clearCursorInDom(root: HTMLElement | Document | null = document) {
@@ -330,16 +334,13 @@ export function clearCursorInDom(root: HTMLElement | Document | null = document)
     .forEach((container) => delete (container as HTMLElement).dataset.cursorCollapsed);
 }
 
-export function showCursorInDom(root: HTMLElement | Document | null = document) {
-  const cursor = getCursor();
-  if (cursor) {
-    if (cursor.isCollapsed) {
-      updateContainerStateRecursive(cursor.focus.node, root);
-    }
-
-    const line = getLine(cursor.focus.node);
-    line?.scrollIntoView({ behavior: "smooth" });
+export function showCursorInDom(cursor: Cursor, root: HTMLElement | Document | null = document) {
+  if (cursor.isCollapsed) {
+    updateContainerStateRecursive(cursor.focus.node, root);
   }
+
+  const line = getLine(cursor.focus.node);
+  line?.scrollIntoView({ behavior: "smooth" });
 }
 
 function updateContainerStateRecursive(currentNode: Node | null, root: Node | null) {
