@@ -13,6 +13,8 @@ import { di } from "./utils/dependency-injector.js";
 import { RemoteHostService } from "./services/remote/remote-host.service.js";
 import { RemoteClientService } from "./services/remote/remote-client.service.js";
 import { CaretService } from "./components/text-editor/caret.service.js";
+import { WindowReferenceService } from "./services/window-reference/window.service.js";
+import { EditService } from "./components/text-editor/edit.service.js";
 
 di.registerClass(ComponentRefService, []);
 di.registerClass(HistoryService, []);
@@ -20,14 +22,18 @@ di.registerClass(QueryService, []);
 di.registerClass(RouteService, []);
 di.registerClass(NotificationService, [ComponentRefService]);
 di.registerClass(ApiService, [QueryService]);
-di.registerClass(CaretService, [ComponentRefService]);
+di.registerClass(WindowReferenceService, []);
+di.registerClass(CaretService, [ComponentRefService, WindowReferenceService]);
+di.registerClass(EditService, [CaretService]);
 di.registerClass(InputService, [
   CaretService,
+  EditService,
   HistoryService,
   ApiService,
   RouteService,
   NotificationService,
   ComponentRefService,
+  WindowReferenceService,
 ]);
 di.registerClass(RemoteHostService, [ComponentRefService]);
 di.registerClass(RemoteClientService, []);

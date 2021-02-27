@@ -1,55 +1,24 @@
+import type { ApiService } from "../../services/api/api.service.js";
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
 import type { HistoryService } from "../../services/history/history.service.js";
-import type { ApiService } from "../../services/api/api.service.js";
 import type { NotificationService } from "../../services/notification/notification.service.js";
 import type { RouteService } from "../../services/route/route.service.js";
-import { openNodeId, openUrl } from "./helpers/curosr/cursor-action.js";
-import {
-  cursorCopy,
-  cursorCut,
-  cursorPaste,
-  deleteWordAfter,
-  deleteAfter,
-  deleteWordBefore,
-  deleteBefore,
-  insertNewLine,
-  insertText,
-} from "./helpers/curosr/cursor-edit.js";
-import {
-  cursorDocumentSelect,
-  cursorLeft,
-  cursorLeftSelect,
-  cursorWordStart,
-  cursorWordStartSelect,
-  cursorRight,
-  cursorRightSelect,
-  cursorWordEnd,
-  cursorWordEndSelect,
-  cursorHome,
-  cursorHomeSelect,
-  cursorEnd,
-  cursorEndSelect,
-  cursorDownSelect,
-  cursorDown,
-  cursorUpSelect,
-  cursorUp,
-  cursorBlockEndSelect,
-  cursorBlockEnd,
-  cursorBlockStartSelect,
-  cursorBlockStart,
-} from "./helpers/curosr/cursor-select.js";
-import { parseDocument } from "./helpers/parse.js";
-import { getPortableText } from "./helpers/line/line-query.js";
+import type { WindowReferenceService } from "../../services/window-reference/window.service.js";
 import type { CaretService } from "./caret.service.js";
+import type { EditService } from "./edit.service.js";
+import { getPortableText } from "./helpers/line/line-query.js";
+import { parseDocument } from "./helpers/parse.js";
 
 export class InputService {
   constructor(
     private caretService: CaretService,
+    private editService: EditService,
     private historyService: HistoryService,
     private noteService: ApiService,
     private routeService: RouteService,
     private notificationService: NotificationService,
-    private componentRefService: ComponentRefService
+    private componentRefService: ComponentRefService,
+    private windowRef: WindowReferenceService
   ) {}
 
   handleEvents() {
@@ -74,7 +43,7 @@ export class InputService {
   }
 
   private async handleSelectionChangeEvent() {
-    this.caretService.updateModelFromDom();
+    this.caretService.catchUpToDom();
   }
 
   private async handleClickEvents(event: MouseEvent, host: HTMLElement) {
@@ -85,16 +54,16 @@ export class InputService {
     event.preventDefault();
     switch (event.type) {
       case "copy":
-        cursorCopy();
+        this.editService.cursorCopy();
         break;
       case "cut":
-        cursorCut(host);
+        this.editService.cursorCut(host);
         this.historyService.save(host);
         break;
       case "paste":
         const pasteText = event.clipboardData?.getData("text");
         if (!pasteText) return;
-        cursorPaste(pasteText, host);
+        this.editService.cursorPaste(pasteText, host);
         this.historyService.save(host);
         break;
     }
@@ -129,7 +98,7 @@ export class InputService {
       case "a":
         if (event.ctrlKey) {
           event.preventDefault();
-          cursorDocumentSelect(host);
+          this.caretService.selectAll(host);
         }
         break;
 
@@ -137,7 +106,7 @@ export class InputService {
       case "x":
         if (event.ctrlKey) {
           event.preventDefault();
-          cursorCut(host);
+          this.editService.cursorCut(host);
           this.historyService.save(host);
         }
         break;
@@ -174,13 +143,13 @@ export class InputService {
 
         event.preventDefault();
         if (!event.ctrlKey && !event.shiftKey) {
-          cursorLeft(host);
+          this.caretService.moveLeft(host);
         } else if (!event.ctrlKey && event.shiftKey) {
-          cursorLeftSelect(host);
+          this.caretService.selectLeft(host);
         } else if (event.ctrlKey && !event.shiftKey) {
-          cursorWordStart(host);
+          this.caretService.moveWordStart(host);
         } else if (event.ctrlKey && event.shiftKey) {
-          cursorWordStartSelect(host);
+          this.caretService.selectWordStart(host);
         }
         break;
 
@@ -189,77 +158,77 @@ export class InputService {
 
         event.preventDefault();
         if (!event.ctrlKey && !event.shiftKey) {
-          cursorRight(host);
+          this.caretService.moveRight(host);
         } else if (!event.ctrlKey && event.shiftKey) {
-          cursorRightSelect(host);
+          this.caretService.selectRight(host);
         } else if (event.ctrlKey && !event.shiftKey) {
-          cursorWordEnd(host);
+          this.caretService.moveWordEnd(host);
         } else if (event.ctrlKey && event.shiftKey) {
-          cursorWordEndSelect(host);
+          this.caretService.selectWordEnd(host);
         }
         break;
 
       case "Home":
         event.preventDefault();
         if (!event.shiftKey) {
-          cursorHome(host);
+          this.caretService.moveHome(host);
         } else if (event.shiftKey) {
-          cursorHomeSelect(host);
+          this.caretService.selectHome(host);
         }
         break;
 
       case "End":
         event.preventDefault();
         if (!event.shiftKey) {
-          cursorEnd(host);
+          this.caretService.moveEnd(host);
         } else if (event.shiftKey) {
-          cursorEndSelect(host);
+          this.caretService.selectEnd(host);
         }
         break;
 
       case "ArrowDown":
         event.preventDefault();
         if (event.shiftKey) {
-          cursorDownSelect(host);
+          this.caretService.selectDown(host);
         } else {
-          cursorDown(host);
+          this.caretService.moveDown(host);
         }
         break;
 
       case "ArrowUp":
         event.preventDefault();
         if (event.shiftKey) {
-          cursorUpSelect(host);
+          this.caretService.selectUp(host);
         } else {
-          cursorUp(host);
+          this.caretService.moveUp(host);
         }
         break;
 
       case "PageDown":
         event.preventDefault();
         if (event.shiftKey) {
-          cursorBlockEndSelect(host);
+          this.caretService.selectBlockEnd(host);
         } else {
-          cursorBlockEnd(host);
+          this.caretService.moveBlockEnd(host);
         }
         break;
 
       case "PageUp":
         event.preventDefault();
         if (event.shiftKey) {
-          cursorBlockStartSelect(host);
+          this.caretService.selectBlockStart(host);
         } else {
-          cursorBlockStart(host);
+          this.caretService.moveBlockStart(host);
         }
         break;
 
       // Inputs
       case "Delete":
         if (event.ctrlKey) {
-          deleteWordAfter(host);
+          this.editService.deleteWordAfter(host);
           this.historyService.save(host);
         } else {
-          deleteAfter(host);
+          this.editService.deleteAfter(host);
           this.historyService.save(host);
         }
         event.preventDefault();
@@ -267,10 +236,10 @@ export class InputService {
 
       case "Backspace":
         if (event.ctrlKey) {
-          deleteWordBefore(host);
+          this.editService.deleteWordBefore(host);
           this.historyService.save(host);
         } else {
-          deleteBefore(host);
+          this.editService.deleteBefore(host);
           this.historyService.save(host);
         }
         event.preventDefault();
@@ -281,12 +250,12 @@ export class InputService {
         for (let container of collapsedCursorParents) {
           if (container.dataset.noteId) {
             // open internal id link
-            openNodeId(container.dataset.noteId, event);
+            this.openNodeId(container.dataset.noteId, event);
             event.preventDefault();
             break;
           } else if (container.dataset.url) {
             // open external url
-            openUrl(container.dataset.url, event);
+            this.openUrl(container.dataset.url, event);
             event.preventDefault();
             break;
           }
@@ -294,7 +263,7 @@ export class InputService {
 
         if (!event.defaultPrevented) {
           // insert new line at point
-          insertNewLine(host);
+          this.editService.insertNewLine(host);
           this.historyService.save(host);
           event.preventDefault();
         }
@@ -306,11 +275,27 @@ export class InputService {
     const insertedText = event.data;
     if (insertedText) {
       event.preventDefault();
-      insertText(insertedText, host);
+      this.editService.insertText(insertedText, host);
 
       if (insertedText.match(/\s|,|\./)) {
         this.historyService.save(host);
       }
+    }
+  }
+
+  private openNodeId(id: string, event: KeyboardEvent | MouseEvent) {
+    if (event.ctrlKey) {
+      this.windowRef.window.open(`/?id=${id}`, id); // use id as window name
+    } else {
+      this.windowRef.window.open(`/?id=${id}`, "_self");
+    }
+  }
+
+  private openUrl(url: string, event: KeyboardEvent | MouseEvent) {
+    if (event.ctrlKey) {
+      this.windowRef.window.open(url, url); // use url as window name
+    } else {
+      this.windowRef.window.open(url, "_self");
     }
   }
 }

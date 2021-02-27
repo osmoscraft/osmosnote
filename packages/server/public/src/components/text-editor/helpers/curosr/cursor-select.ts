@@ -2,18 +2,9 @@ import { seek, SeekOutput } from "../dom.js";
 import { getLine, getOffsetByVisualPosition, getPositionByOffset, VisualPosition } from "../line/line-query.js";
 import {
   Cursor,
-  getBlockEndPositionFromCursor,
-  getBlockStartPositionFromCursor,
   getCursorFromDom,
-  getDocumentEndPosition,
   getDocumentStartPosition,
   getNearestEditablePositionForward,
-  getPositionAboveCursor,
-  getPositionBelowCursor,
-  getVisualEndPositionFromCursor,
-  getVisualHomePositionFromCursor,
-  getWordEndPositionFromCursor,
-  getWordStartPositionFromCursor,
 } from "./cursor-query.js";
 import { updateIdealColumn } from "./ideal-column.js";
 
@@ -21,129 +12,6 @@ export function renderDefaultCursor(root: HTMLElement) {
   const defaultPosition = getDocumentStartPosition();
   if (!defaultPosition) return;
   setCursorCollapsed(defaultPosition.node, defaultPosition.offset, root);
-}
-
-export function cursorRight(root: HTMLElement) {
-  moveCursorCollapsedByOffset(1, root);
-}
-
-export function cursorRightSelect(root: HTMLElement) {
-  extendCursorFocusByOffset(1, root);
-}
-
-export function cursorWordEnd(root: HTMLElement) {
-  moveCursorCollapsed({
-    seeker: getWordEndPositionFromCursor,
-    requireCollapseTo: "end",
-    root,
-  });
-}
-
-export function cursorWordEndSelect(root: HTMLElement) {
-  extendCursorFocus({ seeker: getWordEndPositionFromCursor, root });
-}
-
-export function cursorLeft(root: HTMLElement) {
-  moveCursorCollapsedByOffset(-1, root);
-}
-
-export function cursorLeftSelect(root: HTMLElement) {
-  extendCursorFocusByOffset(-1, root);
-}
-
-export function cursorWordStart(root: HTMLElement) {
-  moveCursorCollapsed({
-    seeker: getWordStartPositionFromCursor,
-    requireCollapseTo: "start",
-    root,
-  });
-}
-
-export function cursorWordStartSelect(root: HTMLElement) {
-  extendCursorFocus({ seeker: getWordStartPositionFromCursor, root });
-}
-
-export function cursorHome(root: HTMLElement) {
-  moveCursorCollapsed({
-    seeker: getVisualHomePositionFromCursor,
-    requireCollapseTo: "start",
-    root,
-  });
-}
-
-export function cursorHomeSelect(root: HTMLElement) {
-  extendCursorFocus({ seeker: getVisualHomePositionFromCursor, root });
-}
-
-export function cursorEnd(root: HTMLElement) {
-  moveCursorCollapsed({
-    seeker: getVisualEndPositionFromCursor,
-    requireCollapseTo: "end",
-    root,
-  });
-}
-
-export function cursorEndSelect(root: HTMLElement) {
-  extendCursorFocus({ seeker: getVisualEndPositionFromCursor, root });
-}
-
-export function cursorBlockStart(root: HTMLElement) {
-  moveCursorCollapsed({
-    seeker: getBlockStartPositionFromCursor,
-    requireCollapseTo: "start",
-    root,
-  });
-}
-
-export function cursorBlockStartSelect(root: HTMLElement) {
-  extendCursorFocus({ seeker: getBlockStartPositionFromCursor, root });
-}
-
-export function cursorBlockEnd(root: HTMLElement) {
-  moveCursorCollapsed({
-    seeker: getBlockEndPositionFromCursor,
-    requireCollapseTo: "end",
-    root,
-  });
-}
-
-export function cursorBlockEndSelect(root: HTMLElement) {
-  extendCursorFocus({ seeker: getBlockEndPositionFromCursor, root });
-}
-
-export function cursorDown(root: HTMLElement) {
-  moveCursorCollapsed({
-    seeker: getPositionBelowCursor,
-    requireCollapseTo: "end",
-    root,
-    rememberColumn: false,
-  });
-}
-
-export function cursorDownSelect(root: HTMLElement) {
-  extendCursorFocus({ seeker: getPositionBelowCursor, root, rememberColumn: false });
-}
-
-export function cursorUp(root: HTMLElement) {
-  moveCursorCollapsed({
-    seeker: getPositionAboveCursor,
-    requireCollapseTo: "start",
-    root,
-    rememberColumn: false,
-  });
-}
-
-export function cursorUpSelect(root: HTMLElement) {
-  extendCursorFocus({ seeker: getPositionAboveCursor, root, rememberColumn: false });
-}
-
-export function cursorDocumentSelect(root: HTMLElement) {
-  moveCursorCollapsed({
-    seeker: getDocumentStartPosition,
-    root,
-  });
-
-  extendCursorFocus({ seeker: getDocumentEndPosition, root });
 }
 
 export function setCollapsedCursorToLineOffset(config: {
@@ -216,7 +84,7 @@ export function setCursorCollapsed(node: Node, offset: number = 0, root: HTMLEle
   updateCursorInDom(root);
 }
 
-function extendCursorFocusByOffset(offset: number, root: HTMLElement | null = null) {
+export function extendCursorFocusByOffset(offset: number, root: HTMLElement | null = null) {
   const cursor = getCursorFromDom();
   if (!cursor) return;
   const { anchor, focus } = cursor;
@@ -233,7 +101,7 @@ function extendCursorFocusByOffset(offset: number, root: HTMLElement | null = nu
   updateCursorInDom(root);
 }
 
-function extendCursorFocus(config: {
+export function extendCursorFocus(config: {
   seeker: (cursor: Cursor) => SeekOutput | null;
   root: HTMLElement | null;
   /** @default true */
@@ -257,7 +125,7 @@ function extendCursorFocus(config: {
  * If already collapsed, move the cursor by offset.
  * If not collapsed, collapse to the direction of movement.
  */
-function moveCursorCollapsedByOffset(offset: number, root: HTMLElement | null = null) {
+export function moveCursorCollapsedByOffset(offset: number, root: HTMLElement | null = null) {
   const cursor = getCursorFromDom();
   if (!cursor) return;
   const { focus, isCollapsed } = cursor;
@@ -283,7 +151,7 @@ function moveCursorCollapsedByOffset(offset: number, root: HTMLElement | null = 
   updateCursorInDom(root);
 }
 
-function moveCursorCollapsed(config: {
+export function moveCursorCollapsed(config: {
   seeker: (cursor: Cursor) => SeekOutput | null;
   requireCollapseTo?: "start" | "end";
   root: HTMLElement | null;
@@ -318,7 +186,7 @@ function moveCursorCollapsed(config: {
  * Mark all parent elements of the collapsed cursor
  * @deprecated use caret service `updateModelFromDom`
  */
-export function updateCursorInDom(root: HTMLElement | Document | null = document) {
+function updateCursorInDom(root: HTMLElement | Document | null = document) {
   // TODO improve perf by diffing the add/remove of dataset values
   // remove all previous states
   clearCursorInDom(root);

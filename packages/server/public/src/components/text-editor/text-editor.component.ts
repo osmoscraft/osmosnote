@@ -2,7 +2,7 @@ import { ApiService } from "../../services/api/api.service.js";
 import { HistoryService } from "../../services/history/history.service.js";
 import { RouteService } from "../../services/route/route.service.js";
 import { di } from "../../utils/dependency-injector.js";
-import { cursorPaste } from "./helpers/curosr/cursor-edit.js";
+import { EditService } from "./edit.service.js";
 import { renderDefaultCursor } from "./helpers/curosr/cursor-select.js";
 import { calculateMeasure, setMeasure } from "./helpers/line/line-measure.js";
 import { parseDocument } from "./helpers/parse.js";
@@ -19,6 +19,7 @@ export class TextEditorComponent extends HTMLElement {
   private noteService!: ApiService;
   private inputService!: InputService;
   private historyService!: HistoryService;
+  private editService!: EditService;
   #host!: HTMLElement;
 
   connectedCallback() {
@@ -29,6 +30,7 @@ export class TextEditorComponent extends HTMLElement {
     this.noteService = di.getSingleton(ApiService);
     this.inputService = di.getSingleton(InputService);
     this.historyService = di.getSingleton(HistoryService);
+    this.editService = di.getSingleton(EditService);
 
     this.#host = this.querySelector("#content-host") as HTMLElement;
 
@@ -60,7 +62,7 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   pasteText(text: string) {
-    cursorPaste(text, this.host);
+    this.editService.cursorPaste(text, this.host);
     this.historyService.save(this.host);
   }
 
