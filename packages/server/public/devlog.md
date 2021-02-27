@@ -15,6 +15,7 @@
   - Handle unsaved changes
     - Track change dirty state
     - Indicate unsaved changes in tab and/or status bar
+  - Ctrl + right arrow fail on empty line
 
 ---
 

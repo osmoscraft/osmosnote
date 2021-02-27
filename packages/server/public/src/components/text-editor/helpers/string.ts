@@ -21,3 +21,18 @@ export function splice(text: string, start: number, deleteCount = 0, insert = ""
 export function reverse(text: string): string {
   return text.split("").reverse().join("");
 }
+
+/**
+ * Get the index of the first word end character from the beginning of the string
+ * Assuming the input ends with a new line character
+ */
+export function getWordEndOffset(text: string): number {
+  let wordEndMatch = text.match(/^(\s*?)(\w+|[^\w\s]+)(\w|\s|[^\w\s])/);
+  if (wordEndMatch) {
+    const [raw, spaces, chunk, suffix] = wordEndMatch;
+    const moveDistance = spaces.length + chunk.length;
+    return moveDistance;
+  }
+
+  return text.length;
+}

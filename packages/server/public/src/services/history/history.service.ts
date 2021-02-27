@@ -1,6 +1,7 @@
-import { getSnapshot } from "./helpers/get-snapshot.js";
-import { HistoryStack } from "./helpers/history-stack.js";
-import { restoreSnapshot } from "./helpers/restore-snapshot.js";
+import type { CaretService } from "../../components/text-editor/caret.service.js";
+import { getLine, getPositionByOffset } from "../../components/text-editor/helpers/line/line-query.js";
+import type { LineElement } from "../../components/text-editor/helpers/source-to-lines.js";
+import { HistoryStack } from "./history-stack.js";
 
 export interface Snapshot {
   documentHtml: string;
@@ -20,8 +21,10 @@ const compareSnapshots = (a: Snapshot | null, b: Snapshot | null) => {
 export class HistoryService {
   private stack = new HistoryStack<Snapshot>();
 
+  constructor(private caretService: CaretService) {}
+
   save(root: HTMLElement) {
-    const snapshot = getSnapshot(root);
+    const snapshot = this.getSnapshot(root);
     const current = this.stack.peek();
 
     if (compareSnapshots(current, snapshot)) {
@@ -38,7 +41,7 @@ export class HistoryService {
     const snapshot = this.stack.undo();
 
     if (snapshot) {
-      restoreSnapshot(snapshot, root);
+      this.restoreSnapshot(snapshot, root);
     }
   }
 
@@ -46,10 +49,56 @@ export class HistoryService {
     const snapshot = this.stack.redo();
     if (!snapshot) return;
 
-    restoreSnapshot(snapshot, root);
+    this.restoreSnapshot(snapshot, root);
   }
 
   peek() {
     return this.stack.peek();
+  }
+
+  private restoreSnapshot(snapshot: Snapshot, root: HTMLElement) {
+    // restore dom
+    root.innerHTML = snapshot.documentHtml;
+
+    // restore cursor
+    const lines = [...root.querySelectorAll("[data-line]")] as HTMLElement[];
+    const cursorLine = lines[snapshot.cursorLineIndex];
+    const cursorPosition = getPositionByOffset(cursorLine, snapshot.cursorLineOffset);
+
+    return this.caretService.setCollapsedCursorToLinePosition({
+      line: cursorLine,
+      position: {
+        ...cursorPosition,
+      },
+      root,
+      rememberColumn: true,
+    });
+  }
+
+  private getSnapshot(root: HTMLElement): Snapshot {
+    const lines = [...root.querySelectorAll("[data-line]")] as LineElement[];
+
+    const documentHtml = root.innerHTML;
+    const textContent = root.textContent ?? "";
+
+    const cursor = this.caretService.caret;
+    if (cursor) {
+      const currentLine = getLine(cursor.focus.node)! as LineElement;
+      const { offset: cursorOffset } = this.caretService.getCursorLinePosition(cursor.focus);
+
+      return {
+        documentHtml: documentHtml,
+        textContent,
+        cursorLineIndex: lines.indexOf(currentLine),
+        cursorLineOffset: cursorOffset,
+      };
+    } else {
+      return {
+        documentHtml: documentHtml,
+        textContent,
+        cursorLineIndex: 0,
+        cursorLineOffset: 0,
+      };
+    }
   }
 }

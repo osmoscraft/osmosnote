@@ -18,13 +18,13 @@ import { EditService } from "./components/text-editor/edit.service.js";
 import { FormatService } from "./components/text-editor/format.service.js";
 
 di.registerClass(ComponentRefService, []);
-di.registerClass(HistoryService, []);
 di.registerClass(QueryService, []);
 di.registerClass(RouteService, []);
 di.registerClass(NotificationService, [ComponentRefService]);
 di.registerClass(ApiService, [QueryService]);
 di.registerClass(WindowReferenceService, []);
 di.registerClass(CaretService, [ComponentRefService, WindowReferenceService]);
+di.registerClass(HistoryService, [CaretService]);
 di.registerClass(FormatService, [CaretService]);
 di.registerClass(EditService, [CaretService, FormatService]);
 di.registerClass(InputService, [

@@ -1,7 +1,5 @@
 import { writeClipboardText } from "../../utils/clipboard.js";
 import type { CaretService } from "./caret.service.js";
-import { getCursorLinePosition } from "./helpers/curosr/cursor-query.js";
-import { setCollapsedCursorToLineOffset, setCollapsedCursorToLinePosition } from "./helpers/curosr/cursor-select.js";
 import {
   getFormatContext,
   getLine,
@@ -28,7 +26,7 @@ export class EditService {
     const cursor = this.caretService.caret;
     if (!cursor) return;
 
-    const { offset } = getCursorLinePosition(cursor.focus);
+    const { offset } = this.caretService.getCursorLinePosition(cursor.focus);
     const currentLine = getLine(cursor.focus.node);
     if (!currentLine) return;
 
@@ -45,7 +43,7 @@ export class EditService {
 
     this.formatService.parseLines(root);
 
-    setCollapsedCursorToLineOffset({
+    this.caretService.setCollapsedCursorToLineOffset({
       line: lastUpdatedLine,
       offset: lastUpdatedLine.textContent!.length - distanceToEnd,
     });
@@ -57,7 +55,7 @@ export class EditService {
     const cursor = this.caretService.caret;
     if (!cursor) return;
 
-    const { offset } = getCursorLinePosition(cursor.focus);
+    const { offset } = this.caretService.getCursorLinePosition(cursor.focus);
     const currentLine = getLine(cursor.focus.node);
     if (!currentLine) return;
 
@@ -75,7 +73,7 @@ export class EditService {
 
     // set cursor to next line start
     const lineMetrics = getLineMetrics(newSecondLine);
-    setCollapsedCursorToLinePosition({
+    this.caretService.setCollapsedCursorToLinePosition({
       line: newSecondLine,
       position: { row: 0, column: lineMetrics.indent },
     });
@@ -90,7 +88,7 @@ export class EditService {
       return;
     }
 
-    const { offset } = getCursorLinePosition(cursor.focus);
+    const { offset } = this.caretService.getCursorLinePosition(cursor.focus);
     const currentLine = getLine(cursor.focus.node);
     if (!currentLine) return;
 
@@ -109,7 +107,7 @@ export class EditService {
 
         this.formatService.parseLines(root);
 
-        setCollapsedCursorToLineOffset({
+        this.caretService.setCollapsedCursorToLineOffset({
           line: updatedPreviousLine,
           offset: previousLineText.length,
         });
@@ -126,7 +124,7 @@ export class EditService {
       this.formatService.parseLines(root);
 
       // set cursor to the left edge of the deleted char
-      setCollapsedCursorToLineOffset({
+      this.caretService.setCollapsedCursorToLineOffset({
         line: updatedLine,
         offset: offset - 1,
       });
@@ -142,7 +140,7 @@ export class EditService {
       return;
     }
 
-    const { offset } = getCursorLinePosition(cursor.focus);
+    const { offset } = this.caretService.getCursorLinePosition(cursor.focus);
     const currentLine = getLine(cursor.focus.node);
     if (!currentLine) return;
 
@@ -163,7 +161,7 @@ export class EditService {
 
       this.formatService.parseLines(root);
 
-      setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
+      this.caretService.setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
     } else {
       const lineText = currentLine.textContent!;
       const lineRemainingText = splice(lineText, offset, 1);
@@ -175,7 +173,7 @@ export class EditService {
 
       this.formatService.parseLines(root);
 
-      setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
+      this.caretService.setCollapsedCursorToLineOffset({ line: updatedLine, offset: offset });
     }
   }
 
@@ -242,7 +240,7 @@ export class EditService {
 
     selectedLines.forEach((line) => line.remove());
 
-    setCollapsedCursorToLineOffset({ line: newFocusLine });
+    this.caretService.setCollapsedCursorToLineOffset({ line: newFocusLine });
   }
 
   /**
@@ -254,8 +252,8 @@ export class EditService {
     if (cursor.isCollapsed) return;
 
     const selectedLines = getLines(cursor.start.node, cursor.end.node);
-    const { offset: cursorStartOffset } = getCursorLinePosition(cursor.start);
-    const { offset: cursorEndOffset } = getCursorLinePosition(cursor.end);
+    const { offset: cursorStartOffset } = this.caretService.getCursorLinePosition(cursor.start);
+    const { offset: cursorEndOffset } = this.caretService.getCursorLinePosition(cursor.end);
 
     const isIndentDirty = selectedLines.some(this.isIndentReset);
     let updatedLine: HTMLElement | undefined = undefined;
@@ -293,7 +291,7 @@ export class EditService {
     }
 
     this.formatService.parseLines(root);
-    setCollapsedCursorToLineOffset({ line: updatedLine, offset: cursorStartOffset });
+    this.caretService.setCollapsedCursorToLineOffset({ line: updatedLine, offset: cursorStartOffset });
 
     if (isIndentDirty && updatedLine) {
       let dirtyLine = getNextLine(updatedLine);
@@ -318,8 +316,8 @@ export class EditService {
     } else {
       // copy the selection
       const selectedLines = getLines(cursor.start.node, cursor.end.node);
-      const { offset: cursorStartOffset } = getCursorLinePosition(cursor.start);
-      const { offset: cursorEndOffset } = getCursorLinePosition(cursor.end);
+      const { offset: cursorStartOffset } = this.caretService.getCursorLinePosition(cursor.start);
+      const { offset: cursorEndOffset } = this.caretService.getCursorLinePosition(cursor.end);
 
       const selectedText = getPortableText(selectedLines, cursorStartOffset, cursorEndOffset);
 

@@ -1,23 +1,28 @@
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
 import type { WindowReferenceService } from "../../services/window-reference/window.service.js";
+import { seek, SeekOutput } from "./helpers/dom.js";
 import {
-  Cursor,
-  getBlockEndPositionFromCursor,
-  getBlockStartPositionFromCursor,
+  getBlockEndLine,
+  getBlockStartLine,
   getDocumentEndPosition,
   getDocumentStartPosition,
-  getNearestEditablePositionForward,
-  getPositionAboveCursor,
-  getPositionBelowCursor,
-  getVisualEndPositionFromCursor,
-  getVisualHomePositionFromCursor,
-  getWordEndPositionFromCursor,
-  getWordStartPositionFromCursor,
-} from "./helpers/curosr/cursor-query.js";
-import { clearCursorInDom, showCursorInDom } from "./helpers/curosr/cursor-select.js";
-import { updateIdealColumn } from "./helpers/curosr/ideal-column.js";
-import { seek, SeekOutput } from "./helpers/dom.js";
-import { getOffsetByVisualPosition, getPositionByOffset, VisualPosition } from "./helpers/line/line-query.js";
+  getLine,
+  getLineMetrics,
+  getNextLine,
+  getNodeLinePosition,
+  getOffsetByVisualPosition,
+  getPositionByOffset,
+  getPreviousLine,
+  getReversedLine,
+  isAfterLineEnd,
+  Position,
+  seekToIndentEnd,
+  seekToLineEnd,
+  seekToLineStart,
+  sliceLine,
+  VisualPosition,
+} from "./helpers/line/line-query.js";
+import { ensureLineEnding, getWordEndOffset, reverse } from "./helpers/string.js";
 
 export interface Caret {
   anchor: CaretPosition;
@@ -47,7 +52,18 @@ export class CaretService {
 
   #caret: Caret | null = null;
 
-  constructor(private componentRef: ComponentRefService, private windowRef: WindowReferenceService) {}
+  #idealColumn: number | null = null;
+
+  constructor(private componentRef: ComponentRefService, private windowRef: WindowReferenceService) {
+    this.getWordEndPositionFromCursor = this.getWordEndPositionFromCursor.bind(this);
+    this.getWordStartPositionFromCursor = this.getWordStartPositionFromCursor.bind(this);
+    this.getVisualHomePositionFromCursor = this.getVisualHomePositionFromCursor.bind(this);
+    this.getVisualEndPositionFromCursor = this.getVisualEndPositionFromCursor.bind(this);
+    this.getBlockStartPositionFromCursor = this.getBlockStartPositionFromCursor.bind(this);
+    this.getBlockEndPositionFromCursor = this.getBlockEndPositionFromCursor.bind(this);
+    this.getPositionBelowCursor = this.getPositionBelowCursor.bind(this);
+    this.getPositionAboveCursor = this.getPositionAboveCursor.bind(this);
+  }
 
   /**
    * initialize and render cursor to default position
@@ -73,14 +89,14 @@ export class CaretService {
 
   moveWordEnd(root: HTMLElement) {
     this.moveCursorCollapsed({
-      seeker: getWordEndPositionFromCursor,
+      seeker: this.getWordEndPositionFromCursor,
       requireCollapseTo: "end",
       root,
     });
   }
 
   selectWordEnd(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: getWordEndPositionFromCursor, root });
+    this.extendCursorFocus({ seeker: this.getWordEndPositionFromCursor, root });
   }
 
   moveLeft(root: HTMLElement) {
@@ -93,67 +109,67 @@ export class CaretService {
 
   moveWordStart(root: HTMLElement) {
     this.moveCursorCollapsed({
-      seeker: getWordStartPositionFromCursor,
+      seeker: this.getWordStartPositionFromCursor,
       requireCollapseTo: "start",
       root,
     });
   }
 
   selectWordStart(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: getWordStartPositionFromCursor, root });
+    this.extendCursorFocus({ seeker: this.getWordStartPositionFromCursor, root });
   }
 
   moveHome(root: HTMLElement) {
     this.moveCursorCollapsed({
-      seeker: getVisualHomePositionFromCursor,
+      seeker: this.getVisualHomePositionFromCursor,
       requireCollapseTo: "start",
       root,
     });
   }
 
   selectHome(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: getVisualHomePositionFromCursor, root });
+    this.extendCursorFocus({ seeker: this.getVisualHomePositionFromCursor, root });
   }
 
   moveEnd(root: HTMLElement) {
     this.moveCursorCollapsed({
-      seeker: getVisualEndPositionFromCursor,
+      seeker: this.getVisualEndPositionFromCursor,
       requireCollapseTo: "end",
       root,
     });
   }
 
   selectEnd(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: getVisualEndPositionFromCursor, root });
+    this.extendCursorFocus({ seeker: this.getVisualEndPositionFromCursor, root });
   }
 
   moveBlockStart(root: HTMLElement) {
     this.moveCursorCollapsed({
-      seeker: getBlockStartPositionFromCursor,
+      seeker: this.getBlockStartPositionFromCursor,
       requireCollapseTo: "start",
       root,
     });
   }
 
   selectBlockStart(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: getBlockStartPositionFromCursor, root });
+    this.extendCursorFocus({ seeker: this.getBlockStartPositionFromCursor, root });
   }
 
   moveBlockEnd(root: HTMLElement) {
     this.moveCursorCollapsed({
-      seeker: getBlockEndPositionFromCursor,
+      seeker: this.getBlockEndPositionFromCursor,
       requireCollapseTo: "end",
       root,
     });
   }
 
   selectBlockEnd(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: getBlockEndPositionFromCursor, root });
+    this.extendCursorFocus({ seeker: this.getBlockEndPositionFromCursor, root });
   }
 
   moveDown(root: HTMLElement) {
     this.moveCursorCollapsed({
-      seeker: getPositionBelowCursor,
+      seeker: this.getPositionBelowCursor,
       requireCollapseTo: "end",
       root,
       rememberColumn: false,
@@ -161,12 +177,12 @@ export class CaretService {
   }
 
   selectDown(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: getPositionBelowCursor, root, rememberColumn: false });
+    this.extendCursorFocus({ seeker: this.getPositionBelowCursor, root, rememberColumn: false });
   }
 
   moveUp(root: HTMLElement) {
     this.moveCursorCollapsed({
-      seeker: getPositionAboveCursor,
+      seeker: this.getPositionAboveCursor,
       requireCollapseTo: "start",
       root,
       rememberColumn: false,
@@ -174,7 +190,7 @@ export class CaretService {
   }
 
   selectUp(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: getPositionAboveCursor, root, rememberColumn: false });
+    this.extendCursorFocus({ seeker: this.getPositionAboveCursor, root, rememberColumn: false });
   }
 
   selectAll(root: HTMLElement) {
@@ -233,9 +249,15 @@ export class CaretService {
 
     this.setCursorCollapsed(seekOutput.node, seekOutput.offset, root);
 
-    if (rememberColumn) updateIdealColumn();
+    if (rememberColumn) this.updateIdealColumn();
     this.catchUpToDom();
     return seekOutput;
+  }
+
+  getCursorLinePosition(cursorPosition: CaretPosition): Position {
+    const { node, offset } = cursorPosition;
+    const position = getNodeLinePosition(node, offset);
+    return position;
   }
 
   private updateModelFromDom() {
@@ -245,14 +267,23 @@ export class CaretService {
 
   private renderModel() {
     const host = this.componentRef.textEditor.host;
-    clearCursorInDom(host);
+    this.clearCursorInDom(host);
 
     if (this.#caret) {
-      showCursorInDom(this.#caret, host);
+      this.showCursorInDom(this.#caret, host);
     }
   }
 
-  private getCursorFromDom(): Cursor | null {
+  private updateIdealColumn() {
+    const cursor = this.caret;
+
+    if (cursor) {
+      const { column } = this.getCursorLinePosition(cursor.focus);
+      this.#idealColumn = column;
+    }
+  }
+
+  private getCursorFromDom(): Caret | null {
     const selection = this.windowRef.window.getSelection();
     if (!selection) return null;
 
@@ -304,12 +335,12 @@ export class CaretService {
       let newFocus = seek({ source: focus.node, offset: focus.offset, seek: offset, root });
       if (!newFocus) return;
 
-      if (offset > 0) newFocus = getNearestEditablePositionForward(newFocus.node, newFocus.offset);
+      if (offset > 0) newFocus = this.getNearestEditablePositionForward(newFocus.node, newFocus.offset);
 
       selection.collapse(newFocus.node, newFocus.offset);
     }
 
-    updateIdealColumn();
+    this.updateIdealColumn();
     this.catchUpToDom();
   }
 
@@ -321,17 +352,17 @@ export class CaretService {
     let newFocus = seek({ source: focus.node, offset: focus.offset, seek: offset, root });
     if (!newFocus) return;
 
-    if (offset > 0) newFocus = getNearestEditablePositionForward(newFocus.node, newFocus.offset);
+    if (offset > 0) newFocus = this.getNearestEditablePositionForward(newFocus.node, newFocus.offset);
 
     const selection = this.windowRef.window.getSelection()!;
     selection.setBaseAndExtent(anchor.node, anchor.offset, newFocus.node, newFocus.offset);
 
-    updateIdealColumn();
+    this.updateIdealColumn();
     this.catchUpToDom();
   }
 
   private extendCursorFocus(config: {
-    seeker: (cursor: Cursor) => SeekOutput | null;
+    seeker: (cursor: Caret) => SeekOutput | null;
     root: HTMLElement | null;
     /** @default true */
     rememberColumn?: boolean;
@@ -346,12 +377,12 @@ export class CaretService {
     const selection = window.getSelection()!;
     selection.setBaseAndExtent(cursor.anchor.node, cursor.anchor.offset, newFocus.node, newFocus.offset);
 
-    if (rememberColumn) updateIdealColumn();
+    if (rememberColumn) this.updateIdealColumn();
     this.catchUpToDom();
   }
 
   private moveCursorCollapsed(config: {
-    seeker: (cursor: Cursor) => SeekOutput | null;
+    seeker: (cursor: Caret) => SeekOutput | null;
     requireCollapseTo?: "start" | "end";
     root: HTMLElement | null;
     /** @default true */
@@ -377,7 +408,7 @@ export class CaretService {
       this.setCursorCollapsed(newFocus.node, newFocus.offset, root);
     }
 
-    if (rememberColumn) updateIdealColumn();
+    if (rememberColumn) this.updateIdealColumn();
     this.catchUpToDom();
   }
 
@@ -397,5 +428,310 @@ export class CaretService {
     }
 
     this.catchUpToDom();
+  }
+
+  private clearCursorInDom(root: HTMLElement | Document | null = document) {
+    root
+      ?.querySelectorAll("[data-cursor-collapsed]")
+      .forEach((container) => delete (container as HTMLElement).dataset.cursorCollapsed);
+  }
+
+  private showCursorInDom(cursor: Caret, root: HTMLElement | Document | null = document) {
+    if (cursor.isCollapsed) {
+      this.updateContainerStateRecursive(cursor.focus.node, root);
+    }
+
+    const line = getLine(cursor.focus.node);
+    line?.scrollIntoView({ behavior: "smooth" });
+  }
+
+  private updateContainerStateRecursive(currentNode: Node | null, root: Node | null) {
+    if (!currentNode) {
+      return;
+    } else {
+      if ((currentNode as HTMLElement).dataset) {
+        (currentNode as HTMLElement).dataset.cursorCollapsed = "";
+      }
+
+      if (currentNode === root) return;
+
+      this.updateContainerStateRecursive(currentNode.parentNode, root);
+    }
+  }
+
+  /**
+   * Get the position of the next word end.
+   * If the cursor starts at a word end, the search will start from next character
+   * If no word end found, null is returned
+   */
+  private getWordEndPositionFromCursor(cursor: Caret): SeekOutput | null {
+    const currentLine = getLine(cursor.focus.node)!;
+    const currentLineMetrics = getLineMetrics(currentLine);
+    const { offset: cursorOffset } = this.getCursorLinePosition(cursor.focus);
+
+    if (cursorOffset === currentLineMetrics.selectableLength) {
+      // if at line end, search next line
+      const nextLine = getNextLine(currentLine);
+      if (nextLine) {
+        const wordEndOffset = getWordEndOffset(nextLine.textContent!);
+        const foundPosition = seek({ source: nextLine, offset: wordEndOffset })!;
+        return foundPosition;
+      }
+    } else {
+      // search current line (a result is guaranteed)
+      const textAfterCursor = sliceLine(currentLine, cursorOffset);
+      const wordEndOffset = getWordEndOffset(textAfterCursor);
+      const foundPosition = seek({ source: currentLine, offset: cursorOffset + wordEndOffset })!;
+      return foundPosition;
+    }
+
+    return null;
+  }
+
+  private getWordStartPositionFromCursor(cursor: Caret): SeekOutput | null {
+    const currentLine = getLine(cursor.focus.node)!;
+    const { offset: cursorOffset } = this.getCursorLinePosition(cursor.focus);
+
+    if (cursorOffset === 0) {
+      // if at line start, search previous line
+      const previousLine = getPreviousLine(currentLine);
+      if (previousLine) {
+        const previousLineBackward = getReversedLine(previousLine);
+        const wordEndOffsetBackward = getWordEndOffset(previousLineBackward);
+        const previousLineMetrics = getLineMetrics(previousLine);
+        const wordEndOffset = previousLineMetrics.selectableLength - wordEndOffsetBackward;
+        const foundPosition = seek({ source: previousLine, offset: wordEndOffset })!;
+        return foundPosition;
+      }
+    } else {
+      // search current line (a result is guaranteed)
+      const textBeforeCursorBackward = ensureLineEnding(reverse(sliceLine(currentLine, 0, cursorOffset)));
+      const wordEndOffsetBackward = getWordEndOffset(textBeforeCursorBackward);
+      const foundPosition = seek({ source: currentLine, offset: cursorOffset - wordEndOffsetBackward })!;
+      return foundPosition;
+    }
+
+    return null;
+  }
+
+  /**
+   * If after indent, get indent end position
+   * If within indent, get line start
+   * If at line start, return null
+   */
+  private getHomePositionFromCursor(cursor: Caret): SeekOutput | null {
+    const currentLine = getLine(cursor.focus.node)!;
+    const { offset: cursorOffset } = this.getCursorLinePosition(cursor.focus);
+    const currentLineMetrics = getLineMetrics(currentLine);
+
+    if (cursorOffset > currentLineMetrics.indent) {
+      // if after indent, move to indent
+      return seekToIndentEnd(currentLine);
+    } else if (cursorOffset > 0) {
+      // if within indent, move to line start
+      return seekToLineStart(currentLine);
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Same as getHomePosition, except when line wraps, it only moves within the current visual row
+   * and when it's already at a visual row start, it will continue seeking the row above
+   */
+  private getVisualHomePositionFromCursor(cursor: Caret): SeekOutput | null {
+    const currentLine = getLine(cursor.focus.node)!;
+    const { offset: cursorOffset, row, column } = this.getCursorLinePosition(cursor.focus);
+    const currentLineMetrics = getLineMetrics(currentLine);
+
+    // at line start, no result
+    if (cursorOffset === 0) return null;
+
+    // within first row's indent, use line start
+    if (row === 0 && cursorOffset <= currentLineMetrics.indent) {
+      return seekToLineStart(currentLine);
+    }
+
+    // at a wrapped row's beginning, use row above
+    if (row > 0 && column <= currentLineMetrics.indent) {
+      const offset = getOffsetByVisualPosition(currentLine, { row: row - 1, column: currentLineMetrics.indent });
+      return seek({ source: currentLine, offset });
+    }
+
+    // within the content on some row, use the column where visual indent ends
+    const offset = getOffsetByVisualPosition(currentLine, { row, column: currentLineMetrics.indent });
+    return seek({ source: currentLine, offset });
+  }
+
+  /**
+   * If before line end, get line end
+   * If at line end, return null
+   */
+  private getEndPositionFromCursor(cursor: Caret): SeekOutput | null {
+    const currentLine = getLine(cursor.focus.node)!;
+    const { offset: cursorOffset } = this.getCursorLinePosition(cursor.focus);
+    const currentLineMetrics = getLineMetrics(currentLine);
+
+    if (cursorOffset < currentLineMetrics.selectableLength) {
+      return seekToLineEnd(currentLine);
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Same as getEndPosition, except when line wraps, it only moves within the current visual row
+   * and when it's already at a visual row end, it will continue seeking the row below
+   */
+  private getVisualEndPositionFromCursor(cursor: Caret): SeekOutput | null {
+    const currentLine = getLine(cursor.focus.node)!;
+    const { offset: cursorOffset, row, column } = this.getCursorLinePosition(cursor.focus);
+    const currentLineMetrics = getLineMetrics(currentLine);
+
+    // at line end, no result
+    if (cursorOffset === currentLineMetrics.selectableLength) return null;
+
+    // within the content on some row, go to last column (ok to overflow)
+    const offset = getOffsetByVisualPosition(currentLine, { row, column: currentLineMetrics.measure });
+    return seek({ source: currentLine, offset });
+  }
+
+  /**
+   * Get the nearest non-empty line start above that's after an emptying line or page start
+   */
+  private getBlockStartPositionFromCursor(cursor: Caret): SeekOutput | null {
+    const currentLine = getLine(cursor.focus.node)!;
+
+    let blockStartLine = getBlockStartLine(currentLine);
+
+    if (blockStartLine === currentLine) {
+      const cursorPosition = this.getCursorLinePosition(cursor.focus);
+      if (cursorPosition.offset === 0) {
+        const previousLine = getPreviousLine(currentLine);
+        // cursor is exactly at current block start. Continue search
+        if (previousLine) {
+          blockStartLine = getBlockStartLine(previousLine);
+        } else {
+          return null;
+        }
+      }
+    }
+
+    return seekToLineStart(blockStartLine);
+  }
+
+  /**
+   * Get the nearest non-empty line end below that's before an emptying line or page end
+   */
+  private getBlockEndPositionFromCursor(cursor: Caret): SeekOutput | null {
+    const currentLine = getLine(cursor.focus.node)!;
+
+    let blockEndLine = getBlockEndLine(currentLine);
+
+    if (blockEndLine === currentLine) {
+      const lineMetrics = getLineMetrics(currentLine);
+      const cursorPosition = this.getCursorLinePosition(cursor.focus);
+      if (cursorPosition.offset === lineMetrics.selectableLength) {
+        const nextLine = getNextLine(currentLine);
+        // cursor is exactly at current block end. Continue search
+        if (nextLine) {
+          blockEndLine = getBlockEndLine(nextLine);
+        } else {
+          return null;
+        }
+      }
+    }
+
+    return seekToLineEnd(blockEndLine);
+  }
+
+  private getPositionAboveCursor(cursor: Caret): SeekOutput | null {
+    const currentLine = getLine(cursor.focus.node)!;
+    const { row: cursorRow, column: cursorColumn } = this.getCursorLinePosition(cursor.focus);
+
+    // wrapped line above
+    if (cursorRow > 0) {
+      return this.getCursorSmartLinePosition(currentLine, {
+        row: cursorRow - 1,
+        column: cursorColumn,
+      });
+    }
+
+    const previousLine = getPreviousLine(currentLine);
+    if (!previousLine) return null;
+
+    // line above
+    return this.getCursorSmartLinePosition(previousLine, {
+      row: getLineMetrics(previousLine).lastRowIndex,
+      column: cursorColumn,
+    });
+  }
+
+  private getPositionBelowCursor(cursor: Caret): SeekOutput | null {
+    const currentLine = getLine(cursor.focus.node)!;
+    const { indent, lastRowIndex, isWrapped } = getLineMetrics(currentLine);
+    const { offset: inlineOffset, row: cursorRow, column: cursorColumn } = this.getCursorLinePosition(cursor.focus);
+
+    if (isWrapped) {
+      if (inlineOffset < indent) {
+        // (inside initial indent) 1st wrapped line below
+        return this.getCursorSmartLinePosition(currentLine, {
+          row: cursorRow + 1,
+          column: indent,
+        });
+      } else if (cursorRow < lastRowIndex) {
+        // wrapped line below:
+        return this.getCursorSmartLinePosition(currentLine, {
+          row: cursorRow + 1,
+          column: cursorColumn,
+        });
+      }
+    }
+
+    const nextLine = getNextLine(currentLine);
+    if (!nextLine) return null;
+
+    return this.getCursorSmartLinePosition(nextLine, {
+      row: 0,
+      column: cursorColumn,
+    });
+  }
+
+  /**
+   * Locate cursor to the given row and column of the line.
+   * Any previously saved ideal column will override the given column.
+   */
+  private getCursorSmartLinePosition(line: HTMLElement, fallbackPosition: VisualPosition): SeekOutput | null {
+    const { row, column } = fallbackPosition;
+    const targetOffset = getOffsetByVisualPosition(line, {
+      row,
+      column: this.#idealColumn ?? column,
+    });
+
+    const newFocus = seek({ source: line, offset: targetOffset });
+    return newFocus;
+  }
+
+  private getNearestEditablePositionForward(node: Text, offset: number) {
+    if (isAfterLineEnd(node, offset)) {
+      // if beyond line end
+      const currentLine = getLine(node)!;
+      const nextLine = getNextLine(currentLine);
+      if (nextLine) {
+        // go to next line start
+        return seekToLineStart(nextLine);
+      } else {
+        // if no next line, back to this line end before new line character
+        return {
+          node,
+          offset: offset - 1,
+        };
+      }
+    } else {
+      return {
+        node,
+        offset,
+      };
+    }
   }
 }

@@ -222,6 +222,22 @@ export function getOffsetByVisualPosition(line: HTMLElement, visualPosition: Vis
   return Math.min(feasibleOffset, offset);
 }
 
+export function getDocumentStartPosition(): SeekOutput | null {
+  const firstLine = document.querySelector("[data-line]") as HTMLElement;
+
+  if (!firstLine) return null;
+
+  return seekToLineStart(firstLine);
+}
+
+export function getDocumentEndPosition(): SeekOutput | null {
+  const lastLine = [...document.querySelectorAll("[data-line]")].pop() as HTMLElement;
+
+  if (!lastLine) return null;
+
+  return seekToLineEnd(lastLine);
+}
+
 export function getNextLine(currentLine: HTMLElement): HTMLElement | null {
   return currentLine.nextElementSibling?.matches("[data-line]")
     ? (currentLine.nextElementSibling as HTMLElement)

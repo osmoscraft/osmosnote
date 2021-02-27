@@ -1,5 +1,4 @@
 import type { CaretService } from "./caret.service.js";
-import { getCursorLinePosition } from "./helpers/curosr/cursor-query.js";
 import { getLine } from "./helpers/line/line-query.js";
 import type { LineElement, LineType } from "./helpers/source-to-lines.js";
 import { removeLineEnding } from "./helpers/string.js";
@@ -59,7 +58,7 @@ export class FormatService {
 
     if (cursor) {
       cursorLine = getLine(cursor.focus.node)!;
-      const { offset } = getCursorLinePosition(cursor.focus);
+      const { offset } = this.caretService.getCursorLinePosition(cursor.focus);
       previousCursorOffset = offset;
     }
 
