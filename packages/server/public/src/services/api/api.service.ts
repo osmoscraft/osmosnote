@@ -13,11 +13,10 @@ import type {
   UpdateNoteInput,
   UpdateNoteOutput,
 } from "@system-two/server";
-import type { HistoryService } from "../history/history.service.js";
 import type { QueryService } from "../query/query.service.js";
 
 export class ApiService {
-  constructor(private historySerivce: HistoryService, private proxyService: QueryService) {}
+  constructor(private proxyService: QueryService) {}
 
   async loadNote(id: string) {
     const output = await this.proxyService.query<GetNoteOutput, GetNoteInput>(`/api/get-note`, { id });
@@ -47,7 +46,6 @@ export class ApiService {
     return this.getSuccessData(output);
   }
 
-  // TODO - refactor all DOM manipulation into components
   async updateNote(id: string, note: string) {
     const output = await this.proxyService.query<UpdateNoteOutput, UpdateNoteInput>(`/api/update-note`, {
       id,

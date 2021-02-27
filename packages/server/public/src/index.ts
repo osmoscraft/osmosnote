@@ -19,7 +19,7 @@ di.registerClass(HistoryService, []);
 di.registerClass(QueryService, []);
 di.registerClass(RouteService, []);
 di.registerClass(NotificationService, [ComponentRefService]);
-di.registerClass(ApiService, [HistoryService, QueryService]);
+di.registerClass(ApiService, [QueryService]);
 di.registerClass(CaretService, [ComponentRefService]);
 di.registerClass(InputService, [
   CaretService,
