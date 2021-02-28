@@ -74,6 +74,9 @@
 - Lazy evaluation
   - When moving, treat current state of the DOM as the starting point.
   - Must be efficient at DOM traversal/query/update
+- Multi-views on the same data
+  - Plain text view: use for pattern match, offset positioning
+  - DOM view: use for manipulation
 
 # Ref
 
