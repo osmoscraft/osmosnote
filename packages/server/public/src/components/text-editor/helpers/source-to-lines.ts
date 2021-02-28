@@ -11,7 +11,7 @@ export interface LineElement extends HTMLDivElement {
     dirtySyntax?: "";
     dirtyIndent?: "";
     /** Exists on the line that has collapsed cursor */
-    cursorCollapsed?: "";
+    caretCollapsed?: "";
   };
 }
 

@@ -58,7 +58,7 @@ export class FormatService {
 
     if (cursor) {
       cursorLine = this.lineQueryService.getLine(cursor.focus.node)!;
-      const { offset } = this.caretService.getCursorLinePosition(cursor.focus);
+      const { offset } = this.caretService.getCaretLinePosition(cursor.focus);
       previousCursorOffset = offset;
     }
 
@@ -96,7 +96,7 @@ export class FormatService {
       // restore cursor
       if ((line as any) === cursorLine) {
         const newOffset = Math.max(0, previousCursorOffset! + lengthChange);
-        this.caretService.setCollapsedCursorToLineOffset({ line: cursorLine, offset: newOffset });
+        this.caretService.setCollapsedCaretToLineOffset({ line: cursorLine, offset: newOffset });
       }
     });
   }

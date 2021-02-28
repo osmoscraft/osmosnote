@@ -232,22 +232,6 @@ export class LineQueryService {
     return Math.min(feasibleOffset, offset);
   }
 
-  getDocumentStartPosition(): SeekOutput | null {
-    const firstLine = document.querySelector("[data-line]") as HTMLElement;
-
-    if (!firstLine) return null;
-
-    return this.seekToLineStart(firstLine);
-  }
-
-  getDocumentEndPosition(): SeekOutput | null {
-    const lastLine = [...document.querySelectorAll("[data-line]")].pop() as HTMLElement;
-
-    if (!lastLine) return null;
-
-    return this.seekToLineEnd(lastLine);
-  }
-
   getNextLine(currentLine: HTMLElement): HTMLElement | null {
     return currentLine.nextElementSibling?.matches("[data-line]")
       ? (currentLine.nextElementSibling as HTMLElement)

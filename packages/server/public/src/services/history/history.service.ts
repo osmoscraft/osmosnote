@@ -71,7 +71,7 @@ export class HistoryService {
     const cursorLine = lines[snapshot.cursorLineIndex];
     const cursorPosition = this.lineQueryService.getPositionByOffset(cursorLine, snapshot.cursorLineOffset);
 
-    return this.caretService.setCollapsedCursorToLinePosition({
+    return this.caretService.setCollapsedCaretToLinePosition({
       line: cursorLine,
       position: {
         ...cursorPosition,
@@ -90,7 +90,7 @@ export class HistoryService {
     const cursor = this.caretService.caret;
     if (cursor) {
       const currentLine = this.lineQueryService.getLine(cursor.focus.node)! as LineElement;
-      const { offset: cursorOffset } = this.caretService.getCursorLinePosition(cursor.focus);
+      const { offset: cursorOffset } = this.caretService.getCaretLinePosition(cursor.focus);
 
       return {
         documentHtml: documentHtml,

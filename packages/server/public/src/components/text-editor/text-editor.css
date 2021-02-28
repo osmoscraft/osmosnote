@@ -30,7 +30,7 @@
 [data-line] [data-wrap] {
   flex: 1 1 auto;
 }
-[data-line][data-cursor-collapsed] {
+[data-line][data-caret-collapsed] {
   background-color: var(--theme-background-active);
 }
 
@@ -64,7 +64,7 @@
   color: var(--theme-text-color-secondary);
 }
 
-[data-link] :is(.link__target[data-cursor-collapsed], .link__target:hover) {
+[data-link] :is(.link__target[data-caret-collapsed], .link__target:hover) {
   color: var(--theme-link-color);
   text-decoration: underline;
 }
@@ -73,7 +73,7 @@
   color: var(--theme-link-color);
 }
 
-[data-url][data-cursor-collapsed],
+[data-url][data-caret-collapsed],
 [data-url]:hover {
   text-decoration: underline;
 }

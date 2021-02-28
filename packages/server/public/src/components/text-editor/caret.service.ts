@@ -1,6 +1,7 @@
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
 import type { WindowRefService } from "../../services/window-reference/window.service.js";
 import { seek, SeekOutput } from "./helpers/dom.js";
+import type { LineElement } from "./helpers/source-to-lines.js";
 import { ensureLineEnding, getWordEndOffset, reverse } from "./helpers/string.js";
 import type { LineQueryService, LinePosition, VisualLinePosition } from "./line-query.service.js";
 
@@ -28,32 +29,23 @@ export class CaretService {
     private componentRef: ComponentRefService,
     private windowRef: WindowRefService,
     private lineQueryService: LineQueryService
-  ) {
-    this.getWordEndPositionFromCursor = this.getWordEndPositionFromCursor.bind(this);
-    this.getWordStartPositionFromCursor = this.getWordStartPositionFromCursor.bind(this);
-    this.getVisualHomePositionFromCursor = this.getVisualHomePositionFromCursor.bind(this);
-    this.getVisualEndPositionFromCursor = this.getVisualEndPositionFromCursor.bind(this);
-    this.getBlockStartPositionFromCursor = this.getBlockStartPositionFromCursor.bind(this);
-    this.getBlockEndPositionFromCursor = this.getBlockEndPositionFromCursor.bind(this);
-    this.getPositionBelowCursor = this.getPositionBelowCursor.bind(this);
-    this.getPositionAboveCursor = this.getPositionAboveCursor.bind(this);
-  }
+  ) {}
 
   get caret() {
     return this._caret;
   }
 
   /**
-   * initialize and render cursor to default position
+   * initialize and render caret to default position
    */
   init(host: HTMLElement) {
-    const defaultPosition = this.lineQueryService.getDocumentStartPosition();
+    const defaultPosition = this.getDocumentStartPosition();
     if (!defaultPosition) return;
-    this.setCursorCollapsed(defaultPosition.node, defaultPosition.offset, host);
+    this.setCaretCollapsed(defaultPosition.node, defaultPosition.offset, host);
   }
 
   isCaretInElement(element: HTMLElement) {
-    const caret = this.getCursorFromDom();
+    const caret = this.getCaretFromDom();
     if (!caret) return false;
     return element.contains(caret.anchor.node) && element.contains(caret.focus.node);
   }
@@ -79,96 +71,96 @@ export class CaretService {
   }
 
   moveRight(root: HTMLElement) {
-    this.moveCursorCollapsedByOffset(1, root);
+    this.moveCaretCollapsedByOffset(1, root);
   }
 
   selectRight(root: HTMLElement) {
-    this.extendCursorFocusByOffset(1, root);
+    this.extendFocusByOffset(1, root);
   }
 
   moveWordEnd(root: HTMLElement) {
-    this.moveCursorCollapsed({
-      seeker: this.getWordEndPositionFromCursor,
+    this.moveCaretCollapsed({
+      seeker: this.getWordEndPositionFromCaret,
       requireCollapseTo: "end",
       root,
     });
   }
 
   selectWordEnd(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: this.getWordEndPositionFromCursor, root });
+    this.extendFocus({ seeker: this.getWordEndPositionFromCaret, root });
   }
 
   moveLeft(root: HTMLElement) {
-    this.moveCursorCollapsedByOffset(-1, root);
+    this.moveCaretCollapsedByOffset(-1, root);
   }
 
   selectLeft(root: HTMLElement) {
-    this.extendCursorFocusByOffset(-1, root);
+    this.extendFocusByOffset(-1, root);
   }
 
   moveWordStart(root: HTMLElement) {
-    this.moveCursorCollapsed({
-      seeker: this.getWordStartPositionFromCursor,
+    this.moveCaretCollapsed({
+      seeker: this.getWordStartPositionFromCaret,
       requireCollapseTo: "start",
       root,
     });
   }
 
   selectWordStart(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: this.getWordStartPositionFromCursor, root });
+    this.extendFocus({ seeker: this.getWordStartPositionFromCaret, root });
   }
 
   moveHome(root: HTMLElement) {
-    this.moveCursorCollapsed({
-      seeker: this.getVisualHomePositionFromCursor,
+    this.moveCaretCollapsed({
+      seeker: this.getVisualHomePositionFromCaret,
       requireCollapseTo: "start",
       root,
     });
   }
 
   selectHome(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: this.getVisualHomePositionFromCursor, root });
+    this.extendFocus({ seeker: this.getVisualHomePositionFromCaret, root });
   }
 
   moveEnd(root: HTMLElement) {
-    this.moveCursorCollapsed({
-      seeker: this.getVisualEndPositionFromCursor,
+    this.moveCaretCollapsed({
+      seeker: this.getVisualEndPositionFromCaret,
       requireCollapseTo: "end",
       root,
     });
   }
 
   selectEnd(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: this.getVisualEndPositionFromCursor, root });
+    this.extendFocus({ seeker: this.getVisualEndPositionFromCaret, root });
   }
 
   moveBlockStart(root: HTMLElement) {
-    this.moveCursorCollapsed({
-      seeker: this.getBlockStartPositionFromCursor,
+    this.moveCaretCollapsed({
+      seeker: this.getBlockStartPositionFromCaret,
       requireCollapseTo: "start",
       root,
     });
   }
 
   selectBlockStart(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: this.getBlockStartPositionFromCursor, root });
+    this.extendFocus({ seeker: this.getBlockStartPositionFromCaret, root });
   }
 
   moveBlockEnd(root: HTMLElement) {
-    this.moveCursorCollapsed({
-      seeker: this.getBlockEndPositionFromCursor,
+    this.moveCaretCollapsed({
+      seeker: this.getBlockEndPositionFromCaret,
       requireCollapseTo: "end",
       root,
     });
   }
 
   selectBlockEnd(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: this.getBlockEndPositionFromCursor, root });
+    this.extendFocus({ seeker: this.getBlockEndPositionFromCaret, root });
   }
 
   moveDown(root: HTMLElement) {
-    this.moveCursorCollapsed({
-      seeker: this.getPositionBelowCursor,
+    this.moveCaretCollapsed({
+      seeker: this.getPositionBelowCaret,
       requireCollapseTo: "end",
       root,
       rememberColumn: false,
@@ -176,12 +168,12 @@ export class CaretService {
   }
 
   selectDown(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: this.getPositionBelowCursor, root, rememberColumn: false });
+    this.extendFocus({ seeker: this.getPositionBelowCaret, root, rememberColumn: false });
   }
 
   moveUp(root: HTMLElement) {
-    this.moveCursorCollapsed({
-      seeker: this.getPositionAboveCursor,
+    this.moveCaretCollapsed({
+      seeker: this.getPositionAboveCaret,
       requireCollapseTo: "start",
       root,
       rememberColumn: false,
@@ -189,19 +181,19 @@ export class CaretService {
   }
 
   selectUp(root: HTMLElement) {
-    this.extendCursorFocus({ seeker: this.getPositionAboveCursor, root, rememberColumn: false });
+    this.extendFocus({ seeker: this.getPositionAboveCaret, root, rememberColumn: false });
   }
 
   selectAll(root: HTMLElement) {
-    this.moveCursorCollapsed({
-      seeker: this.lineQueryService.getDocumentStartPosition,
+    this.moveCaretCollapsed({
+      seeker: this.getDocumentStartPosition,
       root,
     });
 
-    this.extendCursorFocus({ seeker: this.lineQueryService.getDocumentEndPosition, root });
+    this.extendFocus({ seeker: this.getDocumentEndPosition, root });
   }
 
-  setCollapsedCursorToLineOffset(config: {
+  setCollapsedCaretToLineOffset(config: {
     line: HTMLElement;
     /** @default 0 */
     offset?: number;
@@ -212,7 +204,7 @@ export class CaretService {
     const { line, offset = 0, root = null, rememberColumn = true } = config;
 
     const newPosition = this.lineQueryService.getPositionByOffset(line, offset);
-    return this.setCollapsedCursorToLinePosition({
+    return this.setCollapsedCaretToLinePosition({
       line,
       position: {
         ...newPosition,
@@ -223,10 +215,10 @@ export class CaretService {
   }
 
   /**
-   * Set cursor to the given row and column of the line.
+   * Set caret to the given row and column of the line.
    * Ignore any existing ideal position
    */
-  setCollapsedCursorToLinePosition(config: {
+  setCollapsedCaretToLinePosition(config: {
     line: HTMLElement;
     position: VisualLinePosition;
     root?: HTMLElement | null;
@@ -246,29 +238,29 @@ export class CaretService {
       return null;
     }
 
-    this.setCursorCollapsed(seekOutput.node, seekOutput.offset, root);
+    this.setCaretCollapsed(seekOutput.node, seekOutput.offset, root);
 
     if (rememberColumn) this.updateIdealColumn();
     this.catchUpToDom();
     return seekOutput;
   }
 
-  getCursorLinePosition(cursorPosition: CaretPosition): LinePosition {
-    const { node, offset } = cursorPosition;
+  getCaretLinePosition(caretPosition: CaretPosition): LinePosition {
+    const { node, offset } = caretPosition;
     const position = this.lineQueryService.getNodeLinePosition(node, offset);
     return position;
   }
 
   private updateIdealColumn() {
-    const cursor = this.getCursorFromDom();
+    const caret = this.getCaretFromDom();
 
-    if (cursor) {
-      const { column } = this.getCursorLinePosition(cursor.focus);
+    if (caret) {
+      const { column } = this.getCaretLinePosition(caret.focus);
       this._idealColumn = column;
     }
   }
 
-  private getCursorFromDom(): Caret | null {
+  private getCaretFromDom(): Caret | null {
     const selection = this.windowRef.window.getSelection();
     if (!selection) return null;
 
@@ -300,13 +292,13 @@ export class CaretService {
   }
 
   /**
-   * If already collapsed, move the cursor by offset.
+   * If already collapsed, move the caret by offset.
    * If not collapsed, collapse to the direction of movement.
    */
-  private moveCursorCollapsedByOffset(offset: number, root: HTMLElement | null = null) {
-    const cursor = this.caret;
-    if (!cursor) return;
-    const { focus, isCollapsed } = cursor;
+  private moveCaretCollapsedByOffset(offset: number, root: HTMLElement | null = null) {
+    const caret = this.caret;
+    if (!caret) return;
+    const { focus, isCollapsed } = caret;
     const selection = this.windowRef.window.getSelection()!;
     if (!selection) return;
 
@@ -329,10 +321,10 @@ export class CaretService {
     this.catchUpToDom();
   }
 
-  private extendCursorFocusByOffset(offset: number, root: HTMLElement | null = null) {
-    const cursor = this.caret;
-    if (!cursor) return;
-    const { anchor, focus } = cursor;
+  private extendFocusByOffset(offset: number, root: HTMLElement | null = null) {
+    const caret = this.caret;
+    if (!caret) return;
+    const { anchor, focus } = caret;
 
     let newFocus = seek({ source: focus.node, offset: focus.offset, seek: offset, root });
     if (!newFocus) return;
@@ -346,38 +338,38 @@ export class CaretService {
     this.catchUpToDom();
   }
 
-  private extendCursorFocus(config: {
-    seeker: (cursor: Caret) => SeekOutput | null;
+  private extendFocus(config: {
+    seeker: (caret: Caret) => SeekOutput | null;
     root: HTMLElement | null;
     /** @default true */
     rememberColumn?: boolean;
   }) {
     const { seeker, root = null, rememberColumn = true } = config;
 
-    const cursor = this.caret;
-    if (!cursor) return;
-    const newFocus = seeker(cursor);
+    const caret = this.caret;
+    if (!caret) return;
+    const newFocus = seeker.call(this, caret);
     if (!newFocus) return;
 
     const selection = window.getSelection()!;
-    selection.setBaseAndExtent(cursor.anchor.node, cursor.anchor.offset, newFocus.node, newFocus.offset);
+    selection.setBaseAndExtent(caret.anchor.node, caret.anchor.offset, newFocus.node, newFocus.offset);
 
     if (rememberColumn) this.updateIdealColumn();
     this.catchUpToDom();
   }
 
-  private moveCursorCollapsed(config: {
-    seeker: (cursor: Caret) => SeekOutput | null;
+  private moveCaretCollapsed(config: {
+    seeker: (caret: Caret) => SeekOutput | null;
     requireCollapseTo?: "start" | "end";
     root: HTMLElement | null;
     /** @default true */
     rememberColumn?: boolean;
   }) {
     const { seeker, root = null, requireCollapseTo, rememberColumn = true } = config;
-    const cursor = this.caret;
-    if (!cursor) return;
+    const caret = this.caret;
+    if (!caret) return;
 
-    if (!cursor.isCollapsed && requireCollapseTo !== undefined) {
+    if (!caret.isCollapsed && requireCollapseTo !== undefined) {
       const selection = getSelection();
       if (!selection) return;
 
@@ -387,17 +379,17 @@ export class CaretService {
         selection.collapseToEnd();
       }
     } else {
-      const newFocus = seeker(cursor);
+      const newFocus = seeker.call(this, caret);
       if (!newFocus) return;
 
-      this.setCursorCollapsed(newFocus.node, newFocus.offset, root);
+      this.setCaretCollapsed(newFocus.node, newFocus.offset, root);
     }
 
     if (rememberColumn) this.updateIdealColumn();
     this.catchUpToDom();
   }
 
-  private setCursorCollapsed(node: Node, offset: number = 0, root: HTMLElement | null = null) {
+  private setCaretCollapsed(node: Node, offset: number = 0, root: HTMLElement | null = null) {
     const selection = this.windowRef.window.getSelection();
 
     if (selection) {
@@ -415,18 +407,18 @@ export class CaretService {
     this.catchUpToDom();
   }
 
-  private clearCursorInDom(root: HTMLElement | Document | null = document) {
+  private removeCaretHighlight(root: HTMLElement | Document | null = document) {
     root
-      ?.querySelectorAll("[data-cursor-collapsed]")
-      .forEach((container) => delete (container as HTMLElement).dataset.cursorCollapsed);
+      ?.querySelectorAll("[data-caret-collapsed]")
+      .forEach((container) => delete (container as LineElement).dataset.caretCollapsed);
   }
 
-  private showCursorInDom(cursor: Caret, root: HTMLElement | Document | null = document) {
-    if (cursor.isCollapsed) {
-      this.updateContainerStateRecursive(cursor.focus.node, root);
+  private addCaretHighlight(caret: Caret, root: HTMLElement | Document | null = document) {
+    if (caret.isCollapsed) {
+      this.updateContainerStateRecursive(caret.focus.node, root);
     }
 
-    const line = this.lineQueryService.getLine(cursor.focus.node);
+    const line = this.lineQueryService.getLine(caret.focus.node);
     line?.scrollIntoView({ behavior: "smooth" });
   }
 
@@ -435,7 +427,7 @@ export class CaretService {
       return;
     } else {
       if ((currentNode as HTMLElement).dataset) {
-        (currentNode as HTMLElement).dataset.cursorCollapsed = "";
+        (currentNode as LineElement).dataset.caretCollapsed = "";
       }
 
       if (currentNode === root) return;
@@ -446,15 +438,15 @@ export class CaretService {
 
   /**
    * Get the position of the next word end.
-   * If the cursor starts at a word end, the search will start from next character
+   * If the caret starts at a word end, the search will start from next character
    * If no word end found, null is returned
    */
-  private getWordEndPositionFromCursor(cursor: Caret): SeekOutput | null {
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node)!;
+  private getWordEndPositionFromCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
     const currentLineMetrics = this.lineQueryService.getLineMetrics(currentLine);
-    const { offset: cursorOffset } = this.getCursorLinePosition(cursor.focus);
+    const { offset: caretOffset } = this.getCaretLinePosition(caret.focus);
 
-    if (cursorOffset === currentLineMetrics.selectableLength) {
+    if (caretOffset === currentLineMetrics.selectableLength) {
       // if at line end, search next line
       const nextLine = this.lineQueryService.getNextLine(currentLine);
       if (nextLine) {
@@ -464,20 +456,20 @@ export class CaretService {
       }
     } else {
       // search current line (a result is guaranteed)
-      const textAfterCursor = this.lineQueryService.sliceLine(currentLine, cursorOffset);
-      const wordEndOffset = getWordEndOffset(textAfterCursor);
-      const foundPosition = seek({ source: currentLine, offset: cursorOffset + wordEndOffset })!;
+      const textAfterCaret = this.lineQueryService.sliceLine(currentLine, caretOffset);
+      const wordEndOffset = getWordEndOffset(textAfterCaret);
+      const foundPosition = seek({ source: currentLine, offset: caretOffset + wordEndOffset })!;
       return foundPosition;
     }
 
     return null;
   }
 
-  private getWordStartPositionFromCursor(cursor: Caret): SeekOutput | null {
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node)!;
-    const { offset: cursorOffset } = this.getCursorLinePosition(cursor.focus);
+  private getWordStartPositionFromCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
+    const { offset: caretOffset } = this.getCaretLinePosition(caret.focus);
 
-    if (cursorOffset === 0) {
+    if (caretOffset === 0) {
       // if at line start, search previous line
       const previousLine = this.lineQueryService.getPreviousLine(currentLine);
       if (previousLine) {
@@ -490,11 +482,11 @@ export class CaretService {
       }
     } else {
       // search current line (a result is guaranteed)
-      const textBeforeCursorBackward = ensureLineEnding(
-        reverse(this.lineQueryService.sliceLine(currentLine, 0, cursorOffset))
+      const textBeforeCaretBackward = ensureLineEnding(
+        reverse(this.lineQueryService.sliceLine(currentLine, 0, caretOffset))
       );
-      const wordEndOffsetBackward = getWordEndOffset(textBeforeCursorBackward);
-      const foundPosition = seek({ source: currentLine, offset: cursorOffset - wordEndOffsetBackward })!;
+      const wordEndOffsetBackward = getWordEndOffset(textBeforeCaretBackward);
+      const foundPosition = seek({ source: currentLine, offset: caretOffset - wordEndOffsetBackward })!;
       return foundPosition;
     }
 
@@ -506,15 +498,15 @@ export class CaretService {
    * If within indent, get line start
    * If at line start, return null
    */
-  private getHomePositionFromCursor(cursor: Caret): SeekOutput | null {
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node)!;
-    const { offset: cursorOffset } = this.getCursorLinePosition(cursor.focus);
+  private getHomePositionFromCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
+    const { offset: caretOffset } = this.getCaretLinePosition(caret.focus);
     const currentLineMetrics = this.lineQueryService.getLineMetrics(currentLine);
 
-    if (cursorOffset > currentLineMetrics.indent) {
+    if (caretOffset > currentLineMetrics.indent) {
       // if after indent, move to indent
       return this.lineQueryService.seekToIndentEnd(currentLine);
-    } else if (cursorOffset > 0) {
+    } else if (caretOffset > 0) {
       // if within indent, move to line start
       return this.lineQueryService.seekToLineStart(currentLine);
     } else {
@@ -526,16 +518,16 @@ export class CaretService {
    * Same as getHomePosition, except when line wraps, it only moves within the current visual row
    * and when it's already at a visual row start, it will continue seeking the row above
    */
-  private getVisualHomePositionFromCursor(cursor: Caret): SeekOutput | null {
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node)!;
-    const { offset: cursorOffset, row, column } = this.getCursorLinePosition(cursor.focus);
+  private getVisualHomePositionFromCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
+    const { offset: caretOffset, row, column } = this.getCaretLinePosition(caret.focus);
     const currentLineMetrics = this.lineQueryService.getLineMetrics(currentLine);
 
     // at line start, no result
-    if (cursorOffset === 0) return null;
+    if (caretOffset === 0) return null;
 
     // within first row's indent, use line start
-    if (row === 0 && cursorOffset <= currentLineMetrics.indent) {
+    if (row === 0 && caretOffset <= currentLineMetrics.indent) {
       return this.lineQueryService.seekToLineStart(currentLine);
     }
 
@@ -560,12 +552,12 @@ export class CaretService {
    * If before line end, get line end
    * If at line end, return null
    */
-  private getEndPositionFromCursor(cursor: Caret): SeekOutput | null {
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node)!;
-    const { offset: cursorOffset } = this.getCursorLinePosition(cursor.focus);
+  private getEndPositionFromCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
+    const { offset: caretOffset } = this.getCaretLinePosition(caret.focus);
     const currentLineMetrics = this.lineQueryService.getLineMetrics(currentLine);
 
-    if (cursorOffset < currentLineMetrics.selectableLength) {
+    if (caretOffset < currentLineMetrics.selectableLength) {
       return this.lineQueryService.seekToLineEnd(currentLine);
     } else {
       return null;
@@ -576,13 +568,13 @@ export class CaretService {
    * Same as getEndPosition, except when line wraps, it only moves within the current visual row
    * and when it's already at a visual row end, it will continue seeking the row below
    */
-  private getVisualEndPositionFromCursor(cursor: Caret): SeekOutput | null {
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node)!;
-    const { offset: cursorOffset, row, column } = this.getCursorLinePosition(cursor.focus);
+  private getVisualEndPositionFromCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
+    const { offset: caretOffset, row, column } = this.getCaretLinePosition(caret.focus);
     const currentLineMetrics = this.lineQueryService.getLineMetrics(currentLine);
 
     // at line end, no result
-    if (cursorOffset === currentLineMetrics.selectableLength) return null;
+    if (caretOffset === currentLineMetrics.selectableLength) return null;
 
     // within the content on some row, go to last column (ok to overflow)
     const offset = this.lineQueryService.getOffsetByVisualPosition(currentLine, {
@@ -595,16 +587,16 @@ export class CaretService {
   /**
    * Get the nearest non-empty line start above that's after an emptying line or page start
    */
-  private getBlockStartPositionFromCursor(cursor: Caret): SeekOutput | null {
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node)!;
+  private getBlockStartPositionFromCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
 
     let blockStartLine = this.lineQueryService.getBlockStartLine(currentLine);
 
     if (blockStartLine === currentLine) {
-      const cursorPosition = this.getCursorLinePosition(cursor.focus);
-      if (cursorPosition.offset === 0) {
+      const caretPosition = this.getCaretLinePosition(caret.focus);
+      if (caretPosition.offset === 0) {
         const previousLine = this.lineQueryService.getPreviousLine(currentLine);
-        // cursor is exactly at current block start. Continue search
+        // caret is exactly at current block start. Continue search
         if (previousLine) {
           blockStartLine = this.lineQueryService.getBlockStartLine(previousLine);
         } else {
@@ -619,17 +611,17 @@ export class CaretService {
   /**
    * Get the nearest non-empty line end below that's before an emptying line or page end
    */
-  private getBlockEndPositionFromCursor(cursor: Caret): SeekOutput | null {
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node)!;
+  private getBlockEndPositionFromCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
 
     let blockEndLine = this.lineQueryService.getBlockEndLine(currentLine);
 
     if (blockEndLine === currentLine) {
       const lineMetrics = this.lineQueryService.getLineMetrics(currentLine);
-      const cursorPosition = this.getCursorLinePosition(cursor.focus);
-      if (cursorPosition.offset === lineMetrics.selectableLength) {
+      const caretPosition = this.getCaretLinePosition(caret.focus);
+      if (caretPosition.offset === lineMetrics.selectableLength) {
         const nextLine = this.lineQueryService.getNextLine(currentLine);
-        // cursor is exactly at current block end. Continue search
+        // caret is exactly at current block end. Continue search
         if (nextLine) {
           blockEndLine = this.lineQueryService.getBlockEndLine(nextLine);
         } else {
@@ -641,15 +633,15 @@ export class CaretService {
     return this.lineQueryService.seekToLineEnd(blockEndLine);
   }
 
-  private getPositionAboveCursor(cursor: Caret): SeekOutput | null {
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node)!;
-    const { row: cursorRow, column: cursorColumn } = this.getCursorLinePosition(cursor.focus);
+  private getPositionAboveCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
+    const { row: caretRow, column: caretColumn } = this.getCaretLinePosition(caret.focus);
 
     // wrapped line above
-    if (cursorRow > 0) {
-      return this.getCursorSmartLinePosition(currentLine, {
-        row: cursorRow - 1,
-        column: cursorColumn,
+    if (caretRow > 0) {
+      return this.getCaretSmartLinePosition(currentLine, {
+        row: caretRow - 1,
+        column: caretColumn,
       });
     }
 
@@ -657,29 +649,29 @@ export class CaretService {
     if (!previousLine) return null;
 
     // line above
-    return this.getCursorSmartLinePosition(previousLine, {
+    return this.getCaretSmartLinePosition(previousLine, {
       row: this.lineQueryService.getLineMetrics(previousLine).lastRowIndex,
-      column: cursorColumn,
+      column: caretColumn,
     });
   }
 
-  private getPositionBelowCursor(cursor: Caret): SeekOutput | null {
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node)!;
+  private getPositionBelowCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
     const { indent, lastRowIndex, isWrapped } = this.lineQueryService.getLineMetrics(currentLine);
-    const { offset: inlineOffset, row: cursorRow, column: cursorColumn } = this.getCursorLinePosition(cursor.focus);
+    const { offset: inlineOffset, row: caretRow, column: caretColumn } = this.getCaretLinePosition(caret.focus);
 
     if (isWrapped) {
       if (inlineOffset < indent) {
         // (inside initial indent) 1st wrapped line below
-        return this.getCursorSmartLinePosition(currentLine, {
-          row: cursorRow + 1,
+        return this.getCaretSmartLinePosition(currentLine, {
+          row: caretRow + 1,
           column: indent,
         });
-      } else if (cursorRow < lastRowIndex) {
+      } else if (caretRow < lastRowIndex) {
         // wrapped line below:
-        return this.getCursorSmartLinePosition(currentLine, {
-          row: cursorRow + 1,
-          column: cursorColumn,
+        return this.getCaretSmartLinePosition(currentLine, {
+          row: caretRow + 1,
+          column: caretColumn,
         });
       }
     }
@@ -687,17 +679,17 @@ export class CaretService {
     const nextLine = this.lineQueryService.getNextLine(currentLine);
     if (!nextLine) return null;
 
-    return this.getCursorSmartLinePosition(nextLine, {
+    return this.getCaretSmartLinePosition(nextLine, {
       row: 0,
-      column: cursorColumn,
+      column: caretColumn,
     });
   }
 
   /**
-   * Locate cursor to the given row and column of the line.
+   * Locate caret to the given row and column of the line.
    * Any previously saved ideal column will override the given column.
    */
-  private getCursorSmartLinePosition(line: HTMLElement, fallbackPosition: VisualLinePosition): SeekOutput | null {
+  private getCaretSmartLinePosition(line: HTMLElement, fallbackPosition: VisualLinePosition): SeekOutput | null {
     const { row, column } = fallbackPosition;
     const targetOffset = this.lineQueryService.getOffsetByVisualPosition(line, {
       row,
@@ -737,7 +729,7 @@ export class CaretService {
    * return null if dom caret is null and differs from model
    */
   private getDirtyDomCaret(): Caret | null | undefined {
-    const domCaret = this.getCursorFromDom();
+    const domCaret = this.getCaretFromDom();
     return this.compareCarets(domCaret, this._caret) ? domCaret : undefined;
   }
 
@@ -752,12 +744,28 @@ export class CaretService {
 
   private renderDomHighlightFromModel() {
     const host = this.componentRef.textEditor.host;
-    this.clearCursorInDom(host);
+    this.removeCaretHighlight(host);
 
     if (this._caret) {
-      this.showCursorInDom(this._caret, host);
+      this.addCaretHighlight(this._caret, host);
     } else {
       this.init(host);
     }
+  }
+
+  private getDocumentStartPosition(): SeekOutput | null {
+    const firstLine = document.querySelector("[data-line]") as HTMLElement;
+
+    if (!firstLine) return null;
+
+    return this.lineQueryService.seekToLineStart(firstLine);
+  }
+
+  private getDocumentEndPosition(): SeekOutput | null {
+    const lastLine = [...document.querySelectorAll("[data-line]")].pop() as HTMLElement;
+
+    if (!lastLine) return null;
+
+    return this.lineQueryService.seekToLineEnd(lastLine);
   }
 }
