@@ -2,6 +2,7 @@ import type { ApiService } from "../../services/api/api.service.js";
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
 import type { HistoryService } from "../../services/history/history.service.js";
 import type { NotificationService } from "../../services/notification/notification.service.js";
+import type { RemoteClientService } from "../../services/remote/remote-client.service.js";
 import type { RouteService } from "../../services/route/route.service.js";
 import type { WindowRefService } from "../../services/window-reference/window.service.js";
 import type { CaretService } from "./caret.service.js";
@@ -18,12 +19,15 @@ export class InputService {
     private notificationService: NotificationService,
     private componentRefService: ComponentRefService,
     private formatService: FormatService,
-    private windowRef: WindowRefService
+    private windowRef: WindowRefService,
+    private remoteClientService: RemoteClientService
   ) {}
 
   init(host: HTMLElement) {
+    host.addEventListener("focus", () => this.handleFocusEvent());
+
     // selection events
-    document.addEventListener("selectionchange", () => this.handleSelectionChangeEvent());
+    document.addEventListener("selectionchange", () => this.handleSelectionChangeEvent(host));
 
     // mouse events
     host.addEventListener("click", (event) => this.handleClickEvents(event, host));
@@ -40,8 +44,16 @@ export class InputService {
     host.addEventListener("beforeinput", (e) => this.handleBeforeInputEvent(e as InputEvent, host));
   }
 
-  private async handleSelectionChangeEvent() {
-    this.caretService.catchUpToDom();
+  private handleFocusEvent() {
+    // note, focus event fires before selection change
+    this.caretService.restoreCaretFocusFromModel();
+  }
+
+  private async handleSelectionChangeEvent(host: HTMLElement) {
+    // if selection leaves host, no op
+    if (this.caretService.isCaretInElement(host)) {
+      this.caretService.catchUpToDom();
+    }
   }
 
   private async handleClickEvents(event: MouseEvent, host: HTMLElement) {
@@ -55,14 +67,13 @@ export class InputService {
         this.editService.cursorCopy();
         break;
       case "cut":
-        this.editService.cursorCut(host);
-        this.historyService.save(host);
+        this.historyService.runAtomic(host, () => this.editService.cursorCut(host));
         break;
       case "paste":
         const pasteText = event.clipboardData?.getData("text");
         if (!pasteText) return;
-        this.editService.cursorPaste(pasteText, host);
-        this.historyService.save(host);
+
+        this.historyService.runAtomic(host, () => this.editService.cursorPaste(pasteText, host));
         break;
     }
   }
@@ -127,6 +138,7 @@ export class InputService {
               this.notificationService.displayMessage("Saved");
             } else {
               const result = await this.noteService.createNote(note);
+              this.remoteClientService.notifyNoteCreated({ id: result.id, title: result.title });
               location.href = `/?id=${result.id}`;
             }
           } catch (error) {

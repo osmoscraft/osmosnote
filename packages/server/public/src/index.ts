@@ -41,6 +41,7 @@ di.registerClass(InputService, [
   ComponentRefService,
   FormatService,
   WindowRefService,
+  RemoteClientService,
 ]);
 di.registerClass(RemoteHostService, [ComponentRefService]);
 di.registerClass(RemoteClientService, []);

@@ -34,6 +34,12 @@ export class HistoryService {
     this.stack.push(snapshot);
   }
 
+  async runAtomic(root: HTMLElement, action: () => any) {
+    this.save(root);
+    await action();
+    this.save(root);
+  }
+
   undo(root: HTMLElement) {
     // before undo, always save, in case this is unsaved changes
     this.save(root);

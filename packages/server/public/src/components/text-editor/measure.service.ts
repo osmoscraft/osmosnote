@@ -1,12 +1,12 @@
 import type { WindowRefService } from "../../services/window-reference/window.service";
 
 export class MeasureService {
-  #measure: number = Infinity;
+  private _measure: number = Infinity;
 
   constructor(private windowRef: WindowRefService) {}
 
   get measure(): number {
-    return this.#measure;
+    return this._measure;
   }
 
   init(host: HTMLElement) {
@@ -16,7 +16,7 @@ export class MeasureService {
 
   private updateMeausre(host: HTMLElement) {
     const measure = this.calculateMeasure(host);
-    this.#measure = measure;
+    this._measure = measure;
   }
 
   private calculateMeasure(host: HTMLElement) {

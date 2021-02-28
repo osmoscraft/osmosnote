@@ -21,18 +21,8 @@ export interface CaretPosition {
  * get, set, save, and restore the position of the caret
  */
 export class CaretService {
-  get caret() {
-    // const cachedCaret = this.#caret;
-    // return cachedCaret;
-
-    // TODO, no need to query dom once all mutation are managed by this class
-    // TODO, make sure we update model whenever mutating curosr
-    return this.getCursorFromDom();
-  }
-
-  #caret: Caret | null = null;
-
-  #idealColumn: number | null = null;
+  private _caret: Caret | null = null;
+  private _idealColumn: number | null = null;
 
   constructor(
     private componentRef: ComponentRefService,
@@ -49,18 +39,43 @@ export class CaretService {
     this.getPositionAboveCursor = this.getPositionAboveCursor.bind(this);
   }
 
+  get caret() {
+    return this._caret;
+  }
+
   /**
    * initialize and render cursor to default position
    */
-  init(root: HTMLElement) {
+  init(host: HTMLElement) {
     const defaultPosition = this.lineQueryService.getDocumentStartPosition();
     if (!defaultPosition) return;
-    this.setCursorCollapsed(defaultPosition.node, defaultPosition.offset, root);
+    this.setCursorCollapsed(defaultPosition.node, defaultPosition.offset, host);
+  }
+
+  isCaretInElement(element: HTMLElement) {
+    const caret = this.getCursorFromDom();
+    if (!caret) return false;
+    return element.contains(caret.anchor.node) && element.contains(caret.focus.node);
   }
 
   catchUpToDom() {
-    this.updateModelFromDom();
-    this.renderModel();
+    const dirtyDomCaret = this.getDirtyDomCaret();
+    if (dirtyDomCaret !== undefined) {
+      this._caret = dirtyDomCaret;
+      this.renderDomHighlightFromModel();
+    }
+  }
+
+  /**
+   * Set the window selection based on last saved model.
+   * This will not render any highlight, but will trigger a selection change event
+   */
+  restoreCaretFocusFromModel() {
+    const caret = this._caret;
+    if (caret) {
+      const selection = this.windowRef.window.getSelection()!;
+      selection.setBaseAndExtent(caret.anchor.node, caret.anchor.offset, caret.focus.node, caret.focus.offset);
+    }
   }
 
   moveRight(root: HTMLElement) {
@@ -244,26 +259,12 @@ export class CaretService {
     return position;
   }
 
-  private updateModelFromDom() {
-    const caret = this.getCursorFromDom();
-    this.#caret = caret;
-  }
-
-  private renderModel() {
-    const host = this.componentRef.textEditor.host;
-    this.clearCursorInDom(host);
-
-    if (this.#caret) {
-      this.showCursorInDom(this.#caret, host);
-    }
-  }
-
   private updateIdealColumn() {
-    const cursor = this.caret;
+    const cursor = this.getCursorFromDom();
 
     if (cursor) {
       const { column } = this.getCursorLinePosition(cursor.focus);
-      this.#idealColumn = column;
+      this._idealColumn = column;
     }
   }
 
@@ -700,7 +701,7 @@ export class CaretService {
     const { row, column } = fallbackPosition;
     const targetOffset = this.lineQueryService.getOffsetByVisualPosition(line, {
       row,
-      column: this.#idealColumn ?? column,
+      column: this._idealColumn ?? column,
     });
 
     const newFocus = seek({ source: line, offset: targetOffset });
@@ -727,6 +728,36 @@ export class CaretService {
         node,
         offset,
       };
+    }
+  }
+
+  /**
+   * return DOM caret if it differs from the model
+   * return undefined if they are the same
+   * return null if dom caret is null and differs from model
+   */
+  private getDirtyDomCaret(): Caret | null | undefined {
+    const domCaret = this.getCursorFromDom();
+    return this.compareCarets(domCaret, this._caret) ? domCaret : undefined;
+  }
+
+  private compareCarets(caretA: Caret | null, caretB: Caret | null): boolean {
+    return (
+      caretA?.anchor.node !== caretB?.anchor.node ||
+      caretA?.anchor.offset !== caretB?.anchor.offset ||
+      caretA?.focus.node !== caretB?.focus.node ||
+      caretA?.focus.offset !== caretB?.focus.offset
+    );
+  }
+
+  private renderDomHighlightFromModel() {
+    const host = this.componentRef.textEditor.host;
+    this.clearCursorInDom(host);
+
+    if (this._caret) {
+      this.showCursorInDom(this._caret, host);
+    } else {
+      this.init(host);
     }
   }
 }

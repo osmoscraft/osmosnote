@@ -11,10 +11,6 @@ import { InputService } from "./input.service.js";
 import { MeasureService } from "./measure.service.js";
 
 export class TextEditorComponent extends HTMLElement {
-  get host() {
-    return this.#host;
-  }
-
   private routeService!: RouteService;
   private noteService!: ApiService;
   private inputService!: InputService;
@@ -24,7 +20,11 @@ export class TextEditorComponent extends HTMLElement {
   private formatService!: FormatService;
   private measureService!: MeasureService;
 
-  #host!: HTMLElement;
+  private _host!: HTMLElement;
+
+  get host() {
+    return this._host;
+  }
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
@@ -39,7 +39,7 @@ export class TextEditorComponent extends HTMLElement {
     this.formatService = di.getSingleton(FormatService);
     this.measureService = di.getSingleton(MeasureService);
 
-    this.#host = this.querySelector("#content-host") as HTMLElement;
+    this._host = this.querySelector("#content-host") as HTMLElement;
 
     this.init();
   }
@@ -67,7 +67,6 @@ export class TextEditorComponent extends HTMLElement {
   }
 
   pasteText(text: string) {
-    this.editService.cursorPaste(text, this.host);
-    this.historyService.save(this.host);
+    this.historyService.runAtomic(this.host, () => this.editService.cursorPaste(text, this.host));
   }
 }

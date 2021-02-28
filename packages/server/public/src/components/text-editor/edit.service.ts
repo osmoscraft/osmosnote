@@ -13,7 +13,9 @@ export class EditService {
     private caretService: CaretService,
     private formatService: FormatService,
     private lineQueryService: LineQueryService
-  ) {}
+  ) {
+    this.isIndentReset = this.isIndentReset.bind(this);
+  }
 
   insertText(text: string, root: HTMLElement) {
     this.deleteSelectionExplicit(root);
