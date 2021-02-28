@@ -3,7 +3,8 @@
 ## IDE MVP
 
 - TODO
-  - Handle tag search
+  - Handle tag sugges recent
+  - Handle tag lookup
   - Use fixed digit ISO timestamp
   - Consider support local timezone offset in ISO output
   - Consider support shortcut to insert current time (northstar?)
@@ -14,6 +15,7 @@
 ---
 
 - DONE
+  - Handle tag search
   - Search and insert
     - Window bridge
   - Sync mouse click to cursor location
@@ -51,6 +53,7 @@
 ## IDE V2
 
 - Assisted tag insertion
+- Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
 
 ## TextEngine V2
 

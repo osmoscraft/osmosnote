@@ -5,8 +5,8 @@ import type {
   GetMentionsOuput,
   GetNoteInput,
   GetNoteOutput,
-  ListNotesInput,
-  ListNotesOutput,
+  GetRecentNotesInput,
+  GetRecentNotesOutput,
   OutputSuccessOrError,
   SearchNoteInput,
   SearchNoteOutput,
@@ -25,7 +25,10 @@ export class ApiService {
   }
 
   async listNotes() {
-    const output = await this.proxyService.query<ListNotesOutput, ListNotesInput>(`/api/list-notes`, {});
+    const output = await this.proxyService.query<GetRecentNotesOutput, GetRecentNotesInput>(
+      `/api/get-recent-notes`,
+      {}
+    );
 
     return this.getSuccessData(output);
   }

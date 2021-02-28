@@ -1,4 +1,3 @@
-import type { RouteHandlerMethod } from "fastify";
 import { getConfig } from "../config";
 import { createHandler } from "../lib/create-handler";
 import { readNote } from "../lib/note-file-io";
@@ -7,21 +6,21 @@ import { runShell } from "../lib/run-shell";
 
 const DEFAULT_LIMIT = 10;
 
-export interface ListNotesOutput {
-  notes: NoteListItem[];
+export interface GetRecentNotesOutput {
+  notes: RecentNoteItem[];
 }
 
-export interface ListNotesInput {
+export interface GetRecentNotesInput {
   limit?: number;
 }
 
-export interface NoteListItem {
+export interface RecentNoteItem {
   filename: string;
   title: string;
   raw: string;
 }
 
-export const handleListNotes = createHandler<ListNotesOutput, ListNotesInput>(async (input) => {
+export const handleGetRecentNotes = createHandler<GetRecentNotesOutput, GetRecentNotesInput>(async (input) => {
   const config = await getConfig();
 
   const notesDir = config.notesDir;
@@ -51,7 +50,7 @@ export const handleListNotes = createHandler<ListNotesOutput, ListNotesInput>(as
     };
   });
 
-  const notes: NoteListItem[] = await Promise.all(notesAsync);
+  const notes: RecentNoteItem[] = await Promise.all(notesAsync);
 
   return {
     notes,

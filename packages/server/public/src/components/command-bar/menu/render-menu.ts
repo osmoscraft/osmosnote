@@ -1,4 +1,4 @@
-import type { SearchNoteOutput, ListNotesOutput } from "@system-two/server";
+import type { SearchNoteOutput, GetRecentNotesOutput } from "@system-two/server";
 import { filenameToId } from "../../../utils/id.js";
 import type { RegisteredCommand } from "../command-bar.component.js";
 
@@ -50,9 +50,9 @@ export function renderSearchResultSectionForInsert(searchReply: SearchNoteOutput
   `;
 }
 
-export function renderRecentNotesForOpen(listNotesOutput: ListNotesOutput): string {
-  const isRecentError = !listNotesOutput?.notes;
-  const isRecentEmpty = listNotesOutput.notes && !listNotesOutput.notes.length;
+export function renderRecentNotesForOpen(getRecentNotesOutput: GetRecentNotesOutput): string {
+  const isRecentError = !getRecentNotesOutput?.notes;
+  const isRecentEmpty = getRecentNotesOutput.notes && !getRecentNotesOutput.notes.length;
 
   return /*html */ `
   <s2-menu-row data-kind="header" data-label="Recent"></s2-menu-row>
@@ -62,7 +62,7 @@ export function renderRecentNotesForOpen(listNotesOutput: ListNotesOutput): stri
       : ""
   }
   ${isRecentEmpty ? /*html*/ `<s2-menu-row data-kind="message" data-label="No items found"></s2-menu-row>` : ""}
-  ${listNotesOutput.notes
+  ${getRecentNotesOutput.notes
     .map(
       (item) =>
         /*html*/ `<s2-menu-row data-open-url="${`/?id=${filenameToId(
@@ -73,7 +73,7 @@ export function renderRecentNotesForOpen(listNotesOutput: ListNotesOutput): stri
   `;
 }
 
-export function renderRecentNotesForInsert(listNotesOutput: ListNotesOutput): string {
+export function renderRecentNotesForInsert(listNotesOutput: GetRecentNotesOutput): string {
   const isRecentError = !listNotesOutput?.notes;
   const isRecentEmpty = listNotesOutput.notes && !listNotesOutput.notes.length;
 
