@@ -1,4 +1,4 @@
-export class WindowReferenceService {
+export class WindowRefService {
   get window() {
     return window;
   }

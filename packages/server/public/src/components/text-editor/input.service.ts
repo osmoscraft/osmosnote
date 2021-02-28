@@ -3,7 +3,7 @@ import type { ComponentRefService } from "../../services/component-reference/com
 import type { HistoryService } from "../../services/history/history.service.js";
 import type { NotificationService } from "../../services/notification/notification.service.js";
 import type { RouteService } from "../../services/route/route.service.js";
-import type { WindowReferenceService } from "../../services/window-reference/window.service.js";
+import type { WindowRefService } from "../../services/window-reference/window.service.js";
 import type { CaretService } from "./caret.service.js";
 import type { EditService } from "./edit.service.js";
 import type { FormatService } from "./format.service.js";
@@ -18,12 +18,10 @@ export class InputService {
     private notificationService: NotificationService,
     private componentRefService: ComponentRefService,
     private formatService: FormatService,
-    private windowRef: WindowReferenceService
+    private windowRef: WindowRefService
   ) {}
 
-  handleEvents() {
-    const host = this.componentRefService.textEditor.host;
-
+  init(host: HTMLElement) {
     // selection events
     document.addEventListener("selectionchange", () => this.handleSelectionChangeEvent());
 

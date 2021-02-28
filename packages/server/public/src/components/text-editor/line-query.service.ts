@@ -7,9 +7,9 @@ import {
   seek,
   SeekOutput,
 } from "./helpers/dom.js";
-import { getMeasure } from "./helpers/line/line-measure.js";
 import type { LineElement } from "./helpers/source-to-lines.js";
 import { ensureLineEnding, removeLineEnding, reverse } from "./helpers/string.js";
+import type { MeasureService } from "./measure.service.js";
 
 export interface LineMetrics {
   indent: number;
@@ -37,6 +37,8 @@ export interface LinearLinePosition {
 }
 
 export class LineQueryService {
+  constructor(private measureService: MeasureService) {}
+
   getLine(node: Node): HTMLElement | null {
     const line = node.parentElement!.closest("[data-line]") as HTMLElement | null;
     return line;
@@ -79,7 +81,7 @@ export class LineQueryService {
 
   getLineMetrics(line: HTMLElement): LineMetrics {
     const indent = this.getIndentSize(line);
-    const measure = getMeasure();
+    const measure = this.measureService.measure;
     // This can be 0 whne line is empty, because new line character is not counted
     const wrappableLength = this.getWrappableLineLength(line);
     const selectableLength = indent + wrappableLength;

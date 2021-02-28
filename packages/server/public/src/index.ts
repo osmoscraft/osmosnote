@@ -13,19 +13,21 @@ import { di } from "./utils/dependency-injector.js";
 import { RemoteHostService } from "./services/remote/remote-host.service.js";
 import { RemoteClientService } from "./services/remote/remote-client.service.js";
 import { CaretService } from "./components/text-editor/caret.service.js";
-import { WindowReferenceService } from "./services/window-reference/window.service.js";
+import { WindowRefService } from "./services/window-reference/window.service.js";
 import { EditService } from "./components/text-editor/edit.service.js";
 import { FormatService } from "./components/text-editor/format.service.js";
 import { LineQueryService } from "./components/text-editor/line-query.service.js";
+import { MeasureService } from "./components/text-editor/measure.service.js";
 
 di.registerClass(ComponentRefService, []);
 di.registerClass(QueryService, []);
 di.registerClass(RouteService, []);
 di.registerClass(NotificationService, [ComponentRefService]);
 di.registerClass(ApiService, [QueryService]);
-di.registerClass(WindowReferenceService, []);
-di.registerClass(LineQueryService, []);
-di.registerClass(CaretService, [ComponentRefService, WindowReferenceService, LineQueryService]);
+di.registerClass(WindowRefService, []);
+di.registerClass(MeasureService, [WindowRefService]);
+di.registerClass(LineQueryService, [MeasureService]);
+di.registerClass(CaretService, [ComponentRefService, WindowRefService, LineQueryService]);
 di.registerClass(HistoryService, [CaretService, LineQueryService]);
 di.registerClass(FormatService, [CaretService, LineQueryService]);
 di.registerClass(EditService, [CaretService, FormatService, LineQueryService]);
@@ -38,7 +40,7 @@ di.registerClass(InputService, [
   NotificationService,
   ComponentRefService,
   FormatService,
-  WindowReferenceService,
+  WindowRefService,
 ]);
 di.registerClass(RemoteHostService, [ComponentRefService]);
 di.registerClass(RemoteClientService, []);

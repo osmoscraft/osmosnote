@@ -1,5 +1,5 @@
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
-import type { WindowReferenceService } from "../../services/window-reference/window.service.js";
+import type { WindowRefService } from "../../services/window-reference/window.service.js";
 import { seek, SeekOutput } from "./helpers/dom.js";
 import { ensureLineEnding, getWordEndOffset, reverse } from "./helpers/string.js";
 import type { LineQueryService, LinePosition, VisualLinePosition } from "./line-query.service.js";
@@ -36,7 +36,7 @@ export class CaretService {
 
   constructor(
     private componentRef: ComponentRefService,
-    private windowRef: WindowReferenceService,
+    private windowRef: WindowRefService,
     private lineQueryService: LineQueryService
   ) {
     this.getWordEndPositionFromCursor = this.getWordEndPositionFromCursor.bind(this);

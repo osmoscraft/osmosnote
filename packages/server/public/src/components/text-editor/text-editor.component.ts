@@ -5,10 +5,10 @@ import { di } from "../../utils/dependency-injector.js";
 import { CaretService } from "./caret.service.js";
 import { EditService } from "./edit.service.js";
 import { FormatService } from "./format.service.js";
-import { calculateMeasure, setMeasure } from "./helpers/line/line-measure.js";
 import { sourceToLines } from "./helpers/source-to-lines.js";
 import { getNoteFromTemplate } from "./helpers/template.js";
 import { InputService } from "./input.service.js";
+import { MeasureService } from "./measure.service.js";
 
 export class TextEditorComponent extends HTMLElement {
   get host() {
@@ -22,6 +22,8 @@ export class TextEditorComponent extends HTMLElement {
   private caretService!: CaretService;
   private editService!: EditService;
   private formatService!: FormatService;
+  private measureService!: MeasureService;
+
   #host!: HTMLElement;
 
   connectedCallback() {
@@ -35,6 +37,7 @@ export class TextEditorComponent extends HTMLElement {
     this.caretService = di.getSingleton(CaretService);
     this.editService = di.getSingleton(EditService);
     this.formatService = di.getSingleton(FormatService);
+    this.measureService = di.getSingleton(MeasureService);
 
     this.#host = this.querySelector("#content-host") as HTMLElement;
 
@@ -57,22 +60,14 @@ export class TextEditorComponent extends HTMLElement {
     this.formatService.parseDocument(this.host);
 
     this.caretService.init(this.host);
+    this.measureService.init(this.host);
+    this.inputService.init(this.host);
 
     this.historyService.save(this.host);
-
-    this.inputService.handleEvents();
-
-    window.addEventListener("resize", this.updateMeausre);
-    this.updateMeausre();
   }
 
   pasteText(text: string) {
     this.editService.cursorPaste(text, this.host);
     this.historyService.save(this.host);
-  }
-
-  private updateMeausre() {
-    const measure = calculateMeasure(this.host);
-    setMeasure(measure);
   }
 }
