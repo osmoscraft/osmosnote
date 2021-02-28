@@ -21,6 +21,7 @@ export interface SearchNoteOutput {
 export interface SearchResultItem {
   filename: string;
   title: string;
+  tags: string[];
   score: number;
 }
 
@@ -98,7 +99,7 @@ async function tagOnlySearch(dir: string, getFilenamesPreprocess: string) {
       return {
         filename: filename,
         title: parseResult.metadata.title,
-        raw: parseResult.raw,
+        tags: parseResult.metadata.tags,
         score: 0, // can't tally tag core yet
       };
     });
@@ -150,7 +151,7 @@ async function keywordSearch(dir: string, keywords: string[], getFilenamesPrepro
       return {
         filename: item.filename,
         title: parseResult.metadata.title,
-        raw: parseResult.raw,
+        tags: parseResult.metadata.tags,
         score: item.score,
       };
     });

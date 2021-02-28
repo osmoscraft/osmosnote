@@ -7,6 +7,9 @@ import type {
   GetNoteOutput,
   GetRecentNotesInput,
   GetRecentNotesOutput,
+  GetRecentTagsOutput,
+  LookupTagsInput,
+  LookupTagsOutput,
   OutputSuccessOrError,
   SearchNoteInput,
   SearchNoteOutput,
@@ -24,11 +27,25 @@ export class ApiService {
     return this.getSuccessData(output);
   }
 
-  async listNotes() {
+  async getRecentNotes() {
     const output = await this.proxyService.query<GetRecentNotesOutput, GetRecentNotesInput>(
       `/api/get-recent-notes`,
       {}
     );
+
+    return this.getSuccessData(output);
+  }
+
+  async getRecentTags() {
+    const output = await this.proxyService.query<GetRecentTagsOutput, GetRecentNotesInput>(`/api/get-recent-tags`, {});
+
+    return this.getSuccessData(output);
+  }
+
+  async lookupTags(phrase: string) {
+    const output = await this.proxyService.query<LookupTagsOutput, LookupTagsInput>(`/api/lookup-tags`, {
+      phrase,
+    });
 
     return this.getSuccessData(output);
   }

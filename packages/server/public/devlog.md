@@ -3,8 +3,7 @@
 ## IDE MVP
 
 - TODO
-  - Handle tag sugges recent
-  - Handle tag lookup
+  - Maintain comma separated list when inserting tags
   - Use fixed digit ISO timestamp
   - Consider support local timezone offset in ISO output
   - Consider support shortcut to insert current time (northstar?)
@@ -15,6 +14,8 @@
 ---
 
 - DONE
+  - Handle tag sugges recent
+  - Handle tag lookup
   - Handle tag search
   - Search and insert
     - Window bridge

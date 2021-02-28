@@ -27,7 +27,7 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
 
       if (!phrase?.length && !tags.length) {
         try {
-          const notes = await context.apiService.listNotes();
+          const notes = await context.apiService.getRecentNotes();
           optionsHtml += renderRecentNotesForOpen(notes);
         } catch (error) {
           optionsHtml += renderMessageRow("Error loading recent notes");

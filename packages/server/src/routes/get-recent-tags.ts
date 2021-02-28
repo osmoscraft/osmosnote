@@ -1,9 +1,8 @@
-import type { RouteHandlerMethod } from "fastify";
 import { getConfig } from "../config";
 import { createHandler } from "../lib/create-handler";
+import { parseTagsLine } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
 import { TAG_SEPARATOR } from "../lib/tag";
-import { parseTagsLine } from "./lookup-tags";
 
 export interface GetRecentTagsInput {
   limit?: number;
@@ -32,9 +31,12 @@ export const handleGetRecentTags = createHandler<GetRecentTagsOutput, GetRecentT
   /**
    * List last modified and extract tags from them.
    * The extraction logic is similar to tag look up except it doesn't use any user input
+   * -I hides filename
+   * -N hides line number
+   * --no-heading removes blank line between files
    */
   const { stdout, stderr, error } = await runShell(
-    String.raw`ls -1t *.md | head -n ${limit} | xargs -d "\n" rg "^#\+tags: " --no-heading --ignore-case -INo`,
+    String.raw`ls -1t *.md | head -n ${limit} | xargs -d "\n" rg "^#\+tags: " --no-heading --ignore-case -IN`,
     {
       cwd: notesDir,
     }

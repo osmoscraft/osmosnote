@@ -1,5 +1,6 @@
 import { getConfig } from "../config";
 import { createHandler } from "../lib/create-handler";
+import { parseTagsLine } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
 import { TAG_SEPARATOR } from "../lib/tag";
 
@@ -30,10 +31,9 @@ export const handleLookupTags = createHandler<LookupTagsOutput, LookupTagsInput>
   /**
    * -I hides filename
    * -N hides line number
-   * -o only include matched tags
    * --no-heading removes blank line between files
    */
-  const findAllMatchingTagLinesCommand = String.raw`rg "^#\+tags:.*?\b${phrase}" --no-heading --ignore-case -INo`;
+  const findAllMatchingTagLinesCommand = String.raw`rg "^#\+tags:.*?\b${phrase}" --no-heading --ignore-case -IN`;
   const { error, stdout, stderr } = await runShell(findAllMatchingTagLinesCommand, { cwd: dir });
 
   if (error) {
@@ -61,8 +61,3 @@ export const handleLookupTags = createHandler<LookupTagsOutput, LookupTagsInput>
     };
   }
 });
-
-// TODO consolidate with parse-note
-export function parseTagsLine(line: string): string[] {
-  return line.slice("#+tags ".length).split(" ,");
-}

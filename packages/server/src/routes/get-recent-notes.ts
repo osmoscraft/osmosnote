@@ -17,6 +17,7 @@ export interface GetRecentNotesInput {
 export interface RecentNoteItem {
   filename: string;
   title: string;
+  tags: string[];
   raw: string;
 }
 
@@ -46,6 +47,7 @@ export const handleGetRecentNotes = createHandler<GetRecentNotesOutput, GetRecen
     return {
       filename: filename,
       title: parseResult.metadata.title,
+      tags: parseResult.metadata.tags,
       raw: parseResult.raw,
     };
   });
