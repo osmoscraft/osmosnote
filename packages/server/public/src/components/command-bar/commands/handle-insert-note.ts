@@ -6,9 +6,12 @@ import {
   renderRecentNotesForInsert,
   renderSearchResultSectionForInsert,
 } from "../menu/render-menu.js";
+import { parseQuery } from "./parse-query.js";
 
 export const handleInsertNote: CommandHandler = async ({ input, context }) => {
-  const phrase = input.args?.trim();
+  const query = input.args?.trim() ?? "";
+
+  const { phrase, tags } = parseQuery(query);
 
   const searchParams = new URLSearchParams();
   phrase && searchParams.set("title", phrase);
@@ -22,7 +25,7 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
         phrase
       )}"></s2-menu-row>`;
 
-      if (!phrase?.length) {
+      if (!phrase?.length && !tags.length) {
         try {
           const notes = await context.apiService.listNotes();
           optionsHtml += renderRecentNotesForInsert(notes);
@@ -31,7 +34,7 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
         }
       } else {
         try {
-          const notes = await context.apiService.searchNotes(phrase);
+          const notes = await context.apiService.searchNotes(phrase, tags);
           optionsHtml += renderSearchResultSectionForInsert(notes);
         } catch (error) {
           optionsHtml += renderMessageRow("Error searching notes");

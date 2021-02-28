@@ -1,4 +1,3 @@
-import type { RouteHandlerMethod } from "fastify";
 import { performance } from "perf_hooks";
 import { getConfig } from "../config";
 import { createHandler } from "../lib/create-handler";
@@ -29,10 +28,11 @@ export const handleSearchNote = createHandler<SearchNoteOutput, SearchNoteInput>
   const config = await getConfig();
 
   const phrase = input.phrase;
+  const tags = input.tags ?? [];
   const notesDir = config.notesDir;
 
   const now = performance.now();
-  const items = await searchRipgrep(phrase, notesDir);
+  const items = await searchRipgrep(phrase, tags, notesDir);
   const durationInMs = performance.now() - now;
 
   return {
@@ -41,29 +41,28 @@ export const handleSearchNote = createHandler<SearchNoteOutput, SearchNoteInput>
   };
 });
 
-async function searchRipgrep(phrase: string, dir: string): Promise<SearchResultItem[]> {
+async function searchRipgrep(phrase: string, tags: string[], dir: string): Promise<SearchResultItem[]> {
   const _ = TAG_SEPARATOR;
-  const tagsRegex = new RegExp(`${_}([^${_}\\s]+?(\\s+[^${_}\\s]+?)*)${_}`, "g");
-  const baseQuery = phrase.trim();
-  const tags = [...baseQuery.matchAll(tagsRegex)].map((item) => item[1]);
-  const keywordQuery = baseQuery.replace(tagsRegex, "").trim();
-
+  const keywordQuery = phrase.trim();
   let getFilenamesPreprocess: string = "";
 
   /*
    * When tags are specified, we require all result files to contain all of tags.
-   * In org mode, adjacent tags share a single ":", e.g. :tag1:tag2:tag3:,
-   * In our systemm, adjacent tags won't share "#", e.g. #tag1##tag2##tag3#
+   * All tags must be used on a single line, prefixed with "#+tags: ".
+   * Adjacent tags must be separated by ", "
    * This will speed up regex as it prevents lookahead/lookback
    */
   if (tags.length) {
     /*
-     * get a list of files contains all the tags, separated by space
+     * Get a list of files contains all the tags, separated by space.
+     * Each tag will cause a full search pass. Optimization TBD
      * -l list file names only
      * -0 removes new line character after each file name
      * xargs -0 formats the file names into a space separate list that can be piped into the next rg command. -r stops processing if it's empty
      */
-    getFilenamesPreprocess = tags.map((tag) => `rg "${_}${tag}${_}" -l --ignore-case -0 | xargs -0 -r `).join("");
+    getFilenamesPreprocess = tags
+      .map((tag) => String.raw`rg "#\+tags(: |.+, )${tag}(,|\$)" -l --ignore-case -0 | xargs -0 -r `)
+      .join("");
   }
 
   const keywords = keywordQuery.split(" ").filter((keyword) => !!keyword);
@@ -114,12 +113,12 @@ async function tagOnlySearch(dir: string, getFilenamesPreprocess: string) {
 }
 
 async function keywordSearch(dir: string, keywords: string[], getFilenamesPreprocess: string) {
-  const wordsInput = keywords.join("\\W+(?:\\w+\\W+){0,3}?"); // two words separated by 0 to 3 other words
+  const wordsInput = keywords.join(String.raw`\W+(?:\w+\W+){0,3}?`); // two words separated by 0 to 3 other words
 
   let searchCommand = "";
   if (keywords.length) {
     // -H ensures file path is displayed even when there is only one result
-    searchCommand = `${getFilenamesPreprocess}rg "\\b${wordsInput}" -H --ignore-case --count-matches | head -n ${RESULT_LIMIT}`;
+    searchCommand = String.raw`${getFilenamesPreprocess}rg "\b${wordsInput}" -H --ignore-case --count-matches | head -n ${RESULT_LIMIT}`;
   }
 
   /**

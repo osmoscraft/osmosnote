@@ -30,9 +30,10 @@ export class ApiService {
     return this.getSuccessData(output);
   }
 
-  async searchNotes(phrase: string) {
+  async searchNotes(phrase: string, tags?: string[]) {
     const output = await this.proxyService.query<SearchNoteOutput, SearchNoteInput>(`/api/search-notes`, {
       phrase,
+      tags,
     });
 
     return this.getSuccessData(output);
