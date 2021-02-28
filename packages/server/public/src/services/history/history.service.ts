@@ -1,6 +1,6 @@
 import type { CaretService } from "../../components/text-editor/caret.service.js";
-import { getLine, getPositionByOffset } from "../../components/text-editor/helpers/line/line-query.js";
 import type { LineElement } from "../../components/text-editor/helpers/source-to-lines.js";
+import type { LineQueryService } from "../../components/text-editor/line-query.service.js";
 import { HistoryStack } from "./history-stack.js";
 
 export interface Snapshot {
@@ -21,7 +21,7 @@ const compareSnapshots = (a: Snapshot | null, b: Snapshot | null) => {
 export class HistoryService {
   private stack = new HistoryStack<Snapshot>();
 
-  constructor(private caretService: CaretService) {}
+  constructor(private caretService: CaretService, private lineQueryService: LineQueryService) {}
 
   save(root: HTMLElement) {
     const snapshot = this.getSnapshot(root);
@@ -63,7 +63,7 @@ export class HistoryService {
     // restore cursor
     const lines = [...root.querySelectorAll("[data-line]")] as HTMLElement[];
     const cursorLine = lines[snapshot.cursorLineIndex];
-    const cursorPosition = getPositionByOffset(cursorLine, snapshot.cursorLineOffset);
+    const cursorPosition = this.lineQueryService.getPositionByOffset(cursorLine, snapshot.cursorLineOffset);
 
     return this.caretService.setCollapsedCursorToLinePosition({
       line: cursorLine,
@@ -83,7 +83,7 @@ export class HistoryService {
 
     const cursor = this.caretService.caret;
     if (cursor) {
-      const currentLine = getLine(cursor.focus.node)! as LineElement;
+      const currentLine = this.lineQueryService.getLine(cursor.focus.node)! as LineElement;
       const { offset: cursorOffset } = this.caretService.getCursorLinePosition(cursor.focus);
 
       return {

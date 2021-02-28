@@ -1,7 +1,7 @@
 import type { CaretService } from "./caret.service.js";
-import { getLine } from "./helpers/line/line-query.js";
 import type { LineElement, LineType } from "./helpers/source-to-lines.js";
 import { removeLineEnding } from "./helpers/string.js";
+import type { LineQueryService } from "./line-query.service.js";
 
 export interface FormatContext {
   level: number;
@@ -31,7 +31,7 @@ export interface FormatConfig {
 }
 
 export class FormatService {
-  constructor(private caretService: CaretService) {}
+  constructor(private caretService: CaretService, private lineQueryService: LineQueryService) {}
 
   /**
    * Format all lines with dirty syntax flag. Indent will be kept dirty.
@@ -57,7 +57,7 @@ export class FormatService {
     let previousCursorOffset: number | null = null;
 
     if (cursor) {
-      cursorLine = getLine(cursor.focus.node)!;
+      cursorLine = this.lineQueryService.getLine(cursor.focus.node)!;
       const { offset } = this.caretService.getCursorLinePosition(cursor.focus);
       previousCursorOffset = offset;
     }
@@ -99,6 +99,20 @@ export class FormatService {
         this.caretService.setCollapsedCursorToLineOffset({ line: cursorLine, offset: newOffset });
       }
     });
+  }
+
+  getPortableText(lines: HTMLElement[], startLineOffset = 0, endLineOffset?: number): string {
+    const text = lines
+      .map((line, index) => {
+        const metrics = this.lineQueryService.getLineMetrics(line);
+        const startOffset = index === 0 ? Math.max(metrics.indent, startLineOffset) : metrics.indent;
+        const endOffset = index === lines.length - 1 ? endLineOffset : undefined;
+
+        return line.textContent!.slice(startOffset, endOffset);
+      })
+      .join("");
+
+    return text;
   }
 
   updateContextFromLine(line: LineElement, context: FormatContext) {

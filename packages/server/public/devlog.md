@@ -15,7 +15,6 @@
   - Handle unsaved changes
     - Track change dirty state
     - Indicate unsaved changes in tab and/or status bar
-  - Ctrl + right arrow fail on empty line
 
 ---
 
@@ -29,6 +28,7 @@
   - Open backlinks
   - Save to disk
     - Serialization
+  - Fix: Ctrl + right arrow fail on empty line
 
 ## Bootstrap system
 

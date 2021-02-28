@@ -16,6 +16,7 @@ import { CaretService } from "./components/text-editor/caret.service.js";
 import { WindowReferenceService } from "./services/window-reference/window.service.js";
 import { EditService } from "./components/text-editor/edit.service.js";
 import { FormatService } from "./components/text-editor/format.service.js";
+import { LineQueryService } from "./components/text-editor/line-query.service.js";
 
 di.registerClass(ComponentRefService, []);
 di.registerClass(QueryService, []);
@@ -23,10 +24,11 @@ di.registerClass(RouteService, []);
 di.registerClass(NotificationService, [ComponentRefService]);
 di.registerClass(ApiService, [QueryService]);
 di.registerClass(WindowReferenceService, []);
-di.registerClass(CaretService, [ComponentRefService, WindowReferenceService]);
-di.registerClass(HistoryService, [CaretService]);
-di.registerClass(FormatService, [CaretService]);
-di.registerClass(EditService, [CaretService, FormatService]);
+di.registerClass(LineQueryService, []);
+di.registerClass(CaretService, [ComponentRefService, WindowReferenceService, LineQueryService]);
+di.registerClass(HistoryService, [CaretService, LineQueryService]);
+di.registerClass(FormatService, [CaretService, LineQueryService]);
+di.registerClass(EditService, [CaretService, FormatService, LineQueryService]);
 di.registerClass(InputService, [
   CaretService,
   EditService,

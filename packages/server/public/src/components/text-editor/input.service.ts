@@ -7,7 +7,6 @@ import type { WindowReferenceService } from "../../services/window-reference/win
 import type { CaretService } from "./caret.service.js";
 import type { EditService } from "./edit.service.js";
 import type { FormatService } from "./format.service.js";
-import { getPortableText } from "./helpers/line/line-query.js";
 
 export class InputService {
   constructor(
@@ -119,7 +118,7 @@ export class InputService {
           event.stopPropagation();
           this.formatService.parseDocument(host);
           const lines = [...host.querySelectorAll("[data-line]")] as HTMLElement[];
-          const note = getPortableText(lines);
+          const note = this.formatService.getPortableText(lines);
           // TODO ensure any required metadata fields, e.g. title and ctime
 
           const { id } = this.routeService.getNoteConfigFromUrl();
