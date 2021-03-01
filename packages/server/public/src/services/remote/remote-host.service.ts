@@ -32,7 +32,7 @@ export class RemoteHostService {
   private handleChildNoteCreated(ev: CustomEvent<NoteCreatedDetail>) {
     const insertion = `[${ev.detail.title}](${ev.detail.id})`;
 
-    this.componentRefs.textEditor.pasteText(insertion);
+    this.componentRefs.textEditor.insertAtCaret(insertion);
     this.componentRefs.statusBar.setMessage(`Inserted: "${insertion}"`);
     this.cancelInsertLinkOnSave();
   }

@@ -64,16 +64,16 @@ export class InputService {
     event.preventDefault();
     switch (event.type) {
       case "copy":
-        this.editService.cursorCopy();
+        this.editService.caretCopy();
         break;
       case "cut":
-        this.historyService.runAtomic(host, () => this.editService.cursorCut(host));
+        this.historyService.runAtomic(host, () => this.editService.caretCut(host));
         break;
       case "paste":
         const pasteText = event.clipboardData?.getData("text");
         if (!pasteText) return;
 
-        this.historyService.runAtomic(host, () => this.editService.cursorPaste(pasteText, host));
+        this.historyService.runAtomic(host, () => this.editService.caretPaste(pasteText, host));
         break;
     }
   }
@@ -115,7 +115,7 @@ export class InputService {
       case "x":
         if (event.ctrlKey) {
           event.preventDefault();
-          this.editService.cursorCut(host);
+          this.editService.caretCut(host);
           this.historyService.save(host);
         }
         break;

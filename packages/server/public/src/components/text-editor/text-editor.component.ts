@@ -66,7 +66,7 @@ export class TextEditorComponent extends HTMLElement {
     this.historyService.save(this.host);
   }
 
-  pasteText(text: string) {
-    this.historyService.runAtomic(this.host, () => this.editService.cursorPaste(text, this.host));
+  insertAtCaret(text: string) {
+    this.historyService.runAtomic(this.host, () => this.editService.caretPaste(text, this.host));
   }
 }

@@ -20,11 +20,11 @@ export class EditService {
   insertText(text: string, root: HTMLElement) {
     this.deleteSelectionExplicit(root);
 
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
+    const caret = this.caretService.caret;
+    if (!caret) return;
 
-    const { offset } = this.caretService.getCaretLinePosition(cursor.focus);
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node);
+    const { offset } = this.caretService.getCaretLinePosition(caret.focus);
+    const currentLine = this.lineQueryService.getLine(caret.focus.node);
     if (!currentLine) return;
 
     const lineText = currentLine.textContent!;
@@ -49,11 +49,11 @@ export class EditService {
   insertNewLine(root: HTMLElement) {
     this.deleteSelectionExplicit(root);
 
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
+    const caret = this.caretService.caret;
+    if (!caret) return;
 
-    const { offset } = this.caretService.getCaretLinePosition(cursor.focus);
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node);
+    const { offset } = this.caretService.getCaretLinePosition(caret.focus);
+    const currentLine = this.lineQueryService.getLine(caret.focus.node);
     if (!currentLine) return;
 
     const textBefore = this.lineQueryService.sliceLine(currentLine, 0, offset);
@@ -68,7 +68,7 @@ export class EditService {
     const context = this.lineQueryService.getFormatContext(newSecondLine);
     this.formatService.parseLines(root, { indentWithContext: context });
 
-    // set cursor to next line start
+    // set caret to next line start
     const lineMetrics = this.lineQueryService.getLineMetrics(newSecondLine);
     this.caretService.setCollapsedCaretToLinePosition({
       line: newSecondLine,
@@ -77,16 +77,16 @@ export class EditService {
   }
 
   deleteBefore(root: HTMLElement) {
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
+    const caret = this.caretService.caret;
+    if (!caret) return;
 
-    if (!cursor.isCollapsed) {
+    if (!caret.isCollapsed) {
       this.deleteSelectionExplicit(root);
       return;
     }
 
-    const { offset } = this.caretService.getCaretLinePosition(cursor.focus);
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node);
+    const { offset } = this.caretService.getCaretLinePosition(caret.focus);
+    const currentLine = this.lineQueryService.getLine(caret.focus.node);
     if (!currentLine) return;
 
     if (offset === 0) {
@@ -120,7 +120,7 @@ export class EditService {
 
       this.formatService.parseLines(root);
 
-      // set cursor to the left edge of the deleted char
+      // set caret to the left edge of the deleted char
       this.caretService.setCollapsedCaretToLineOffset({
         line: updatedLine,
         offset: offset - 1,
@@ -129,16 +129,16 @@ export class EditService {
   }
 
   deleteAfter(root: HTMLElement) {
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
+    const caret = this.caretService.caret;
+    if (!caret) return;
 
-    if (!cursor.isCollapsed) {
+    if (!caret.isCollapsed) {
       this.deleteSelectionExplicit(root);
       return;
     }
 
-    const { offset } = this.caretService.getCaretLinePosition(cursor.focus);
-    const currentLine = this.lineQueryService.getLine(cursor.focus.node);
+    const { offset } = this.caretService.getCaretLinePosition(caret.focus);
+    const currentLine = this.lineQueryService.getLine(caret.focus.node);
     if (!currentLine) return;
 
     const { selectableLength } = this.lineQueryService.getLineMetrics(currentLine);
@@ -175,10 +175,10 @@ export class EditService {
   }
 
   deleteWordBefore(root: HTMLElement) {
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
+    const caret = this.caretService.caret;
+    if (!caret) return;
 
-    if (!cursor.isCollapsed) {
+    if (!caret.isCollapsed) {
       this.deleteSelectionExplicit(root);
       return;
     }
@@ -188,10 +188,10 @@ export class EditService {
   }
 
   deleteWordAfter(root: HTMLElement) {
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
+    const caret = this.caretService.caret;
+    if (!caret) return;
 
-    if (!cursor.isCollapsed) {
+    if (!caret.isCollapsed) {
       this.deleteSelectionExplicit(root);
       return;
     }
@@ -205,9 +205,9 @@ export class EditService {
    * If there is no selction, current line will be deleted.
    */
   deleteSelection(root: HTMLElement) {
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
-    if (cursor.isCollapsed) {
+    const caret = this.caretService.caret;
+    if (!caret) return;
+    if (caret.isCollapsed) {
       this.deleteSelectedLines();
     } else {
       this.deleteSelectionExplicit(root);
@@ -215,10 +215,10 @@ export class EditService {
   }
 
   deleteSelectedLines() {
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
+    const caret = this.caretService.caret;
+    if (!caret) return;
 
-    const selectedLines = this.lineQueryService.getLines(cursor.start.node, cursor.end.node);
+    const selectedLines = this.lineQueryService.getLines(caret.start.node, caret.end.node);
     if (!selectedLines.length) return;
 
     let newFocusLine = this.lineQueryService.getNextLine(selectedLines[selectedLines.length - 1]);
@@ -244,13 +244,13 @@ export class EditService {
    * Delete selection if there is any. No op otherwise
    */
   deleteSelectionExplicit(root: HTMLElement) {
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
-    if (cursor.isCollapsed) return;
+    const caret = this.caretService.caret;
+    if (!caret) return;
+    if (caret.isCollapsed) return;
 
-    const selectedLines = this.lineQueryService.getLines(cursor.start.node, cursor.end.node);
-    const { offset: cursorStartOffset } = this.caretService.getCaretLinePosition(cursor.start);
-    const { offset: cursorEndOffset } = this.caretService.getCaretLinePosition(cursor.end);
+    const selectedLines = this.lineQueryService.getLines(caret.start.node, caret.end.node);
+    const { offset: caretStartOffset } = this.caretService.getCaretLinePosition(caret.start);
+    const { offset: caretEndOffset } = this.caretService.getCaretLinePosition(caret.end);
 
     const isIndentDirty = selectedLines.some(this.isIndentReset);
     let updatedLine: HTMLElement | undefined = undefined;
@@ -261,7 +261,7 @@ export class EditService {
       const currentLine = selectedLines[0];
 
       const lineText = currentLine.textContent!;
-      const lineUpdatedText = lineText.slice(0, cursorStartOffset) + lineText.slice(cursorEndOffset);
+      const lineUpdatedText = lineText.slice(0, caretStartOffset) + lineText.slice(caretEndOffset);
       const newLines = sourceToLines(lineUpdatedText);
       updatedLine = newLines.children[0] as HTMLElement;
 
@@ -274,7 +274,7 @@ export class EditService {
       const endLine = selectedLines[selectedLines.length - 1];
       const endLineText = endLine.textContent!;
 
-      const joinedLineText = startLineText.slice(0, cursorStartOffset) + endLineText.slice(cursorEndOffset);
+      const joinedLineText = startLineText.slice(0, caretStartOffset) + endLineText.slice(caretEndOffset);
       const newLines = sourceToLines(joinedLineText);
       updatedLine = newLines.children[0] as HTMLElement;
 
@@ -283,12 +283,12 @@ export class EditService {
     }
 
     if (!updatedLine) {
-      console.error("There must be at least one selected lines when cursor is not collapsed.");
+      console.error("There must be at least one selected lines when caret is not collapsed.");
       return;
     }
 
     this.formatService.parseLines(root);
-    this.caretService.setCollapsedCaretToLineOffset({ line: updatedLine, offset: cursorStartOffset });
+    this.caretService.setCollapsedCaretToLineOffset({ line: updatedLine, offset: caretStartOffset });
 
     if (isIndentDirty && updatedLine) {
       let dirtyLine = this.lineQueryService.getNextLine(updatedLine);
@@ -299,42 +299,42 @@ export class EditService {
     }
   }
 
-  async cursorCopy() {
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
+  async caretCopy() {
+    const caret = this.caretService.caret;
+    if (!caret) return;
 
-    if (cursor.isCollapsed) {
+    if (caret.isCollapsed) {
       // copy the entire line
-      const currentLine = this.lineQueryService.getLine(cursor.focus.node);
+      const currentLine = this.lineQueryService.getLine(caret.focus.node);
       if (!currentLine) return;
       const lineMetrics = this.lineQueryService.getLineMetrics(currentLine);
       const portableText = currentLine.textContent!.slice(lineMetrics.indent);
       await writeClipboardText(portableText);
     } else {
       // copy the selection
-      const selectedLines = this.lineQueryService.getLines(cursor.start.node, cursor.end.node);
-      const { offset: cursorStartOffset } = this.caretService.getCaretLinePosition(cursor.start);
-      const { offset: cursorEndOffset } = this.caretService.getCaretLinePosition(cursor.end);
+      const selectedLines = this.lineQueryService.getLines(caret.start.node, caret.end.node);
+      const { offset: caretStartOffset } = this.caretService.getCaretLinePosition(caret.start);
+      const { offset: caretEndOffset } = this.caretService.getCaretLinePosition(caret.end);
 
-      const selectedText = this.lineQueryService.getPortableText(selectedLines, cursorStartOffset, cursorEndOffset);
+      const selectedText = this.lineQueryService.getPortableText(selectedLines, caretStartOffset, caretEndOffset);
 
       await writeClipboardText(selectedText);
     }
   }
 
-  async cursorCut(root: HTMLElement) {
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
+  async caretCut(root: HTMLElement) {
+    const caret = this.caretService.caret;
+    if (!caret) return;
 
-    await this.cursorCopy();
+    await this.caretCopy();
     this.deleteSelection(root);
   }
 
-  async cursorPaste(text: string | undefined, root: HTMLElement) {
+  async caretPaste(text: string | undefined, root: HTMLElement) {
     if (!text) return;
 
-    const cursor = this.caretService.caret;
-    if (!cursor) return;
+    const caret = this.caretService.caret;
+    if (!caret) return;
 
     const textWithNormalizedLineEnding = text.replace(/\r\n?/g, "\n");
 
