@@ -3,8 +3,11 @@
 ## IDE MVP
 
 - TODO
-  - Use fixed digit ISO timestamp
-  - Consider support local timezone offset in ISO output
+  - Convert selection to note
+    - Insert/Create note command should pre-fill the search with selected text
+    - Two build-in options:
+      - Create new with search phrase
+      - Create new with selected word (but search phrase still functions as search input)
   - Handle unsaved changes
     - Track change dirty state
     - Indicate unsaved changes in tab and/or status bar
@@ -12,6 +15,8 @@
 ---
 
 - DONE
+  - Use fixed digit ISO timestamp
+  - Consider support local timezone offset in ISO output
   - Maintain comma separated list when inserting tags
   - Handle tag sugges recent
   - Handle tag lookup
@@ -36,11 +41,12 @@
 
 - PEND
   - Convert selection to new note
-  - Note id system
-  - Timestamp in metadata
 - TODO
   - Migrate all org-roam notes
   - Migrate all markdown notes
+- DONE
+  - Note id system
+  - Timestamp in metadata
 
 ## Technical debt MVP
 

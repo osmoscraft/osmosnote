@@ -29,5 +29,8 @@ export function parseNote(rawText: string): Note {
 }
 
 export function parseTagsLine(line: string): string[] {
-  return line.slice("#+tags: ".length).split(", ");
+  return line
+    .slice("#+tags: ".length)
+    .split(", ")
+    .filter((t) => t.length > 0);
 }
