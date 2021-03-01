@@ -8,6 +8,7 @@
     - Two build-in options:
       - Create new with search phrase
       - Create new with selected word (but search phrase still functions as search input)
+  - Capture by URL
   - Handle unsaved changes
     - Track change dirty state
     - Indicate unsaved changes in tab and/or status bar
