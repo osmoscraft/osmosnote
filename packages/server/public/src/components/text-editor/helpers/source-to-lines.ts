@@ -10,7 +10,7 @@ export interface LineElement extends HTMLDivElement {
     meta?: "title" | "tags";
     dirtySyntax?: "";
     dirtyIndent?: "";
-    /** Exists on the line that has collapsed cursor */
+    /** Exists on the line that has collapsed caret */
     caretCollapsed?: "";
   };
 }

@@ -37,7 +37,7 @@ export class FormatService {
    * Format all lines with dirty syntax flag. Indent will be kept dirty.
    */
   parseLines(root: HTMLElement | DocumentFragment, config: ParseLinesConfig = {}) {
-    // TODO handle cursor restore. Expose config to allow manual cursor restore
+    // TODO handle caret restore. Expose config to allow manual caret restore
     const isSyntaxOnly = config.indentWithContext === undefined;
     const { indentWithContext: context = PARSE_LINES_DEFAULT_CONTEXT } = config;
 
@@ -52,14 +52,14 @@ export class FormatService {
   }
 
   parseDocument(root: HTMLElement | DocumentFragment) {
-    const cursor = this.caretService.caret;
-    let cursorLine: HTMLElement;
-    let previousCursorOffset: number | null = null;
+    const caret = this.caretService.caret;
+    let caretLine: HTMLElement;
+    let previousCaretOffset: number | null = null;
 
-    if (cursor) {
-      cursorLine = this.lineQueryService.getLine(cursor.focus.node)!;
-      const { offset } = this.caretService.getCaretLinePosition(cursor.focus);
-      previousCursorOffset = offset;
+    if (caret) {
+      caretLine = this.lineQueryService.getLine(caret.focus.node)!;
+      const { offset } = this.caretService.getCaretLinePosition(caret.focus);
+      previousCaretOffset = offset;
     }
 
     const lines = [...root.querySelectorAll("[data-line]")] as LineElement[];
@@ -93,10 +93,10 @@ export class FormatService {
         context.isLevelDirty = false;
       }
 
-      // restore cursor
-      if ((line as any) === cursorLine) {
-        const newOffset = Math.max(0, previousCursorOffset! + lengthChange);
-        this.caretService.setCollapsedCaretToLineOffset({ line: cursorLine, offset: newOffset });
+      // restore caret
+      if ((line as any) === caretLine) {
+        const newOffset = Math.max(0, previousCaretOffset! + lengthChange);
+        this.caretService.setCollapsedCaretToLineOffset({ line: caretLine, offset: newOffset });
       }
     });
   }

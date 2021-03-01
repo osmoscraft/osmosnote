@@ -6,15 +6,15 @@ import { HistoryStack } from "./history-stack.js";
 export interface Snapshot {
   documentHtml: string;
   textContent: string;
-  cursorLineIndex: number;
-  cursorLineOffset: number;
+  caretLineIndex: number;
+  caretLineOffset: number;
 }
 
 const compareSnapshots = (a: Snapshot | null, b: Snapshot | null) => {
   return (
     a?.textContent === b?.textContent &&
-    a?.cursorLineIndex === b?.cursorLineIndex &&
-    a?.cursorLineOffset === b?.cursorLineOffset
+    a?.caretLineIndex === b?.caretLineIndex &&
+    a?.caretLineOffset === b?.caretLineOffset
   );
 };
 
@@ -66,15 +66,15 @@ export class HistoryService {
     // restore dom
     root.innerHTML = snapshot.documentHtml;
 
-    // restore cursor
+    // restore caret
     const lines = [...root.querySelectorAll("[data-line]")] as HTMLElement[];
-    const cursorLine = lines[snapshot.cursorLineIndex];
-    const cursorPosition = this.lineQueryService.getPositionByOffset(cursorLine, snapshot.cursorLineOffset);
+    const caretLine = lines[snapshot.caretLineIndex];
+    const caretPosition = this.lineQueryService.getPositionByOffset(caretLine, snapshot.caretLineOffset);
 
     return this.caretService.setCollapsedCaretToLinePosition({
-      line: cursorLine,
+      line: caretLine,
       position: {
-        ...cursorPosition,
+        ...caretPosition,
       },
       root,
       rememberColumn: true,
@@ -87,23 +87,23 @@ export class HistoryService {
     const documentHtml = root.innerHTML;
     const textContent = root.textContent ?? "";
 
-    const cursor = this.caretService.caret;
-    if (cursor) {
-      const currentLine = this.lineQueryService.getLine(cursor.focus.node)! as LineElement;
-      const { offset: cursorOffset } = this.caretService.getCaretLinePosition(cursor.focus);
+    const caret = this.caretService.caret;
+    if (caret) {
+      const currentLine = this.lineQueryService.getLine(caret.focus.node)! as LineElement;
+      const { offset: caretOffset } = this.caretService.getCaretLinePosition(caret.focus);
 
       return {
         documentHtml: documentHtml,
         textContent,
-        cursorLineIndex: lines.indexOf(currentLine),
-        cursorLineOffset: cursorOffset,
+        caretLineIndex: lines.indexOf(currentLine),
+        caretLineOffset: caretOffset,
       };
     } else {
       return {
         documentHtml: documentHtml,
         textContent,
-        cursorLineIndex: 0,
-        cursorLineOffset: 0,
+        caretLineIndex: 0,
+        caretLineOffset: 0,
       };
     }
   }

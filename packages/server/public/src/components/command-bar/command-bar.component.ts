@@ -91,7 +91,7 @@ export class CommandBarComponent extends HTMLElement {
   }
 
   enterCommandMode() {
-    this.saveCurosr();
+    this.saveCaret();
     this.dataset.active = "true";
 
     this.commandInputDom.tabIndex = 0; // make it focusable AFTER command mode starts. Otherwise, we will trap focus for the rest of the window
@@ -107,7 +107,7 @@ export class CommandBarComponent extends HTMLElement {
     this.commandInputDom.tabIndex = -1;
     this.commandInputDom.disabled = true;
 
-    this.restoreCursor();
+    this.restoreCaret();
   }
 
   isInCommandMode() {
@@ -119,11 +119,11 @@ export class CommandBarComponent extends HTMLElement {
     this.commandOptionsDom.innerHTML = "";
   }
 
-  private saveCurosr() {
+  private saveCaret() {
     this.triggeringElement = document.activeElement;
   }
 
-  private restoreCursor() {
+  private restoreCaret() {
     (this.triggeringElement as HTMLElement)?.focus?.();
   }
 

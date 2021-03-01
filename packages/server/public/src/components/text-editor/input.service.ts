@@ -147,7 +147,7 @@ export class InputService {
         }
         break;
 
-      // Cursor movement
+      // Caret movement
       case "ArrowLeft":
         if (event.altKey) break;
 
@@ -256,8 +256,8 @@ export class InputService {
         break;
 
       case "Enter": // Enter
-        const collapsedCursorParents = [...host.querySelectorAll(`[data-caret-collapsed]`)].reverse() as HTMLElement[];
-        for (let container of collapsedCursorParents) {
+        const collapsedCaretParents = [...host.querySelectorAll(`[data-caret-collapsed]`)].reverse() as HTMLElement[];
+        for (let container of collapsedCaretParents) {
           if (container.dataset.noteId) {
             // open internal id link
             this.openNodeId(container.dataset.noteId, event);
