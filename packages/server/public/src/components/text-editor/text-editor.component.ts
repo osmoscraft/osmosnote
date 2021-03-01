@@ -2,13 +2,24 @@ import { ApiService } from "../../services/api/api.service.js";
 import { HistoryService } from "../../services/history/history.service.js";
 import { RouteService } from "../../services/route/route.service.js";
 import { di } from "../../utils/dependency-injector.js";
-import { CaretService } from "./caret.service.js";
+import { CaretContext, CaretService } from "./caret.service.js";
 import { EditService } from "./edit.service.js";
 import { FormatService } from "./format.service.js";
 import { sourceToLines } from "./helpers/source-to-lines.js";
 import { getNoteFromTemplate } from "./helpers/template.js";
 import { InputService } from "./input.service.js";
+import { LineQueryService } from "./line-query.service.js";
 import { MeasureService } from "./measure.service.js";
+
+export interface InsertFunction {
+  (context: CaretContext): string | Promise<string>;
+}
+
+export interface InsertContext {
+  textBefore: string;
+  textAfter: string;
+  textSelected: string;
+}
 
 export class TextEditorComponent extends HTMLElement {
   private routeService!: RouteService;
@@ -68,5 +79,16 @@ export class TextEditorComponent extends HTMLElement {
 
   insertAtCaret(text: string) {
     this.historyService.runAtomic(this.host, () => this.editService.caretPaste(text, this.host));
+  }
+
+  async insertAtCaretWithContext(getInsertingContent: InsertFunction) {
+    const caretContext = this.caretService.getCaretContext();
+    if (!caretContext) {
+      throw new Error("Cannot insert when caret does not exist");
+    }
+
+    const insertingContent = await getInsertingContent(caretContext);
+
+    this.historyService.runAtomic(this.host, () => this.editService.caretPaste(insertingContent, this.host));
   }
 }

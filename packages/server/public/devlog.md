@@ -3,10 +3,8 @@
 ## IDE MVP
 
 - TODO
-  - Maintain comma separated list when inserting tags
   - Use fixed digit ISO timestamp
   - Consider support local timezone offset in ISO output
-  - Consider support shortcut to insert current time (northstar?)
   - Handle unsaved changes
     - Track change dirty state
     - Indicate unsaved changes in tab and/or status bar
@@ -14,6 +12,7 @@
 ---
 
 - DONE
+  - Maintain comma separated list when inserting tags
   - Handle tag sugges recent
   - Handle tag lookup
   - Handle tag search
@@ -53,8 +52,8 @@
 
 ## IDE V2
 
-- Assisted tag insertion
 - Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
+- Consider support shortcut to insert current time (northstar?)
 
 ## TextEngine V2
 
@@ -62,6 +61,10 @@
   - Handle list indentation
   - Handle list auto numbering
   - Move # into the padding so heading lines can wrap without breaking indentation
+  - Simplied internal API
+    - Efficiently convert DOM layer node and offset into plaintext layer offset
+    - Incrementally read more lines while in plaintext layer
+    - Efficiently convert plaintext layer offset into DOM layer node and offset
 
 ## TextEngine North star
 

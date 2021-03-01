@@ -18,6 +18,12 @@ export interface CaretPosition {
   offset: number;
 }
 
+export interface CaretContext {
+  textBefore: string;
+  textAfter: string;
+  textSelected: string;
+}
+
 /**
  * get, set, save, and restore the position of the caret
  */
@@ -249,6 +255,42 @@ export class CaretService {
     const { node, offset } = caretPosition;
     const position = this.lineQueryService.getNodeLinePosition(node, offset);
     return position;
+  }
+
+  getCaretContext(): CaretContext | null {
+    const caret = this._caret;
+    if (!caret) return null;
+
+    let textBefore,
+      textSelected,
+      textAfter: string = "";
+
+    const selectedLines = this.lineQueryService.getLines(caret.start.node, caret.end.node);
+    const { offset: caretStartOffset } = this.getCaretLinePosition(caret.start);
+    const { offset: caretEndOffset } = this.getCaretLinePosition(caret.end);
+
+    const startLine = selectedLines[0];
+    const startLineText = startLine.textContent!;
+
+    const endLine = selectedLines[selectedLines.length - 1];
+    const endLineText = endLine.textContent!;
+    const distanceToEnd = endLineText.length - caretEndOffset;
+
+    textBefore = startLineText.slice(0, caretStartOffset);
+    textAfter = endLineText.slice(caretEndOffset);
+
+    textSelected = startLineText.slice(caretStartOffset);
+    textSelected += selectedLines
+      .slice(1)
+      .map((line) => line.textContent!)
+      .join("");
+    textSelected = textSelected.slice(0, -distanceToEnd);
+
+    return {
+      textBefore,
+      textAfter,
+      textSelected,
+    };
   }
 
   private updateIdealColumn() {

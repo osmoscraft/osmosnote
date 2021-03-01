@@ -40,7 +40,17 @@ export const handleInsertTags: CommandHandler = async ({ input, context }) => {
       return optionsHtml;
     },
     repeatableRunOnCommit: () => {
-      context.componentRefs.textEditor.insertAtCaret(phrase); // TODO handle list joining
+      context.componentRefs.textEditor.insertAtCaretWithContext((context) => {
+        if (context.textBefore.endsWith(":") || context.textBefore.endsWith(",")) {
+          // "#+tags:" or "tag,"
+          return ` ${phrase}`;
+          // "#+tags: ", or "tag, "
+        } else if (context.textBefore.endsWith(": ") || context.textBefore.endsWith(", ")) {
+          return phrase;
+        } else {
+          return `, ${phrase}`;
+        }
+      });
       context.componentRefs.statusBar.setMessage(`[command-bar] inserted "${phrase}"`);
     },
   };
