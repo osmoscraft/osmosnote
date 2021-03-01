@@ -1,4 +1,4 @@
-import { getDefaultTitle } from "../../../utils/get-default-title.js";
+import { ensureNoteTitle } from "../../../utils/ensure-note-title.js";
 import type { CommandHandler } from "../command-bar.component.js";
 import {
   renderHeaderRow,
@@ -14,16 +14,15 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
   const { phrase, tags } = parseQuery(query);
 
   const searchParams = new URLSearchParams();
-  phrase && searchParams.set("title", phrase);
-  const openUrl = phrase ? `/?${searchParams}` : "/";
+  const newNoteTitle = ensureNoteTitle(phrase);
+  searchParams.set("title", newNoteTitle);
+  const newNoteUrl = newNoteTitle ? `/?${searchParams}` : "/";
 
   return {
     updateDropdownOnInput: async () => {
       let optionsHtml = renderHeaderRow("Create");
 
-      optionsHtml += /*html*/ `<s2-menu-row data-kind="option" data-open-url="${openUrl}" data-label="${getDefaultTitle(
-        phrase
-      )}"></s2-menu-row>`;
+      optionsHtml += /*html*/ `<s2-menu-row data-kind="option" data-open-url="${newNoteUrl}" data-label="${newNoteTitle}"></s2-menu-row>`;
 
       if (!phrase?.length && !tags.length) {
         try {
@@ -45,11 +44,7 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
     },
     runOnCommit: () => {
       // treating input as title to create a new note
-      if (phrase?.length) {
-        window.open(`/?title=${phrase}`, `_self`);
-      } else {
-        window.open(`/`, `_self`);
-      }
+      window.open(newNoteUrl);
     },
   };
 };

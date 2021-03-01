@@ -14,3 +14,9 @@
 1. `npm version patch|minor|major`
 2. `npm run release`
 3. Github Action will build and create a draft release
+
+# Manual
+
+## Tagging
+
+- Tags are case sensitive. However, during the search, tags are case insentivie to encourage spontaneous discovery
