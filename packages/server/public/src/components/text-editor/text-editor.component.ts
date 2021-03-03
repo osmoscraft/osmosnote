@@ -1,5 +1,5 @@
 import { ApiService } from "../../services/api/api.service.js";
-import { HistoryService } from "../../services/history/history.service.js";
+import { HistoryService } from "./history/history.service.js";
 import { RouteService } from "../../services/route/route.service.js";
 import { di } from "../../utils/dependency-injector.js";
 import { CaretContext, CaretService } from "./caret.service.js";
@@ -8,8 +8,8 @@ import { FormatService } from "./format.service.js";
 import { sourceToLines } from "./helpers/source-to-lines.js";
 import { getNoteFromTemplate } from "./helpers/template.js";
 import { InputService } from "./input.service.js";
-import { LineQueryService } from "./line-query.service.js";
 import { MeasureService } from "./measure.service.js";
+import { TrackChangeService } from "./track-change.service.js";
 
 export interface InsertFunction {
   (context: CaretContext): string | Promise<string>;
@@ -30,6 +30,7 @@ export class TextEditorComponent extends HTMLElement {
   private editService!: EditService;
   private formatService!: FormatService;
   private measureService!: MeasureService;
+  private trackChangeService!: TrackChangeService;
 
   private _host!: HTMLElement;
 
@@ -49,6 +50,7 @@ export class TextEditorComponent extends HTMLElement {
     this.editService = di.getSingleton(EditService);
     this.formatService = di.getSingleton(FormatService);
     this.measureService = di.getSingleton(MeasureService);
+    this.trackChangeService = di.getSingleton(TrackChangeService);
 
     this._host = this.querySelector("#content-host") as HTMLElement;
 
@@ -75,6 +77,9 @@ export class TextEditorComponent extends HTMLElement {
     this.inputService.init(this.host);
 
     this.historyService.save(this.host);
+
+    const isNewNote = id === undefined;
+    this.trackChangeService.set(isNewNote ? null : this.historyService.peek()!.textContent, isNewNote);
   }
 
   insertAtCaret(text: string) {

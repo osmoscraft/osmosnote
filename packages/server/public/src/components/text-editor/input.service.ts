@@ -1,6 +1,6 @@
 import type { ApiService } from "../../services/api/api.service.js";
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
-import type { HistoryService } from "../../services/history/history.service.js";
+import type { HistoryService } from "./history/history.service.js";
 import type { NotificationService } from "../../services/notification/notification.service.js";
 import type { RemoteClientService } from "../../services/remote/remote-client.service.js";
 import type { RouteService } from "../../services/route/route.service.js";
@@ -8,12 +8,14 @@ import type { WindowRefService } from "../../services/window-reference/window.se
 import type { CaretService } from "./caret.service.js";
 import type { EditService } from "./edit.service.js";
 import type { FormatService } from "./format.service.js";
+import type { TrackChangeService } from "./track-change.service.js";
 
 export class InputService {
   constructor(
     private caretService: CaretService,
     private editService: EditService,
     private historyService: HistoryService,
+    private trackChangeService: TrackChangeService,
     private noteService: ApiService,
     private routeService: RouteService,
     private notificationService: NotificationService,
@@ -67,13 +69,15 @@ export class InputService {
         this.editService.caretCopy();
         break;
       case "cut":
-        this.historyService.runAtomic(host, () => this.editService.caretCut(host));
+        await this.historyService.runAtomic(host, () => this.editService.caretCut(host));
+        this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         break;
       case "paste":
         const pasteText = event.clipboardData?.getData("text");
         if (!pasteText) return;
 
-        this.historyService.runAtomic(host, () => this.editService.caretPaste(pasteText, host));
+        await this.historyService.runAtomic(host, () => this.editService.caretPaste(pasteText, host));
+        this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         break;
     }
   }
@@ -84,6 +88,7 @@ export class InputService {
       case "z":
         if (event.ctrlKey && !event.shiftKey) {
           this.historyService.undo(host);
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
           event.preventDefault();
         }
         break;
@@ -91,6 +96,7 @@ export class InputService {
       case "Z":
         if (event.ctrlKey && event.shiftKey) {
           this.historyService.redo(host);
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
           event.preventDefault();
         }
         break;
@@ -115,8 +121,8 @@ export class InputService {
       case "x":
         if (event.ctrlKey) {
           event.preventDefault();
-          this.editService.caretCut(host);
-          this.historyService.save(host);
+          await this.historyService.runAtomic(host, () => this.editService.caretCut(host));
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         }
         break;
 
@@ -135,6 +141,7 @@ export class InputService {
             if (id) {
               this.noteService.updateNote(id, note);
               this.historyService.save(host);
+              this.trackChangeService.set(this.historyService.peek()!.textContent, false);
               this.notificationService.displayMessage("Saved");
             } else {
               const result = await this.noteService.createNote(note);
@@ -273,8 +280,8 @@ export class InputService {
 
         if (!event.defaultPrevented) {
           // insert new line at point
-          this.editService.insertNewLine(host);
-          this.historyService.save(host);
+          this.historyService.runAtomic(host, () => this.editService.insertNewLine(host));
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
           event.preventDefault();
         }
         break;
@@ -286,6 +293,7 @@ export class InputService {
     if (insertedText) {
       event.preventDefault();
       this.editService.insertText(insertedText, host);
+      this.trackChangeService.trackByState(true);
 
       if (insertedText.match(/\s|,|\./)) {
         this.historyService.save(host);

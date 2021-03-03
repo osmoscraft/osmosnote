@@ -9,13 +9,13 @@
       - Create new with search phrase
       - Create new with selected word (but search phrase still functions as search input)
   - Capture by URL
-  - Handle unsaved changes
-    - Track change dirty state
-    - Indicate unsaved changes in tab and/or status bar
 
 ---
 
 - DONE
+  - Handle unsaved changes
+    - Track change dirty state
+    - Indicate unsaved changes in tab and/or status bar
   - Use fixed digit ISO timestamp
   - Consider support local timezone offset in ISO output
   - Maintain comma separated list when inserting tags
@@ -61,6 +61,8 @@
 
 - Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
 - Consider support shortcut to insert current time (northstar?)
+- Use History Service to track every keypress and use debouncer to improve performance
+- Consider consolidating change tracking service with history service (caret state is an outlier)
 
 ## TextEngine V2
 

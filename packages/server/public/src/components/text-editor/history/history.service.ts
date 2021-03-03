@@ -1,6 +1,6 @@
-import type { CaretService } from "../../components/text-editor/caret.service.js";
-import type { LineElement } from "../../components/text-editor/helpers/source-to-lines.js";
-import type { LineQueryService } from "../../components/text-editor/line-query.service.js";
+import type { CaretService } from "../caret.service.js";
+import type { LineElement } from "../helpers/source-to-lines.js";
+import type { LineQueryService } from "../line-query.service.js";
 import { HistoryStack } from "./history-stack.js";
 
 export interface Snapshot {

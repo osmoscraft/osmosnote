@@ -4,7 +4,10 @@ export class NotificationService {
   constructor(private componentRefs: ComponentRefService) {}
 
   displayMessage(text: string, kind: "error" | "info" | "warning" = "info") {
-    this.componentRefs.statusBar.innerText = `${text} ${new Date().toLocaleTimeString()}`;
-    this.componentRefs.statusBar.dataset.kind = kind;
+    this.componentRefs.statusBar.setMessage(`${text} ${new Date().toLocaleTimeString()}`), kind;
+  }
+
+  setChangeStatus(isDirty: boolean) {
+    this.componentRefs.statusBar.setChangeStatus(isDirty);
   }
 }
