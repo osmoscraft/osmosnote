@@ -6,7 +6,6 @@ import { handleSearchNote } from "./commands/handle-search-note.js";
 import { handleSearchUrl } from "./commands/handle-search-url.js";
 import { handleVersionsCheck } from "./commands/handle-version-check.js";
 import { handleVersionsSyncAndCheck } from "./commands/handle-version-sync-and-check.js";
-import { handleVersionsSync } from "./commands/handle-version-sync.js";
 
 export const commandTree: RegisteredCommand = {
   name: "All commands",
@@ -50,6 +49,20 @@ export const commandTree: RegisteredCommand = {
       ],
     },
     {
+      name: "Link",
+      key: "k",
+      commands: [
+        {
+          name: "Note by content",
+          key: "k",
+        },
+        {
+          name: "Note by url",
+          key: "l",
+        },
+      ],
+    },
+    {
       name: "File",
       key: "f",
       commands: [
@@ -60,30 +73,16 @@ export const commandTree: RegisteredCommand = {
         {
           name: "Save",
           key: "s",
+          // TODO: handleSaveAndCheck
         },
         {
-          name: "Sync all",
-          key: "y",
-        },
-      ],
-    },
-    {
-      name: "Versions",
-      key: "v",
-      commands: [
-        {
-          name: "Check",
-          key: "c",
+          name: "Check all",
+          key: "v",
           handler: handleVersionsCheck,
         },
         {
-          name: "Sync",
-          key: "s",
-          handler: handleVersionsSync,
-        },
-        {
-          name: "Sync and view",
-          key: "v",
+          name: "Sync all",
+          key: "a",
           handler: handleVersionsSyncAndCheck,
         },
       ],

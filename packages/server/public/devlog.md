@@ -4,16 +4,20 @@
 
 - TODO
   - Convert selection to note
-    - Insert/Create note command should pre-fill the search with selected text
-    - Two build-in options:
-      - Create new with search phrase
-      - Create new with selected word (but search phrase still functions as search input)
-  - Capture by URL
+    - On empty state
+      - Search with selected phrase
+      - Also show recently changed notes
+    - Once typing
+      - Search with typed phrase
+    - On select: keep the selection the same, only update link
+      - need text editor api for convert text to link
+  - Add file save / format commands
   - Ctrl + S should trigger command (instead of run directly)
 
 ---
 
 - DONE
+  - Capture by URL
   - Handle unsaved changes
     - Track change dirty state
     - Indicate unsaved changes in tab and/or status bar
