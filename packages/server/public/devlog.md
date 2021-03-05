@@ -13,6 +13,8 @@
       - need text editor api for convert text to link
   - Add file save / format commands
   - Ctrl + S should trigger command (instead of run directly)
+  - Click to open link in current window
+  - Ctrl + Click to open link in new window
 
 ---
 
@@ -80,9 +82,10 @@
     - Incrementally read more lines while in plaintext layer
     - Efficiently convert plaintext layer offset into DOM layer node and offset
 
-## TextEngine North star
+## Projectg North star
 
 - CJK support (need pixel based column calc or unicode char visual length detection)
+- Display local menu next to caret
 
 # Principles
 
