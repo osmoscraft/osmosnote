@@ -8,8 +8,10 @@ import { handleGetMentions } from "./routes/get-mentions";
 import { handleGetNote } from "./routes/get-note";
 import { handleGetRecentNotes } from "./routes/get-recent-notes";
 import { handleGetRecentTags } from "./routes/get-recent-tags";
+import { handleGetVersionStatus } from "./routes/get-version-status";
 import { handleLookupTags } from "./routes/lookup-tags";
 import { handleSearchNote } from "./routes/search-note";
+import { handleSyncVersions } from "./routes/sync-versions";
 import { handleUpdateNote } from "./routes/update-note";
 
 async function run() {
@@ -21,8 +23,10 @@ async function run() {
   server.post("/api/get-note", handleGetNote);
   server.post("/api/get-recent-notes", handleGetRecentNotes);
   server.post("/api/get-recent-tags", handleGetRecentTags);
+  server.post("/api/get-version-status", handleGetVersionStatus);
   server.post("/api/lookup-tags", handleLookupTags);
   server.post("/api/search-notes", handleSearchNote);
+  server.post("/api/sync-versions", handleSyncVersions);
   server.post("/api/update-note", handleUpdateNote);
 
   const publicPath = path.join(__dirname, "../public");

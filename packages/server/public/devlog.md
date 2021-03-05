@@ -9,6 +9,7 @@
       - Create new with search phrase
       - Create new with selected word (but search phrase still functions as search input)
   - Capture by URL
+  - Ctrl + S should trigger command (instead of run directly)
 
 ---
 

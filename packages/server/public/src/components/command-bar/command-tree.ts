@@ -3,6 +3,9 @@ import { handleCaptureNote } from "./commands/handle-capture-note.js";
 import { handleInsertNote } from "./commands/handle-insert-note.js";
 import { handleInsertTags } from "./commands/handle-insert-tags.js";
 import { handleInsertUrl } from "./commands/handle-insert-url.js";
+import { handleVersionsCheck } from "./commands/handle-version-check.js";
+import { handleVersionsSyncAndCheck } from "./commands/handle-version-sync-and-check.js";
+import { handleVersionsSync } from "./commands/handle-version-sync.js";
 
 export const commandTree: RegisteredCommand = {
   name: "All commands",
@@ -67,12 +70,19 @@ export const commandTree: RegisteredCommand = {
       key: "v",
       commands: [
         {
-          name: "Sync",
-          key: "s",
+          name: "Check",
+          key: "c",
+          handler: handleVersionsCheck,
         },
         {
-          name: "check",
-          key: "c",
+          name: "Sync",
+          key: "s",
+          handler: handleVersionsSync,
+        },
+        {
+          name: "Sync and view",
+          key: "v",
+          handler: handleVersionsSyncAndCheck,
         },
       ],
     },

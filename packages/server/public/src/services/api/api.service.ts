@@ -1,6 +1,8 @@
 import type {
   CreateNoteInput,
   CreateNoteOutput,
+  GetContentFromUrlInput,
+  GetContentFromUrlOutput,
   GetMentionsInput,
   GetMentionsOuput,
   GetNoteInput,
@@ -8,15 +10,17 @@ import type {
   GetRecentNotesInput,
   GetRecentNotesOutput,
   GetRecentTagsOutput,
+  GetVersionStatusInput,
+  GetVersionStatusOutput,
   LookupTagsInput,
   LookupTagsOutput,
   OutputSuccessOrError,
   SearchNoteInput,
   SearchNoteOutput,
+  SyncVersionsInput,
+  SyncVersionsOutput,
   UpdateNoteInput,
   UpdateNoteOutput,
-  GetContentFromUrlInput,
-  GetContentFromUrlOutput,
 } from "@system-two/server";
 import type { QueryService } from "../query/query.service.js";
 
@@ -60,6 +64,10 @@ export class ApiService {
     this.safeQuery<GetContentFromUrlOutput, GetContentFromUrlInput>(`/api/get-content-from-url`, {
       url,
     });
+
+  getVersionStatus = () => this.safeQuery<GetVersionStatusOutput, GetVersionStatusInput>(`/api/get-version-status`, {});
+
+  syncVersions = () => this.safeQuery<SyncVersionsOutput, SyncVersionsInput>(`/api/sync-versions`, {});
 
   private async safeQuery<OutputType, InputType>(path: string, input: InputType) {
     const output = await this.proxyService.query<OutputType, InputType>(path, input);
