@@ -3,6 +3,7 @@ import fastifyStatic from "fastify-static";
 import path from "path";
 import { getConfig } from "./config";
 import { handleCreateNote } from "./routes/create-note";
+import { handleGetContentFromUrl } from "./routes/get-content-from-url";
 import { handleGetMentions } from "./routes/get-mentions";
 import { handleGetNote } from "./routes/get-note";
 import { handleGetRecentNotes } from "./routes/get-recent-notes";
@@ -15,13 +16,14 @@ async function run() {
   const server = fastify();
 
   server.post("/api/create-note", handleCreateNote);
+  server.post("/api/get-content-from-url", handleGetContentFromUrl);
+  server.post("/api/get-mentions", handleGetMentions);
   server.post("/api/get-note", handleGetNote);
-  server.post("/api/update-note", handleUpdateNote);
-  server.post("/api/search-notes", handleSearchNote);
   server.post("/api/get-recent-notes", handleGetRecentNotes);
   server.post("/api/get-recent-tags", handleGetRecentTags);
-  server.post("/api/get-mentions", handleGetMentions);
   server.post("/api/lookup-tags", handleLookupTags);
+  server.post("/api/search-notes", handleSearchNote);
+  server.post("/api/update-note", handleUpdateNote);
 
   const publicPath = path.join(__dirname, "../public");
   server.register(fastifyStatic, { root: publicPath });

@@ -146,6 +146,8 @@ export class InputService {
             } else {
               const result = await this.noteService.createNote(note);
               this.remoteClientService.notifyNoteCreated({ id: result.id, title: result.title });
+
+              this.trackChangeService.set(this.historyService.peek()!.textContent, false);
               location.href = `/?id=${result.id}`;
             }
           } catch (error) {

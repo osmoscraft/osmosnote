@@ -15,71 +15,54 @@ import type {
   SearchNoteOutput,
   UpdateNoteInput,
   UpdateNoteOutput,
+  GetContentFromUrlInput,
+  GetContentFromUrlOutput,
 } from "@system-two/server";
 import type { QueryService } from "../query/query.service.js";
 
 export class ApiService {
   constructor(private proxyService: QueryService) {}
 
-  async loadNote(id: string) {
-    const output = await this.proxyService.query<GetNoteOutput, GetNoteInput>(`/api/get-note`, { id });
+  loadNote = (id: string) => this.safeQuery<GetNoteOutput, GetNoteInput>(`/api/get-note`, { id });
 
-    return this.getSuccessData(output);
-  }
+  getRecentNotes = () => this.safeQuery<GetRecentNotesOutput, GetRecentNotesInput>(`/api/get-recent-notes`, {});
 
-  async getRecentNotes() {
-    const output = await this.proxyService.query<GetRecentNotesOutput, GetRecentNotesInput>(
-      `/api/get-recent-notes`,
-      {}
-    );
+  getRecentTags = () => this.safeQuery<GetRecentTagsOutput, GetRecentNotesInput>(`/api/get-recent-tags`, {});
 
-    return this.getSuccessData(output);
-  }
-
-  async getRecentTags() {
-    const output = await this.proxyService.query<GetRecentTagsOutput, GetRecentNotesInput>(`/api/get-recent-tags`, {});
-
-    return this.getSuccessData(output);
-  }
-
-  async lookupTags(phrase: string) {
-    const output = await this.proxyService.query<LookupTagsOutput, LookupTagsInput>(`/api/lookup-tags`, {
+  lookupTags = (phrase: string) =>
+    this.safeQuery<LookupTagsOutput, LookupTagsInput>(`/api/lookup-tags`, {
       phrase,
     });
 
-    return this.getSuccessData(output);
-  }
-
-  async searchNotes(phrase: string, tags?: string[]) {
-    const output = await this.proxyService.query<SearchNoteOutput, SearchNoteInput>(`/api/search-notes`, {
+  searchNotes = (phrase: string, tags?: string[]) =>
+    this.safeQuery<SearchNoteOutput, SearchNoteInput>(`/api/search-notes`, {
       phrase,
       tags,
     });
 
-    return this.getSuccessData(output);
-  }
-
-  async createNote(note: string) {
-    const output = await this.proxyService.query<CreateNoteOutput, CreateNoteInput>("/api/create-note", {
+  createNote = (note: string) =>
+    this.safeQuery<CreateNoteOutput, CreateNoteInput>("/api/create-note", {
       note,
     });
 
-    return this.getSuccessData(output);
-  }
-
-  async updateNote(id: string, note: string) {
-    const output = await this.proxyService.query<UpdateNoteOutput, UpdateNoteInput>(`/api/update-note`, {
+  updateNote = (id: string, note: string) =>
+    this.safeQuery<UpdateNoteOutput, UpdateNoteInput>(`/api/update-note`, {
       id,
       note,
     });
 
-    return this.getSuccessData(output);
-  }
-
-  async getMentions(id: string) {
-    const output = await this.proxyService.query<GetMentionsOuput, GetMentionsInput>(`/api/get-mentions`, {
+  getMentions = (id: string) =>
+    this.safeQuery<GetMentionsOuput, GetMentionsInput>(`/api/get-mentions`, {
       id,
     });
+
+  getContentFromUrl = (url: string) =>
+    this.safeQuery<GetContentFromUrlOutput, GetContentFromUrlInput>(`/api/get-content-from-url`, {
+      url,
+    });
+
+  private async safeQuery<OutputType, InputType>(path: string, input: InputType) {
+    const output = await this.proxyService.query<OutputType, InputType>(path, input);
 
     return this.getSuccessData(output);
   }

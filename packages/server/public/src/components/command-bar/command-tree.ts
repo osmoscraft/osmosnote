@@ -2,14 +2,15 @@ import type { RegisteredCommand } from "./command-bar.component.js";
 import { handleCaptureNote } from "./commands/handle-capture-note.js";
 import { handleInsertNote } from "./commands/handle-insert-note.js";
 import { handleInsertTags } from "./commands/handle-insert-tags.js";
+import { handleInsertUrl } from "./commands/handle-insert-url.js";
 
 export const commandTree: RegisteredCommand = {
   name: "All commands",
   key: "",
   commands: [
     {
-      name: "New",
-      key: "n",
+      name: "Search",
+      key: "s",
       commands: [
         {
           name: "Note",
@@ -27,14 +28,6 @@ export const commandTree: RegisteredCommand = {
       key: "f",
       commands: [
         {
-          name: "Copy (yank) link",
-          key: "y",
-        },
-        {
-          name: "Open",
-          key: "o",
-        },
-        {
           name: "Format",
           key: "f",
         },
@@ -43,8 +36,8 @@ export const commandTree: RegisteredCommand = {
           key: "s",
         },
         {
-          name: "Save and sync all",
-          key: "a",
+          name: "Sync all",
+          key: "y",
         },
       ],
     },
@@ -60,6 +53,7 @@ export const commandTree: RegisteredCommand = {
         {
           name: "URL",
           key: "l",
+          handler: handleInsertUrl,
         },
         {
           name: "Tags",
@@ -79,24 +73,6 @@ export const commandTree: RegisteredCommand = {
         {
           name: "check",
           key: "c",
-        },
-      ],
-    },
-    {
-      name: "Go to",
-      key: "g",
-      commands: [
-        {
-          name: "Header",
-          key: "h",
-        },
-        {
-          name: "References",
-          key: "r",
-        },
-        {
-          name: "Editor",
-          key: "e",
         },
       ],
     },

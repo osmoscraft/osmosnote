@@ -1,5 +1,6 @@
 export * from "./src/lib/create-handler";
 export * from "./src/routes/create-note";
+export * from "./src/routes/get-content-from-url";
 export * from "./src/routes/get-mentions";
 export * from "./src/routes/get-note";
 export * from "./src/routes/get-recent-notes";
