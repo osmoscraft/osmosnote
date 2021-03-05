@@ -8,7 +8,7 @@ import {
 } from "../menu/render-menu.js";
 import { parseQuery } from "./parse-query.js";
 
-export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
+export const handleSearchNote: CommandHandler = async ({ input, context }) => {
   const query = input.args?.trim() ?? "";
 
   const { phrase, tags } = parseQuery(query);
@@ -44,7 +44,7 @@ export const handleCaptureNote: CommandHandler = async ({ input, context }) => {
     },
     runOnCommit: () => {
       // treating input as title to create a new note
-      window.open(newNoteUrl);
+      context.windowRef.window.open(newNoteUrl, "_self");
     },
   };
 };

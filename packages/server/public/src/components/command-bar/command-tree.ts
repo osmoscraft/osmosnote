@@ -1,8 +1,9 @@
 import type { RegisteredCommand } from "./command-bar.component.js";
-import { handleCaptureNote } from "./commands/handle-capture-note.js";
 import { handleInsertNote } from "./commands/handle-insert-note.js";
 import { handleInsertTags } from "./commands/handle-insert-tags.js";
 import { handleInsertUrl } from "./commands/handle-insert-url.js";
+import { handleSearchNote } from "./commands/handle-search-note.js";
+import { handleSearchUrl } from "./commands/handle-search-url.js";
 import { handleVersionsCheck } from "./commands/handle-version-check.js";
 import { handleVersionsSyncAndCheck } from "./commands/handle-version-sync-and-check.js";
 import { handleVersionsSync } from "./commands/handle-version-sync.js";
@@ -12,17 +13,39 @@ export const commandTree: RegisteredCommand = {
   key: "",
   commands: [
     {
-      name: "Search",
-      key: "s",
+      name: "Notes",
+      key: "n",
       commands: [
         {
-          name: "Note",
+          name: "Search content",
           key: "n",
-          handler: handleCaptureNote,
+          handler: handleSearchNote,
         },
         {
-          name: "URL",
+          name: "Search URL",
           key: "l",
+          handler: handleSearchUrl,
+        },
+      ],
+    },
+    {
+      name: "Insert",
+      key: "i",
+      commands: [
+        {
+          name: "Note by content",
+          key: "i",
+          handler: handleInsertNote,
+        },
+        {
+          name: "Note by URL",
+          key: "l",
+          handler: handleInsertUrl,
+        },
+        {
+          name: "Tags",
+          key: "t",
+          handler: handleInsertTags,
         },
       ],
     },
@@ -41,27 +64,6 @@ export const commandTree: RegisteredCommand = {
         {
           name: "Sync all",
           key: "y",
-        },
-      ],
-    },
-    {
-      name: "Insert",
-      key: "i",
-      commands: [
-        {
-          name: "Note",
-          key: "n",
-          handler: handleInsertNote,
-        },
-        {
-          name: "URL",
-          key: "l",
-          handler: handleInsertUrl,
-        },
-        {
-          name: "Tags",
-          key: "t",
-          handler: handleInsertTags,
         },
       ],
     },
