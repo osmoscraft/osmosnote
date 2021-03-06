@@ -14,6 +14,7 @@
   - Add file save / format commands
   - Ctrl + S should trigger command (instead of run directly)
   - Check version on launch
+  - Ctrl + k to insert link
   - Click to open link in current window
   - Ctrl + Click to open link in new window
   - Empty line cursor missing
