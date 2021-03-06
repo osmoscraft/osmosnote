@@ -106,6 +106,16 @@ export function renderCrawlResultForInsert(content: GetContentFromUrlOutput): st
   return /*html*/ `<s2-menu-row data-kind="option" data-insert-on-save="${openUrl}" data-label="${content.title}"></s2-menu-row>`;
 }
 
+export function renderCrawlResultForOpen(content: GetContentFromUrlOutput): string {
+  const searchParams = new URLSearchParams();
+  searchParams.set("url", content.canonicalUrl);
+  searchParams.set("title", content.title);
+  searchParams.set("content", content.description);
+  const openUrl = `/?${searchParams}`;
+
+  return /*html*/ `<s2-menu-row data-kind="option" data-open-url="${openUrl}" data-label="${content.title}"></s2-menu-row>`;
+}
+
 export function renderHeaderRow(title: string) {
   return /*html*/ `<s2-menu-row data-kind="header" data-label="${title}"></s2-menu-row>`;
 }

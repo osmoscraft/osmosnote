@@ -65,6 +65,9 @@
   - Test (need real dom: playwright/cypress)
     - How to mock dom measure?
     - Port testing helpers to browser
+  - Refactor command menu directives:
+    - Open url and insert on save should be refactored into two directives:
+      - data-url (string) and data-action ("open"|"insert-on-save")
 
 ## IDE V2
 

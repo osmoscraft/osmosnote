@@ -1,8 +1,7 @@
 import type { RegisteredCommand } from "./command-bar.component.js";
 import { handleInsertNote } from "./commands/handle-insert-note.js";
 import { handleInsertTags } from "./commands/handle-insert-tags.js";
-import { handleSearchNote } from "./commands/handle-search-note.js";
-import { handleSearchUrl } from "./commands/handle-search-url.js";
+import { handleOpenOrCreateNote } from "./commands/handle-open-note.js";
 import { handleVersionsCheck } from "./commands/handle-version-check.js";
 import { handleVersionsSyncAndCheck } from "./commands/handle-version-sync-and-check.js";
 
@@ -11,20 +10,9 @@ export const commandTree: RegisteredCommand = {
   key: "",
   commands: [
     {
-      name: "Notes",
+      name: "Open or new",
       key: "n",
-      commands: [
-        {
-          name: "Search content",
-          key: "n",
-          handler: handleSearchNote,
-        },
-        {
-          name: "Search URL",
-          key: "l",
-          handler: handleSearchUrl,
-        },
-      ],
+      handler: handleOpenOrCreateNote,
     },
     {
       name: "Insert",
@@ -32,7 +20,7 @@ export const commandTree: RegisteredCommand = {
       commands: [
         {
           name: "Note",
-          key: "i",
+          key: "n",
           handler: handleInsertNote,
         },
         {
@@ -43,18 +31,9 @@ export const commandTree: RegisteredCommand = {
       ],
     },
     {
-      name: "Link",
+      name: "Link selection to",
       key: "k",
-      commands: [
-        {
-          name: "Note by content",
-          key: "k",
-        },
-        {
-          name: "Note by url",
-          key: "l",
-        },
-      ],
+      commands: [],
     },
     {
       name: "File",
