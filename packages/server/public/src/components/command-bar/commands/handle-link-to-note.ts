@@ -40,7 +40,7 @@ export const handleLinkToNote: CommandHandler = async ({ input, context }) => {
         optionsHtml += renderMessageRow("Type keywords or URL");
 
         // kick off network requests in parallel
-        const recentNotesAsync = context.apiService.getRecentNotes();
+        const recentNotesAsync = context.apiService.getRecentNotes(5);
         const foundNotesAsync = context.apiService.searchNotes(selectedText);
 
         // Blank input, show recent notes AND search using selected text

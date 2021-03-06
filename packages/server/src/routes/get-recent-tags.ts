@@ -17,14 +17,14 @@ export interface SuggestedTag {
   score: number;
 }
 
-const RECENT_NOTE_LIMIT = 30;
+const RECENT_TAG_LIMIT = 10;
 
 export const handleGetRecentTags = createHandler<GetRecentTagsOutput, GetRecentTagsInput>(async (input) => {
   const config = await getConfig();
 
   const notesDir = config.notesDir;
 
-  const limit = input.limit ?? RECENT_NOTE_LIMIT;
+  const limit = input.limit ?? RECENT_TAG_LIMIT;
 
   const _ = TAG_SEPARATOR;
 

@@ -3,14 +3,6 @@
 ## IDE MVP
 
 - TODO
-  - Convert selection to note
-    - On empty state
-      - Search with selected phrase
-      - Also show recently changed notes
-    - Once typing
-      - Search with typed phrase
-    - On select: keep the selection the same, only update link
-      - need text editor api for convert text to link
   - Add file save / format commands
   - Ctrl + S should trigger command (instead of run directly)
   - Check version on launch
@@ -22,6 +14,14 @@
 ---
 
 - DONE
+  - Convert selection to note
+    - On empty state
+      - Search with selected phrase
+      - Also show recently changed notes
+    - Once typing
+      - Search with typed phrase
+    - On select: keep the selection the same, only update link
+      - need text editor api for convert text to link
   - Capture by URL
   - Handle unsaved changes
     - Track change dirty state

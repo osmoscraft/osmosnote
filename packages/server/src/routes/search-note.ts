@@ -6,11 +6,12 @@ import { parseNote } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
 import { TAG_SEPARATOR } from "../lib/tag";
 
-const RESULT_LIMIT = 10;
+const DEFAULT_RESULT_LIMIT = 30;
 
 export interface SearchNoteInput {
   phrase: string;
   tags?: string[];
+  limit?: number;
 }
 
 export interface SearchNoteOutput {
@@ -30,10 +31,11 @@ export const handleSearchNote = createHandler<SearchNoteOutput, SearchNoteInput>
 
   const phrase = input.phrase;
   const tags = input.tags ?? [];
+  const limit = input.limit ?? DEFAULT_RESULT_LIMIT;
   const notesDir = config.notesDir;
 
   const now = performance.now();
-  const items = await searchRipgrep(phrase, tags, notesDir);
+  const items = await searchRipgrep(phrase, tags, notesDir, limit);
   const durationInMs = performance.now() - now;
 
   return {
@@ -42,7 +44,7 @@ export const handleSearchNote = createHandler<SearchNoteOutput, SearchNoteInput>
   };
 });
 
-async function searchRipgrep(phrase: string, tags: string[], dir: string): Promise<SearchResultItem[]> {
+async function searchRipgrep(phrase: string, tags: string[], dir: string, limit: number): Promise<SearchResultItem[]> {
   const _ = TAG_SEPARATOR;
   const keywordQuery = phrase.trim();
   let getFilenamesPreprocess: string = "";
@@ -69,15 +71,15 @@ async function searchRipgrep(phrase: string, tags: string[], dir: string): Promi
   const keywords = keywordQuery.split(" ").filter((keyword) => !!keyword);
 
   if (keywords.length) {
-    return keywordSearch(dir, keywords, getFilenamesPreprocess);
+    return keywordSearch(dir, keywords, getFilenamesPreprocess, limit);
   } else if (tags) {
-    return tagOnlySearch(dir, getFilenamesPreprocess);
+    return tagOnlySearch(dir, getFilenamesPreprocess, limit);
   } else {
     return [];
   }
 }
 
-async function tagOnlySearch(dir: string, getFilenamesPreprocess: string) {
+async function tagOnlySearch(dir: string, getFilenamesPreprocess: string, limit: number) {
   const { error, stdout, stderr } = await runShell(`${getFilenamesPreprocess}`, { cwd: dir });
 
   if (error) {
@@ -107,19 +109,20 @@ async function tagOnlySearch(dir: string, getFilenamesPreprocess: string) {
     const notes: SearchResultItem[] = await Promise.all(notesAsync);
     const sortedNotes = notes
       .sort((a, b) => a.title.localeCompare(b.title)) // sort title first to result can remain the same
-      .sort((a, b) => b.score - a.score);
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit);
 
     return sortedNotes;
   }
 }
 
-async function keywordSearch(dir: string, keywords: string[], getFilenamesPreprocess: string) {
+async function keywordSearch(dir: string, keywords: string[], getFilenamesPreprocess: string, limit: number) {
   const wordsInput = keywords.join(String.raw`\W+(?:\w+\W+){0,3}?`); // two words separated by 0 to 3 other words
 
   let searchCommand = "";
   if (keywords.length) {
     // -H ensures file path is displayed even when there is only one result
-    searchCommand = String.raw`${getFilenamesPreprocess}rg "\b${wordsInput}" -H --ignore-case --count-matches | head -n ${RESULT_LIMIT}`;
+    searchCommand = String.raw`${getFilenamesPreprocess}rg "\b${wordsInput}" -H --ignore-case --count-matches | head -n ${limit}`;
   }
 
   /**

@@ -39,10 +39,11 @@ export class ApiService {
       phrase,
     });
 
-  searchNotes = (phrase: string, tags?: string[]) =>
+  searchNotes = (phrase: string, tags?: string[], limit?: number) =>
     this.safeQuery<SearchNoteOutput, SearchNoteInput>(`/api/search-notes`, {
       phrase,
       tags,
+      limit,
     });
 
   createNote = (note: string) =>
