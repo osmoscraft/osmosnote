@@ -5,11 +5,15 @@ export const handleVersionsCheck: CommandHandler = async ({ context }) => ({
 });
 
 export const versionCheckRunOnMatch = async (context: CommandHandlerContext) => {
-  context.componentRefs.statusBar.setMessage("Checking…");
+  context.notificationService.displayMessage("Checking…");
 
   try {
     const result = await context.apiService.getVersionStatus();
-    context.componentRefs.statusBar.setMessage(result.message);
+    if (result.isUpToDate) {
+      context.notificationService.displayMessage(result.message);
+    } else {
+      context.notificationService.displayMessage(result.message, "warning");
+    }
   } catch (error) {
     context.componentRefs.statusBar.setMessage("Error checking version", "error");
   }

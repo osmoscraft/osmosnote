@@ -44,12 +44,12 @@ export const commandTree: RegisteredCommand = {
           // TODO: handleSaveAndCheck
         },
         {
-          name: "Check all",
+          name: "Check versions",
           key: "v",
           handler: handleVersionsCheck,
         },
         {
-          name: "Sync all",
+          name: "Sync versions",
           key: "a",
           handler: handleVersionsSyncAndCheck,
         },

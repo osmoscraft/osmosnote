@@ -3,17 +3,13 @@
 ## IDE MVP
 
 - TODO
-  - Add file save / format commands
-  - Ctrl + S should trigger command (instead of run directly)
-  - Check version on launch
-  - Ctrl + k to insert link
-  - Click to open link in current window
-  - Ctrl + Click to open link in new window
   - Empty line cursor missing
+  - Add file save / format commands
 
 ---
 
 - DONE
+  - Check version on launch
   - Convert selection to note
     - On empty state
       - Search with selected phrase
@@ -79,6 +75,7 @@
     - Open url and insert on save should be refactored into two directives:
       - data-url (string) and data-action ("open"|"insert-on-save")
   - Refactor history and change tracking: should runAtom auto update dirty state?
+  - How does comand bar and keyboard shortcut share code?
 
 ## IDE V2
 
@@ -86,6 +83,9 @@
 - Consider support shortcut to insert current time (northstar?)
 - Use History Service to track every keypress and use debouncer to improve performance
 - Consider consolidating change tracking service with history service (caret state is an outlier)
+- Ctrl + k to insert link
+- Click to open link in current window
+- Ctrl + Click to open link in new window
 
 ## TextEngine V2
 

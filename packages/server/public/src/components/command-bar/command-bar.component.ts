@@ -1,5 +1,6 @@
 import { ApiService } from "../../services/api/api.service.js";
 import { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
+import { NotificationService } from "../../services/notification/notification.service.js";
 import { RemoteHostService } from "../../services/remote/remote-host.service.js";
 import { WindowRefService } from "../../services/window-reference/window.service.js";
 import { di } from "../../utils/dependency-injector.js";
@@ -23,6 +24,7 @@ export interface CommandHandlerContext {
   apiService: ApiService;
   remoteHostService: RemoteHostService;
   windowRef: WindowRefService;
+  notificationService: NotificationService;
 }
 
 export interface CommandHandler {
@@ -72,6 +74,7 @@ export class CommandBarComponent extends HTMLElement {
   private apiService = di.getSingleton(ApiService);
   private remoteHostService = di.getSingleton(RemoteHostService);
   private windowRef = di.getSingleton(WindowRefService);
+  private notificationService = di.getSingleton(NotificationService);
 
   private triggeringElement: Element | null = null;
 
@@ -369,6 +372,7 @@ export class CommandBarComponent extends HTMLElement {
           apiService: this.apiService,
           remoteHostService: this.remoteHostService,
           windowRef: this.windowRef,
+          notificationService: this.notificationService,
         },
       });
 

@@ -35,6 +35,7 @@ export class TextEditorComponent extends HTMLElement {
   private trackChangeService!: TrackChangeService;
   private remoteHostService!: RemoteHostService;
   private notificationService!: NotificationService;
+  private apiService!: ApiService;
 
   private _host!: HTMLElement;
 
@@ -57,6 +58,7 @@ export class TextEditorComponent extends HTMLElement {
     this.trackChangeService = di.getSingleton(TrackChangeService);
     this.remoteHostService = di.getSingleton(RemoteHostService);
     this.notificationService = di.getSingleton(NotificationService);
+    this.apiService = di.getSingleton(ApiService);
 
     this._host = this.querySelector("#content-host") as HTMLElement;
 
@@ -72,6 +74,8 @@ export class TextEditorComponent extends HTMLElement {
     } else {
       note = getNoteFromTemplate({ title, url, content });
     }
+
+    this.checkVersion();
 
     const dom = sourceToLines(note);
 
@@ -95,6 +99,16 @@ export class TextEditorComponent extends HTMLElement {
 
   getSelectedText(): string | null {
     return this.caretService.getCaretContext()?.textSelected ?? null;
+  }
+
+  async checkVersion() {
+    this.notificationService.displayMessage("Checking…");
+    const result = await this.apiService.getVersionStatus();
+    if (result.isUpToDate) {
+      this.notificationService.displayMessage(result.message);
+    } else {
+      this.notificationService.displayMessage(result.message, "warning");
+    }
   }
 
   async insertAtCaretWithContext(getInsertingContent: InsertFunction) {

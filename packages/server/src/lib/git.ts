@@ -106,3 +106,46 @@ export async function gitDiff(repoRoot: string): Promise<GitDiffOutput> {
     error: null,
   };
 }
+
+export interface GitStatusOutput extends GitCommandOutput {
+  isUpToDate: boolean | null;
+}
+
+export async function gitStatus(repoRoot: string): Promise<GitStatusOutput> {
+  const statusResult = await runShell("git status", { cwd: repoRoot });
+  const error = getRunShellError(statusResult, "Status error");
+  if (error)
+    return {
+      message: null,
+      isUpToDate: null,
+      error: error.message ? error.message : "Unknown git status error",
+    };
+
+  if (!statusResult.stdout) {
+    return {
+      message: null,
+      isUpToDate: null,
+      error: "Git status had no output",
+    };
+  }
+
+  const gitStatus = statusResult.stdout
+    .trim()
+    .split("\n")
+    .find((line) => line.includes("Your branch"))
+    ?.trim();
+
+  if (!gitStatus?.includes("up to date")) {
+    return {
+      message: gitStatus ?? "Unknown status",
+      isUpToDate: false,
+      error: null,
+    };
+  }
+
+  return {
+    message: gitStatus,
+    isUpToDate: true,
+    error: null,
+  };
+}
