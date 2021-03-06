@@ -2,7 +2,11 @@ export enum PayloadAction {
   openNoteByUrl = "open-url",
   openNoteById = "open-id",
   insertText = "insert-text",
-  insertNewNoteByUrl = "insert-on-save",
+  /** Open a new note with provided url. Insert a link to the new note from current note when the new note is saved. */
+  insertNewNoteByUrl = "insert-on-save-url",
+  linkToNoteById = "link-to-id",
+  /** Open a new note with provided url. Convert selection to a link to the new note when the new note is saved. */
+  linkToNewNoteByUrl = "link-on-save-url",
 }
 
 export class MenuRowComponent extends HTMLElement {

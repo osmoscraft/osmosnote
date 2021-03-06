@@ -315,7 +315,7 @@ export class CommandBarComponent extends HTMLElement {
         return true;
       }
 
-      if (targetDataset.payload) {
+      if (targetDataset.payload && targetDataset.payloadAction) {
         const shouldOpenInNew = e.ctrlKey || targetDataset.alwaysNewTab === "true";
 
         switch (targetDataset.payloadAction) {
@@ -333,9 +333,19 @@ export class CommandBarComponent extends HTMLElement {
             return true;
           case PayloadAction.insertText:
             this.componentRefs.textEditor.insertAtCaret(targetDataset.payload);
-            this.componentRefs.statusBar.setMessage(`[command-bar] inserted "${targetDataset.payload}"`);
             this.exitCommandMode();
             return true;
+          case PayloadAction.linkToNewNoteByUrl:
+            // use remote Host
+            return true;
+          case PayloadAction.linkToNoteById:
+            const id = targetDataset.payload;
+            this.componentRefs.textEditor.insertAtCaretWithContext((context) => `[${context.textSelected}](${id})`);
+            this.exitCommandMode();
+            return true;
+          default:
+            const unknownAction: never = targetDataset.payloadAction;
+            throw new Error(unknownAction);
         }
       }
     }

@@ -53,7 +53,7 @@ export function renderSearchResultSection(
 
 export function renderRecentNotes(
   getRecentNotesOutput: GetRecentNotesOutput,
-  action: PayloadAction.openNoteById | PayloadAction.insertText
+  action: PayloadAction.openNoteById | PayloadAction.insertText | PayloadAction.linkToNoteById
 ): string {
   const isRecentError = !getRecentNotesOutput?.notes;
   const isRecentEmpty = getRecentNotesOutput.notes && !getRecentNotesOutput.notes.length;
@@ -61,6 +61,7 @@ export function renderRecentNotes(
   const getPayload = (item: RecentNoteItem) => {
     switch (action) {
       case PayloadAction.openNoteById:
+      case PayloadAction.linkToNoteById:
         return filenameToId(item.filename);
       case PayloadAction.insertText:
         return `[${item.title}](${filenameToId(item.filename)})`;

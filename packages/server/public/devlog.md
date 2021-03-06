@@ -58,6 +58,11 @@
   - Note id system
   - Timestamp in metadata
 
+## Bugs
+
+- Cancel remote action after cursor move
+- new node shown as dirty but doesn't prompt before window close
+
 ## Technical debt MVP
 
 - TODO
