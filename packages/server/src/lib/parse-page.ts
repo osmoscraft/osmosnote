@@ -12,7 +12,7 @@ export function getPageUrl($: CheerioRoot, fallbackUrl?: string) {
     url = "";
   }
 
-  return url;
+  return url.toLowerCase();
 }
 
 export function getPageTitle($: CheerioRoot) {

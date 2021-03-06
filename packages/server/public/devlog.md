@@ -13,8 +13,10 @@
       - need text editor api for convert text to link
   - Add file save / format commands
   - Ctrl + S should trigger command (instead of run directly)
+  - Check version on launch
   - Click to open link in current window
   - Ctrl + Click to open link in new window
+  - Empty line cursor missing
 
 ---
 

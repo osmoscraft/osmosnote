@@ -1,4 +1,4 @@
-import type { SearchNoteOutput, GetRecentNotesOutput } from "@system-two/server";
+import type { SearchNoteOutput, GetRecentNotesOutput, GetContentFromUrlOutput } from "@system-two/server";
 import { filenameToId } from "../../../utils/id.js";
 import type { RegisteredCommand } from "../command-bar.component.js";
 
@@ -94,6 +94,16 @@ export function renderRecentNotesForInsert(listNotesOutput: GetRecentNotesOutput
     )
     .join("")}
   `;
+}
+
+export function renderCrawlResultForInsert(content: GetContentFromUrlOutput): string {
+  const searchParams = new URLSearchParams();
+  searchParams.set("url", content.canonicalUrl);
+  searchParams.set("title", content.title);
+  searchParams.set("content", content.description);
+  const openUrl = `/?${searchParams}`;
+
+  return /*html*/ `<s2-menu-row data-kind="option" data-insert-on-save="${openUrl}" data-label="${content.title}"></s2-menu-row>`;
 }
 
 export function renderHeaderRow(title: string) {
