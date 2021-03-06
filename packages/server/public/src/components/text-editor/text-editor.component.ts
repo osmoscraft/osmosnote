@@ -10,6 +10,8 @@ import { getNoteFromTemplate } from "./helpers/template.js";
 import { InputService } from "./input.service.js";
 import { MeasureService } from "./measure.service.js";
 import { TrackChangeService } from "./track-change.service.js";
+import { RemoteHostService } from "../../services/remote/remote-host.service.js";
+import { NotificationService } from "../../services/notification/notification.service.js";
 
 export interface InsertFunction {
   (context: CaretContext): string | Promise<string>;
@@ -31,6 +33,8 @@ export class TextEditorComponent extends HTMLElement {
   private formatService!: FormatService;
   private measureService!: MeasureService;
   private trackChangeService!: TrackChangeService;
+  private remoteHostService!: RemoteHostService;
+  private notificationService!: NotificationService;
 
   private _host!: HTMLElement;
 
@@ -51,6 +55,8 @@ export class TextEditorComponent extends HTMLElement {
     this.formatService = di.getSingleton(FormatService);
     this.measureService = di.getSingleton(MeasureService);
     this.trackChangeService = di.getSingleton(TrackChangeService);
+    this.remoteHostService = di.getSingleton(RemoteHostService);
+    this.notificationService = di.getSingleton(NotificationService);
 
     this._host = this.querySelector("#content-host") as HTMLElement;
 
@@ -101,5 +107,21 @@ export class TextEditorComponent extends HTMLElement {
 
     await this.historyService.runAtomic(this.host, () => this.editService.caretPaste(insertingContent, this.host));
     this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
+  }
+
+  async insertNoteLinkOnSave(openUrl: string) {
+    this.remoteHostService.runOnNewNote(openUrl, (ev) => {
+      const insertion = `[${ev.detail.title}](${ev.detail.id})`;
+      this.insertAtCaret(insertion);
+      this.notificationService.displayMessage(`Link inserted`);
+    });
+  }
+
+  async linkToNoteOnSave(openUrl: string) {
+    this.remoteHostService.runOnNewNote(openUrl, (ev) => {
+      const id = ev.detail.id;
+      this.insertAtCaretWithContext((context) => `[${context.textSelected}](${id})`);
+      this.notificationService.displayMessage(`Link added`);
+    });
   }
 }

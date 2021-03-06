@@ -12,29 +12,27 @@ declare global {
 }
 
 export class RemoteHostService {
+  private callbackWithCleanUp: null | ((ev: CustomEvent<NoteCreatedDetail>) => any) = null;
+
   constructor(private componentRefs: ComponentRefService) {
     this.handleCancel = this.handleCancel.bind(this);
-    this.handleChildNoteCreated = this.handleChildNoteCreated.bind(this);
   }
 
-  insertNoteLinkAfterCreated(openUrl: string) {
+  runOnNewNote(openUrl: string, callback: (ev: CustomEvent<NoteCreatedDetail>) => any) {
     // we can handle one action at a time, so stop handling any previous action
     this.cancelInsertLinkOnSave();
 
+    this.callbackWithCleanUp = (ev: CustomEvent<NoteCreatedDetail>) => {
+      callback(ev);
+      this.cancelInsertLinkOnSave();
+    };
+
     this.componentRefs.statusBar.setMessage("Waiting for remote window event, [ESC] to cancel", "warning");
 
-    window.addEventListener("remote-service:child-note-created", this.handleChildNoteCreated);
+    window.addEventListener("remote-service:child-note-created", this.callbackWithCleanUp);
     window.addEventListener("keydown", this.handleCancel, { capture: true });
 
     window.open(openUrl);
-  }
-
-  private handleChildNoteCreated(ev: CustomEvent<NoteCreatedDetail>) {
-    const insertion = `[${ev.detail.title}](${ev.detail.id})`;
-
-    this.componentRefs.textEditor.insertAtCaret(insertion);
-    this.componentRefs.statusBar.setMessage(`Inserted: "${insertion}"`);
-    this.cancelInsertLinkOnSave();
   }
 
   private handleCancel(e: KeyboardEvent) {
@@ -50,6 +48,9 @@ export class RemoteHostService {
 
   private cancelInsertLinkOnSave() {
     window.removeEventListener("keydown", this.handleCancel, { capture: true });
-    window.removeEventListener("remote-service:child-note-created", this.handleChildNoteCreated);
+    if (this.callbackWithCleanUp) {
+      window.removeEventListener("remote-service:child-note-created", this.callbackWithCleanUp);
+      this.callbackWithCleanUp = null;
+    }
   }
 }

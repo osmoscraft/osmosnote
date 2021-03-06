@@ -72,7 +72,7 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
     },
     runOnCommit: () => {
       // treating input as title to create a new note
-      context.remoteHostService.insertNoteLinkAfterCreated(newNoteUrl);
+      context.componentRefs.textEditor.insertNoteLinkOnSave(newNoteUrl);
     },
   };
 };

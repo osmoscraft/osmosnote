@@ -62,6 +62,8 @@
 
 - Cancel remote action after cursor move
 - new node shown as dirty but doesn't prompt before window close
+- Status bar could overflow into multiple lines
+- URL search needs debouncer. Invalid url blocks UI
 
 ## Technical debt MVP
 

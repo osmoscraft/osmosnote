@@ -3,7 +3,6 @@ import { ComponentRefService } from "../../services/component-reference/componen
 import { RemoteHostService } from "../../services/remote/remote-host.service.js";
 import { WindowRefService } from "../../services/window-reference/window.service.js";
 import { di } from "../../utils/dependency-injector.js";
-import { idToFilename } from "../../utils/id.js";
 import { commandTree } from "./command-tree.js";
 import { MenuRowComponent, PayloadAction } from "./menu/menu-row.component.js";
 import { renderChildCommands } from "./menu/render-menu.js";
@@ -328,7 +327,7 @@ export class CommandBarComponent extends HTMLElement {
             this.exitCommandMode();
             return true;
           case PayloadAction.insertNewNoteByUrl:
-            this.remoteHostService.insertNoteLinkAfterCreated(targetDataset.payload);
+            this.componentRefs.textEditor.insertNoteLinkOnSave(targetDataset.payload);
             this.exitCommandMode();
             return true;
           case PayloadAction.insertText:
@@ -336,7 +335,9 @@ export class CommandBarComponent extends HTMLElement {
             this.exitCommandMode();
             return true;
           case PayloadAction.linkToNewNoteByUrl:
-            // use remote Host
+            const url = targetDataset.payload;
+            this.componentRefs.textEditor.linkToNoteOnSave(url);
+            this.exitCommandMode();
             return true;
           case PayloadAction.linkToNoteById:
             const id = targetDataset.payload;
