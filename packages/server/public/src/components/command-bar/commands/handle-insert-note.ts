@@ -29,7 +29,7 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
 
   return {
     updateDropdownOnInput: async () => {
-      let optionsHtml = renderHeaderRow("Insert new");
+      let optionsHtml = "";
 
       if (!phrase?.length && !tags.length) {
         optionsHtml += renderMessageRow("Type keywords or URL");
@@ -37,11 +37,13 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
         // Blank input, show recent notes
         try {
           const notes = await context.apiService.getRecentNotes();
-          optionsHtml += renderRecentNotes(notes, PayloadAction.insertText);
+          optionsHtml += renderRecentNotes("Insert recent", notes, PayloadAction.insertText);
         } catch (error) {
           optionsHtml += renderMessageRow("Error loading recent notes");
         }
       } else {
+        optionsHtml = renderHeaderRow("Insert new");
+
         // Start search first for parallelism
         const notesAsync = context.apiService.searchNotes(phrase, tags);
 
@@ -62,7 +64,7 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
         // Search result
         try {
           const notes = await notesAsync;
-          optionsHtml += renderSearchResultSection(notes, PayloadAction.insertText);
+          optionsHtml += renderSearchResultSection("Insert search result", notes, PayloadAction.insertText);
         } catch (error) {
           optionsHtml += renderMessageRow("Error searching notes");
         }

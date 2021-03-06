@@ -14,7 +14,7 @@ import { handleInsertNote } from "./handle-insert-note.js";
 import { parseQuery } from "./parse-query.js";
 
 export const handleLinkToNote: CommandHandler = async ({ input, context }) => {
-  const selectedText = context.componentRefs.textEditor.getSelectedText();
+  const selectedText = context.componentRefs.textEditor.getSelectedText()?.trim();
 
   // Same behavior as insert when there is no selection
   if (!selectedText) return handleInsertNote({ input, context });
@@ -34,19 +34,32 @@ export const handleLinkToNote: CommandHandler = async ({ input, context }) => {
 
   return {
     updateDropdownOnInput: async () => {
-      let optionsHtml = renderHeaderRow("Link to");
+      let optionsHtml = "";
 
       if (!phrase?.length && !tags.length) {
         optionsHtml += renderMessageRow("Type keywords or URL");
 
-        // Blank input, show recent notes
+        // kick off network requests in parallel
+        const recentNotesAsync = context.apiService.getRecentNotes();
+        const foundNotesAsync = context.apiService.searchNotes(selectedText);
+
+        // Blank input, show recent notes AND search using selected text
         try {
-          const notes = await context.apiService.getRecentNotes();
-          optionsHtml += renderRecentNotes(notes, PayloadAction.linkToNoteById);
+          const recentNotes = await recentNotesAsync;
+          optionsHtml += renderRecentNotes("Link to recent", recentNotes, PayloadAction.linkToNoteById);
         } catch (error) {
           optionsHtml += renderMessageRow("Error loading recent notes");
         }
+
+        try {
+          const foundNotes = await foundNotesAsync;
+          optionsHtml += renderSearchResultSection("Link to search result", foundNotes, PayloadAction.linkToNoteById);
+        } catch (error) {
+          optionsHtml += renderMessageRow("Error searching notes");
+        }
       } else {
+        optionsHtml += renderHeaderRow("Link to new");
+
         // Start search first for parallelism
         const notesAsync = context.apiService.searchNotes(phrase, tags);
 
@@ -67,7 +80,7 @@ export const handleLinkToNote: CommandHandler = async ({ input, context }) => {
         // Search result
         try {
           const notes = await notesAsync;
-          optionsHtml += renderSearchResultSection(notes, PayloadAction.linkToNoteById);
+          optionsHtml += renderSearchResultSection("Link to search result", notes, PayloadAction.linkToNoteById);
         } catch (error) {
           optionsHtml += renderMessageRow("Error searching notes");
         }

@@ -47,6 +47,8 @@
   - Save to disk
     - Serialization
   - Fix: Ctrl + right arrow fail on empty line
+  - Fix: editor body vertical overflow push command bar out
+  - Fix: command dropdown vertical overflow issues
 
 ## Bootstrap system
 

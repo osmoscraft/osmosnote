@@ -29,7 +29,7 @@ export const handleOpenOrCreateNote: CommandHandler = async ({ input, context })
 
   return {
     updateDropdownOnInput: async () => {
-      let optionsHtml = renderHeaderRow("Open new");
+      let optionsHtml = "";
 
       if (!phrase?.length && !tags.length) {
         optionsHtml += renderMessageRow("Type keywords or URL");
@@ -37,11 +37,13 @@ export const handleOpenOrCreateNote: CommandHandler = async ({ input, context })
         // Blank input, show recent notes
         try {
           const notes = await context.apiService.getRecentNotes();
-          optionsHtml += renderRecentNotes(notes, PayloadAction.openNoteById);
+          optionsHtml += renderRecentNotes("Open recent", notes, PayloadAction.openNoteById);
         } catch (error) {
           optionsHtml += renderMessageRow("Error loading recent notes");
         }
       } else {
+        optionsHtml = renderHeaderRow("Open new");
+
         // Start search first for parallelism
         const notesAsync = context.apiService.searchNotes(phrase, tags);
 
@@ -62,7 +64,7 @@ export const handleOpenOrCreateNote: CommandHandler = async ({ input, context })
         // Search result
         try {
           const notes = await notesAsync;
-          optionsHtml += renderSearchResultSection(notes, PayloadAction.openNoteById);
+          optionsHtml += renderSearchResultSection("Open search result", notes, PayloadAction.openNoteById);
         } catch (error) {
           optionsHtml += renderMessageRow("Error searching notes");
         }

@@ -20,6 +20,7 @@ export function renderChildCommands(childCommand: RegisteredCommand[]) {
 }
 
 export function renderSearchResultSection(
+  title: string,
   searchReply: SearchNoteOutput,
   action: PayloadAction.openNoteById | PayloadAction.insertText | PayloadAction.linkToNoteById
 ): string {
@@ -37,7 +38,7 @@ export function renderSearchResultSection(
   };
 
   return /*html */ `
-  <s2-menu-row data-kind="header" data-label="Open search result"></s2-menu-row>
+  <s2-menu-row data-kind="header" data-label="${title}"></s2-menu-row>
   ${isSearchError ? /*html*/ `<s2-menu-row data-kind="message" data-label="Error searching"></s2-menu-row>` : ""}
   ${isSearchEmpty ? /*html*/ `<s2-menu-row data-kind="message" data-label="No items found"></s2-menu-row>` : ""}
   ${searchReply.items
@@ -53,6 +54,7 @@ export function renderSearchResultSection(
 }
 
 export function renderRecentNotes(
+  title: string,
   getRecentNotesOutput: GetRecentNotesOutput,
   action: PayloadAction.openNoteById | PayloadAction.insertText | PayloadAction.linkToNoteById
 ): string {
@@ -70,7 +72,7 @@ export function renderRecentNotes(
   };
 
   return /*html */ `
-  <s2-menu-row data-kind="header" data-label="Open recent"></s2-menu-row>
+  <s2-menu-row data-kind="header" data-label="${title}"></s2-menu-row>
   ${
     isRecentError
       ? /*html*/ `<s2-menu-row data-kind="message" data-label="Error finding recent items"></s2-menu-row>`
