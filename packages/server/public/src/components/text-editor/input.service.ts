@@ -282,7 +282,7 @@ export class InputService {
 
         if (!event.defaultPrevented) {
           // insert new line at point
-          this.historyService.runAtomic(host, () => this.editService.insertNewLine(host));
+          await this.historyService.runAtomic(host, () => this.editService.insertNewLine(host));
           this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
           event.preventDefault();
         }

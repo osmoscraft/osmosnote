@@ -82,7 +82,7 @@
 - Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
 - Consider support shortcut to insert current time (northstar?)
 - Use History Service to track every keypress and use debouncer to improve performance
-- Consider consolidating change tracking service with history service (caret state is an outlier)
+- Consider consolidating change tracking service with history service (caret state is an outlier) (track change and runAtomic are always together)
 - Ctrl + k to insert link
 - Click to open link in current window
 - Ctrl + Click to open link in new window
