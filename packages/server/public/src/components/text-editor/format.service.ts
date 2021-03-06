@@ -227,7 +227,7 @@ export class FormatService {
       if (match) {
         const [raw, plainText, linkTitle, linkTarget] = match;
         paragraphHtml += plainText;
-        paragraphHtml += `<span data-link class="t--ghost">[<span class="link__title">${linkTitle}</span>](<span data-note-id="${linkTarget}" class="link__target">${linkTarget}</span>)</span>`;
+        paragraphHtml += `<span data-link><span class="link__title">[${linkTitle}]</span><span data-note-id="${linkTarget}" class="link__target">(${linkTarget})</span></span>`;
 
         remainingText = remainingText.slice(raw.length);
         continue;
