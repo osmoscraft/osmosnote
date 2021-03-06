@@ -27,7 +27,7 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
 
   return {
     updateDropdownOnInput: async () => {
-      let optionsHtml = renderHeaderRow("Create");
+      let optionsHtml = renderHeaderRow("Insert new");
 
       optionsHtml += /*html*/ `<s2-menu-row data-kind="option" data-insert-on-save="${newNoteUrl}" data-label="${newNoteTitle}"></s2-menu-row>`;
 

@@ -84,6 +84,13 @@
     - Incrementally read more lines while in plaintext layer
     - Efficiently convert plaintext layer offset into DOM layer node and offset
 
+## Open source v1
+
+- TODO
+  - First run: config repo
+  - Handle delete note (auto refactor?)
+  - Init repo with demo content
+
 ## Projectg North star
 
 - CJK support (need pixel based column calc or unicode char visual length detection)

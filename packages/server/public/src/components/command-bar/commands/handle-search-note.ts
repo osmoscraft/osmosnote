@@ -20,7 +20,7 @@ export const handleSearchNote: CommandHandler = async ({ input, context }) => {
 
   return {
     updateDropdownOnInput: async () => {
-      let optionsHtml = renderHeaderRow("Create");
+      let optionsHtml = renderHeaderRow("Open new");
 
       optionsHtml += /*html*/ `<s2-menu-row data-kind="option" data-open-url="${newNoteUrl}" data-label="${newNoteTitle}"></s2-menu-row>`;
 

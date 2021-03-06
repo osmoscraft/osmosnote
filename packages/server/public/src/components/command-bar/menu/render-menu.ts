@@ -17,7 +17,7 @@ export function renderSearchResultSectionForOpen(searchReply: SearchNoteOutput):
   const isSearchEmpty = searchReply.items && !searchReply.items.length;
 
   return /*html */ `
-  <s2-menu-row data-kind="header" data-label="Search results"></s2-menu-row>
+  <s2-menu-row data-kind="header" data-label="Open search result"></s2-menu-row>
   ${isSearchError ? /*html*/ `<s2-menu-row data-kind="message" data-label="Error searching"></s2-menu-row>` : ""}
   ${isSearchEmpty ? /*html*/ `<s2-menu-row data-kind="message" data-label="No items found"></s2-menu-row>` : ""}
   ${searchReply.items
@@ -36,7 +36,7 @@ export function renderSearchResultSectionForInsert(searchReply: SearchNoteOutput
   const isSearchEmpty = searchReply.items && !searchReply.items.length;
 
   return /*html */ `
-  <s2-menu-row data-kind="header" data-label="Search results"></s2-menu-row>
+  <s2-menu-row data-kind="header" data-label="Insert search result"></s2-menu-row>
   ${isSearchError ? /*html*/ `<s2-menu-row data-kind="message" data-label="Error searching"></s2-menu-row>` : ""}
   ${isSearchEmpty ? /*html*/ `<s2-menu-row data-kind="message" data-label="No items found"></s2-menu-row>` : ""}
   ${searchReply.items
@@ -55,7 +55,7 @@ export function renderRecentNotesForOpen(getRecentNotesOutput: GetRecentNotesOut
   const isRecentEmpty = getRecentNotesOutput.notes && !getRecentNotesOutput.notes.length;
 
   return /*html */ `
-  <s2-menu-row data-kind="header" data-label="Recent"></s2-menu-row>
+  <s2-menu-row data-kind="header" data-label="Open recent"></s2-menu-row>
   ${
     isRecentError
       ? /*html*/ `<s2-menu-row data-kind="message" data-label="Error finding recent items"></s2-menu-row>`
@@ -78,7 +78,7 @@ export function renderRecentNotesForInsert(listNotesOutput: GetRecentNotesOutput
   const isRecentEmpty = listNotesOutput.notes && !listNotesOutput.notes.length;
 
   return /*html */ `
-  <s2-menu-row data-kind="header" data-label="Recent"></s2-menu-row>
+  <s2-menu-row data-kind="header" data-label="Insert recent"></s2-menu-row>
   ${
     isRecentError
       ? /*html*/ `<s2-menu-row data-kind="message" data-label="Error finding recent items"></s2-menu-row>`

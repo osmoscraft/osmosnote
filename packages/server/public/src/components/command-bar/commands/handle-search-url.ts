@@ -2,7 +2,7 @@ import type { CommandHandler } from "../command-bar.component.js";
 import {
   renderHeaderRow,
   renderMessageRow,
-  renderRecentNotesForInsert,
+  renderRecentNotesForOpen,
   renderSearchResultSectionForOpen,
 } from "../menu/render-menu.js";
 import { parseQuery } from "./parse-query.js";
@@ -14,14 +14,14 @@ export const handleSearchUrl: CommandHandler = async ({ input, context }) => {
 
   return {
     updateDropdownOnInput: async () => {
-      let optionsHtml = renderHeaderRow("Create");
+      let optionsHtml = renderHeaderRow("Open new");
 
       if (!phrase) {
         optionsHtml += renderMessageRow("Paste a URL");
 
         try {
           const notes = await context.apiService.getRecentNotes();
-          optionsHtml += renderRecentNotesForInsert(notes);
+          optionsHtml += renderRecentNotesForOpen(notes);
         } catch (error) {
           optionsHtml += renderMessageRow("Error loading recent notes");
         }
