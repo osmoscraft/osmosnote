@@ -21,7 +21,7 @@ export function renderChildCommands(childCommand: RegisteredCommand[]) {
 
 export function renderSearchResultSection(
   searchReply: SearchNoteOutput,
-  action: PayloadAction.openNoteById | PayloadAction.insertText
+  action: PayloadAction.openNoteById | PayloadAction.insertText | PayloadAction.linkToNoteById
 ): string {
   const isSearchError = !searchReply?.items;
   const isSearchEmpty = searchReply.items && !searchReply.items.length;
@@ -29,6 +29,7 @@ export function renderSearchResultSection(
   const getPayload = (item: SearchResultItem) => {
     switch (action) {
       case PayloadAction.openNoteById:
+      case PayloadAction.linkToNoteById:
         return filenameToId(item.filename);
       case PayloadAction.insertText:
         return `[${item.title}](${filenameToId(item.filename)})`;
@@ -90,7 +91,7 @@ export function renderRecentNotes(
 
 export function renderCrawlResult(
   content: GetContentFromUrlOutput,
-  action: PayloadAction.insertNewNoteByUrl | PayloadAction.openNoteByUrl
+  action: PayloadAction.insertNewNoteByUrl | PayloadAction.openNoteByUrl | PayloadAction.linkToNewNoteByUrl
 ): string {
   const searchParams = new URLSearchParams();
   searchParams.set("url", content.canonicalUrl);

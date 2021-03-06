@@ -54,7 +54,7 @@ export const handleLinkToNote: CommandHandler = async ({ input, context }) => {
         if (url) {
           try {
             const urlContent = await context.apiService.getContentFromUrl(url);
-            optionsHtml += renderCrawlResult(urlContent, PayloadAction.insertNewNoteByUrl);
+            optionsHtml += renderCrawlResult(urlContent, PayloadAction.linkToNewNoteByUrl);
           } catch (error) {
             console.error(error);
             optionsHtml += renderMessageRow("Error visiting URL");
@@ -62,12 +62,12 @@ export const handleLinkToNote: CommandHandler = async ({ input, context }) => {
         }
 
         // Raw new note
-        optionsHtml += renderNoteWithUrl(newNoteUrl, newNoteTitle, PayloadAction.insertNewNoteByUrl);
+        optionsHtml += renderNoteWithUrl(newNoteUrl, newNoteTitle, PayloadAction.linkToNewNoteByUrl);
 
         // Search result
         try {
           const notes = await notesAsync;
-          optionsHtml += renderSearchResultSection(notes, PayloadAction.insertText);
+          optionsHtml += renderSearchResultSection(notes, PayloadAction.linkToNoteById);
         } catch (error) {
           optionsHtml += renderMessageRow("Error searching notes");
         }
