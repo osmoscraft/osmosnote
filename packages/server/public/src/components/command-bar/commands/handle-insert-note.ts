@@ -1,12 +1,14 @@
 import { ensureNoteTitle } from "../../../utils/ensure-note-title.js";
 import { getLowerCaseUrl } from "../../../utils/url.js";
 import type { CommandHandler } from "../command-bar.component.js";
+import { PayloadAction } from "../menu/menu-row.component.js";
 import {
-  renderCrawlResultForInsert,
+  renderCrawlResult,
   renderHeaderRow,
   renderMessageRow,
-  renderRecentNotesForInsert,
-  renderSearchResultSectionForInsert,
+  renderNoteWithUrl,
+  renderRecentNotes,
+  renderSearchResultSection,
 } from "../menu/render-menu.js";
 import { parseQuery } from "./parse-query.js";
 
@@ -29,13 +31,13 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
     updateDropdownOnInput: async () => {
       let optionsHtml = renderHeaderRow("Insert new");
 
-      optionsHtml += /*html*/ `<s2-menu-row data-kind="option" data-insert-on-save="${newNoteUrl}" data-label="${newNoteTitle}"></s2-menu-row>`;
-
       if (!phrase?.length && !tags.length) {
+        optionsHtml += renderMessageRow("Type keywords or URL");
+
         // Blank input, show recent notes
         try {
           const notes = await context.apiService.getRecentNotes();
-          optionsHtml += renderRecentNotesForInsert(notes);
+          optionsHtml += renderRecentNotes(notes, PayloadAction.insertText);
         } catch (error) {
           optionsHtml += renderMessageRow("Error loading recent notes");
         }
@@ -47,17 +49,20 @@ export const handleInsertNote: CommandHandler = async ({ input, context }) => {
         if (url) {
           try {
             const urlContent = await context.apiService.getContentFromUrl(url);
-            optionsHtml += renderCrawlResultForInsert(urlContent);
+            optionsHtml += renderCrawlResult(urlContent, PayloadAction.insertNewNoteByUrl);
           } catch (error) {
             console.error(error);
             optionsHtml += renderMessageRow("Error visiting URL");
           }
         }
 
+        // Raw new note
+        optionsHtml += renderNoteWithUrl(newNoteUrl, newNoteTitle, PayloadAction.insertNewNoteByUrl);
+
         // Search result
         try {
           const notes = await notesAsync;
-          optionsHtml += renderSearchResultSectionForInsert(notes);
+          optionsHtml += renderSearchResultSection(notes, PayloadAction.insertText);
         } catch (error) {
           optionsHtml += renderMessageRow("Error searching notes");
         }

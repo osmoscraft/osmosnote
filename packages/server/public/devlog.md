@@ -68,6 +68,7 @@
   - Refactor command menu directives:
     - Open url and insert on save should be refactored into two directives:
       - data-url (string) and data-action ("open"|"insert-on-save")
+  - Refactor history and change tracking: should runAtom auto update dirty state?
 
 ## IDE V2
 

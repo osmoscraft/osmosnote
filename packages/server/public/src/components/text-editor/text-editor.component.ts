@@ -82,8 +82,13 @@ export class TextEditorComponent extends HTMLElement {
     this.trackChangeService.set(isNewNote ? null : this.historyService.peek()!.textContent, isNewNote);
   }
 
-  insertAtCaret(text: string) {
-    this.historyService.runAtomic(this.host, () => this.editService.caretPaste(text, this.host));
+  async insertAtCaret(text: string) {
+    await this.historyService.runAtomic(this.host, () => this.editService.caretPaste(text, this.host));
+    this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
+  }
+
+  getSelectedText(): string | null {
+    return this.caretService.getCaretContext()?.textSelected ?? null;
   }
 
   async insertAtCaretWithContext(getInsertingContent: InsertFunction) {
@@ -94,6 +99,7 @@ export class TextEditorComponent extends HTMLElement {
 
     const insertingContent = await getInsertingContent(caretContext);
 
-    this.historyService.runAtomic(this.host, () => this.editService.caretPaste(insertingContent, this.host));
+    await this.historyService.runAtomic(this.host, () => this.editService.caretPaste(insertingContent, this.host));
+    this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
   }
 }

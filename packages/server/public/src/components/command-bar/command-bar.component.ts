@@ -5,7 +5,7 @@ import { WindowRefService } from "../../services/window-reference/window.service
 import { di } from "../../utils/dependency-injector.js";
 import { idToFilename } from "../../utils/id.js";
 import { commandTree } from "./command-tree.js";
-import { MenuRowComponent } from "./menu/menu-row.component.js";
+import { MenuRowComponent, PayloadAction } from "./menu/menu-row.component.js";
 import { renderChildCommands } from "./menu/render-menu.js";
 
 customElements.define("s2-menu-row", MenuRowComponent);
@@ -315,35 +315,28 @@ export class CommandBarComponent extends HTMLElement {
         return true;
       }
 
-      if (targetDataset.openUrl) {
+      if (targetDataset.payload) {
         const shouldOpenInNew = e.ctrlKey || targetDataset.alwaysNewTab === "true";
-        window.open(targetDataset.openUrl, shouldOpenInNew ? "_blank" : "_self");
 
-        this.exitCommandMode();
-
-        return true;
-      }
-
-      if (targetDataset.openNoteById) {
-        window.open(`/?filename=${idToFilename(targetDataset.openNoteById)}`, e.ctrlKey ? "_blank" : "_self");
-        this.exitCommandMode();
-
-        return true;
-      }
-
-      if (targetDataset.insertText) {
-        this.componentRefs.textEditor.insertAtCaret(targetDataset.insertText);
-        this.componentRefs.statusBar.setMessage(`[command-bar] inserted "${targetDataset.insertText}"`);
-        this.exitCommandMode();
-
-        return true;
-      }
-
-      if (targetDataset.insertOnSave) {
-        this.remoteHostService.insertNoteLinkAfterCreated(targetDataset.insertOnSave);
-        this.exitCommandMode();
-
-        return true;
+        switch (targetDataset.payloadAction) {
+          case PayloadAction.openNoteById:
+            window.open(`/?id=${targetDataset.payload}`, shouldOpenInNew ? "_blank" : "_self");
+            this.exitCommandMode();
+            return true;
+          case PayloadAction.openNoteByUrl:
+            window.open(targetDataset.payload, shouldOpenInNew ? "_blank" : "_self");
+            this.exitCommandMode();
+            return true;
+          case PayloadAction.insertNewNoteByUrl:
+            this.remoteHostService.insertNoteLinkAfterCreated(targetDataset.payload);
+            this.exitCommandMode();
+            return true;
+          case PayloadAction.insertText:
+            this.componentRefs.textEditor.insertAtCaret(targetDataset.payload);
+            this.componentRefs.statusBar.setMessage(`[command-bar] inserted "${targetDataset.payload}"`);
+            this.exitCommandMode();
+            return true;
+        }
       }
     }
 

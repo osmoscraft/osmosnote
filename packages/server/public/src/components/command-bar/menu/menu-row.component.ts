@@ -1,19 +1,26 @@
+export enum PayloadAction {
+  openNoteByUrl = "open-url",
+  openNoteById = "open-id",
+  insertText = "insert-text",
+  insertNewNoteByUrl = "insert-on-save",
+}
+
 export class MenuRowComponent extends HTMLElement {
   readonly dataset!: {
     kind: "header" | "option" | "message";
-    commandKey?: string;
-
     label: string;
-    active?: "";
-    /**
-     * When focused, replace args with the given value
-     */
+    /** When focused, replace args with the given value */
     autoComplete?: string;
-    openUrl?: string;
+    /** Applies to any open action */
     alwaysNewTab?: "true";
-    openNoteById?: string;
-    insertText?: string;
-    insertOnSave?: string;
+    /** Data to commit on enter */
+    payload?: string;
+    /** How to commit on enter */
+    payloadAction?: PayloadAction;
+    /** Internal only, applies to options */
+    commandKey?: string;
+    /** Internal only, applies to options */
+    active?: "";
   };
 
   connectedCallback() {
