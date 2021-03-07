@@ -1,52 +1,5 @@
 # Roadmap
 
-## IDE MVP
-
-- TODO
-  - Fix: focus transition between command bar and edit cause scroll reset
-
----
-
-- DONE
-  - Empty line cursor missing
-  - Add file save command
-  - Check version on launch
-  - Convert selection to note
-    - On empty state
-      - Search with selected phrase
-      - Also show recently changed notes
-    - Once typing
-      - Search with typed phrase
-    - On select: keep the selection the same, only update link
-      - need text editor api for convert text to link
-  - Capture by URL
-  - Handle unsaved changes
-    - Track change dirty state
-    - Indicate unsaved changes in tab and/or status bar
-  - Use fixed digit ISO timestamp
-  - Consider support local timezone offset in ISO output
-  - Maintain comma separated list when inserting tags
-  - Handle tag sugges recent
-  - Handle tag lookup
-  - Handle tag search
-  - Search and insert
-    - Window bridge
-  - Sync mouse click to cursor location
-  - Fix editor focus restore issue
-    - encapsulate logic in editor component. Use "focus" and "blur" as trigger
-  - Compress timestamp to 8 digit with a-z0-9 and epoch time with ms precision
-    - Why not sequential id?
-  - Add createdOn timestamp metadata field
-  - Capture new
-  - Capture from bookmarklet
-  - Search and open
-  - Open backlinks
-  - Save to disk
-    - Serialization
-  - Fix: Ctrl + right arrow fail on empty line
-  - Fix: editor body vertical overflow push command bar out
-  - Fix: command dropdown vertical overflow issues
-
 ## Bootstrap system
 
 - PEND
@@ -169,3 +122,46 @@ Map mouse click to cursor position: https://stackoverflow.com/questions/45332637
     - open absolute url
     - open note by id
   - Handle insert new line
+
+## IDE MVP
+
+- DONE
+  - Fix: focus transition between command bar and edit cause scroll reset
+  - Empty line cursor missing
+  - Add file save command
+  - Check version on launch
+  - Convert selection to note
+    - On empty state
+      - Search with selected phrase
+      - Also show recently changed notes
+    - Once typing
+      - Search with typed phrase
+    - On select: keep the selection the same, only update link
+      - need text editor api for convert text to link
+  - Capture by URL
+  - Handle unsaved changes
+    - Track change dirty state
+    - Indicate unsaved changes in tab and/or status bar
+  - Use fixed digit ISO timestamp
+  - Consider support local timezone offset in ISO output
+  - Maintain comma separated list when inserting tags
+  - Handle tag sugges recent
+  - Handle tag lookup
+  - Handle tag search
+  - Search and insert
+    - Window bridge
+  - Sync mouse click to cursor location
+  - Fix editor focus restore issue
+    - encapsulate logic in editor component. Use "focus" and "blur" as trigger
+  - Compress timestamp to 8 digit with a-z0-9 and epoch time with ms precision
+    - Why not sequential id?
+  - Add createdOn timestamp metadata field
+  - Capture new
+  - Capture from bookmarklet
+  - Search and open
+  - Open backlinks
+  - Save to disk
+    - Serialization
+  - Fix: Ctrl + right arrow fail on empty line
+  - Fix: editor body vertical overflow push command bar out
+  - Fix: command dropdown vertical overflow issues

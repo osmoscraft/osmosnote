@@ -21,12 +21,11 @@ s2-text-editor:focus-within {
 
 [data-measurable-line] {
   padding: 0 16px;
-  scroll-margin: 32px 0;
 }
 [data-line] {
   padding: 0 16px;
   display: flex;
-  scroll-margin: 32px 0;
+  scroll-margin: 30vh 0;
 }
 [data-line] [data-indent] {
   flex: 0 0 auto;

@@ -73,6 +73,9 @@ export class CaretService {
     if (caret) {
       const selection = this.windowRef.window.getSelection()!;
       selection.setBaseAndExtent(caret.anchor.node, caret.anchor.offset, caret.focus.node, caret.focus.offset);
+
+      const line = this.lineQueryService.getLine(caret.focus.node);
+      line?.scrollIntoView(); // avoid smooth scroll
     }
   }
 
