@@ -2,8 +2,11 @@ import { ApiService } from "../../services/api/api.service.js";
 import { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
 import { NotificationService } from "../../services/notification/notification.service.js";
 import { RemoteHostService } from "../../services/remote/remote-host.service.js";
+import { RouteService } from "../../services/route/route.service.js";
 import { WindowRefService } from "../../services/window-reference/window.service.js";
 import { di } from "../../utils/dependency-injector.js";
+import { FormatService } from "../text-editor/format.service.js";
+import { SyncService } from "../text-editor/sync.service.js";
 import { commandTree } from "./command-tree.js";
 import { MenuRowComponent, PayloadAction } from "./menu/menu-row.component.js";
 import { renderChildCommands } from "./menu/render-menu.js";
@@ -25,6 +28,9 @@ export interface CommandHandlerContext {
   remoteHostService: RemoteHostService;
   windowRef: WindowRefService;
   notificationService: NotificationService;
+  syncService: SyncService;
+  formatService: FormatService;
+  routeService: RouteService;
 }
 
 export interface CommandHandler {
@@ -75,6 +81,9 @@ export class CommandBarComponent extends HTMLElement {
   private remoteHostService = di.getSingleton(RemoteHostService);
   private windowRef = di.getSingleton(WindowRefService);
   private notificationService = di.getSingleton(NotificationService);
+  private syncService = di.getSingleton(SyncService);
+  private formatService = di.getSingleton(FormatService);
+  private routeService = di.getSingleton(RouteService);
 
   private triggeringElement: Element | null = null;
 
@@ -373,6 +382,9 @@ export class CommandBarComponent extends HTMLElement {
           remoteHostService: this.remoteHostService,
           windowRef: this.windowRef,
           notificationService: this.notificationService,
+          syncService: this.syncService,
+          formatService: this.formatService,
+          routeService: this.routeService,
         },
       });
 

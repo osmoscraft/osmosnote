@@ -1,13 +1,9 @@
-import type { ApiService } from "../../services/api/api.service.js";
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
-import type { HistoryService } from "./history/history.service.js";
-import type { NotificationService } from "../../services/notification/notification.service.js";
-import type { RemoteClientService } from "../../services/remote/remote-client.service.js";
-import type { RouteService } from "../../services/route/route.service.js";
 import type { WindowRefService } from "../../services/window-reference/window.service.js";
 import type { CaretService } from "./caret.service.js";
 import type { EditService } from "./edit.service.js";
-import type { FormatService } from "./format.service.js";
+import type { HistoryService } from "./history/history.service.js";
+import type { SyncService } from "./sync.service.js";
 import type { TrackChangeService } from "./track-change.service.js";
 
 export class InputService {
@@ -16,13 +12,9 @@ export class InputService {
     private editService: EditService,
     private historyService: HistoryService,
     private trackChangeService: TrackChangeService,
-    private noteService: ApiService,
-    private routeService: RouteService,
-    private notificationService: NotificationService,
     private componentRefService: ComponentRefService,
-    private formatService: FormatService,
     private windowRef: WindowRefService,
-    private remoteClientService: RemoteClientService
+    private syncService: SyncService
   ) {}
 
   init(host: HTMLElement) {
@@ -131,28 +123,8 @@ export class InputService {
         if (event.ctrlKey) {
           event.preventDefault();
           event.stopPropagation();
-          this.formatService.parseDocument(host);
-          const lines = [...host.querySelectorAll("[data-line]")] as HTMLElement[];
-          const note = this.formatService.getPortableText(lines);
-          // TODO ensure any required metadata fields, e.g. title and ctime
-
-          const { id } = this.routeService.getNoteConfigFromUrl();
-          try {
-            if (id) {
-              this.noteService.updateNote(id, note);
-              this.historyService.save(host);
-              this.trackChangeService.set(this.historyService.peek()!.textContent, false);
-              this.notificationService.displayMessage("Saved");
-            } else {
-              const result = await this.noteService.createNote(note);
-              this.remoteClientService.notifyNoteCreated({ id: result.id, title: result.title });
-
-              this.trackChangeService.set(this.historyService.peek()!.textContent, false);
-              location.href = `/?id=${result.id}`;
-            }
-          } catch (error) {
-            this.notificationService.displayMessage("Error saving note");
-          }
+          await this.syncService.saveFile();
+          await this.syncService.checkAllFileVersions();
         }
         break;
 

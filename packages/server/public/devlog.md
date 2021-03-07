@@ -4,11 +4,11 @@
 
 - TODO
   - Empty line cursor missing
-  - Add file save / format commands
 
 ---
 
 - DONE
+  - Add file save command
   - Check version on launch
   - Convert selection to note
     - On empty state
@@ -86,6 +86,7 @@
 - Ctrl + k to insert link
 - Click to open link in current window
 - Ctrl + Click to open link in new window
+- Add file format without save command
 
 ## TextEngine V2
 

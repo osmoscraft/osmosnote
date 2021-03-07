@@ -19,6 +19,7 @@ import { FormatService } from "./components/text-editor/format.service.js";
 import { LineQueryService } from "./components/text-editor/line-query.service.js";
 import { MeasureService } from "./components/text-editor/measure.service.js";
 import { TrackChangeService } from "./components/text-editor/track-change.service.js";
+import { SyncService } from "./components/text-editor/sync.service.js";
 
 di.registerClass(ComponentRefService, []);
 di.registerClass(QueryService, []);
@@ -37,17 +38,23 @@ di.registerClass(InputService, [
   EditService,
   HistoryService,
   TrackChangeService,
-  ApiService,
-  RouteService,
-  NotificationService,
   ComponentRefService,
-  FormatService,
   WindowRefService,
-  RemoteClientService,
+  SyncService,
 ]);
 di.registerClass(RemoteHostService, [ComponentRefService]);
 di.registerClass(TrackChangeService, [NotificationService, WindowRefService]);
 di.registerClass(RemoteClientService, []);
+di.registerClass(SyncService, [
+  ApiService,
+  HistoryService,
+  TrackChangeService,
+  NotificationService,
+  RemoteClientService,
+  ComponentRefService,
+  FormatService,
+  RouteService,
+]);
 
 customElements.define("s2-command-bar", CommandBarComponent);
 customElements.define("s2-status-bar", StatusBarComponent);

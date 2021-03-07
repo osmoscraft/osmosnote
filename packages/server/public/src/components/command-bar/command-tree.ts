@@ -3,8 +3,9 @@ import { handleInsertNote } from "./commands/handle-insert-note.js";
 import { handleInsertTags } from "./commands/handle-insert-tags.js";
 import { handleLinkToNote } from "./commands/handle-link-to-note.js";
 import { handleOpenOrCreateNote } from "./commands/handle-open-note.js";
-import { handleVersionsCheck } from "./commands/handle-version-check.js";
-import { handleVersionsSyncAndCheck } from "./commands/handle-version-sync-and-check.js";
+import { handleFileVersionCheckAll } from "./commands/handle-file-version-check-all.js";
+import { handleVersionSyncAll } from "./commands/handle-file-version-sync-all.js";
+import { handleFileSave } from "./commands/handle-file-save.js";
 
 export const commandTree: RegisteredCommand = {
   name: "All commands",
@@ -35,23 +36,19 @@ export const commandTree: RegisteredCommand = {
       key: "f",
       commands: [
         {
-          name: "Format",
-          key: "f",
-        },
-        {
           name: "Save",
           key: "s",
-          // TODO: handleSaveAndCheck
+          handler: handleFileSave,
         },
         {
           name: "Check versions",
           key: "v",
-          handler: handleVersionsCheck,
+          handler: handleFileVersionCheckAll,
         },
         {
           name: "Sync versions",
           key: "a",
-          handler: handleVersionsSyncAndCheck,
+          handler: handleVersionSyncAll,
         },
       ],
     },

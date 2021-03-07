@@ -12,6 +12,7 @@ import { MeasureService } from "./measure.service.js";
 import { TrackChangeService } from "./track-change.service.js";
 import { RemoteHostService } from "../../services/remote/remote-host.service.js";
 import { NotificationService } from "../../services/notification/notification.service.js";
+import { SyncService } from "./sync.service.js";
 
 export interface InsertFunction {
   (context: CaretContext): string | Promise<string>;
@@ -36,6 +37,7 @@ export class TextEditorComponent extends HTMLElement {
   private remoteHostService!: RemoteHostService;
   private notificationService!: NotificationService;
   private apiService!: ApiService;
+  private syncService!: SyncService;
 
   private _host!: HTMLElement;
 
@@ -59,6 +61,7 @@ export class TextEditorComponent extends HTMLElement {
     this.remoteHostService = di.getSingleton(RemoteHostService);
     this.notificationService = di.getSingleton(NotificationService);
     this.apiService = di.getSingleton(ApiService);
+    this.syncService = di.getSingleton(SyncService);
 
     this._host = this.querySelector("#content-host") as HTMLElement;
 
@@ -75,7 +78,7 @@ export class TextEditorComponent extends HTMLElement {
       note = getNoteFromTemplate({ title, url, content });
     }
 
-    this.checkVersion();
+    this.syncService.checkAllFileVersions();
 
     const dom = sourceToLines(note);
 
@@ -99,16 +102,6 @@ export class TextEditorComponent extends HTMLElement {
 
   getSelectedText(): string | null {
     return this.caretService.getCaretContext()?.textSelected ?? null;
-  }
-
-  async checkVersion() {
-    this.notificationService.displayMessage("Checking…");
-    const result = await this.apiService.getVersionStatus();
-    if (result.isUpToDate) {
-      this.notificationService.displayMessage(result.message);
-    } else {
-      this.notificationService.displayMessage(result.message, "warning");
-    }
   }
 
   async insertAtCaretWithContext(getInsertingContent: InsertFunction) {
