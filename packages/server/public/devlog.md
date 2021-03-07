@@ -38,6 +38,10 @@
 - Ctrl + k to insert link
 - Add file format without save command
 - Customizable home page with blocks of queries
+- Note refactoring system: rename title, delete
+- Display per line dirty status in gutter
+- First run: config repo
+  - Init repo with demo content
 - DONE
   - Click to open link in current window
   - Ctrl + Click to open link in new window
@@ -55,13 +59,7 @@
   - Embedded virtual blocks
     - Query block
   - Read-only query-driven notes
-
-## Open source v1
-
-- TODO
-  - First run: config repo
-  - Handle delete note (auto refactor?)
-  - Init repo with demo content
+  - CJK compatibility mode: avoid visual travel
 
 ## Projectg North star
 
