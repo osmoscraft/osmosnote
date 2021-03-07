@@ -36,7 +36,6 @@ export class TextEditorComponent extends HTMLElement {
   private trackChangeService!: TrackChangeService;
   private remoteHostService!: RemoteHostService;
   private notificationService!: NotificationService;
-  private apiService!: ApiService;
   private syncService!: SyncService;
 
   private _host!: HTMLElement;
@@ -60,7 +59,6 @@ export class TextEditorComponent extends HTMLElement {
     this.trackChangeService = di.getSingleton(TrackChangeService);
     this.remoteHostService = di.getSingleton(RemoteHostService);
     this.notificationService = di.getSingleton(NotificationService);
-    this.apiService = di.getSingleton(ApiService);
     this.syncService = di.getSingleton(SyncService);
 
     this._host = this.querySelector("#content-host") as HTMLElement;

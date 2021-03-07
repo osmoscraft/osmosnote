@@ -1,3 +1,7 @@
+s2-text-editor:focus-within {
+  outline: var(--theme-divider-width) solid var(--theme-outline-color);
+}
+
 #content-host {
   background-color: var(--theme-background-rest);
   white-space: break-spaces;
@@ -39,6 +43,11 @@
 }
 [data-line="meta"] [data-meta-value="title"] {
   color: var(--theme-title-color);
+}
+
+[data-line="blank"] [data-empty-content] {
+  /* since Chromium 89, zero-width elements can no longer display caret. */
+  min-width: 1px;
 }
 
 [data-line="heading"][data-level="1"],

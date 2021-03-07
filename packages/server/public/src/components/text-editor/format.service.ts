@@ -197,7 +197,7 @@ export class FormatService {
       const inlineSpaces = removeLineEnding(spaces);
 
       const indent = config.syntaxOnly ? inlineSpaces : ` `.repeat(context.level * 2);
-      line.innerHTML = `<span data-indent>${indent}</span><span>\n</span>`;
+      line.innerHTML = `<span data-indent>${indent}</span><span data-empty-content>\n</span>`;
 
       return {
         lengthChange: indent.length + 1 - raw.length,

@@ -3,11 +3,12 @@
 ## IDE MVP
 
 - TODO
-  - Empty line cursor missing
+  - Fix: focus transition between command bar and edit cause scroll reset
 
 ---
 
 - DONE
+  - Empty line cursor missing
   - Add file save command
   - Check version on launch
   - Convert selection to note
