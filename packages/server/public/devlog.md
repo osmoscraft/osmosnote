@@ -37,6 +37,7 @@
 - Consider consolidating change tracking service with history service (caret state is an outlier) (track change and runAtomic are always together)
 - Ctrl + k to insert link
 - Add file format without save command
+- Customizable home page with blocks of queries
 - DONE
   - Click to open link in current window
   - Ctrl + Click to open link in new window
@@ -51,6 +52,9 @@
     - Efficiently convert DOM layer node and offset into plaintext layer offset
     - Incrementally read more lines while in plaintext layer
     - Efficiently convert plaintext layer offset into DOM layer node and offset
+  - Embedded virtual blocks
+    - Query block
+  - Read-only query-driven notes
 
 ## Open source v1
 
@@ -63,6 +67,7 @@
 
 - CJK support (need pixel based column calc or unicode char visual length detection)
 - Display local menu next to caret
+- Live compiling for loading typescript extensions
 
 # Principles
 
