@@ -2,12 +2,10 @@
 
 ## Bootstrap system
 
-- PEND
-  - Convert selection to new note
-- TODO
-  - Migrate all org-roam notes
-  - Migrate all markdown notes
+- Migrate all org-roam notes
+- Migrate all markdown notes
 - DONE
+  - Convert selection to new note
   - Note id system
   - Timestamp in metadata
 
@@ -38,9 +36,10 @@
 - Use History Service to track every keypress and use debouncer to improve performance
 - Consider consolidating change tracking service with history service (caret state is an outlier) (track change and runAtomic are always together)
 - Ctrl + k to insert link
-- Click to open link in current window
-- Ctrl + Click to open link in new window
 - Add file format without save command
+- DONE
+  - Click to open link in current window
+  - Ctrl + Click to open link in new window
 
 ## TextEngine V2
 

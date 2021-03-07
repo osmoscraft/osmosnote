@@ -20,11 +20,11 @@ export class InputService {
   init(host: HTMLElement) {
     host.addEventListener("focus", () => this.handleFocusEvent());
 
+    // mouse events: mousedown happens before selection change
+    host.addEventListener("mousedown", (event) => this.handleMouseDownEvent(event));
+
     // selection events
     document.addEventListener("selectionchange", () => this.handleSelectionChangeEvent(host));
-
-    // mouse events
-    host.addEventListener("click", (event) => this.handleClickEvents(event, host));
 
     // clipboard
     host.addEventListener("copy", (event) => this.handleClipboardEvents(event, host));
@@ -43,15 +43,29 @@ export class InputService {
     this.caretService.restoreCaretFocusFromModel();
   }
 
+  private async handleMouseDownEvent(event: MouseEvent) {
+    const noteLink = (event.target as HTMLElement)?.closest(`[data-note-id]`) as HTMLElement;
+    if (noteLink) {
+      // open internal id link
+      this.openNodeId(noteLink.dataset.noteId!, event);
+      event.preventDefault();
+      return;
+    }
+
+    const urlLink = (event.target as HTMLElement)?.closest(`[data-url]`) as HTMLElement;
+    if (urlLink) {
+      // open external url
+      this.openUrl(urlLink.dataset.url!, event);
+      event.preventDefault();
+      return;
+    }
+  }
+
   private async handleSelectionChangeEvent(host: HTMLElement) {
     // if selection leaves host, no op
     if (this.caretService.isCaretInElement(host)) {
       this.caretService.catchUpToDom();
     }
-  }
-
-  private async handleClickEvents(event: MouseEvent, host: HTMLElement) {
-    // if clicked on interactive element, trigger the action
   }
 
   private async handleClipboardEvents(event: ClipboardEvent, host: HTMLElement) {

@@ -75,6 +75,7 @@ s2-text-editor:focus-within {
 [data-link] :is(.link__target[data-caret-collapsed], .link__target:hover) {
   color: var(--theme-link-color);
   text-decoration: underline;
+  cursor: pointer;
 }
 
 [data-url] {
@@ -84,4 +85,5 @@ s2-text-editor:focus-within {
 [data-url][data-caret-collapsed],
 [data-url]:hover {
   text-decoration: underline;
+  cursor: pointer;
 }
