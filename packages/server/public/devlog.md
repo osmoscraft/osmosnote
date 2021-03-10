@@ -4,10 +4,25 @@
 
 - Migrate all org-roam notes
 - Migrate all markdown notes
+- Migrate all one-note notes
+- Migrate all azure devops notes
 - DONE
   - Convert selection to new note
   - Note id system
   - Timestamp in metadata
+
+## Alpha test findings
+
+- Smooth scroll is dizzy. Replace with instant snap.
+- Consider MVP list rendering (use multiple - without space)
+- Control + left seems to greedy when to prev. line
+- Quick insert of ISO local date could help
+- After creating new note, back button opens draft page again
+- When creating new note from selection, if input is left blank, the new draft should use selection as title
+- `[link one] [link two](xxxx)` triggers styling on first bracket
+- Ctrl + delete is too agressive when handling white spaces
+- Comma after a url is included into the URL
+- Consider support markdown syntax for external link: because highlighted URL is too jarring.
 
 ## Bugs
 
