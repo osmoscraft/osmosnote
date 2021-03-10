@@ -5,7 +5,6 @@ import type {
   RecentNoteItem,
   SearchResultItem,
 } from "@system-two/server";
-import { filenameToId } from "../../../utils/id.js";
 import type { RegisteredCommand } from "../command-bar.component.js";
 import { PayloadAction } from "./menu-row.component.js";
 
@@ -31,9 +30,9 @@ export function renderSearchResultSection(
     switch (action) {
       case PayloadAction.openNoteById:
       case PayloadAction.linkToNoteById:
-        return filenameToId(item.filename);
+        return item.id;
       case PayloadAction.insertText:
-        return `[${item.title}](${filenameToId(item.filename)})`;
+        return `[${item.title}](${item.id})`;
     }
   };
 
@@ -65,9 +64,9 @@ export function renderRecentNotes(
     switch (action) {
       case PayloadAction.openNoteById:
       case PayloadAction.linkToNoteById:
-        return filenameToId(item.filename);
+        return item.id;
       case PayloadAction.insertText:
-        return `[${item.title}](${filenameToId(item.filename)})`;
+        return `[${item.title}](${item.id})`;
     }
   };
 

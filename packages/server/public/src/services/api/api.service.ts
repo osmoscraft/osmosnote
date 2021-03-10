@@ -3,8 +3,8 @@ import type {
   CreateNoteOutput,
   GetContentFromUrlInput,
   GetContentFromUrlOutput,
-  GetMentionsInput,
-  GetMentionsOuput,
+  GetIncomingLinksInput,
+  GetIncomingLinksOuput,
   GetNoteInput,
   GetNoteOutput,
   GetRecentNotesInput,
@@ -57,8 +57,8 @@ export class ApiService {
       note,
     });
 
-  getMentions = (id: string) =>
-    this.safeQuery<GetMentionsOuput, GetMentionsInput>(`/api/get-mentions`, {
+  getIncomingLinks = (id: string) =>
+    this.safeQuery<GetIncomingLinksOuput, GetIncomingLinksInput>(`/api/get-incoming-links`, {
       id,
     });
 

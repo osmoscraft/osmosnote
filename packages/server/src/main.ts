@@ -4,7 +4,7 @@ import path from "path";
 import { getConfig } from "./config";
 import { handleCreateNote } from "./routes/create-note";
 import { handleGetContentFromUrl } from "./routes/get-content-from-url";
-import { handleGetMentions } from "./routes/get-mentions";
+import { handleGetIncomingLinks } from "./routes/get-incoming-links";
 import { handleGetNote } from "./routes/get-note";
 import { handleGetRecentNotes } from "./routes/get-recent-notes";
 import { handleGetRecentTags } from "./routes/get-recent-tags";
@@ -19,7 +19,7 @@ async function run() {
 
   server.post("/api/create-note", handleCreateNote);
   server.post("/api/get-content-from-url", handleGetContentFromUrl);
-  server.post("/api/get-mentions", handleGetMentions);
+  server.post("/api/get-incoming-links", handleGetIncomingLinks);
   server.post("/api/get-note", handleGetNote);
   server.post("/api/get-recent-notes", handleGetRecentNotes);
   server.post("/api/get-recent-tags", handleGetRecentTags);

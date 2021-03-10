@@ -1,33 +1,34 @@
 import { getConfig } from "../config";
 import { createHandler } from "../lib/create-handler";
+import { filenameToId } from "../lib/filename-to-id";
 import { readNote } from "../lib/note-file-io";
 import { parseNote } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
 
-export interface GetMentionsInput {
+export interface GetIncomingLinksInput {
   id: string;
 }
 
-export interface GetMentionsOuput {
-  mentions: Mention[];
+export interface GetIncomingLinksOuput {
+  incomingLinks: IncomingLink[];
 }
 
-export interface Mention {
-  filename: string;
+export interface IncomingLink {
+  id: string;
   title: string;
   score: number;
 }
 
-export const handleGetMentions = createHandler<GetMentionsOuput, GetMentionsInput>(async (input) => {
+export const handleGetIncomingLinks = createHandler<GetIncomingLinksOuput, GetIncomingLinksInput>(async (input) => {
   const id = input.id;
-  const mentions = await getMentions(id);
+  const links = await getIncomingLinks(id);
 
   return {
-    mentions,
+    incomingLinks: links,
   };
 });
 
-async function getMentions(id: string): Promise<Mention[]> {
+async function getIncomingLinks(id: string): Promise<IncomingLink[]> {
   const config = await getConfig();
 
   const { error, stdout, stderr } = await runShell(`rg "\(${id}\)" --count-matches`, { cwd: config.notesDir });
@@ -52,13 +53,13 @@ async function getMentions(id: string): Promise<Mention[]> {
       const parseResult = parseNote(markdown);
 
       return {
-        filename: item.filename,
+        id: filenameToId(item.filename),
         title: parseResult.metadata.title,
         score: item.score,
       };
     });
 
-    const notes: Mention[] = await Promise.all(notesAsync);
+    const notes: IncomingLink[] = await Promise.all(notesAsync);
     const sortedNotes = notes
       .sort((a, b) => a.title.localeCompare(b.title)) // sort title first to result can remain the same
       .sort((a, b) => b.score - a.score);

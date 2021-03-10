@@ -1,8 +1,7 @@
-import type { Mention } from "@system-two/server";
+import type { IncomingLink } from "@system-two/server";
 import { ApiService } from "../../services/api/api.service.js";
 import { RouteService } from "../../services/route/route.service.js";
 import { di } from "../../utils/dependency-injector.js";
-import { filenameToId } from "../../utils/id.js";
 
 export class ReferencePanelComponent extends HTMLElement {
   private listDom!: HTMLUListElement;
@@ -31,19 +30,19 @@ export class ReferencePanelComponent extends HTMLElement {
   private async loadContent() {
     const { id } = this.routeService.getNoteConfigFromUrl();
     if (id) {
-      const data = await this.noteService.getMentions(id);
-      this.setMentions(data.mentions);
+      const data = await this.noteService.getIncomingLinks(id);
+      this.setIncomingLinks(data.incomingLinks);
     }
   }
 
-  private setMentions(mentions: Mention[]) {
-    this.listDom.innerHTML = mentions
+  private setIncomingLinks(links: IncomingLink[]) {
+    this.listDom.innerHTML = links
       .map(
         (note, index) => /*html*/ `
     <li>
-      <a class="refpnl-link" data-index="${index}" tabindex="${index === 0 ? 0 : -1}" href="/?id=${filenameToId(
-          note.filename
-        )}">${note.title}</a>
+      <a class="refpnl-link" data-index="${index}" tabindex="${index === 0 ? 0 : -1}" href="/?id=${note.id}">${
+          note.title
+        }</a>
     </li>
     `
       )

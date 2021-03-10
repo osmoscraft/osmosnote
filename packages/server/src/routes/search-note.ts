@@ -1,6 +1,7 @@
 import { performance } from "perf_hooks";
 import { getConfig } from "../config";
 import { createHandler } from "../lib/create-handler";
+import { filenameToId } from "../lib/filename-to-id";
 import { readNote } from "../lib/note-file-io";
 import { parseNote } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
@@ -20,7 +21,7 @@ export interface SearchNoteOutput {
 }
 
 export interface SearchResultItem {
-  filename: string;
+  id: string;
   title: string;
   tags: string[];
   score: number;
@@ -99,7 +100,7 @@ async function tagOnlySearch(dir: string, getFilenamesPreprocess: string, limit:
       const parseResult = parseNote(markdown);
 
       return {
-        filename: filename,
+        id: filenameToId(filename),
         title: parseResult.metadata.title,
         tags: parseResult.metadata.tags,
         score: 0, // can't tally tag core yet
@@ -152,7 +153,7 @@ async function keywordSearch(dir: string, keywords: string[], getFilenamesPrepro
       const parseResult = parseNote(markdown);
 
       return {
-        filename: item.filename,
+        id: filenameToId(item.filename),
         title: parseResult.metadata.title,
         tags: parseResult.metadata.tags,
         score: item.score,

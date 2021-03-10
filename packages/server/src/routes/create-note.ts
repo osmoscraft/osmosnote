@@ -1,5 +1,6 @@
 import { createHandler } from "../lib/create-handler";
-import { getCurrentId } from "../lib/get-current-id";
+import { getTimestampId } from "../lib/get-timestamp-id";
+import { idToFilename } from "../lib/id-to-filename";
 import { writeNote } from "../lib/note-file-io";
 import { parseNote } from "../lib/parse-note";
 
@@ -15,8 +16,8 @@ export interface CreateNoteOutput {
 
 export const handleCreateNote = createHandler<CreateNoteOutput, CreateNoteInput>(async (input) => {
   const note = input.note;
-  const id = getCurrentId();
-  const filename = `${id}.md`;
+  const id = getTimestampId();
+  const filename = idToFilename(id);
 
   const { metadata } = parseNote(note);
 

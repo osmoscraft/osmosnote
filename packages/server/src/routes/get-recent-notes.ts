@@ -1,5 +1,6 @@
 import { getConfig } from "../config";
 import { createHandler } from "../lib/create-handler";
+import { filenameToId } from "../lib/filename-to-id";
 import { readNote } from "../lib/note-file-io";
 import { parseNote } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
@@ -15,7 +16,7 @@ export interface GetRecentNotesInput {
 }
 
 export interface RecentNoteItem {
-  filename: string;
+  id: string;
   title: string;
   tags: string[];
   raw: string;
@@ -45,7 +46,7 @@ export const handleGetRecentNotes = createHandler<GetRecentNotesOutput, GetRecen
     const parseResult = parseNote(markdown);
 
     return {
-      filename: filename,
+      id: filenameToId(filename),
       title: parseResult.metadata.title,
       tags: parseResult.metadata.tags,
       raw: parseResult.raw,
