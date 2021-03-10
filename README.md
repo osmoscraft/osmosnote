@@ -1,3 +1,8 @@
+# Branch note
+
+- Recursive compiler with hardcore parser implementation
+- Custom unit test: task runner + assertion + reporting
+
 # Dependencies
 
 - ripgrep: fast full text search
