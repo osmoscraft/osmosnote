@@ -1,3 +1,9 @@
+# Branch notes
+
+- Textarea with native dom selection and movement
+- Overlay layer for syntax highlighting
+- IDE with command bar, status bar, ref panel.
+
 # Dependencies
 
 - ripgrep: fast full text search
