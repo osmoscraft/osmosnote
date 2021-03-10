@@ -12,8 +12,10 @@
 # To release
 
 1. `npm version patch|minor|major`
-2. `npm run release`
-3. Github Action will build and create a draft release
+2. `npm run build`
+3. `npm run pack`
+4. `npm run release`
+5. Github Action will build and create a draft release
 
 # Manual
 
