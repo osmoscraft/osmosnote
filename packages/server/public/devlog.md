@@ -13,19 +13,19 @@
 
 ## Alpha test findings
 
+- When creating new note from selection, if input is left blank, the new draft should use selection as title
+- Browser built-in search cannot change focus
+- Tag lookup should be case insensitive
 - Smooth scroll is dizzy. Replace with instant snap.
+- After creating new note, back button opens draft page again
+- Support markdown syntax for external link: because highlighted URL is too jarring.
 - Consider MVP list rendering (use multiple - without space)
 - Control + left seems to greedy when to prev. line
 - Quick insert of ISO local date could help
-- After creating new note, back button opens draft page again
-- When creating new note from selection, if input is left blank, the new draft should use selection as title
 - `[link one] [link two](xxxx)` triggers styling on first bracket
 - Ctrl + delete is too agressive when handling white spaces
 - Comma after a url is included into the URL
-- Support markdown syntax for external link: because highlighted URL is too jarring.
-- Browser built-in search cannot change focus
 - codify block quote symbol ">"
-- Tag lookup should be case insensitive
 
 ## Bugs
 
