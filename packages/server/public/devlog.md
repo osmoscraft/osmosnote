@@ -3,10 +3,10 @@
 ## Bootstrap system
 
 - Migrate all org-roam notes
-- Migrate all markdown notes
-- Migrate all one-note notes
-- Migrate all azure devops notes
+- Migrate high-value one-note notes
 - DONE
+  - Migrate all azure devops notes
+  - Migrate all markdown life notes
   - Convert selection to new note
   - Note id system
   - Timestamp in metadata
@@ -22,7 +22,10 @@
 - `[link one] [link two](xxxx)` triggers styling on first bracket
 - Ctrl + delete is too agressive when handling white spaces
 - Comma after a url is included into the URL
-- Consider support markdown syntax for external link: because highlighted URL is too jarring.
+- Support markdown syntax for external link: because highlighted URL is too jarring.
+- Browser built-in search cannot change focus
+- codify block quote symbol ">"
+- Tag lookup should be case insensitive
 
 ## Bugs
 
