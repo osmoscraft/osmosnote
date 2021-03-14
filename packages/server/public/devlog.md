@@ -5,6 +5,7 @@
 - Design knowledge architecture
 - Migrate high-value one-note notes
   - All past readings
+  - Project incubator
 - DONE
   - Migrate all org-roam notes
   - Migrate all azure devops notes
@@ -33,6 +34,7 @@
 - Strong need to curate a list based on tags
 - It's very easy to open the same doc twice and saving the older one will overwrite the new one.
 - "Gödel" cannot be searched with "Godel"
+- After navigation back, scroll position is lost
 
 ## Bugs
 
