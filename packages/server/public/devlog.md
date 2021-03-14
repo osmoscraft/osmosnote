@@ -35,6 +35,8 @@
 - It's very easy to open the same doc twice and saving the older one will overwrite the new one.
 - "Gödel" cannot be searched with "Godel"
 - After navigation back, scroll position is lost
+- Chinese character causes line height to jump.
+- Consider Increase line height for better list readability
 
 ## Bugs
 
