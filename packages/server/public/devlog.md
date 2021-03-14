@@ -3,10 +3,10 @@
 ## Bootstrap system
 
 - Design knowledge architecture
-- Migrate all org-roam notes
 - Migrate high-value one-note notes
   - All past readings
 - DONE
+  - Migrate all org-roam notes
   - Migrate all azure devops notes
   - Migrate all markdown life notes
   - Convert selection to new note
@@ -31,6 +31,8 @@
 - codify block quote symbol ">"
 - Deleted local file is not displayed in status bar
 - Strong need to curate a list based on tags
+- It's very easy to open the same doc twice and saving the older one will overwrite the new one.
+- "Gödel" cannot be searched with "Godel"
 
 ## Bugs
 
