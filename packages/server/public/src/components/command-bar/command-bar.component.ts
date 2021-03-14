@@ -5,6 +5,8 @@ import { RemoteHostService } from "../../services/remote/remote-host.service.js"
 import { RouteService } from "../../services/route/route.service.js";
 import { WindowRefService } from "../../services/window-reference/window.service.js";
 import { di } from "../../utils/dependency-injector.js";
+import { getVerticalOverflow } from "../../utils/get-overflow.js";
+import { scrollIntoView } from "../../utils/scroll-into-view.js";
 import { FormatService } from "../text-editor/format.service.js";
 import { SyncService } from "../text-editor/sync.service.js";
 import { commandTree } from "./command-tree.js";
@@ -303,7 +305,9 @@ export class CommandBarComponent extends HTMLElement {
    */
   private handleOptionFocus(props: { optionDom: MenuRowComponent }) {
     const optionDom = props.optionDom;
-    optionDom.scrollIntoView({ behavior: "smooth" });
+    // optionDom.scrollIntoView();
+
+    scrollIntoView(optionDom, this.commandOptionsDom);
 
     if (optionDom.dataset.autoComplete) {
       const currentInput = this.parseInput(this.commandInputDom.value);

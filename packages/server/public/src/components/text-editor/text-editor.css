@@ -25,7 +25,6 @@ s2-text-editor:focus-within {
 [data-line] {
   padding: 0 16px;
   display: flex;
-  scroll-margin: 30vh 0;
 }
 [data-line] [data-indent] {
   flex: 0 0 auto;

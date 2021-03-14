@@ -17,8 +17,7 @@
 ## Alpha test findings
 
 - Browser built-in search cannot change focus
-- Tag lookup should be case insensitive
-- Smooth scroll is dizzy. Replace with instant snap.
+
 - After creating new note, back button opens draft page again
   - Blank draft should be clean
 - Support markdown syntax for external link: because highlighted URL is too jarring.
@@ -42,6 +41,8 @@
 - Support headless commands (keyboard shortcut without opening command bar, ala ^s for save).
 
 - DONE
+  - Smooth scroll is dizzy. Replace with instant snap.
+  - Tag lookup should be case insensitive
   - When creating new note from selection, if input is left blank, the new draft should use selection as title
 
 ## Bugs

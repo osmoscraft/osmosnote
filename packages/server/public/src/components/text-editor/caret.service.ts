@@ -1,5 +1,7 @@
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
 import type { WindowRefService } from "../../services/window-reference/window.service.js";
+import { getVerticalOverflow } from "../../utils/get-overflow.js";
+import { scrollIntoView } from "../../utils/scroll-into-view.js";
 import { seek, SeekOutput } from "./helpers/dom.js";
 import type { LineElement } from "./helpers/source-to-lines.js";
 import { ensureLineEnding, getWordEndOffset, reverse } from "./helpers/string.js";
@@ -47,7 +49,12 @@ export class CaretService {
   init(host: HTMLElement) {
     const defaultPosition = this.getDocumentStartPosition();
     if (!defaultPosition) return;
+
     this.setCaretCollapsed(defaultPosition.node, defaultPosition.offset, host);
+  }
+
+  private handleIntersection(...args: any[]) {
+    console.log(args);
   }
 
   isCaretInElement(element: HTMLElement) {
@@ -75,7 +82,7 @@ export class CaretService {
       selection.setBaseAndExtent(caret.anchor.node, caret.anchor.offset, caret.focus.node, caret.focus.offset);
 
       const line = this.lineQueryService.getLine(caret.focus.node);
-      line?.scrollIntoView(); // avoid smooth scroll
+      line?.scrollIntoView();
     }
   }
 
@@ -463,8 +470,15 @@ export class CaretService {
       this.updateContainerStateRecursive(caret.focus.node, root);
     }
 
+    this.scrollCaretIntoView(caret);
+  }
+
+  private scrollCaretIntoView(caret: Caret) {
     const line = this.lineQueryService.getLine(caret.focus.node);
-    line?.scrollIntoView({ behavior: "smooth" });
+    const host = this.componentRef.textEditor.host;
+    if (line) {
+      scrollIntoView(line, host);
+    }
   }
 
   private updateContainerStateRecursive(currentNode: Node | null, root: Node | null) {
