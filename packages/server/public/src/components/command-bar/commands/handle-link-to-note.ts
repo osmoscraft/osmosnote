@@ -1,5 +1,5 @@
 import { ensureNoteTitle } from "../../../utils/ensure-note-title.js";
-import { getLowerCaseUrl } from "../../../utils/url.js";
+import { getLowerCaseUrl, getUrlWithSearchParams } from "../../../utils/url.js";
 import type { CommandHandler } from "../command-bar.component.js";
 import { PayloadAction } from "../menu/menu-row.component.js";
 import {
@@ -21,16 +21,8 @@ export const handleLinkToNote: CommandHandler = async ({ input, context }) => {
 
   const query = input.args?.trim() ?? "";
   const { phrase, tags } = parseQuery(query);
-  const url = getLowerCaseUrl(phrase);
-
-  const searchParams = new URLSearchParams();
+  const targetUrl = getLowerCaseUrl(phrase);
   const newNoteTitle = ensureNoteTitle(phrase);
-  if (url) {
-    searchParams.set("url", url);
-  } else {
-    searchParams.set("title", newNoteTitle);
-  }
-  const newNoteUrl = `/?${searchParams}`;
 
   return {
     updateDropdownOnInput: async () => {
@@ -64,9 +56,9 @@ export const handleLinkToNote: CommandHandler = async ({ input, context }) => {
         const notesAsync = context.apiService.searchNotes(phrase, tags);
 
         // URL crawl result
-        if (url) {
+        if (targetUrl) {
           try {
-            const urlContent = await context.apiService.getContentFromUrl(url);
+            const urlContent = await context.apiService.getContentFromUrl(targetUrl);
             optionsHtml += renderCrawlResult(urlContent, PayloadAction.linkToNewNoteByUrl);
           } catch (error) {
             console.error(error);
@@ -75,6 +67,11 @@ export const handleLinkToNote: CommandHandler = async ({ input, context }) => {
         }
 
         // Raw new note
+        const newNoteUrl = getUrlWithSearchParams(`/`, {
+          url: targetUrl,
+          title: newNoteTitle,
+        });
+
         optionsHtml += renderNoteWithUrl(newNoteUrl, newNoteTitle, PayloadAction.linkToNewNoteByUrl);
 
         // Search result
@@ -89,8 +86,13 @@ export const handleLinkToNote: CommandHandler = async ({ input, context }) => {
       return optionsHtml;
     },
     runOnCommit: () => {
+      const defaultNewNoteUrl = getUrlWithSearchParams(`/`, {
+        url: targetUrl,
+        title: selectedText,
+      });
+
       // treating input as title to create a new note
-      context.componentRefs.textEditor.linkToNoteOnSave(newNoteUrl);
+      context.componentRefs.textEditor.linkToNoteOnSave(defaultNewNoteUrl);
     },
   };
 };
