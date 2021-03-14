@@ -90,7 +90,7 @@ export class TextEditorComponent extends HTMLElement {
     this.historyService.save(this.host);
 
     const isNewNote = id === undefined;
-    this.trackChangeService.set(isNewNote ? null : this.historyService.peek()!.textContent, isNewNote);
+    this.trackChangeService.set(isNewNote ? null : this.historyService.peek()!.textContent, false);
   }
 
   async insertAtCaret(text: string) {

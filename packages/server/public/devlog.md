@@ -16,16 +16,13 @@
 
 ## Alpha test findings
 
-- After creating new note, back button opens draft page again
-  - Blank draft should be clean
-- Support markdown syntax for external link: because highlighted URL is too jarring.
-- Consider MVP list rendering (use multiple - without space)
+- Comma after a url is included into the URL
+- `[link one] [link two](xxxx)` triggers styling on first bracket
+- Support headless commands (keyboard shortcut without opening command bar, ala ^s for save).
 - Control + left seems to greedy when to prev. line
 - A fraction of delay after entering any command that waits for server.
 - Quick insert of ISO local date could help
-- `[link one] [link two](xxxx)` triggers styling on first bracket
 - Ctrl + delete is too agressive when handling white spaces
-- Comma after a url is included into the URL
 - codify block quote symbol ">"
 - Deleted local file is not displayed in status bar
 - Strong need to curate a list based on tags
@@ -35,9 +32,10 @@
 - Consider Increase line height for better list readability
 - Separate production jar from test jar.
 - Support default "Triage" tag (any alternatives?)
-- Support headless commands (keyboard shortcut without opening command bar, ala ^s for save).
 
 - DONE
+  - After creating new note, back button opens draft page again
+  - Blank draft should be clean
   - Browser built-in search cannot change focus
   - (Won't fix. ripgrep regex engine does not support equivalence class)"Gödel" cannot be searched with "Godel"
   - Smooth scroll is dizzy. Replace with instant snap.
@@ -84,6 +82,8 @@
 ## TextEngine V2
 
 - TODO
+  - Support markdown syntax for external link: because highlighted URL is too jarring.
+  - Consider MVP list rendering (use multiple - without space)
   - Handle list indentation
   - Handle list auto numbering
   - Move # into the padding so heading lines can wrap without breaking indentation

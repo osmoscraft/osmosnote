@@ -39,7 +39,7 @@ export class SyncService {
         this.remoteClientService.notifyNoteCreated({ id: result.id, title: result.title });
 
         this.trackChangeService.set(this.historyService.peek()!.textContent, false);
-        location.href = `/?id=${result.id}`;
+        location.replace(`/?id=${result.id}`);
       }
     } catch (error) {
       this.notificationService.displayMessage("Error saving note");
