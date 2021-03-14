@@ -18,8 +18,6 @@ export class InputService {
   ) {}
 
   init(host: HTMLElement) {
-    host.addEventListener("focus", () => this.handleFocusEvent());
-
     // mouse events: mousedown happens before selection change
     host.addEventListener("mousedown", (event) => this.handleMouseDownEvent(event));
 
@@ -36,11 +34,6 @@ export class InputService {
 
     // literal keyboard events
     host.addEventListener("beforeinput", (e) => this.handleBeforeInputEvent(e as InputEvent, host));
-  }
-
-  private handleFocusEvent() {
-    // note, focus event fires before selection change
-    this.caretService.restoreCaretFocusFromModel();
   }
 
   private async handleMouseDownEvent(event: MouseEvent) {

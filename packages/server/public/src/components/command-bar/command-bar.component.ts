@@ -5,8 +5,8 @@ import { RemoteHostService } from "../../services/remote/remote-host.service.js"
 import { RouteService } from "../../services/route/route.service.js";
 import { WindowRefService } from "../../services/window-reference/window.service.js";
 import { di } from "../../utils/dependency-injector.js";
-import { getVerticalOverflow } from "../../utils/get-overflow.js";
 import { scrollIntoView } from "../../utils/scroll-into-view.js";
+import { CaretService } from "../text-editor/caret.service.js";
 import { FormatService } from "../text-editor/format.service.js";
 import { SyncService } from "../text-editor/sync.service.js";
 import { commandTree } from "./command-tree.js";
@@ -86,8 +86,9 @@ export class CommandBarComponent extends HTMLElement {
   private syncService = di.getSingleton(SyncService);
   private formatService = di.getSingleton(FormatService);
   private routeService = di.getSingleton(RouteService);
+  private caretService = di.getSingleton(CaretService);
 
-  private triggeringElement: Element | null = null;
+  private isExiting = false;
 
   constructor() {
     super();
@@ -107,23 +108,25 @@ export class CommandBarComponent extends HTMLElement {
   }
 
   enterCommandMode() {
-    this.saveCaret();
     this.dataset.active = "true";
-
     this.commandInputDom.tabIndex = 0; // make it focusable AFTER command mode starts. Otherwise, we will trap focus for the rest of the window
     this.commandInputDom.disabled = false;
-
     this.commandInputDom.focus();
   }
 
   exitCommandMode() {
+    if (this.isExiting) return;
+
+    this.isExiting = true;
+    // restore focus will cause selection change, which triggers focusOut, which triggers exitCommandMode again.
+    // hence using `isExiting` to prevent double handling.
+    this.restoreFocus();
+
     this.clear();
-
-    delete this.dataset.active;
+    this.commandInputDom.disabled = true; // this will eject focus
     this.commandInputDom.tabIndex = -1;
-    this.commandInputDom.disabled = true;
-
-    this.restoreCaret();
+    delete this.dataset.active;
+    this.isExiting = false;
   }
 
   isInCommandMode() {
@@ -135,12 +138,10 @@ export class CommandBarComponent extends HTMLElement {
     this.commandOptionsDom.innerHTML = "";
   }
 
-  private saveCaret() {
-    this.triggeringElement = document.activeElement;
-  }
-
-  private restoreCaret() {
-    (this.triggeringElement as HTMLElement)?.focus?.();
+  private restoreFocus() {
+    // assumption, command bar can only be opened by text editor
+    // so we always restore focus to the caret.
+    this.caretService.restoreCaretFocusFromModel();
   }
 
   private parseInput(input: string): CommandInput {
@@ -154,17 +155,6 @@ export class CommandBarComponent extends HTMLElement {
   }
 
   private handleEvents() {
-    window.addEventListener("keydown", (event) => {
-      if (event.key === "/") {
-        if (this.isInCommandMode()) return; // Don't handle it if it's alreay active
-
-        event.stopPropagation();
-        event.preventDefault();
-
-        this.enterCommandMode();
-      }
-    });
-
     this.addEventListener("focusout", (event) => {
       if (this.contains(event.relatedTarget as Node)) return;
 

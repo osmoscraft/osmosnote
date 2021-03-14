@@ -16,8 +16,6 @@
 
 ## Alpha test findings
 
-- Browser built-in search cannot change focus
-
 - After creating new note, back button opens draft page again
   - Blank draft should be clean
 - Support markdown syntax for external link: because highlighted URL is too jarring.
@@ -32,7 +30,6 @@
 - Deleted local file is not displayed in status bar
 - Strong need to curate a list based on tags
 - It's very easy to open the same doc twice and saving the older one will overwrite the new one.
-- "Gödel" cannot be searched with "Godel"
 - After navigation back, scroll position is lost
 - Chinese character causes line height to jump.
 - Consider Increase line height for better list readability
@@ -41,6 +38,8 @@
 - Support headless commands (keyboard shortcut without opening command bar, ala ^s for save).
 
 - DONE
+  - Browser built-in search cannot change focus
+  - (Won't fix. ripgrep regex engine does not support equivalence class)"Gödel" cannot be searched with "Godel"
   - Smooth scroll is dizzy. Replace with instant snap.
   - Tag lookup should be case insensitive
   - When creating new note from selection, if input is left blank, the new draft should use selection as title
