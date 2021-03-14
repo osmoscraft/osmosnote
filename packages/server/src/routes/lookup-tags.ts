@@ -51,7 +51,7 @@ export const handleLookupTags = createHandler<LookupTagsOutput, LookupTagsInput>
     };
   } else {
     const allMatchedLines = stdout.trim().split("\n");
-    const tagRegex = new RegExp(String.raw`\b${phrase}`);
+    const tagRegex = new RegExp(String.raw`\b${phrase}`, "i");
     const allMatchedTags = allMatchedLines.flatMap(parseTagsLine).filter((tag) => tag.match(tagRegex));
 
     const sortedTags = [...new Set(allMatchedTags.sort())];
