@@ -1,11 +1,10 @@
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
 import type { WindowRefService } from "../../services/window-reference/window.service.js";
-import { getVerticalOverflow } from "../../utils/get-overflow.js";
 import { scrollIntoView } from "../../utils/scroll-into-view.js";
 import { seek, SeekOutput } from "./helpers/dom.js";
 import type { LineElement } from "./helpers/source-to-lines.js";
 import { ensureLineEnding, getWordEndOffset, reverse } from "./helpers/string.js";
-import type { LineQueryService, LinePosition, VisualLinePosition } from "./line-query.service.js";
+import type { LinePosition, LineQueryService, VisualLinePosition } from "./line-query.service.js";
 
 export interface Caret {
   anchor: CaretPosition;
@@ -51,10 +50,6 @@ export class CaretService {
     if (!defaultPosition) return;
 
     this.setCaretCollapsed(defaultPosition.node, defaultPosition.offset, host);
-  }
-
-  private handleIntersection(...args: any[]) {
-    console.log(args);
   }
 
   isCaretInElement(element: HTMLElement) {
