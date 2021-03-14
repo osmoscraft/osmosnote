@@ -2,8 +2,10 @@
 
 ## Bootstrap system
 
+- Design knowledge architecture
 - Migrate all org-roam notes
 - Migrate high-value one-note notes
+  - All past readings
 - DONE
   - Migrate all azure devops notes
   - Migrate all markdown life notes
@@ -21,11 +23,14 @@
 - Support markdown syntax for external link: because highlighted URL is too jarring.
 - Consider MVP list rendering (use multiple - without space)
 - Control + left seems to greedy when to prev. line
+- A fraction of delay after entering any command that waits for server.
 - Quick insert of ISO local date could help
 - `[link one] [link two](xxxx)` triggers styling on first bracket
 - Ctrl + delete is too agressive when handling white spaces
 - Comma after a url is included into the URL
 - codify block quote symbol ">"
+- Deleted local file is not displayed in status bar
+- Strong need to curate a list based on tags
 
 ## Bugs
 
