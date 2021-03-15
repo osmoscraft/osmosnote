@@ -12,11 +12,9 @@
 # To release
 
 1. `cd` to package root.
-1. `npm version patch|minor|major`
-1. `npm run build`
-1. `npm run pack`
-1. `npm run release`
-1. Github Action will build and create a draft release
+2. `npm version patch|minor|major`
+3. `npm run release`
+4. Github Action will build and create a draft release
 
 # Manual
 
