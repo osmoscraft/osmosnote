@@ -1,9 +1,5 @@
 # Roadmap
 
-## Show stopper bugs
-
-- Couldn't render two links on the same line
-
 ## Bootstrap system
 
 - Design knowledge architecture
@@ -128,6 +124,7 @@ Map mouse click to cursor position: https://stackoverflow.com/questions/45332637
   - Tag lookup should be case insensitive
   - When creating new note from selection, if input is left blank, the new draft should use selection as title
   - Deleted local file is not displayed in status bar
+  - Couldn't render two links on the same line
 
 ## IDE V1
 
