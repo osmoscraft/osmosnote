@@ -32,6 +32,7 @@
 
 ## IDE V2
 
+- Display "New" as status when opening a new file.
 - A fraction of delay after entering any command that waits for server.
 - URL search needs debouncer. Invalid url blocks UI
 - Strong need to curate a list based on tags
