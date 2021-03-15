@@ -32,6 +32,8 @@
 
 ## IDE V2
 
+- Spell check toggle on/off
+- ESC key to cancel selection
 - Display "New" as status when opening a new file.
 - A fraction of delay after entering any command that waits for server.
 - URL search needs debouncer. Invalid url blocks UI
@@ -47,6 +49,9 @@
 - Display per line dirty status in gutter
 - First run: config repo
   - Init repo with demo content
+- On start:
+  - Check dependency and dump diagonostic info in console
+  - Check config file and config values
 - Chinese character causes line height to jump.
 - When line ends with link, insert a new line at the end causes link to open
 - Support default "Triage" tag (any alternatives?)
