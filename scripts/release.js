@@ -23,7 +23,7 @@ async function release() {
 
   console.log(`[tag] push v${version}`);
   const { stdout: pushStdout, error: pushError, stderr: pushStderr } = await runShell(`git push origin v${version}`, { dir: __dirname });
-  if (pushError || pushStderr) {
+  if (pushError) { // Git writes to stderr even when successful
     console.error("[tag] push failed");
     console.error("[tag] error code", pushError?.code);
     console.error("[tag] error msg", pushStderr);
