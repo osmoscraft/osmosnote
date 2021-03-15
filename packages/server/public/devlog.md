@@ -1,5 +1,9 @@
 # Roadmap
 
+## Show stopper bugs
+
+- Couldn't render two links on the same line
+
 ## Bootstrap system
 
 - Design knowledge architecture

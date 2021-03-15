@@ -224,7 +224,7 @@ export class FormatService {
     paragraphLength = remainingText.length;
 
     while (remainingText) {
-      let match = remainingText.match(/^(.*)\[(.+?)\]\((.+?)\)/); // links
+      let match = remainingText.match(/^(.*?)\[([^\[\]]+?)\]\((.+?)\)/); // [title](target)
       if (match) {
         const [raw, plainText, linkTitle, linkTarget] = match;
         paragraphHtml += plainText;
