@@ -16,8 +16,6 @@
 
 ## Alpha test findings
 
-- Comma after a url is included into the URL
-- `[link one] [link two](xxxx)` triggers styling on first bracket
 - Support headless commands (keyboard shortcut without opening command bar, ala ^s for save).
 - Control + left seems to greedy when to prev. line
 - A fraction of delay after entering any command that waits for server.
@@ -34,6 +32,8 @@
 - Support default "Triage" tag (any alternatives?)
 
 - DONE
+  - `[link one] [link two](xxxx)` triggers styling on first bracket
+  - (Won't fix. It's legally a URL)Comma after a url is included into the URL
   - After creating new note, back button opens draft page again
   - Blank draft should be clean
   - Browser built-in search cannot change focus

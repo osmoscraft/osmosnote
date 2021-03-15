@@ -223,7 +223,7 @@ export class FormatService {
     paragraphLength = remainingText.length;
 
     while (remainingText) {
-      let match = remainingText.match(/^(.*?)\[(.+?)\]\((.+?)\)/); // links
+      let match = remainingText.match(/^(.*)\[(.+?)\]\((.+?)\)/); // links
       if (match) {
         const [raw, plainText, linkTitle, linkTarget] = match;
         paragraphHtml += plainText;
@@ -233,6 +233,7 @@ export class FormatService {
         continue;
       }
 
+      // Ref: https://mathiasbynens.be/demo/url-regex
       match = remainingText.match(/^(.*?)(https?:\/\/[^\s/$.?#].[^\s]*)/); // raw URL
       if (match) {
         const [raw, plainText, url] = match;
