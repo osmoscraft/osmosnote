@@ -30,9 +30,7 @@ async function release() {
     exit(1);
   }
 
-  if (!pushStdout) {
-    console.log("[tag] already update to date, skip release");
-  }
+  console.log(pushStderr ?? pushStdout ?? "No output. Something might be wrong.");
 }
 
 async function runShell(command, options) {
