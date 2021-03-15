@@ -32,6 +32,7 @@
 
 ## IDE V2
 
+- Consider combine save and sync. I forget to sync often.
 - Search ranking algorithm is way off. Need to improve accuracy for literal match.
 - Spell check toggle on/off
 - ESC key to cancel selection
