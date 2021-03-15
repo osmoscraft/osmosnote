@@ -32,6 +32,7 @@
 
 ## IDE V2
 
+- Search ranking algorithm is way off. Need to improve accuracy for literal match.
 - Spell check toggle on/off
 - ESC key to cancel selection
 - Display "New" as status when opening a new file.
@@ -67,23 +68,23 @@
 
 ## TextEngine V2
 
-- TODO
-  - Consider using web components to encapsulate links (and other text editor elements). Otherwise mouse click is not accessible.
-  - Control + left seems to greedy when to prev. line
-  - Ctrl + delete is too agressive when handling white spaces
-  - Consider MVP list rendering (use multiple - without space)
-  - Handle list indentation
-  - Handle list auto numbering
-  - Move # into the padding so heading lines can wrap without breaking indentation
-  - Simplied internal API
-    - Efficiently convert DOM layer node and offset into plaintext layer offset
-    - Incrementally read more lines while in plaintext layer
-    - Efficiently convert plaintext layer offset into DOM layer node and offset
-  - Embedded virtual blocks
-    - Query block
-  - Read-only query-driven notes
-  - CJK compatibility mode: avoid visual travel
-  - codify block quote symbol ">"
+- DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
+- Consider using web components to encapsulate links (and other text editor elements). Otherwise mouse click is not accessible.
+- Control + left seems to greedy when to prev. line
+- Ctrl + delete is too agressive when handling white spaces
+- Consider MVP list rendering (use multiple - without space)
+- Handle list indentation
+- Handle list auto numbering
+- Move # into the padding so heading lines can wrap without breaking indentation
+- Simplied internal API
+  - Efficiently convert DOM layer node and offset into plaintext layer offset
+  - Incrementally read more lines while in plaintext layer
+  - Efficiently convert plaintext layer offset into DOM layer node and offset
+- Embedded virtual blocks
+  - Query block
+- Read-only query-driven notes
+- CJK compatibility mode: avoid visual travel
+- codify block quote symbol ">"
 
 ## Projectg North star
 
