@@ -16,17 +16,14 @@
 
 ## Alpha test findings
 
-- Control + left seems to greedy when to prev. line
+- Support markdown syntax for external link: because highlighted URL is too jarring.
 - A fraction of delay after entering any command that waits for server.
 - Quick insert of ISO local date could help
-- Ctrl + delete is too agressive when handling white spaces
 - codify block quote symbol ">"
 - Deleted local file is not displayed in status bar
 - Strong need to curate a list based on tags
 - It's very easy to open the same doc twice and saving the older one will overwrite the new one.
 - After navigation back, scroll position is lost
-- Chinese character causes line height to jump.
-- Consider Increase line height for better list readability
 - Separate production jar from test jar.
 - Support default "Triage" tag (any alternatives?)
 
@@ -77,6 +74,8 @@
 - Display per line dirty status in gutter
 - First run: config repo
   - Init repo with demo content
+- Chinese character causes line height to jump.
+
 - DONE
   - Click to open link in current window
   - Ctrl + Click to open link in new window
@@ -84,7 +83,8 @@
 ## TextEngine V2
 
 - TODO
-  - Support markdown syntax for external link: because highlighted URL is too jarring.
+  - Control + left seems to greedy when to prev. line
+  - Ctrl + delete is too agressive when handling white spaces
   - Consider MVP list rendering (use multiple - without space)
   - Handle list indentation
   - Handle list auto numbering
