@@ -74,8 +74,41 @@ export interface GitDiffOutput extends GitCommandOutput {
   isDifferent: boolean | null;
 }
 
-export async function gitDiff(repoRoot: string): Promise<GitDiffOutput> {
-  const diffResult = await runShell("git diff --cached --stat", { cwd: repoRoot });
+export async function gitDiffStaged(repoRoot: string): Promise<GitDiffOutput> {
+  const diffResult = await runShell("git diff --stat --cached", { cwd: repoRoot });
+  const error = getRunShellError(diffResult, "Diff error");
+  if (error)
+    return {
+      message: null,
+      isDifferent: null,
+      error: error.message ? error.message : "Unknown git diff error",
+    };
+
+  if (!diffResult.stdout) {
+    return {
+      message: "Already up to date.",
+      isDifferent: false,
+      error: null,
+    };
+  }
+
+  const gitStatus = diffResult.stdout.trim().split("\n").pop()?.trim();
+  if (!gitStatus)
+    return {
+      message: null,
+      isDifferent: null,
+      error: "Unknown git status",
+    };
+
+  return {
+    message: gitStatus,
+    isDifferent: true,
+    error: null,
+  };
+}
+
+export async function gitDiffUnstaged(repoRoot: string): Promise<GitDiffOutput> {
+  const diffResult = await runShell("git diff --stat", { cwd: repoRoot });
   const error = getRunShellError(diffResult, "Diff error");
   if (error)
     return {
@@ -112,7 +145,7 @@ export interface GitStatusOutput extends GitCommandOutput {
 }
 
 export async function gitStatus(repoRoot: string): Promise<GitStatusOutput> {
-  const statusResult = await runShell("git status", { cwd: repoRoot });
+  const statusResult = await runShell("git status -u", { cwd: repoRoot });
   const error = getRunShellError(statusResult, "Status error");
   if (error)
     return {
@@ -126,6 +159,19 @@ export async function gitStatus(repoRoot: string): Promise<GitStatusOutput> {
       message: null,
       isUpToDate: null,
       error: "Git status had no output",
+    };
+  }
+
+  const hasUntracked = statusResult.stdout
+    .trim()
+    .split("\n")
+    .find((l) => l.includes("Untracked files"));
+
+  if (hasUntracked) {
+    return {
+      message: "New files exist. Please sync",
+      isUpToDate: false,
+      error: null,
     };
   }
 

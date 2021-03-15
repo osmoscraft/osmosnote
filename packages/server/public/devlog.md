@@ -14,39 +14,7 @@
   - Note id system
   - Timestamp in metadata
 
-## Alpha test findings
-
-- Support markdown syntax for external link: because highlighted URL is too jarring.
-- A fraction of delay after entering any command that waits for server.
-- Quick insert of ISO local date could help
-- codify block quote symbol ">"
-- Deleted local file is not displayed in status bar
-- Strong need to curate a list based on tags
-- It's very easy to open the same doc twice and saving the older one will overwrite the new one.
-- After navigation back, scroll position is lost
-- Separate production jar from test jar.
-- Support default "Triage" tag (any alternatives?)
-
-- DONE
-  - Support headless commands (keyboard shortcut without opening command bar, ala ^s for save).
-  - `[link one] [link two](xxxx)` triggers styling on first bracket
-  - (Won't fix. It's legally a URL)Comma after a url is included into the URL
-  - After creating new note, back button opens draft page again
-  - Blank draft should be clean
-  - Browser built-in search cannot change focus
-  - (Won't fix. ripgrep regex engine does not support equivalence class)"Gödel" cannot be searched with "Godel"
-  - Smooth scroll is dizzy. Replace with instant snap.
-  - Tag lookup should be case insensitive
-  - When creating new note from selection, if input is left blank, the new draft should use selection as title
-
-## Bugs
-
-- Cancel remote action after cursor move
-- new node shown as dirty but doesn't prompt before window close
-- Status bar could overflow into multiple lines
-- URL search needs debouncer. Invalid url blocks UI
-
-## Technical debt MVP
+## Code health
 
 - TODO
   - Move all filename to id conversion to server side
@@ -60,9 +28,13 @@
   - How does comand bar and keyboard shortcut share code?
     - Command bar should own its own keyboard shortcut service.
     - Input service should focus on handling text editing inputs, not command.
+  - Refactor git utilities. They are a mess
 
 ## IDE V2
 
+- A fraction of delay after entering any command that waits for server.
+- URL search needs debouncer. Invalid url blocks UI
+- Strong need to curate a list based on tags
 - Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
 - Consider support shortcut to insert current time (northstar?)
 - Use History Service to track every keypress and use debouncer to improve performance
@@ -75,6 +47,13 @@
 - First run: config repo
   - Init repo with demo content
 - Chinese character causes line height to jump.
+- When line ends with link, insert a new line at the end causes link to open
+- Support default "Triage" tag (any alternatives?)
+- After navigation back, scroll position is lost
+- Quick insert of ISO local date could help
+- It's very easy to open the same doc twice and saving the older one will overwrite the new one.
+- Cancel remote action after cursor move
+- Status bar could overflow into multiple lines
 
 - DONE
   - Click to open link in current window
@@ -83,6 +62,7 @@
 ## TextEngine V2
 
 - TODO
+  - Consider using web components to encapsulate links (and other text editor elements). Otherwise mouse click is not accessible.
   - Control + left seems to greedy when to prev. line
   - Ctrl + delete is too agressive when handling white spaces
   - Consider MVP list rendering (use multiple - without space)
@@ -97,6 +77,7 @@
     - Query block
   - Read-only query-driven notes
   - CJK compatibility mode: avoid visual travel
+  - codify block quote symbol ">"
 
 ## Projectg North star
 
@@ -125,44 +106,25 @@ Map mouse click to cursor position: https://stackoverflow.com/questions/45332637
 
 # Archive
 
-## TextEngine MVP
+## Alpha test findings
 
-- Handle Undo/redo
-- Apply smart indent when inserting a new line
-- Handle copy/paste/cut
-- Handle cut entire line when cursor is collapsed
-- Handle ctrl + a to select all
-- Handle ctrl + delete/backspace
-  - Compose cursor select word end/start with cursor delete selection
-- Handle cursor edit in selection mode
-  - Insertion = delete selection + insertion
-  - Deletion = delete selection only
-- Handle cursor restore after global formatting
-  - parse() OK to lose cursor. The caller of parse is responsible to set cursor after parse
-  - format() must restore curosr
-    - save the line that contains cursor, when updating indent, if cursor within padding, no move, if cursor after padding, shift cursor accordingly
-- Incremental formatting
-  - parse() that add syntax hightlight and calculate semantic levels
-  - format() that updates padding using semantics levels
-  - on edit, parse() changed lines, format() all
-- Use keydown to handle non-input events (Open, cursor movement)
-- Use beforeinput to handle input events (research into "data" field for IME compatibility)
-- Scroll cursor into view
-- Handle paragraph movement (default bind to PgUp/PgDown)
-- Handle home/end move and selection
-- Handle ctrl + arrow for word move
-- Handle ctrl + shift + arrow for word select
-- Render current line with highlight
-- Handle shift + arrow for selection
-- Handle `Delete`/`Backspace` keydown
-- Handle select left/right
-- Handle `Enter` keydown
-  - Cursor action: open link
-    - open absolute url
-    - open note by id
-  - Handle insert new line
+- DONE
+  - Delete and Backspace are not tracked in history
+  - Git sync should save first
+  - Support markdown syntax for external link: because highlighted URL is too jarring.
+  - Support headless commands (keyboard shortcut without opening command bar, ala ^s for save).
+  - `[link one] [link two](xxxx)` triggers styling on first bracket
+  - (Won't fix. It's legally a URL)Comma after a url is included into the URL
+  - After creating new note, back button opens draft page again
+  - Blank draft should be clean
+  - Browser built-in search cannot change focus
+  - (Won't fix. ripgrep regex engine does not support equivalence class)"Gödel" cannot be searched with "Godel"
+  - Smooth scroll is dizzy. Replace with instant snap.
+  - Tag lookup should be case insensitive
+  - When creating new note from selection, if input is left blank, the new draft should use selection as title
+  - Deleted local file is not displayed in status bar
 
-## IDE MVP
+## IDE V1
 
 - DONE
   - Fix: focus transition between command bar and edit cause scroll reset
@@ -204,3 +166,40 @@ Map mouse click to cursor position: https://stackoverflow.com/questions/45332637
   - Fix: Ctrl + right arrow fail on empty line
   - Fix: editor body vertical overflow push command bar out
   - Fix: command dropdown vertical overflow issues
+
+## TextEngine V1
+
+- Handle Undo/redo
+- Apply smart indent when inserting a new line
+- Handle copy/paste/cut
+- Handle cut entire line when cursor is collapsed
+- Handle ctrl + a to select all
+- Handle ctrl + delete/backspace
+  - Compose cursor select word end/start with cursor delete selection
+- Handle cursor edit in selection mode
+  - Insertion = delete selection + insertion
+  - Deletion = delete selection only
+- Handle cursor restore after global formatting
+  - parse() OK to lose cursor. The caller of parse is responsible to set cursor after parse
+  - format() must restore curosr
+    - save the line that contains cursor, when updating indent, if cursor within padding, no move, if cursor after padding, shift cursor accordingly
+- Incremental formatting
+  - parse() that add syntax hightlight and calculate semantic levels
+  - format() that updates padding using semantics levels
+  - on edit, parse() changed lines, format() all
+- Use keydown to handle non-input events (Open, cursor movement)
+- Use beforeinput to handle input events (research into "data" field for IME compatibility)
+- Scroll cursor into view
+- Handle paragraph movement (default bind to PgUp/PgDown)
+- Handle home/end move and selection
+- Handle ctrl + arrow for word move
+- Handle ctrl + shift + arrow for word select
+- Render current line with highlight
+- Handle shift + arrow for selection
+- Handle `Delete`/`Backspace` keydown
+- Handle select left/right
+- Handle `Enter` keydown
+  - Cursor action: open link
+    - open absolute url
+    - open note by id
+  - Handle insert new line

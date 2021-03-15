@@ -1,6 +1,6 @@
 import { getConfig } from "../config";
 import { createHandler } from "../lib/create-handler";
-import { gitAdd, gitCommit, gitDiff, gitPull, gitPush } from "../lib/git";
+import { gitAdd, gitCommit, gitDiffStaged, gitDiffUnstaged, gitPull, gitPush, gitStatus } from "../lib/git";
 
 export interface SyncVersionsInput {}
 
@@ -14,6 +14,7 @@ export const handleSyncVersions = createHandler<SyncVersionsOutput, SyncVersions
   let error: string | null;
   let message: string | null;
   let isDifferent: boolean | null;
+  let isUpToDate: boolean | null;
 
   ({ error } = await gitPull(notesDir));
   if (error !== null) {
@@ -29,22 +30,34 @@ export const handleSyncVersions = createHandler<SyncVersionsOutput, SyncVersions
     };
   }
 
-  ({ message, error, isDifferent } = await gitDiff(notesDir));
+  // Commit if there are any new staged changes
+  ({ message, error, isDifferent } = await gitDiffStaged(notesDir));
   if (error !== null) {
     return {
       message: error,
     };
   }
-  if (isDifferent !== true) {
+  if (isDifferent) {
+    // commit only if there is something to commit
+    ({ error } = await gitCommit(notesDir));
+    if (error !== null) {
+      return {
+        message: error,
+      };
+    }
+  }
+
+  ({ message, error, isUpToDate } = await gitStatus(notesDir));
+  if (error !== null) {
     return {
-      message: message ?? "Already up to date.",
+      message: error,
+      isUpToDate: null,
     };
   }
 
-  ({ error } = await gitCommit(notesDir));
-  if (error !== null) {
+  if (isUpToDate) {
     return {
-      message: error,
+      message: message ?? "Already up to date.",
     };
   }
 

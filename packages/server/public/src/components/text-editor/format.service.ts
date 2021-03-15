@@ -1,3 +1,4 @@
+import { URL_PATTERN_WITH_PREFIX } from "../../utils/url.js";
 import type { CaretService } from "./caret.service.js";
 import type { LineElement, LineType } from "./helpers/source-to-lines.js";
 import { removeLineEnding } from "./helpers/string.js";
@@ -227,14 +228,13 @@ export class FormatService {
       if (match) {
         const [raw, plainText, linkTitle, linkTarget] = match;
         paragraphHtml += plainText;
-        paragraphHtml += `<span data-link class="t--ghost"><span class="link__title">[${linkTitle}]</span>(<span data-note-id="${linkTarget}" class="link__target">${linkTarget}</span>)</span>`;
+        paragraphHtml += `<span data-link class="t--ghost"><span class="link__title">[${linkTitle}]</span>(<span data-title-target="${linkTarget}" class="link__target">${linkTarget}</span>)</span>`;
 
         remainingText = remainingText.slice(raw.length);
         continue;
       }
 
-      // Ref: https://mathiasbynens.be/demo/url-regex
-      match = remainingText.match(/^(.*?)(https?:\/\/[^\s/$.?#].[^\s]*)/); // raw URL
+      match = remainingText.match(URL_PATTERN_WITH_PREFIX); // raw URL
       if (match) {
         const [raw, plainText, url] = match;
         paragraphHtml += plainText;

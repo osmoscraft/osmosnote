@@ -9,6 +9,7 @@ import { scrollIntoView } from "../../utils/scroll-into-view.js";
 import { CaretService } from "../text-editor/caret.service.js";
 import { FormatService } from "../text-editor/format.service.js";
 import { SyncService } from "../text-editor/sync.service.js";
+import { TrackChangeService } from "../text-editor/track-change.service.js";
 import { commandTree } from "./command-tree.js";
 import { MenuRowComponent, PayloadAction } from "./menu/menu-row.component.js";
 import { renderChildCommands } from "./menu/render-menu.js";
@@ -33,6 +34,7 @@ export interface CommandHandlerContext {
   syncService: SyncService;
   formatService: FormatService;
   routeService: RouteService;
+  trackChangeService: TrackChangeService;
 }
 
 export interface CommandHandler {
@@ -87,6 +89,7 @@ export class CommandBarComponent extends HTMLElement {
   private formatService = di.getSingleton(FormatService);
   private routeService = di.getSingleton(RouteService);
   private caretService = di.getSingleton(CaretService);
+  private trackChangeService = di.getSingleton(TrackChangeService);
 
   private isExiting = false;
 
@@ -382,6 +385,7 @@ export class CommandBarComponent extends HTMLElement {
           syncService: this.syncService,
           formatService: this.formatService,
           routeService: this.routeService,
+          trackChangeService: this.trackChangeService,
         },
       });
 

@@ -1,9 +1,9 @@
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
 import type { WindowRefService } from "../../services/window-reference/window.service.js";
+import { isUrl } from "../../utils/url.js";
 import type { CaretService } from "./caret.service.js";
 import type { EditService } from "./edit.service.js";
 import type { HistoryService } from "./history/history.service.js";
-import type { SyncService } from "./sync.service.js";
 import type { TrackChangeService } from "./track-change.service.js";
 
 export class InputService {
@@ -13,8 +13,7 @@ export class InputService {
     private historyService: HistoryService,
     private trackChangeService: TrackChangeService,
     private componentRefService: ComponentRefService,
-    private windowRef: WindowRefService,
-    private syncService: SyncService
+    private windowRef: WindowRefService
   ) {}
 
   init(host: HTMLElement) {
@@ -37,10 +36,10 @@ export class InputService {
   }
 
   private async handleMouseDownEvent(event: MouseEvent) {
-    const noteLink = (event.target as HTMLElement)?.closest(`[data-note-id]`) as HTMLElement;
+    const noteLink = (event.target as HTMLElement)?.closest(`[data-title-target]`) as HTMLElement;
     if (noteLink) {
       // open internal id link
-      this.openNodeId(noteLink.dataset.noteId!, event);
+      this.openTitleTarget(noteLink.dataset.titleTarget!, event);
       event.preventDefault();
       return;
     }
@@ -239,22 +238,22 @@ export class InputService {
       // Inputs
       case "Delete":
         if (event.ctrlKey) {
-          this.editService.deleteWordAfter(host);
-          this.historyService.save(host);
+          await this.historyService.runAtomic(host, () => this.editService.deleteWordAfter(host));
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else {
-          this.editService.deleteAfter(host);
-          this.historyService.save(host);
+          await this.historyService.runAtomic(host, () => this.editService.deleteAfter(host));
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         }
         event.preventDefault();
         break;
 
       case "Backspace":
         if (event.ctrlKey) {
-          this.editService.deleteWordBefore(host);
-          this.historyService.save(host);
+          await this.historyService.runAtomic(host, () => this.editService.deleteWordBefore(host));
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else {
-          this.editService.deleteBefore(host);
-          this.historyService.save(host);
+          await this.historyService.runAtomic(host, () => this.editService.deleteBefore(host));
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         }
         event.preventDefault();
         break;
@@ -262,9 +261,8 @@ export class InputService {
       case "Enter": // Enter
         const collapsedCaretParents = [...host.querySelectorAll(`[data-caret-collapsed]`)].reverse() as HTMLElement[];
         for (let container of collapsedCaretParents) {
-          if (container.dataset.noteId) {
-            // open internal id link
-            this.openNodeId(container.dataset.noteId, event);
+          if (container.dataset.titleTarget) {
+            this.openTitleTarget(container.dataset.titleTarget, event);
             event.preventDefault();
             break;
           } else if (container.dataset.url) {
@@ -295,6 +293,14 @@ export class InputService {
       if (insertedText.match(/\s|,|\./)) {
         this.historyService.save(host);
       }
+    }
+  }
+
+  private openTitleTarget(target: string, event: KeyboardEvent | MouseEvent) {
+    if (isUrl(target)) {
+      this.openUrl(target, event);
+    } else {
+      this.openNodeId(target, event);
     }
   }
 

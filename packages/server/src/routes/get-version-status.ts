@@ -1,6 +1,6 @@
 import { getConfig } from "../config";
 import { createHandler } from "../lib/create-handler";
-import { gitDiff, gitFetch, gitStatus } from "../lib/git";
+import { gitDiffStaged, gitDiffUnstaged, gitFetch, gitStatus } from "../lib/git";
 
 export interface GetVersionStatusInput {}
 
@@ -21,7 +21,7 @@ export const handleGetVersionStatus = createHandler<GetVersionStatusOutput, GetV
     };
   }
 
-  let { message: diffMessage, error: diffError, isDifferent } = await gitDiff(notesDir);
+  let { message: diffMessage, error: diffError, isDifferent } = await gitDiffUnstaged(notesDir);
   if (diffError !== null) {
     return {
       message: diffError,
@@ -31,7 +31,22 @@ export const handleGetVersionStatus = createHandler<GetVersionStatusOutput, GetV
 
   if (isDifferent) {
     return {
-      message: diffMessage ?? "Unknown git diff result",
+      message: diffMessage ?? "Unknown git unstaged diff result",
+      isUpToDate: false,
+    };
+  }
+
+  ({ message: diffMessage, error: diffError, isDifferent } = await gitDiffStaged(notesDir));
+  if (diffError !== null) {
+    return {
+      message: diffError,
+      isUpToDate: null,
+    };
+  }
+
+  if (isDifferent) {
+    return {
+      message: diffMessage ?? "Unknown git staged diff result",
       isUpToDate: false,
     };
   }

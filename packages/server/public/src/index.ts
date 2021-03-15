@@ -40,7 +40,6 @@ di.registerClass(InputService, [
   TrackChangeService,
   ComponentRefService,
   WindowRefService,
-  SyncService,
 ]);
 di.registerClass(RemoteHostService, [ComponentRefService]);
 di.registerClass(TrackChangeService, [NotificationService, WindowRefService]);

@@ -1,6 +1,7 @@
 // ref: https://mathiasbynens.be/demo/url-regex
 // @stephenhay
-const URL_PATTERN = /^https?:\/\/[^\s/$.?#].[^\s]*$/;
+export const URL_PATTERN = /^https?:\/\/[^\s/$.?#].[^\s]*$/;
+export const URL_PATTERN_WITH_PREFIX = /^(.*?)(https?:\/\/[^\s/$.?#].[^\s]*)/;
 
 export function isUrl(input: string): boolean {
   return input.match(URL_PATTERN) !== null;
