@@ -107,10 +107,13 @@ export class CommandBarComponent extends HTMLElement {
     this.handleEvents();
   }
 
-  enterCommandMode() {
+  enterCommandMode(initialInput?: string) {
     this.dataset.active = "true";
     this.commandInputDom.tabIndex = 0; // make it focusable AFTER command mode starts. Otherwise, we will trap focus for the rest of the window
     this.commandInputDom.disabled = false;
+    if (initialInput) {
+      this.commandInputDom.value = initialInput;
+    }
     this.commandInputDom.focus();
   }
 

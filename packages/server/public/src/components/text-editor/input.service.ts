@@ -125,13 +125,29 @@ export class InputService {
         }
         break;
 
-      // Global shortcuts
+      // Command bar short cuts
+      // TODO refactor into command bar
       case "s": // save
         if (event.ctrlKey) {
           event.preventDefault();
           event.stopPropagation();
-          await this.syncService.saveFile();
-          await this.syncService.checkAllFileVersions();
+          await this.componentRefService.commandBar.enterCommandMode("fs");
+        }
+        break;
+
+      case "k": // link to
+        if (event.ctrlKey) {
+          event.preventDefault();
+          event.stopPropagation();
+          await this.componentRefService.commandBar.enterCommandMode("k");
+        }
+        break;
+
+      case "o": // open
+        if (event.ctrlKey) {
+          event.preventDefault();
+          event.stopPropagation();
+          await this.componentRefService.commandBar.enterCommandMode("o");
         }
         break;
 

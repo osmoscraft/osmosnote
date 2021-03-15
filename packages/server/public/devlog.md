@@ -16,7 +16,6 @@
 
 ## Alpha test findings
 
-- Support headless commands (keyboard shortcut without opening command bar, ala ^s for save).
 - Control + left seems to greedy when to prev. line
 - A fraction of delay after entering any command that waits for server.
 - Quick insert of ISO local date could help
@@ -32,6 +31,7 @@
 - Support default "Triage" tag (any alternatives?)
 
 - DONE
+  - Support headless commands (keyboard shortcut without opening command bar, ala ^s for save).
   - `[link one] [link two](xxxx)` triggers styling on first bracket
   - (Won't fix. It's legally a URL)Comma after a url is included into the URL
   - After creating new note, back button opens draft page again
@@ -61,6 +61,8 @@
       - data-url (string) and data-action ("open"|"insert-on-save")
   - Refactor history and change tracking: should runAtom auto update dirty state?
   - How does comand bar and keyboard shortcut share code?
+    - Command bar should own its own keyboard shortcut service.
+    - Input service should focus on handling text editing inputs, not command.
 
 ## IDE V2
 
