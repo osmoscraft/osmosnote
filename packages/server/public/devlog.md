@@ -1,5 +1,11 @@
 # Roadmap
 
+## Metadata engine v1
+
+- Use frontmatter for metadata
+- UI managed metadata entry
+- Validate frontmatter on-save
+
 ## Bootstrap system
 
 - Design knowledge architecture
@@ -70,7 +76,7 @@
   - Click to open link in current window
   - Ctrl + Click to open link in new window
 
-## TextEngine V2
+## Text engine V2
 
 - DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
 - Consider using web components to encapsulate links (and other text editor elements). Otherwise mouse click is not accessible.
