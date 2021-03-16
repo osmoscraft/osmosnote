@@ -4,6 +4,7 @@
 
 - Use frontmatter for metadata
 - UI managed metadata entry
+  - Design interaction pattern
 - Validate frontmatter on-save
 
 ## Bootstrap system
