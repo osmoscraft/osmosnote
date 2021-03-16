@@ -62,6 +62,9 @@
 - It's very easy to open the same doc twice and saving the older one will overwrite the new one.
 - Cancel remote action after cursor move
 - Status bar could overflow into multiple lines
+- Tag suggestion based on content
+- Link suggestion based on tags
+- Multiple workspaces (with crosss workspace search?)
 
 - DONE
   - Click to open link in current window
