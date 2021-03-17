@@ -102,6 +102,8 @@
 - CJK support (need pixel based column calc or unicode char visual length detection)
 - Display local menu next to caret
 - Live compiling for loading typescript extensions
+- Visualized graph traveling (node <-> link <-> node)
+- Eliminate manual linking via proximity detection and NLP pattern detection
 
 # Principles
 
