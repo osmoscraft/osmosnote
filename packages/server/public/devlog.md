@@ -6,6 +6,7 @@
 - Migrate high-value one-note notes
   - All past readings
   - Project incubator
+- Migrate platojar research markdown
 - DONE
   - Migrate all org-roam notes
   - Migrate all azure devops notes
