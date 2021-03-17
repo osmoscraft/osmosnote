@@ -1,12 +1,5 @@
 # Roadmap
 
-## Metadata engine v1
-
-- Use frontmatter for metadata
-- UI managed metadata entry
-  - Design interaction pattern
-- Validate frontmatter on-save
-
 ## Bootstrap system
 
 - Design knowledge architecture
@@ -36,6 +29,13 @@
     - Command bar should own its own keyboard shortcut service.
     - Input service should focus on handling text editing inputs, not command.
   - Refactor git utilities. They are a mess
+
+## Metadata engine v1
+
+- Use frontmatter for metadata
+- UI managed metadata entry
+  - Design interaction pattern
+- Validate frontmatter on-save
 
 ## IDE V2
 
