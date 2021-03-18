@@ -40,6 +40,8 @@
 
 ## IDE V2
 
+- A landing page
+- Push git state to client from server
 - Easy delete of notes
 - Sync without save (when the current file is deleted on the remote, sync & save will cause conflict).
 - Consider combine save and sync. I forget to sync often.
