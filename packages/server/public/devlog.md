@@ -40,6 +40,8 @@
 
 ## IDE V2
 
+- Easy delete of notes
+- Sync without save (when the current file is deleted on the remote, sync & save will cause conflict).
 - Consider combine save and sync. I forget to sync often.
 - Search ranking algorithm is way off. Need to improve accuracy for literal match.
 - Spell check toggle on/off
