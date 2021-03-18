@@ -99,6 +99,10 @@
 - CJK compatibility mode: avoid visual travel
 - codify block quote symbol ">"
 
+## Overarching issues
+
+- Difficult to decide between A link to B or B link to A.
+
 ## Projectg North star
 
 - CJK support (need pixel based column calc or unicode char visual length detection)
