@@ -40,7 +40,7 @@
 
 ## IDE V2
 
-- A landing page
+- A landing page (recent + open new).
 - Push git state to client from server
 - Easy delete of notes
 - Sync without save (when the current file is deleted on the remote, sync & save will cause conflict).
