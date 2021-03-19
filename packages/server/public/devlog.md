@@ -1,13 +1,18 @@
 # Roadmap
 
+## Bugs
+
+- open close command bar causes unwanted scroll
+- Ctrl + s causes unwanted scroll
+
 ## Bootstrap system
 
-- Design knowledge architecture
 - Migrate high-value one-note notes
   - All past readings
-  - Project incubator
 - Migrate platojar research markdown
 - DONE
+  - Design knowledge architecture
+  - Project incubator
   - Migrate all org-roam notes
   - Migrate all azure devops notes
   - Migrate all markdown life notes
@@ -17,26 +22,26 @@
 
 ## Code health
 
-- TODO
+- Test (need real dom: playwright/cypress)
+  - How to mock dom measure?
+  - Port testing helpers to browser
+- Refactor command menu directives:
+  - Open url and insert on save should be refactored into two directives:
+    - data-url (string) and data-action ("open"|"insert-on-save")
+- Refactor history and change tracking: should runAtom auto update dirty state?
+- How does comand bar and keyboard shortcut share code?
+  - Command bar should own its own keyboard shortcut service.
+  - Input service should focus on handling text editing inputs, not command.
+- Refactor git utilities. They are a mess
+
+- DONE
   - Move all filename to id conversion to server side
-  - Test (need real dom: playwright/cypress)
-    - How to mock dom measure?
-    - Port testing helpers to browser
-  - Refactor command menu directives:
-    - Open url and insert on save should be refactored into two directives:
-      - data-url (string) and data-action ("open"|"insert-on-save")
-  - Refactor history and change tracking: should runAtom auto update dirty state?
-  - How does comand bar and keyboard shortcut share code?
-    - Command bar should own its own keyboard shortcut service.
-    - Input service should focus on handling text editing inputs, not command.
-  - Refactor git utilities. They are a mess
 
 ## Metadata engine v1
 
-- Use frontmatter for metadata
 - UI managed metadata entry
   - Design interaction pattern
-- Validate frontmatter on-save
+- Validate metadata on-save
 
 ## IDE V2
 
@@ -69,6 +74,7 @@
   - Check config file and config values
 - Chinese character causes line height to jump.
 - When line ends with link, insert a new line at the end causes link to open
+- When document ends withi link, you can't add a new line without adding a space after the last link
 - Support default "Triage" tag (any alternatives?)
 - After navigation back, scroll position is lost
 - Quick insert of ISO local date could help
