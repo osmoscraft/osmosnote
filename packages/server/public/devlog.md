@@ -4,6 +4,7 @@
 
 - open close command bar causes unwanted scroll
 - Ctrl + s causes unwanted scroll
+- Ctrl + c can't access clipboard in http mode.
 
 ## Bootstrap system
 
