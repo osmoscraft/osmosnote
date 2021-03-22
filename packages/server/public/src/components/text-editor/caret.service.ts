@@ -201,6 +201,15 @@ export class CaretService {
     this.extendFocus({ seeker: this.getDocumentEndPosition, root });
   }
 
+  collapseToFocus(root: HTMLElement) {
+    if (!this.caret) return;
+
+    this.moveCaretCollapsed({
+      seeker: this.getCaretFocusPosition,
+      root,
+    });
+  }
+
   setCollapsedCaretToLineOffset(config: {
     line: HTMLElement;
     /** @default 0 */
@@ -485,6 +494,12 @@ export class CaretService {
 
       this.updateContainerStateRecursive(currentNode.parentNode, root);
     }
+  }
+
+  private getCaretFocusPosition(caret: Caret): SeekOutput | null {
+    const foundPosition = seek({ source: caret.focus.node, offset: caret.focus.offset });
+
+    return foundPosition;
   }
 
   /**

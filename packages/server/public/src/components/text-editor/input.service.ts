@@ -235,6 +235,13 @@ export class InputService {
         }
         break;
 
+      case "Escape":
+        if (!event.ctrlKey && !event.shiftKey) {
+          event.preventDefault();
+          this.caretService.collapseToFocus(host);
+        }
+        break;
+
       // Inputs
       case "Delete":
         if (event.ctrlKey) {
