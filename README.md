@@ -27,3 +27,7 @@
 ## Tagging
 
 - Tags are case sensitive. However, during the search, tags are case insentivie to encourage spontaneous discovery
+
+## WLS network issue
+
+- Device manager > Network adapters > Hyber-V Virtual Ethernet Adapter > Large Send Offload Version 2 > Set it to "Disabled"

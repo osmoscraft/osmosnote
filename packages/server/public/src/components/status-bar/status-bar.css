@@ -1,9 +1,11 @@
 s2-status-bar {
-  height: 24px;
+  --status-bar-height: 24px;
+  height: var(--status-bar-height);
   background-color: var(--base0D);
   color: var(--theme-text-color-knockout);
   font-weight: bold;
   font-size: 14px;
+  min-width: 0;
 
   padding: 0;
 }
@@ -17,8 +19,13 @@ s2-status-bar {
 .stsbar-chip {
   padding: 0 8px;
   height: 100%;
-  display: flex;
-  align-items: center;
+  line-height: var(--status-bar-height);
+}
+
+.stsbar-chip--message {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .stsbar-chip--change[data-is-dirty="false"] {

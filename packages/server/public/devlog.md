@@ -2,12 +2,6 @@
 
 ## Working on
 
-- Bug: open close command bar causes unwanted scroll
-- Bug: Ctrl + s causes unwanted scroll
-- Bug: Ctrl + c can't access clipboard in http mode.
-- Bug: url parser crash on `https://www.designmattersmedia.com/podcast/2010/Massimo-Vignelli`
-- Bug: Status bar could overflow into multiple lines
-
 - IDE: Spell check toggle on/off
 - IDE: ESC key to cancel selection
 - IDE: Easy delete of notes
@@ -22,9 +16,16 @@
   - When line ends with link, insert a new line at the end causes link to open
   - When document ends with link, you can't add a new line without adding a space after the last link
 
+## Release candidate
+
+- Bug: Status bar could overflow into multiple lines
+- Bug: open close command bar causes unwanted scroll
+- Bug: Ctrl + s causes unwanted scroll
+- Bug: url parser crash on `https://www.designmattersmedia.com/podcast/2010/Massimo-Vignelli` - No fix. It was a network issue
+
 ## Bug backlog
 
-- (Empty)
+- Bug: Ctrl + c can't access clipboard in http mode. (legacy copy command causes focus lost)
 
 ## Code health
 
