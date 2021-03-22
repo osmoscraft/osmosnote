@@ -1,25 +1,30 @@
 # Roadmap
 
-## Bugs
+## Working on
 
-- open close command bar causes unwanted scroll
-- Ctrl + s causes unwanted scroll
-- Ctrl + c can't access clipboard in http mode.
+- Bug: open close command bar causes unwanted scroll
+- Bug: Ctrl + s causes unwanted scroll
+- Bug: Ctrl + c can't access clipboard in http mode.
+- Bug: url parser crash on `https://www.designmattersmedia.com/podcast/2010/Massimo-Vignelli`
+- Bug: Status bar could overflow into multiple lines
 
-## Bootstrap system
+- IDE: Spell check toggle on/off
+- IDE: ESC key to cancel selection
+- IDE: Easy delete of notes
+- IDE: Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
+- IDE: Open and insert should use selection as default search query too.
 
-- Migrate high-value one-note notes
-  - All past readings
-- Migrate platojar research markdown
-- DONE
-  - Design knowledge architecture
-  - Project incubator
-  - Migrate all org-roam notes
-  - Migrate all azure devops notes
-  - Migrate all markdown life notes
-  - Convert selection to new note
-  - Note id system
-  - Timestamp in metadata
+- Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
+- Compiler: Consider MVP list rendering (use multiple - without space)
+- Compiler: Handle list indentation
+- Compiler: Handle list auto numbering
+- Compiler: Require space link
+  - When line ends with link, insert a new line at the end causes link to open
+  - When document ends with link, you can't add a new line without adding a space after the last link
+
+## Bug backlog
+
+- (Empty)
 
 ## Code health
 
@@ -35,35 +40,24 @@
   - Input service should focus on handling text editing inputs, not command.
 - Refactor git utilities. They are a mess
 
-- DONE
-  - Move all filename to id conversion to server side
-
-## Metadata engine v1
+## IDE
 
 - UI managed metadata entry
   - Design interaction pattern
 - Validate metadata on-save
-
-## IDE V2
-
 - A landing page (recent + open new).
 - Push git state to client from server
-- Easy delete of notes
 - Sync without save (when the current file is deleted on the remote, sync & save will cause conflict).
 - Consider combine save and sync. I forget to sync often.
 - Search ranking algorithm is way off. Need to improve accuracy for literal match.
-- Spell check toggle on/off
-- ESC key to cancel selection
 - Display "New" as status when opening a new file.
 - Consider using orange border to indicate dirty document
 - A fraction of delay after entering any command that waits for server.
 - URL search needs debouncer. Invalid url blocks UI
 - Strong need to curate a list based on tags
-- Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
 - Consider support shortcut to insert current time (northstar?)
 - Use History Service to track every keypress and use debouncer to improve performance
 - Consider consolidating change tracking service with history service (caret state is an outlier) (track change and runAtomic are always together)
-- Ctrl + k to insert link
 - Add file format without save command
 - Customizable home page with blocks of queries
 - Note refactoring system: rename title, delete
@@ -74,31 +68,20 @@
   - Check dependency and dump diagonostic info in console
   - Check config file and config values
 - Chinese character causes line height to jump.
-- When line ends with link, insert a new line at the end causes link to open
-- When document ends withi link, you can't add a new line without adding a space after the last link
 - Support default "Triage" tag (any alternatives?)
 - After navigation back, scroll position is lost
 - Quick insert of ISO local date could help
-- It's very easy to open the same doc twice and saving the older one will overwrite the new one.
 - Cancel remote action after cursor move
-- Status bar could overflow into multiple lines
 - Tag suggestion based on content
 - Link suggestion based on tags
 - Multiple workspaces (with crosss workspace search?)
+- It's very easy to open the same doc twice and saving the older one will overwrite the new one.
 
-- DONE
-  - Click to open link in current window
-  - Ctrl + Click to open link in new window
+## Compiler
 
-## Text engine V2
-
-- DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
 - Consider using web components to encapsulate links (and other text editor elements). Otherwise mouse click is not accessible.
 - Control + left seems to greedy when to prev. line
 - Ctrl + delete is too agressive when handling white spaces
-- Consider MVP list rendering (use multiple - without space)
-- Handle list indentation
-- Handle list auto numbering
 - Move # into the padding so heading lines can wrap without breaking indentation
 - Simplied internal API
   - Efficiently convert DOM layer node and offset into plaintext layer offset
@@ -142,6 +125,27 @@
 Map mouse click to cursor position: https://stackoverflow.com/questions/45332637/how-to-get-character-position-when-click-on-text-in-javascript/45333785
 
 # Archive
+
+Recent project first
+
+- IDE: Click to open link in current window
+- IDE: Ctrl + Click to open link in new window
+- IDE: Ctrl + k to insert link
+- Health: Move all filename to id conversion to server side
+
+## Bootstrap system
+
+- DONE
+  - Migrate high-value one-note notes
+    - All past readings
+  - Design knowledge architecture
+  - Project incubator
+  - Migrate all org-roam notes
+  - Migrate all azure devops notes
+  - Migrate all markdown life notes
+  - Convert selection to new note
+  - Note id system
+  - Timestamp in metadata
 
 ## Alpha test findings
 
