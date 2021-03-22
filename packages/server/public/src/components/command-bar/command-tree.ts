@@ -6,6 +6,7 @@ import { handleOpenOrCreateNote } from "./commands/handle-open-note.js";
 import { handleFileVersionCheckAll } from "./commands/handle-file-version-check-all.js";
 import { handleVersionSyncAll } from "./commands/handle-file-version-sync-all.js";
 import { handleFileSave } from "./commands/handle-file-save.js";
+import { handleToggleSpellcheck } from "./commands/handle-toggle-spellcheck.js";
 
 export const commandTree: RegisteredCommand = {
   name: "All commands",
@@ -49,6 +50,17 @@ export const commandTree: RegisteredCommand = {
           name: "Sync versions",
           key: "a",
           handler: handleVersionSyncAll,
+        },
+      ],
+    },
+    {
+      name: "Settings",
+      key: "s",
+      commands: [
+        {
+          name: "Toggle spellcheck",
+          key: "l",
+          handler: handleToggleSpellcheck,
         },
       ],
     },

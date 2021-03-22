@@ -102,6 +102,15 @@ export class TextEditorComponent extends HTMLElement {
     return this.caretService.getCaretContext()?.textSelected ?? null;
   }
 
+  /**
+   * @return is spellcheck enabled after toggling
+   */
+  toggleSpellcheck(): boolean {
+    this.host.spellcheck = !this.host.spellcheck;
+
+    return this.host.spellcheck;
+  }
+
   async insertAtCaretWithContext(getInsertingContent: InsertFunction) {
     const caretContext = this.caretService.getCaretContext();
     if (!caretContext) {

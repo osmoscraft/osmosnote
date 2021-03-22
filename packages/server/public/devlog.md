@@ -2,6 +2,8 @@
 
 ## Working on
 
+- IDE: Loading settings from local storage
+- IDE: User settings service (communicate with local storage)
 - IDE: Spell check toggle on/off
 - IDE: ESC key to cancel selection
 - IDE: Easy delete of notes
