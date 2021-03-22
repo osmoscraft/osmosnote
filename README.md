@@ -24,6 +24,10 @@
 
 # Manual
 
+## Clipboard
+
+- Without secure HTTPS origin, clipboard API won't work. You can use either localhost or use a real SSL certificate.
+
 ## Tagging
 
 - Tags are case sensitive. However, during the search, tags are case insentivie to encourage spontaneous discovery
