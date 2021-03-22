@@ -70,14 +70,11 @@ export class CaretService {
    * Set the window selection based on last saved model.
    * This will not render any highlight, but will trigger a selection change event
    */
-  restoreCaretFocusFromModel() {
+  restoreCaretSelectionlFromModel() {
     const caret = this._caret;
     if (caret) {
       const selection = this.windowRef.window.getSelection()!;
       selection.setBaseAndExtent(caret.anchor.node, caret.anchor.offset, caret.focus.node, caret.focus.offset);
-
-      const line = this.lineQueryService.getLine(caret.focus.node);
-      line?.scrollIntoView();
     }
   }
 

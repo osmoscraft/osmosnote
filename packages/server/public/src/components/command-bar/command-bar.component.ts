@@ -147,7 +147,7 @@ export class CommandBarComponent extends HTMLElement {
   private restoreFocus() {
     // assumption, command bar can only be opened by text editor
     // so we always restore focus to the caret.
-    this.caretService.restoreCaretFocusFromModel();
+    this.caretService.restoreCaretSelectionlFromModel();
   }
 
   private parseInput(input: string): CommandInput {
