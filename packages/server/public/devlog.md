@@ -2,9 +2,6 @@
 
 ## Working on
 
-- IDE: Loading settings from local storage
-- IDE: User settings service (communicate with local storage)
-- IDE: Spell check toggle on/off
 - IDE: Easy delete of notes
 - IDE: Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
 - IDE: Open and insert should use selection as default search query too.
@@ -19,6 +16,9 @@
 
 ## Release candidate
 
+- IDE: Loading settings from local storage
+- IDE: User settings service (communicate with local storage)
+- IDE: Spell check toggle on/off
 - IDE: ESC key to cancel selection
 - Bug: Status bar could overflow into multiple lines
 - Bug: open close command bar causes unwanted scroll

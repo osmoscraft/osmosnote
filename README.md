@@ -24,6 +24,10 @@
 
 # Manual
 
+## Native context menu
+
+- Use Shift + F10 in PC to trigger browser built-in context menu
+
 ## Clipboard
 
 - Without secure HTTPS origin, clipboard API won't work. You can use either localhost or use a real SSL certificate.

@@ -13,6 +13,7 @@ import { TrackChangeService } from "./track-change.service.js";
 import { RemoteHostService } from "../../services/remote/remote-host.service.js";
 import { NotificationService } from "../../services/notification/notification.service.js";
 import { SyncService } from "./sync.service.js";
+import { PreferencesService } from "../../services/preferences/preferences.service.js";
 
 export interface InsertFunction {
   (context: CaretContext): string | Promise<string>;
@@ -37,6 +38,7 @@ export class TextEditorComponent extends HTMLElement {
   private remoteHostService!: RemoteHostService;
   private notificationService!: NotificationService;
   private syncService!: SyncService;
+  private preferencesService!: PreferencesService;
 
   private _host!: HTMLElement;
 
@@ -60,6 +62,7 @@ export class TextEditorComponent extends HTMLElement {
     this.remoteHostService = di.getSingleton(RemoteHostService);
     this.notificationService = di.getSingleton(NotificationService);
     this.syncService = di.getSingleton(SyncService);
+    this.preferencesService = di.getSingleton(PreferencesService);
 
     this._host = this.querySelector("#content-host") as HTMLElement;
 
@@ -91,6 +94,9 @@ export class TextEditorComponent extends HTMLElement {
 
     const isNewNote = id === undefined;
     this.trackChangeService.set(isNewNote ? null : this.historyService.peek()!.textContent, false);
+
+    const preferences = this.preferencesService.getPreferences();
+    this.toggleSpellcheck(preferences.spellcheck);
   }
 
   async insertAtCaret(text: string) {
@@ -105,10 +111,12 @@ export class TextEditorComponent extends HTMLElement {
   /**
    * @return is spellcheck enabled after toggling
    */
-  toggleSpellcheck(): boolean {
-    this.host.spellcheck = !this.host.spellcheck;
+  toggleSpellcheck(forceState?: boolean): boolean {
+    const newState = forceState === undefined ? !this.host.spellcheck : forceState;
+    this.host.spellcheck = newState;
+    this.preferencesService.updatePreferences({ spellcheck: newState });
 
-    return this.host.spellcheck;
+    return newState;
   }
 
   async insertAtCaretWithContext(getInsertingContent: InsertFunction) {

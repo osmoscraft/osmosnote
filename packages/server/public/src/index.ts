@@ -20,6 +20,7 @@ import { LineQueryService } from "./components/text-editor/line-query.service.js
 import { MeasureService } from "./components/text-editor/measure.service.js";
 import { TrackChangeService } from "./components/text-editor/track-change.service.js";
 import { SyncService } from "./components/text-editor/sync.service.js";
+import { PreferencesService } from "./services/preferences/preferences.service.js";
 
 di.registerClass(ComponentRefService, []);
 di.registerClass(QueryService, []);
@@ -27,6 +28,7 @@ di.registerClass(RouteService, []);
 di.registerClass(NotificationService, [ComponentRefService]);
 di.registerClass(ApiService, [QueryService]);
 di.registerClass(WindowRefService, []);
+di.registerClass(PreferencesService, [WindowRefService]);
 di.registerClass(MeasureService, [WindowRefService]);
 di.registerClass(LineQueryService, [MeasureService]);
 di.registerClass(CaretService, [ComponentRefService, WindowRefService, LineQueryService]);
