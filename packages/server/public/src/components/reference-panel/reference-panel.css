@@ -1,6 +1,7 @@
 s2-reference-panel {
   background-color: var(--theme-background-rest);
   overflow-y: scroll;
+  font-family: monospace;
 }
 
 s2-reference-panel:focus-within {
@@ -10,7 +11,7 @@ s2-reference-panel:focus-within {
 
 .refpnl-list {
   margin: 0;
-  padding: 16px 0;
+  padding: 0;
   list-style: none;
   display: grid;
 }
@@ -21,8 +22,7 @@ s2-reference-panel:focus-within {
 
 .refpnl-link {
   text-decoration: none;
-  font-weight: bold;
-  padding: 4px 16px;
+  padding: 6px 16px;
   outline: none;
   color: var(--theme-text-color);
 
@@ -34,6 +34,7 @@ s2-reference-panel:focus-within {
 }
 
 .refpnl-link:is(:focus, :hover) {
+  font-weight: bold;
   color: var(--theme-text-color-knockout);
   background-color: var(--theme-menu-option-background-active);
 }

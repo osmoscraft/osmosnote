@@ -23,7 +23,7 @@
   --theme-background-active: var(--base00);
   --theme-menu-option-background-rest: var(--base00);
   --theme-menu-option-background-alt: var(--base03); /* active but out of focus */
-  --theme-menu-option-background-active: var(--base0D);
+  --theme-menu-option-background-active: var(--base04);
   --theme-text-color: var(--base06);
   --theme-text-selection-background: var(--base05);
   --theme-text-color-accent: var(--base09); /* non-interactive accents, e.g. tag prefix */

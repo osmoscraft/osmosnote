@@ -29,6 +29,7 @@
 ## Bug backlog
 
 - Bug: Ctrl + c can't access clipboard in http mode. (legacy copy command causes focus lost)
+- Bug: scrollbar has no hover effect and a wrong cursor style
 
 ## Code health
 
