@@ -9,3 +9,9 @@
 .t--bold {
   font-weight: 700;
 }
+
+.t--single-line {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

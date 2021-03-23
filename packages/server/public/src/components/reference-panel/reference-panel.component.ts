@@ -40,9 +40,16 @@ export class ReferencePanelComponent extends HTMLElement {
       .map(
         (note, index) => /*html*/ `
     <li>
-      <a class="refpnl-link" data-index="${index}" tabindex="${index === 0 ? 0 : -1}" href="/?id=${note.id}">${
-          note.title
-        }</a>
+      <a class="refpnl-link" data-index="${index}" tabindex="${index === 0 ? 0 : -1}" href="/?id=${note.id}">
+        <span class="t--single-line">${note.title}</span>
+        ${
+          note.tags.length
+            ? /*html*/ `<ul class="tag-list">${note.tags
+                .map((tag) => /*html*/ `<li class="tag-list__item">${tag}</li>`)
+                .join("")}</ul>`
+            : ""
+        }
+      </a>
     </li>
     `
       )

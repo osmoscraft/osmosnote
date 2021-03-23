@@ -17,6 +17,7 @@ export interface IncomingLink {
   id: string;
   title: string;
   score: number;
+  tags: string[];
 }
 
 export const handleGetIncomingLinks = createHandler<GetIncomingLinksOuput, GetIncomingLinksInput>(async (input) => {
@@ -56,6 +57,7 @@ async function getIncomingLinks(id: string): Promise<IncomingLink[]> {
         id: filenameToId(item.filename),
         title: parseResult.metadata.title,
         score: item.score,
+        tags: parseResult.metadata.tags,
       };
     });
 

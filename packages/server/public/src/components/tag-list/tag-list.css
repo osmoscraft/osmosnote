@@ -1,0 +1,19 @@
+.tag-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 4px;
+  max-width: 50vw;
+  overflow: hidden;
+}
+
+.tag-list__item {
+  padding: 2px 4px;
+  background-color: var(--base03);
+  color: var(--base06);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-weight: normal;
+}

@@ -13,7 +13,6 @@ s2-reference-panel:focus-within {
   padding: 16px 0;
   list-style: none;
   display: grid;
-  gap: 8px;
 }
 
 .refpnl-list:empty {
@@ -22,14 +21,19 @@ s2-reference-panel:focus-within {
 
 .refpnl-link {
   text-decoration: none;
-  padding: 0 16px;
-  display: block;
+  font-weight: bold;
+  padding: 4px 16px;
   outline: none;
-  color: var(--base04);
+  color: var(--theme-text-color);
+
+  display: grid;
+  align-items: center;
+  gap: 8px;
+  grid-auto-flow: column;
+  justify-content: start;
 }
 
-.refpnl-link:focus,
-.refpnl-link:hover {
-  color: var(--base0D);
-  text-decoration: underline;
+.refpnl-link:is(:focus, :hover) {
+  color: var(--theme-text-color-knockout);
+  background-color: var(--theme-menu-option-background-active);
 }

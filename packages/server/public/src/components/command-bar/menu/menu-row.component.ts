@@ -31,16 +31,16 @@ export class MenuRowComponent extends HTMLElement {
 
   connectedCallback() {
     const tagsHTML = this.dataset?.tags?.length
-      ? /*html*/ `<ul class="menu-row-content--tags tag-list">
+      ? /*html*/ `<ul class="tag-list">
     ${this.dataset.tags
       .split(",")
-      .map((tag: string) => `<li class="tag-item">${tag}</li>`)
+      .map((tag: string) => `<li class="tag-list__item">${tag}</li>`)
       .join("")}
     </ul>`
       : "";
 
     this.innerHTML = /*html*/ `<div class="menu-row-content">
-    <span class="menu-row-content--title">${this.dataset.label}</span>
+    <span class="t--single-line">${this.dataset.label}</span>
     ${tagsHTML}
     </div>`;
   }
