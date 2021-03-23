@@ -15,6 +15,7 @@
 
 ## Release candidate
 
+- IDE: Display tags in Reference panel
 - IDE: Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
 - IDE: Loading settings from local storage
 - IDE: User settings service (communicate with local storage)
