@@ -3,7 +3,6 @@
 ## Working on
 
 - IDE: Easy delete of notes
-- IDE: Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
 - IDE: Open and insert should use selection as default search query too.
 
 - Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
@@ -16,6 +15,7 @@
 
 ## Release candidate
 
+- IDE: Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
 - IDE: Loading settings from local storage
 - IDE: User settings service (communicate with local storage)
 - IDE: Spell check toggle on/off
@@ -69,6 +69,9 @@
   - Init repo with demo content
 - On start:
   - Check dependency and dump diagonostic info in console
+    - localstorage api
+    - clipboard api
+    - custom elements api
   - Check config file and config values
 - Chinese character causes line height to jump.
 - Support default "Triage" tag (any alternatives?)

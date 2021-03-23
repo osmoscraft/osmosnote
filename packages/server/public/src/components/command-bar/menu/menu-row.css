@@ -32,8 +32,38 @@ s2-menu-row[data-kind="option"][data-active] {
 
 /* Single rows max */
 .menu-row-content {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
+  display: grid;
+  align-items: center;
+  gap: 8px;
+  grid-auto-flow: column;
+}
+
+.menu-row-content--title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.menu-row-content--tags {
+  display: flex;
+  gap: 4px;
+}
+
+.tag-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 4px;
+  max-width: 50vw;
+  overflow: hidden;
+}
+
+.tag-item {
+  padding: 2px 4px;
+  background-color: var(--base03);
+  color: var(--base06);
+  white-space: nowrap;
+  text-overflow: ellipsis;
   overflow: hidden;
 }

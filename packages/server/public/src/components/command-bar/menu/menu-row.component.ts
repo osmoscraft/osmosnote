@@ -25,9 +25,23 @@ export class MenuRowComponent extends HTMLElement {
     commandKey?: string;
     /** Internal only, applies to options */
     active?: "";
+    /** Comma separate list of tags */
+    tags?: string;
   };
 
   connectedCallback() {
-    this.innerHTML = /*html*/ `<div class="menu-row-content">${this.dataset.label}</div>`;
+    const tagsHTML = this.dataset?.tags?.length
+      ? /*html*/ `<ul class="menu-row-content--tags tag-list">
+    ${this.dataset.tags
+      .split(",")
+      .map((tag: string) => `<li class="tag-item">${tag}</li>`)
+      .join("")}
+    </ul>`
+      : "";
+
+    this.innerHTML = /*html*/ `<div class="menu-row-content">
+    <span class="menu-row-content--title">${this.dataset.label}</span>
+    ${tagsHTML}
+    </div>`;
   }
 }

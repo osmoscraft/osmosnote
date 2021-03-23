@@ -46,6 +46,7 @@ export function renderSearchResultSection(
         data-payload="${getPayload(item)}"
         data-payload-action=${action}
         data-kind="option"
+        data-tags="${item.tags.join(",")}"
         data-label="${item.title}"></s2-menu-row>`
     )
     .join("")}
@@ -84,6 +85,7 @@ export function renderRecentNotes(
           data-payload="${getPayload(item)}"
           data-payload-action=${action}
           data-kind="option"
+          data-tags="${item.tags.join(",")}"
           data-label="${item.title}"></s2-menu-row>`
     )
     .join("")}
