@@ -1,3 +1,4 @@
+import { sanitizeHtml } from "../../utils/sanitize-html.js";
 import { URL_PATTERN_WITH_PREFIX } from "../../utils/url.js";
 import type { CaretService } from "./caret.service.js";
 import type { LineElement, LineType } from "./helpers/source-to-lines.js";
@@ -135,7 +136,7 @@ export class FormatService {
   }
 
   formatLine(line: LineElement, context: FormatContext, config: FormatConfig = {}): FormatLineSummary {
-    const rawText = line.textContent ?? "";
+    const rawText = sanitizeHtml(line.textContent ?? "");
 
     // heading
     let match = rawText.match(/^(\s*)(#+) (.*)\n?/);
