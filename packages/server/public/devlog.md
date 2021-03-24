@@ -81,6 +81,7 @@
 - Link suggestion based on tags
 - Multiple workspaces (with crosss workspace search?)
 - It's very easy to open the same doc twice and saving the older one will overwrite the new one.
+- Prompt for confirmation when deleting a note with references.
 
 ## Compiler
 
