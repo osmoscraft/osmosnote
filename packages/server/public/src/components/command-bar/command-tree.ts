@@ -7,6 +7,7 @@ import { handleFileVersionCheckAll } from "./commands/handle-file-version-check-
 import { handleVersionSyncAll } from "./commands/handle-file-version-sync-all.js";
 import { handleFileSave } from "./commands/handle-file-save.js";
 import { handleToggleSpellcheck } from "./commands/handle-toggle-spellcheck.js";
+import { handleFileDelete } from "./commands/handle-file-delete.js";
 
 export const commandTree: RegisteredCommand = {
   name: "All commands",
@@ -50,6 +51,11 @@ export const commandTree: RegisteredCommand = {
           name: "Sync versions",
           key: "a",
           handler: handleVersionSyncAll,
+        },
+        {
+          name: "Delete",
+          key: "t",
+          handler: handleFileDelete,
         },
       ],
     },

@@ -15,3 +15,17 @@ export const writeNote = async (filename: string, data: string): Promise<void> =
 
   await fs.writeFile(path.join(notesDir, filename), data);
 };
+
+export const deleteNote = async (filename: string): Promise<void> => {
+  const { notesDir } = await getConfig();
+
+  const candidatePath = path.join(notesDir, filename);
+
+  // extra safety check
+  const stat = await fs.lstat(candidatePath);
+  if (!stat.isFile()) {
+    throw new Error("Delete note received a directory. Nothing is deleted. Likely a mistake.");
+  }
+
+  await fs.remove(path.join(notesDir, filename));
+};

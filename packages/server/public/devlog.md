@@ -2,19 +2,16 @@
 
 ## Working on
 
-- IDE: Easy delete of notes
 - IDE: Open and insert should use selection as default search query too.
 
 - Compiler: Consider MVP list rendering (use multiple - without space)
 - Compiler: Handle list indentation
 - Compiler: Handle list auto numbering
-- Compiler: Require space after link
-  - When line ends with link, insert a new line at the end causes link to open
-  - When document ends with link, you can't add a new line without adding a space after the last link
 
 ## Release candidate
 
 - Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
+- IDE: Easy delete of notes
 - IDE: Display tags in Reference panel
 - IDE: Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
 - IDE: Loading settings from local storage
@@ -100,6 +97,9 @@
 - Read-only query-driven notes
 - CJK compatibility mode: avoid visual travel
 - codify block quote symbol ">"
+- Compiler: Require space after link
+  - When line ends with link, insert a new line at the end causes link to open
+  - When document ends with link, you can't add a new line without adding a space after the last link
 
 ## Overarching issues
 

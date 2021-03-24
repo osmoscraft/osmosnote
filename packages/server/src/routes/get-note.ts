@@ -1,4 +1,5 @@
 import { createHandler } from "../lib/create-handler";
+import { idToFilename } from "../lib/id-to-filename";
 import { readNote } from "../lib/note-file-io";
 
 export interface GetNoteInput {
@@ -11,7 +12,8 @@ export interface GetNoteOutput {
 
 export const handleGetNote = createHandler<GetNoteOutput, GetNoteInput>(async (input) => {
   const id = input.id;
-  const note = await readNote(`${id}.md`);
+  const filename = idToFilename(id);
+  const note = await readNote(filename);
 
   return {
     note,

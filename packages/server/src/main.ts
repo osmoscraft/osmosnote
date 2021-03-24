@@ -3,6 +3,7 @@ import fastifyStatic from "fastify-static";
 import path from "path";
 import { getConfig } from "./config";
 import { handleCreateNote } from "./routes/create-note";
+import { handleDeleteNote } from "./routes/delete-note";
 import { handleGetContentFromUrl } from "./routes/get-content-from-url";
 import { handleGetIncomingLinks } from "./routes/get-incoming-links";
 import { handleGetNote } from "./routes/get-note";
@@ -18,6 +19,7 @@ async function run() {
   const server = fastify();
 
   server.post("/api/create-note", handleCreateNote);
+  server.post("/api/delete-note", handleDeleteNote);
   server.post("/api/get-content-from-url", handleGetContentFromUrl);
   server.post("/api/get-incoming-links", handleGetIncomingLinks);
   server.post("/api/get-note", handleGetNote);

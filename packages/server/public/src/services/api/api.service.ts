@@ -21,6 +21,8 @@ import type {
   SyncVersionsOutput,
   UpdateNoteInput,
   UpdateNoteOutput,
+  DeleteNoteInput,
+  DeleteNoteOutput,
 } from "@system-two/server";
 import type { QueryService } from "../query/query.service.js";
 
@@ -55,6 +57,11 @@ export class ApiService {
     this.safeQuery<UpdateNoteOutput, UpdateNoteInput>(`/api/update-note`, {
       id,
       note,
+    });
+
+  deleteNote = (id: string) =>
+    this.safeQuery<DeleteNoteOutput, DeleteNoteInput>(`/api/delete-note`, {
+      id,
     });
 
   getIncomingLinks = (id: string) =>
