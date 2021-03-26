@@ -11,6 +11,7 @@
 ## Release candidate
 
 - Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
+- IDE: Disable spellchecker on metadata
 - IDE: Easy delete of notes
 - IDE: Display tags in Reference panel
 - IDE: Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
