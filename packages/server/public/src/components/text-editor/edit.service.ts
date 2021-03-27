@@ -14,7 +14,7 @@ export class EditService {
     private formatService: FormatService,
     private lineQueryService: LineQueryService
   ) {
-    this.isIndentReset = this.isIndentReset.bind(this);
+    this.isIndentPollute = this.isIndentPollute.bind(this);
   }
 
   insertText(text: string, root: HTMLElement) {
@@ -65,8 +65,7 @@ export class EditService {
     currentLine.parentElement?.insertBefore(newLines, currentLine);
     currentLine.remove();
 
-    const context = this.lineQueryService.getFormatContext(newSecondLine);
-    this.formatService.parseLines(root, { indentWithContext: context });
+    this.formatService.parseDocument(root);
 
     // set caret to next line start
     const lineMetrics = this.lineQueryService.getLineMetrics(newSecondLine);
@@ -252,7 +251,7 @@ export class EditService {
     const { offset: caretStartOffset } = this.caretService.getCaretLinePosition(caret.start);
     const { offset: caretEndOffset } = this.caretService.getCaretLinePosition(caret.end);
 
-    const isIndentDirty = selectedLines.some(this.isIndentReset);
+    const isIndentDirty = selectedLines.some(this.isIndentPollute);
     let updatedLine: HTMLElement | undefined = undefined;
 
     // if start and end are on the same line, update line content
@@ -341,7 +340,11 @@ export class EditService {
     this.insertText(textWithNormalizedLineEnding, root);
   }
 
+  private isIndentPollute(line: HTMLElement): boolean {
+    return this.formatService.isIndentPollutingLineType((line as LineElement).dataset?.line);
+  }
+
   private isIndentReset(line: HTMLElement): boolean {
-    return this.formatService.isIndentSettingLineType((line as LineElement).dataset?.line);
+    return this.formatService.isIndentResetLineType((line as LineElement).dataset?.line);
   }
 }

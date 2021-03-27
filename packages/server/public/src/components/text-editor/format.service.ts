@@ -6,22 +6,10 @@ import { removeLineEnding } from "./helpers/string.js";
 import type { LineQueryService } from "./line-query.service.js";
 
 export interface FormatContext {
-  level: number;
+  indentFromHeading: number;
+  indentFromList: number;
   isLevelDirty: boolean;
 }
-
-export interface ParseLinesConfig {
-  /**
-   * When provided, indent will be updated based on the given context.
-   * Otherwise, parser will not update indent and only parse syntax
-   */
-  indentWithContext?: FormatContext;
-}
-
-const PARSE_LINES_DEFAULT_CONTEXT: FormatContext = {
-  level: 0,
-  isLevelDirty: false,
-};
 
 interface FormatLineSummary {
   lengthChange: number;
@@ -32,28 +20,36 @@ export interface FormatConfig {
   syntaxOnly?: boolean;
 }
 
+export interface ParseDocumentConfig {
+  includeCleanLines?: boolean;
+}
+
 export class FormatService {
   constructor(private caretService: CaretService, private lineQueryService: LineQueryService) {}
 
   /**
    * Format all lines with dirty syntax flag. Indent will be kept dirty.
    */
-  parseLines(root: HTMLElement | DocumentFragment, config: ParseLinesConfig = {}) {
-    // TODO handle caret restore. Expose config to allow manual caret restore
-    const isSyntaxOnly = config.indentWithContext === undefined;
-    const { indentWithContext: context = PARSE_LINES_DEFAULT_CONTEXT } = config;
+  parseLines(root: HTMLElement | DocumentFragment) {
+    // TODO the context is not used. Clean up the signature of format line so we don't have to pass it in
+    const context: FormatContext = {
+      indentFromHeading: 0,
+      indentFromList: 0,
+      isLevelDirty: false,
+    };
 
     const lines = [...root.querySelectorAll("[data-line]")] as LineElement[];
 
     lines.forEach((line) => {
       if (line.dataset.dirtySyntax !== undefined) {
-        this.formatLine(line, context, { syntaxOnly: isSyntaxOnly });
+        this.formatLine(line, context, { syntaxOnly: true });
+
         delete line.dataset.dirtySyntax;
       }
     });
   }
 
-  parseDocument(root: HTMLElement | DocumentFragment) {
+  parseDocument(root: HTMLElement | DocumentFragment, config: ParseDocumentConfig = {}) {
     const caret = this.caretService.caret;
     let caretLine: HTMLElement;
     let previousCaretOffset: number | null = null;
@@ -66,7 +62,8 @@ export class FormatService {
 
     const lines = [...root.querySelectorAll("[data-line]")] as LineElement[];
     const context: FormatContext = {
-      level: 0,
+      indentFromHeading: 0,
+      indentFromList: 0,
       isLevelDirty: false,
     };
 
@@ -74,24 +71,25 @@ export class FormatService {
       const isLineClean = line.dataset.dirtyIndent === undefined && line.dataset.dirtySyntax === undefined;
 
       // update context without formatting when context and line are both clean
-      if (!context.isLevelDirty && isLineClean) {
+      if (!config.includeCleanLines && !context.isLevelDirty && isLineClean) {
         this.updateContextFromLine(line, context);
         return;
       }
 
       // otherwise, format the line
       const { lengthChange, lineType } = this.formatLine(line, context);
-      const isIndentReset = this.isIndentSettingLineType(lineType);
+      this.updateContextFromLine(line, context);
+
       // update line dirty state (this is independent from context)
       delete line.dataset.dirtyIndent;
       delete line.dataset.dirtySyntax;
 
       // update context dirty state
-      if (!context.isLevelDirty && !isLineClean && isIndentReset) {
-        // when context is clean, a dirty heading line pollutes context
+      if (!context.isLevelDirty && !isLineClean) {
+        // when context is clean, any dirty line can pollute the levels below (e.g. fill a blank line with text can join some contexts)
         context.isLevelDirty = true;
-      } else if (context.isLevelDirty && isLineClean && isIndentReset) {
-        // when context is dirty, a clean heading line cleans context
+      } else if (context.isLevelDirty && isLineClean && this.isIndentResetLineType(lineType)) {
+        // when context is dirty, a clean heading line cleans context (note, a clean list line alone cannot clean context)
         context.isLevelDirty = false;
       }
 
@@ -125,14 +123,27 @@ export class FormatService {
     if (match) {
       const [raw, spaces, hashes, text] = match;
 
-      context.level = hashes.length;
+      context.indentFromHeading = hashes.length * 2;
+      context.indentFromList = 0; // heading resets list indent
 
-      return {
-        isContextSet: true,
-      };
+      return;
     }
 
-    return {};
+    // unordered list
+    match = rawText.match(/^(\s*)(-+) (.*)\n?/);
+    if (match) {
+      const [raw, spaces, hypens, text] = match;
+
+      context.indentFromList = hypens.length * 2;
+
+      return;
+    }
+
+    // blank line
+    match = rawText.match(/^(\s+)$/);
+    if (match) {
+      context.indentFromList = 0;
+    }
   }
 
   formatLine(line: LineElement, context: FormatContext, config: FormatConfig = {}): FormatLineSummary {
@@ -143,8 +154,7 @@ export class FormatService {
     if (match) {
       const [raw, spaces, hashes, text] = match;
 
-      context.level = hashes.length;
-      line.dataset.level = hashes.length.toString();
+      line.dataset.headingLevel = hashes.length.toString();
       line.dataset.line = "heading";
 
       const indent = config.syntaxOnly ? spaces : ` `.repeat(hashes.length - 1);
@@ -155,6 +165,26 @@ export class FormatService {
       return {
         lengthChange: indent.length + hiddenHashes.length + 2 + text.length + 1 - raw.length,
         lineType: "heading",
+      };
+    }
+
+    // unordered list
+    match = rawText.match(/^(\s*)(-+) (.*)\n?/);
+    if (match) {
+      const [raw, spaces, hypens, text] = match;
+
+      line.dataset.line = "list";
+      line.dataset.listLevel = hypens.length.toString();
+      line.dataset.listType = "unordered";
+
+      const indent = config.syntaxOnly ? spaces : ` `.repeat(context.indentFromHeading + hypens.length - 1);
+      const hiddenHyphens = `-`.repeat(hypens.length - 1);
+
+      line.innerHTML = `<span data-indent>${indent}</span><span data-wrap><span class="t--ghost">${hiddenHyphens}</span><span class="list-marker">-</span> ${text}\n</span>`;
+
+      return {
+        lengthChange: indent.length + hiddenHyphens.length + 2 + text.length + 1 - raw.length,
+        lineType: "list",
       };
     }
 
@@ -198,7 +228,7 @@ export class FormatService {
 
       const inlineSpaces = removeLineEnding(spaces);
 
-      const indent = config.syntaxOnly ? inlineSpaces : ` `.repeat(context.level * 2);
+      const indent = config.syntaxOnly ? inlineSpaces : ` `.repeat(context.indentFromHeading + context.indentFromList);
       line.innerHTML = `<span data-indent>${indent}</span><span data-empty-content>\n</span>`;
 
       return {
@@ -218,7 +248,7 @@ export class FormatService {
       indent = actualIndent;
       remainingText = remainingText.slice(indent.length);
     } else {
-      indent = ` `.repeat(context.level * 2);
+      indent = ` `.repeat(context.indentFromHeading + context.indentFromList);
       remainingText = remainingText.trimStart();
     }
 
@@ -257,7 +287,11 @@ export class FormatService {
     };
   }
 
-  isIndentSettingLineType(lineType?: string): boolean {
+  isIndentPollutingLineType(lineType?: string): boolean {
+    return ["heading", "list", "blank"].includes(lineType as LineType);
+  }
+
+  isIndentResetLineType(lineType?: string): boolean {
     return (lineType as LineType) === "heading";
   }
 }

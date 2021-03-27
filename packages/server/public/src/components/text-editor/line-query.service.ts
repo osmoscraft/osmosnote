@@ -272,32 +272,51 @@ export class LineQueryService {
     return ensureLineEnding(reverse(removeLineEnding(line.textContent!)));
   }
 
+  /**
+   * @deprecated This is no longer in use. Kept here in case we need the logic for parsing ordered list
+   * After ordered list implementation, ok to remove.
+   */
   getFormatContext(line: HTMLElement): FormatContext {
-    const indentSettingLine = this.getNearestIndentSettingLine(line);
-    if (indentSettingLine) {
+    const { headingLine, listLine } = this.getNearestIndentSettingLines(line);
+    if (headingLine) {
       return {
-        level: parseInt(indentSettingLine.dataset.level!),
-        isLevelDirty: indentSettingLine.dataset.dirtyIndent === "",
+        indentFromHeading: parseInt(headingLine.dataset.headingLevel!) * 2,
+        indentFromList: listLine ? parseInt(listLine?.dataset.listLevel!) * 2 : 0, // TODO - handle ordered list
+        isLevelDirty: headingLine.dataset.dirtyIndent === "" || listLine?.dataset.dirtyIndent === "",
       };
     }
 
     return {
-      level: 0,
+      indentFromHeading: 0,
+      indentFromList: 0,
       isLevelDirty: false,
     };
   }
 
-  private getNearestIndentSettingLine(line: HTMLElement): LineElement | null {
-    let currentLine: HTMLElement | null = line;
-    while (currentLine) {
-      if (this.isIndentSettingLine(currentLine)) {
-        return currentLine;
+  private getNearestIndentSettingLines(
+    line: HTMLElement
+  ): { headingLine: LineElement | null; listLine: LineElement | null } {
+    let currentLine: HTMLElement | null = this.getPreviousLine(line);
+
+    let foundListLine: LineElement | null | undefined = undefined;
+    let foundHeadingLine: LineElement | null = null;
+
+    while (currentLine && !foundHeadingLine) {
+      if (foundListLine === undefined && this.isBlankLine(currentLine)) {
+        foundListLine = null; // blank line termintes list
+      } else if (foundListLine === undefined && this.isListLine(currentLine)) {
+        foundListLine = currentLine;
+      } else if (this.isHeadingLine(currentLine)) {
+        foundHeadingLine = currentLine;
       }
 
       currentLine = this.getPreviousLine(currentLine);
     }
 
-    return null;
+    return {
+      headingLine: foundHeadingLine,
+      listLine: foundListLine ?? null,
+    };
   }
 
   private getIndentSize(line: HTMLElement): number {
@@ -314,7 +333,15 @@ export class LineQueryService {
     return 0;
   }
 
-  private isIndentSettingLine(line?: HTMLElement | null): line is LineElement {
+  private isHeadingLine(line?: HTMLElement | null): line is LineElement {
     return (line as LineElement)?.dataset?.line === "heading";
+  }
+
+  private isListLine(line?: HTMLElement | null): line is LineElement {
+    return (line as LineElement)?.dataset?.line === "list";
+  }
+
+  private isBlankLine(line?: HTMLElement | null): line is LineElement {
+    return (line as LineElement)?.dataset?.line === "blank";
   }
 }

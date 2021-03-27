@@ -1,13 +1,18 @@
 import { removeLineEnding } from "./string.js";
 
-export type LineType = "" | "heading" | "meta" | "blank";
+export type LineType = "" | "heading" | "meta" | "list" | "blank";
 
 export interface LineElement extends HTMLDivElement {
   dataset: {
     line: LineType;
-    /** Exists on indent setting lines */
-    level?: string;
+    /** Exists on heading lines */
+    headingLevel?: string;
+    /** Exists on list item lines */
+    listType?: "ordered" | "unordered";
+    listLevel?: string;
+    /** Exists on meta lines */
     meta?: "title" | "tags";
+    /** Line state */
     dirtySyntax?: "";
     dirtyIndent?: "";
     /** Exists on the line that has collapsed caret */

@@ -49,19 +49,24 @@ s2-text-editor:focus-within {
   min-width: 1px;
 }
 
-[data-line="heading"][data-level="1"],
-[data-line="heading"][data-level="4"] {
+[data-line="heading"][data-heading-level="1"],
+[data-line="heading"][data-heading-level="4"] {
   color: var(--theme-h1-color);
 }
 
-[data-line="heading"][data-level="2"],
-[data-line="heading"][data-level="5"] {
+[data-line="heading"][data-heading-level="2"],
+[data-line="heading"][data-heading-level="5"] {
   color: var(--theme-h2-color);
 }
 
-[data-line="heading"][data-level="3"],
-[data-line="heading"][data-level="6"] {
+[data-line="heading"][data-heading-level="3"],
+[data-line="heading"][data-heading-level="6"] {
   color: var(--theme-h3-color);
+}
+
+[data-line="list"] .list-marker {
+  color: var(--theme-list-marker-color);
+  font-weight: 700;
 }
 
 [data-link] .link__title {

@@ -3,14 +3,17 @@
 ## Working on
 
 - IDE: Open and insert should use selection as default search query too.
+- IDE: delete note is not merged with staged change.
+- IDE: Auto create list marker on enter
 
 - Compiler: Consider MVP list rendering (use multiple - without space)
 - Compiler: Handle list indentation
-- Compiler: Handle list auto numbering
+- Compiler: mix link within list
 
 ## Release candidate
 
 - Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
+- IDE: delete heading line will leave content below in clean state with wrong indentation
 - IDE: Easy delete of notes
 - IDE: Display tags in Reference panel
 - IDE: Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
@@ -101,6 +104,7 @@
 - Compiler: Require space after link
   - When line ends with link, insert a new line at the end causes link to open
   - When document ends with link, you can't add a new line without adding a space after the last link
+- Compiler: Handle list auto numbering
 
 ## Overarching issues
 
