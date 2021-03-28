@@ -2,14 +2,13 @@
 
 ## Working on
 
-- IDE: Open and insert should use selection as default search query too.
-
 ## Release candidate
 
 - Compiler: mix link within list
 - Compiler: Consider MVP list rendering (use multiple - without space)
 - Compiler: Handle list indentation
 - Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
+- IDE: Open and insert should use selection as default search query too.
 - IDE: delete note is not merged with staged change.
 - IDE: Auto create list marker on enter
 - IDE: delete heading line will leave content below in clean state with wrong indentation
@@ -28,6 +27,7 @@
 
 ## Bug backlog
 
+- Bug: Disable browser built-in formatter: italic, underline, bold
 - Bug: Clicking didn't sync the ideal column for vertical travel
 - Bug: Ctrl + c can't access clipboard in http mode. (legacy copy command causes focus lost)
 - Bug: scrollbar has no hover effect and a wrong cursor style

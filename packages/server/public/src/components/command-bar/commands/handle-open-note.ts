@@ -13,6 +13,8 @@ import {
 import { parseQuery } from "./parse-query.js";
 
 export const handleOpenOrCreateNote: CommandHandler = async ({ input, context }) => {
+  const selectedText = context.componentRefs.textEditor.getSelectedText()?.trim();
+
   const query = input.args?.trim() ?? "";
 
   const { phrase, tags } = parseQuery(query);
@@ -30,14 +32,28 @@ export const handleOpenOrCreateNote: CommandHandler = async ({ input, context })
       let optionsHtml = "";
 
       if (!phrase?.length && !tags.length) {
+        // Blank input
         optionsHtml += renderMessageRow("Type keywords or URL");
 
-        // Blank input, show recent notes
+        const recentNotesAsync = context.apiService.getRecentNotes(selectedText ? 5 : 10);
+        const foundNotesAsync = selectedText ? context.apiService.searchNotes(selectedText) : null;
+
+        // Show recent notes
         try {
-          const notes = await context.apiService.getRecentNotes();
-          optionsHtml += renderRecentNotes("Open recent", notes, PayloadAction.openNoteById);
+          const recentNotes = await recentNotesAsync;
+          optionsHtml += renderRecentNotes("Open recent", recentNotes, PayloadAction.openNoteById);
         } catch (error) {
           optionsHtml += renderMessageRow("Error loading recent notes");
+        }
+
+        // Search notes based on selection
+        if (foundNotesAsync) {
+          try {
+            const foundNotes = await foundNotesAsync;
+            optionsHtml += renderSearchResultSection("Open search result", foundNotes, PayloadAction.openNoteById);
+          } catch (error) {
+            optionsHtml += renderMessageRow("Error searching notes");
+          }
         }
       } else {
         optionsHtml = renderHeaderRow("Open new");
