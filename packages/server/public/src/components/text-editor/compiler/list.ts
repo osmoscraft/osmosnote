@@ -3,8 +3,12 @@ import type { LineElement } from "../helpers/source-to-lines";
 
 export const LIST_PATTERN = /^(\s*)(-*)(-|\d+\.) (.*)\n?/; // `-- Item`, or `--1. Item`
 
-function parse(line: LineElement, _rawText: string, match: RegExpMatchArray | null) {
-  const [raw, spaces, levelSetters, listMarker, text] = match!;
+function match(rawText: string) {
+  return rawText.match(LIST_PATTERN);
+}
+
+function parse(line: LineElement, match: RegExpMatchArray) {
+  const [raw, spaces, levelSetters, listMarker, text] = match;
 
   const listLevel = levelSetters.length + 1;
 
@@ -44,6 +48,7 @@ function updateContext(line: LineElement, context: FormatContext) {
 }
 
 export const list: LineCompiler = {
+  match,
   parse,
   format,
   updateContext,

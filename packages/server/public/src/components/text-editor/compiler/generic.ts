@@ -5,9 +5,13 @@ import { removeLineEnding } from "../helpers/string.js";
 
 const TITLED_LINK_PATTERN = /^(.*?)\[([^\[\]]+?)\]\((.+?)\)/; // `[title](target)`
 
-function parse(line: LineElement, rawText: string) {
+function match(rawText: string): RegExpMatchArray {
+  return [rawText]; // similate a regexp match
+}
+
+function parse(line: LineElement, match: RegExpMatchArray) {
   let paragraphHtml = "";
-  let remainingText = removeLineEnding(rawText);
+  let remainingText = removeLineEnding(match[0]);
   let indent = remainingText.match(/^(\s+)/)?.[0] ?? "";
   let paragraphLength = 0;
 
@@ -59,6 +63,7 @@ function format(line: LineElement, context: FormatContext) {
 }
 
 export const generic: LineCompiler = {
+  match,
   parse,
   format,
 };

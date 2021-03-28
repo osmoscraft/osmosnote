@@ -3,8 +3,12 @@ import type { LineElement } from "../helpers/source-to-lines";
 
 export const META_PATTERN = /^#\+(.+?): (.*)\n?/; // `#+key: value`
 
-function parse(line: LineElement, _rawText: string, match: RegExpMatchArray | null) {
-  const [raw, metaKey, metaValue] = match!;
+function match(rawText: string) {
+  return rawText.match(META_PATTERN);
+}
+
+function parse(line: LineElement, match: RegExpMatchArray) {
+  const [raw, metaKey, metaValue] = match;
 
   line.dataset.line = "meta";
 
@@ -34,6 +38,7 @@ function format() {
 }
 
 export const meta: LineCompiler = {
+  match,
   parse,
   format,
 };

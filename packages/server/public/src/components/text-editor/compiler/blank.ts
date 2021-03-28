@@ -4,8 +4,12 @@ import { removeLineEnding } from "../helpers/string.js";
 
 export const BLANK_PATTERN = /^(\s+)$/;
 
-function parse(line: LineElement, _rawText: string, match: RegExpMatchArray | null) {
-  const [raw, spaces] = match!;
+function match(rawText: string) {
+  return rawText.match(BLANK_PATTERN);
+}
+
+function parse(line: LineElement, match: RegExpMatchArray) {
+  const [raw, spaces] = match;
 
   line.dataset.line = "blank";
 
@@ -34,6 +38,7 @@ function updateContext(_line: LineElement, context: FormatContext) {
 }
 
 export const blank: LineCompiler = {
+  match,
   parse,
   format,
   updateContext,

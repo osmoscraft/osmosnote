@@ -18,7 +18,8 @@ export interface FormatContext {
 }
 
 export interface LineCompiler {
-  parse: (line: LineElement, rawText: string, match: RegExpMatchArray | null) => void;
+  match: (rawText: string) => RegExpMatchArray | null;
+  parse: (line: LineElement, match: RegExpMatchArray) => void;
   format: (line: LineElement, context: FormatContext) => FormatLineSummary;
   updateContext?: (line: LineElement, context: FormatContext) => void;
 }
@@ -67,18 +68,18 @@ export class FormatService {
       const rawText = sanitizeHtml(line.textContent ?? "");
 
       let match = rawText.match(HEADING_PATTERN);
-      if (match) return heading.parse(line, rawText, match);
+      if (match) return heading.parse(line, match);
 
       match = rawText.match(LIST_PATTERN);
-      if (match) return list.parse(line, rawText, match);
+      if (match) return list.parse(line, match);
 
       match = rawText.match(META_PATTERN);
-      if (match) return meta.parse(line, rawText, match);
+      if (match) return meta.parse(line, match);
 
       match = rawText.match(BLANK_PATTERN);
-      if (match) return blank.parse(line, rawText, match);
+      if (match) return blank.parse(line, match);
 
-      generic.parse(line, rawText, match);
+      generic.parse(line, [rawText]);
     });
 
     const context: FormatContext = {

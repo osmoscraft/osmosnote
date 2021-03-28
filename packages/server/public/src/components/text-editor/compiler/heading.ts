@@ -3,8 +3,12 @@ import type { LineElement } from "../helpers/source-to-lines";
 
 export const HEADING_PATTERN = /^(\s*)(#+) (.*)\n?/; // `### Heading`
 
-function parse(line: LineElement, _rawText: string, match: RegExpMatchArray | null) {
-  const [raw, spaces, hashes, text] = match!;
+function match(rawText: string) {
+  return rawText.match(HEADING_PATTERN);
+}
+
+function parse(line: LineElement, match: RegExpMatchArray) {
+  const [raw, spaces, hashes, text] = match;
 
   line.dataset.headingLevel = hashes.length.toString();
   line.dataset.line = "heading";
@@ -34,6 +38,7 @@ function updateContext(line: LineElement, context: FormatContext) {
 }
 
 export const heading: LineCompiler = {
+  match,
   parse,
   format,
   updateContext,
