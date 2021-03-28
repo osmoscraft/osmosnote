@@ -29,18 +29,10 @@ export class FormatService {
    * Format all lines with dirty syntax flag. Indent will be kept dirty.
    */
   parseLines(root: HTMLElement | DocumentFragment) {
-    // TODO the context is not used. Clean up the signature of format line so we don't have to pass it in
-    const context: FormatContext = {
-      indentFromHeading: 0,
-      indentFromList: 0,
-      listSelfIndentFromSetter: [0],
-      shouldParseNextLine: false,
-    };
-
     const lines = [...root.querySelectorAll("[data-line]:not([data-parsed])")] as LineElement[];
 
     lines.forEach((line) => {
-      this.formatLine(line, context, { syntaxOnly: true });
+      this.formatLine(line);
 
       line.dataset.parsed = "";
     });
@@ -66,11 +58,9 @@ export class FormatService {
     };
 
     lines.forEach((line) => {
-      // otherwise, format the line
       const { lengthChange, lineType } = this.formatLine(line, context);
       this.updateContextFromLine(line, context);
 
-      // update line dirty state (this is independent from context)
       line.dataset.parsed = "";
 
       // restore caret
@@ -129,8 +119,12 @@ export class FormatService {
     }
   }
 
-  formatLine(line: LineElement, context: FormatContext, config: FormatConfig = {}): FormatLineSummary {
+  /**
+   * @param context if ommitted, indentation will not update
+   */
+  formatLine(line: LineElement, context?: FormatContext): FormatLineSummary {
     const rawText = sanitizeHtml(line.textContent ?? "");
+    const adjustIndent = context !== undefined;
 
     // heading
     let match = rawText.match(/^(\s*)(#+) (.*)\n?/);
@@ -140,7 +134,7 @@ export class FormatService {
       line.dataset.headingLevel = hashes.length.toString();
       line.dataset.line = "heading";
 
-      const indent = config.syntaxOnly ? spaces : ` `.repeat(hashes.length - 1);
+      const indent = adjustIndent ? ` `.repeat(hashes.length - 1) : spaces;
       const hiddenHashes = `#`.repeat(hashes.length - 1);
 
       line.innerHTML = `<span data-indent>${indent}</span><span data-wrap><span class="t--ghost">${hiddenHashes}</span><span class="t--bold"># ${text}</span>\n</span>`;
@@ -162,9 +156,9 @@ export class FormatService {
       line.dataset.listLevel = listLevel.toString();
       line.dataset.list = listMarker === "-" ? "unordered" : "ordered";
 
-      const listSelfIndent = context.listSelfIndentFromSetter[levelSetters.length] ?? 0;
+      const listSelfIndent = context?.listSelfIndentFromSetter[levelSetters.length] ?? 0;
 
-      const indent = config.syntaxOnly ? spaces : ` `.repeat(context.indentFromHeading + listSelfIndent);
+      const indent = adjustIndent ? ` `.repeat(context!.indentFromHeading + listSelfIndent) : spaces;
       const hiddenHyphens = `-`.repeat(levelSetters.length);
 
       line.innerHTML = `<span data-indent>${indent}</span><span data-wrap><span class="t--ghost">${hiddenHyphens}</span><span class="list-marker">${listMarker}</span> ${text}\n</span>`;
@@ -215,7 +209,7 @@ export class FormatService {
 
       const inlineSpaces = removeLineEnding(spaces);
 
-      const indent = config.syntaxOnly ? inlineSpaces : ` `.repeat(context.indentFromHeading + context.indentFromList);
+      const indent = adjustIndent ? ` `.repeat(context!.indentFromHeading + context!.indentFromList) : inlineSpaces;
       line.innerHTML = `<span data-indent>${indent}</span><span data-empty-content>\n</span>`;
 
       return {
@@ -231,12 +225,12 @@ export class FormatService {
     let actualIndent = remainingText.match(/^(\s+)/)?.[0] ?? "";
     let paragraphLength = 0;
 
-    if (config.syntaxOnly) {
+    if (adjustIndent) {
+      indent = ` `.repeat(context!.indentFromHeading + context!.indentFromList);
+      remainingText = remainingText.trimStart();
+    } else {
       indent = actualIndent;
       remainingText = remainingText.slice(indent.length);
-    } else {
-      indent = ` `.repeat(context.indentFromHeading + context.indentFromList);
-      remainingText = remainingText.trimStart();
     }
 
     paragraphLength = remainingText.length;
