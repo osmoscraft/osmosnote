@@ -1,7 +1,7 @@
-import type { FormatContext, LineCompiler } from "../format.service";
-import type { LineElement } from "../helpers/source-to-lines";
+import type { FormatContext, LineCompiler } from "../compile.service";
+import type { LineElement } from "../../helpers/source-to-lines";
 
-export const LIST_PATTERN = /^(\s*)(-*)(-|\d+\.) (.*)\n?/; // `-- Item`, or `--1. Item`
+const LIST_PATTERN = /^(\s*)(-*)(-|\d+\.) (.*)\n?/; // `-- Item`, or `--1. Item`
 
 function match(rawText: string) {
   return rawText.match(LIST_PATTERN);

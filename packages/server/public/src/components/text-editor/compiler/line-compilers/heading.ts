@@ -1,7 +1,7 @@
-import type { FormatContext, LineCompiler } from "../format.service";
-import type { LineElement } from "../helpers/source-to-lines";
+import type { FormatContext, LineCompiler } from "../compile.service";
+import type { LineElement } from "../../helpers/source-to-lines";
 
-export const HEADING_PATTERN = /^(\s*)(#+) (.*)\n?/; // `### Heading`
+const HEADING_PATTERN = /^(\s*)(#+) (.*)\n?/; // `### Heading`
 
 function match(rawText: string) {
   return rawText.match(HEADING_PATTERN);

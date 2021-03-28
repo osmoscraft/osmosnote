@@ -15,7 +15,7 @@ import { RemoteClientService } from "./services/remote/remote-client.service.js"
 import { CaretService } from "./components/text-editor/caret.service.js";
 import { WindowRefService } from "./services/window-reference/window.service.js";
 import { EditService } from "./components/text-editor/edit.service.js";
-import { FormatService } from "./components/text-editor/format.service.js";
+import { CompileService } from "./components/text-editor/compiler/compile.service.js";
 import { LineQueryService } from "./components/text-editor/line-query.service.js";
 import { MeasureService } from "./components/text-editor/measure.service.js";
 import { TrackChangeService } from "./components/text-editor/track-change.service.js";
@@ -33,8 +33,8 @@ di.registerClass(MeasureService, [WindowRefService]);
 di.registerClass(LineQueryService, [MeasureService]);
 di.registerClass(CaretService, [ComponentRefService, WindowRefService, LineQueryService]);
 di.registerClass(HistoryService, [CaretService, LineQueryService]);
-di.registerClass(FormatService, [CaretService, LineQueryService]);
-di.registerClass(EditService, [CaretService, FormatService, LineQueryService]);
+di.registerClass(CompileService, [CaretService, LineQueryService]);
+di.registerClass(EditService, [CaretService, CompileService, LineQueryService]);
 di.registerClass(InputService, [
   CaretService,
   EditService,
@@ -53,7 +53,7 @@ di.registerClass(SyncService, [
   NotificationService,
   RemoteClientService,
   ComponentRefService,
-  FormatService,
+  CompileService,
   RouteService,
 ]);
 

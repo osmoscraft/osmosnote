@@ -2,7 +2,7 @@ import { writeClipboardText } from "../../utils/clipboard.js";
 import type { CaretService } from "./caret.service.js";
 import { LineElement, sourceToLines } from "./helpers/source-to-lines.js";
 import { splice } from "./helpers/string.js";
-import type { FormatService } from "./format.service.js";
+import type { CompileService } from "./compiler/compile.service.js";
 import type { LineQueryService } from "./line-query.service.js";
 
 /**
@@ -11,7 +11,7 @@ import type { LineQueryService } from "./line-query.service.js";
 export class EditService {
   constructor(
     private caretService: CaretService,
-    private formatService: FormatService,
+    private formatService: CompileService,
     private lineQueryService: LineQueryService
   ) {
     this.isIndentPollute = this.isIndentPollute.bind(this);
@@ -65,7 +65,7 @@ export class EditService {
     currentLine.parentElement?.insertBefore(newLines, currentLine);
     currentLine.remove();
 
-    this.formatService.parseDocument(root);
+    this.formatService.compile(root);
 
     // set caret to next line start
     const lineMetrics = this.lineQueryService.getLineMetrics(newSecondLine);

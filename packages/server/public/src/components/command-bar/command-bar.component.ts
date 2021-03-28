@@ -7,7 +7,7 @@ import { WindowRefService } from "../../services/window-reference/window.service
 import { di } from "../../utils/dependency-injector.js";
 import { scrollIntoView } from "../../utils/scroll-into-view.js";
 import { CaretService } from "../text-editor/caret.service.js";
-import { FormatService } from "../text-editor/format.service.js";
+import { CompileService } from "../text-editor/compiler/compile.service.js";
 import { SyncService } from "../text-editor/sync.service.js";
 import { TrackChangeService } from "../text-editor/track-change.service.js";
 import { commandTree } from "./command-tree.js";
@@ -32,7 +32,7 @@ export interface CommandHandlerContext {
   windowRef: WindowRefService;
   notificationService: NotificationService;
   syncService: SyncService;
-  formatService: FormatService;
+  formatService: CompileService;
   routeService: RouteService;
   trackChangeService: TrackChangeService;
 }
@@ -86,7 +86,7 @@ export class CommandBarComponent extends HTMLElement {
   private windowRef = di.getSingleton(WindowRefService);
   private notificationService = di.getSingleton(NotificationService);
   private syncService = di.getSingleton(SyncService);
-  private formatService = di.getSingleton(FormatService);
+  private formatService = di.getSingleton(CompileService);
   private routeService = di.getSingleton(RouteService);
   private caretService = di.getSingleton(CaretService);
   private trackChangeService = di.getSingleton(TrackChangeService);

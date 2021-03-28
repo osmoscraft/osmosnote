@@ -1,8 +1,8 @@
-import type { FormatContext, LineCompiler } from "../format.service.js";
-import type { LineElement } from "../helpers/source-to-lines.js";
-import { removeLineEnding } from "../helpers/string.js";
+import type { FormatContext, LineCompiler } from "../compile.service.js";
+import type { LineElement } from "../../helpers/source-to-lines.js";
+import { removeLineEnding } from "../../helpers/string.js";
 
-export const BLANK_PATTERN = /^(\s+)$/;
+const BLANK_PATTERN = /^(\s+)$/;
 
 function match(rawText: string) {
   return rawText.match(BLANK_PATTERN);

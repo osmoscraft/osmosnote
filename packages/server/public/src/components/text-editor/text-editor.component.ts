@@ -4,7 +4,7 @@ import { RouteService } from "../../services/route/route.service.js";
 import { di } from "../../utils/dependency-injector.js";
 import { CaretContext, CaretService } from "./caret.service.js";
 import { EditService } from "./edit.service.js";
-import { FormatService } from "./format.service.js";
+import { CompileService } from "./compiler/compile.service.js";
 import { sourceToLines } from "./helpers/source-to-lines.js";
 import { getNoteFromTemplate } from "./helpers/template.js";
 import { InputService } from "./input.service.js";
@@ -32,7 +32,7 @@ export class TextEditorComponent extends HTMLElement {
   private historyService!: HistoryService;
   private caretService!: CaretService;
   private editService!: EditService;
-  private formatService!: FormatService;
+  private formatService!: CompileService;
   private measureService!: MeasureService;
   private trackChangeService!: TrackChangeService;
   private remoteHostService!: RemoteHostService;
@@ -56,7 +56,7 @@ export class TextEditorComponent extends HTMLElement {
     this.historyService = di.getSingleton(HistoryService);
     this.caretService = di.getSingleton(CaretService);
     this.editService = di.getSingleton(EditService);
-    this.formatService = di.getSingleton(FormatService);
+    this.formatService = di.getSingleton(CompileService);
     this.measureService = di.getSingleton(MeasureService);
     this.trackChangeService = di.getSingleton(TrackChangeService);
     this.remoteHostService = di.getSingleton(RemoteHostService);
@@ -84,7 +84,7 @@ export class TextEditorComponent extends HTMLElement {
     const dom = sourceToLines(note);
 
     this.host.appendChild(dom);
-    this.formatService.parseDocument(this.host);
+    this.formatService.compile(this.host);
 
     this.caretService.init(this.host);
     this.measureService.init(this.host);
