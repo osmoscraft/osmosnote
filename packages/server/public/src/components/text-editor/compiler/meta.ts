@@ -1,5 +1,5 @@
-import type { LineCompiler } from "../compile.service";
-import type { LineElement } from "../../helpers/source-to-lines";
+import type { LineCompiler } from "./compile.service";
+import type { LineElement } from "../helpers/source-to-lines";
 
 const META_PATTERN = /^#\+(.+?): (.*)\n?/; // `#+key: value`
 

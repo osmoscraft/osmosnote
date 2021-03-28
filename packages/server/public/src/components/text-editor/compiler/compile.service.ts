@@ -1,10 +1,10 @@
 import { sanitizeHtml } from "../../../utils/sanitize-html.js";
 import type { CaretService } from "../caret.service.js";
-import { blank } from "./line-compilers/blank.js";
-import { generic } from "./line-compilers/generic.js";
-import { heading } from "./line-compilers/heading.js";
-import { list } from "./line-compilers/list.js";
-import { meta } from "./line-compilers/meta.js";
+import { blank } from "./blank.js";
+import { generic } from "./generic.js";
+import { heading } from "./heading.js";
+import { list } from "./list.js";
+import { meta } from "./meta.js";
 import type { LineElement, LineType } from "../helpers/source-to-lines.js";
 import type { LineQueryService } from "../line-query.service.js";
 

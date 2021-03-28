@@ -1,5 +1,5 @@
-import type { FormatContext, LineCompiler } from "../compile.service";
-import type { LineElement } from "../../helpers/source-to-lines";
+import type { FormatContext, LineCompiler } from "./compile.service";
+import type { LineElement } from "../helpers/source-to-lines";
 
 const HEADING_PATTERN = /^(\s*)(#+) (.*)\n?/; // `### Heading`
 

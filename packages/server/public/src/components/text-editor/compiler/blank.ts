@@ -1,6 +1,6 @@
-import type { FormatContext, LineCompiler } from "../compile.service.js";
-import type { LineElement } from "../../helpers/source-to-lines.js";
-import { removeLineEnding } from "../../helpers/string.js";
+import type { FormatContext, LineCompiler } from "./compile.service.js";
+import type { LineElement } from "../helpers/source-to-lines.js";
+import { removeLineEnding } from "../helpers/string.js";
 
 const BLANK_PATTERN = /^(\s+)$/;
 

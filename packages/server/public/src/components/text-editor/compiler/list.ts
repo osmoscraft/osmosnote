@@ -1,5 +1,6 @@
-import type { FormatContext, LineCompiler } from "../compile.service";
-import type { LineElement } from "../../helpers/source-to-lines";
+import type { FormatContext, LineCompiler } from "./compile.service.js";
+import type { LineElement } from "../helpers/source-to-lines.js";
+import { parseInlineParagraph } from "./parse-inline-paragraph.js";
 
 const LIST_PATTERN = /^(\s*)(-*)(-|\d+\.) (.*)\n?/; // `-- Item`, or `--1. Item`
 
@@ -19,7 +20,9 @@ function parse(line: LineElement, match: RegExpMatchArray) {
 
   const hiddenHyphens = `-`.repeat(levelSetters.length);
 
-  line.innerHTML = `<span data-indent>${spaces}</span><span data-wrap><span class="t--ghost">${hiddenHyphens}</span><span class="list-marker">${listMarker}</span> ${text}\n</span>`;
+  const paragraphHtml = parseInlineParagraph(text);
+
+  line.innerHTML = `<span data-indent>${spaces}</span><span data-wrap><span class="t--ghost">${hiddenHyphens}</span><span class="list-marker">${listMarker}</span> ${paragraphHtml}\n</span>`;
 }
 
 function format(line: LineElement, context: FormatContext) {
