@@ -48,6 +48,7 @@
 
 ## IDE
 
+- IDE: auto list order (need format context to track current level and order)
 - IDE: Graceful handling of invalid ID
 - UI managed metadata entry
   - Design interaction pattern

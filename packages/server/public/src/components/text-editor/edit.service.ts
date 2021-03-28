@@ -13,9 +13,7 @@ export class EditService {
     private caretService: CaretService,
     private formatService: CompileService,
     private lineQueryService: LineQueryService
-  ) {
-    this.isIndentPollute = this.isIndentPollute.bind(this);
-  }
+  ) {}
 
   insertText(text: string, root: HTMLElement) {
     this.deleteSelectionExplicit(root);
@@ -278,7 +276,6 @@ export class EditService {
     const { offset: caretStartOffset } = this.caretService.getCaretLinePosition(caret.start);
     const { offset: caretEndOffset } = this.caretService.getCaretLinePosition(caret.end);
 
-    const isIndentDirty = selectedLines.some(this.isIndentPollute);
     let updatedLine: HTMLElement | undefined = undefined;
 
     // if start and end are on the same line, update line content
@@ -315,13 +312,6 @@ export class EditService {
 
     this.formatService.parseLines(root);
     this.caretService.setCollapsedCaretToLineOffset({ line: updatedLine, offset: caretStartOffset });
-
-    if (isIndentDirty && updatedLine) {
-      let dirtyLine = this.lineQueryService.getNextLine(updatedLine);
-      while (dirtyLine && !this.isIndentReset(dirtyLine)) {
-        dirtyLine = this.lineQueryService.getNextLine(dirtyLine);
-      }
-    }
   }
 
   async caretCopy() {
@@ -364,13 +354,5 @@ export class EditService {
     const textWithNormalizedLineEnding = text.replace(/\r\n?/g, "\n");
 
     this.insertText(textWithNormalizedLineEnding, root);
-  }
-
-  private isIndentPollute(line: HTMLElement): boolean {
-    return this.formatService.isIndentPollutingLineType((line as LineElement).dataset?.line);
-  }
-
-  private isIndentReset(line: HTMLElement): boolean {
-    return this.formatService.isIndentResetLineType((line as LineElement).dataset?.line);
   }
 }

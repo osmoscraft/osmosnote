@@ -117,18 +117,4 @@ export class CompileService {
 
     return text;
   }
-
-  /**
-   * @deprecated incremental compile is TBD
-   */
-  isIndentPollutingLineType(lineType?: string): boolean {
-    return ["heading", "list", "blank"].includes(lineType as LineType);
-  }
-
-  /**
-   * @deprecated incremental compile is TBD
-   */
-  isIndentResetLineType(lineType?: string): boolean {
-    return (lineType as LineType) === "heading";
-  }
 }
