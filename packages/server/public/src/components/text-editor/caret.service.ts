@@ -3,7 +3,7 @@ import type { WindowRefService } from "../../services/window-reference/window.se
 import { scrollIntoView } from "../../utils/scroll-into-view.js";
 import { seek, SeekOutput } from "./helpers/dom.js";
 import type { LineElement } from "./helpers/source-to-lines.js";
-import { ensureLineEnding, getWordEndOffset, reverse } from "./helpers/string.js";
+import { ensureLineEnding, getWordEndOffset, removeLineEnding, reverse } from "./helpers/string.js";
 import type { LinePosition, LineQueryService, VisualLinePosition } from "./line-query.service.js";
 
 export interface Caret {
@@ -20,8 +20,14 @@ export interface CaretPosition {
 }
 
 export interface CaretContext {
+  /** On the caret start line, all the raw text before caret, without indent */
   textBefore: string;
+  /** On the caret start line, all the raw text before caret, including indent */
+  textBeforeRaw: string;
+  /** On the caret end line, all the raw text after caret, without line end */
   textAfter: string;
+  /** On the caret end line, all the raw text after caret, including line end */
+  textAfterRaw: string;
   textSelected: string;
 }
 
@@ -274,13 +280,16 @@ export class CaretService {
 
     let textBefore,
       textSelected,
-      textAfter: string = "";
+      textAfter,
+      wrappableTextBefore,
+      selectableTextAfter: string = "";
 
     const selectedLines = this.lineQueryService.getLines(caret.start.node, caret.end.node);
     const { offset: caretStartOffset } = this.getCaretLinePosition(caret.start);
     const { offset: caretEndOffset } = this.getCaretLinePosition(caret.end);
 
     const startLine = selectedLines[0];
+    const { indent: startLineIndent } = this.lineQueryService.getLineMetrics(startLine);
     const startLineText = startLine.textContent!;
 
     const endLine = selectedLines[selectedLines.length - 1];
@@ -288,7 +297,9 @@ export class CaretService {
     const distanceToEnd = endLineText.length - caretEndOffset;
 
     textBefore = startLineText.slice(0, caretStartOffset);
+    wrappableTextBefore = startLineText.slice(startLineIndent, caretStartOffset);
     textAfter = endLineText.slice(caretEndOffset);
+    selectableTextAfter = removeLineEnding(textAfter);
 
     textSelected = startLineText.slice(caretStartOffset);
     textSelected += selectedLines
@@ -298,8 +309,10 @@ export class CaretService {
     textSelected = textSelected.slice(0, -distanceToEnd);
 
     return {
-      textBefore,
-      textAfter,
+      textBeforeRaw: textBefore,
+      textAfterRaw: textAfter,
+      textBefore: wrappableTextBefore,
+      textAfter: selectableTextAfter,
       textSelected,
     };
   }

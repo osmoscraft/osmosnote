@@ -41,11 +41,11 @@ export const handleInsertTags: CommandHandler = async ({ input, context }) => {
     },
     repeatableRunOnCommit: () => {
       context.componentRefs.textEditor.insertAtCaretWithContext((context) => {
-        if (context.textBefore.endsWith(":") || context.textBefore.endsWith(",")) {
+        if (context.textBeforeRaw.endsWith(":") || context.textBeforeRaw.endsWith(",")) {
           // "#+tags:" or "tag,"
           return ` ${phrase}`;
           // "#+tags: ", or "tag, "
-        } else if (context.textBefore.endsWith(": ") || context.textBefore.endsWith(", ")) {
+        } else if (context.textBeforeRaw.endsWith(": ") || context.textBeforeRaw.endsWith(", ")) {
           return phrase;
         } else {
           return `, ${phrase}`;

@@ -311,12 +311,12 @@ export class InputService {
       if (listLine) {
         const caretContext = this.caretService.getCaretContext();
         // enter at list end without any selection
-        if (caretContext?.textSelected === "" && removeLineEnding(caretContext?.textAfter ?? "") === "") {
+        if (caretContext?.textSelected === "" && caretContext?.textAfter === "") {
           if (listLine.dataset.listEmpty === "") {
-            // Empty list item: clear the marker
+            // Empty list item: replace all text with space
             await this.historyService.runAtomic(host, () => {
               this.caretService.selectHome(host);
-              this.editService.deleteSelection(host);
+              this.editService.insertText(" ".repeat(caretContext.textBefore.length), host);
             });
           } else {
             // Non-empty item: create a new item at the same level
