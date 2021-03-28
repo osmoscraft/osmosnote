@@ -6,10 +6,9 @@
 - IDE: delete note is not merged with staged change.
 - IDE: Auto create list marker on enter
 
-- Compiler: mix link within list
-
 ## Release candidate
 
+- Compiler: mix link within list
 - Compiler: Consider MVP list rendering (use multiple - without space)
 - Compiler: Handle list indentation
 - Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
@@ -85,6 +84,7 @@
 - Multiple workspaces (with crosss workspace search?)
 - It's very easy to open the same doc twice and saving the older one will overwrite the new one.
 - Prompt for confirmation when deleting a note with references.
+- Backtick inline code snippet
 
 ## Compiler
 
