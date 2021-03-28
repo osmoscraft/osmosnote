@@ -1,6 +1,11 @@
 import { sanitizeHtml } from "../../utils/sanitize-html.js";
 import { URL_PATTERN_WITH_PREFIX } from "../../utils/url.js";
 import type { CaretService } from "./caret.service.js";
+import { blank, BLANK_PATTERN } from "./compiler/blank.js";
+import { generic } from "./compiler/generic.js";
+import { heading, HEADING_PATTERN } from "./compiler/heading.js";
+import { list, LIST_PATTERN } from "./compiler/list.js";
+import { meta, META_PATTERN } from "./compiler/meta.js";
 import type { LineElement, LineType } from "./helpers/source-to-lines.js";
 import { removeLineEnding } from "./helpers/string.js";
 import type { LineQueryService } from "./line-query.service.js";
@@ -10,12 +15,17 @@ export interface FormatContext {
   indentFromList: number;
   /** Given number of setter characters, what is the indent of the list item itself */
   listSelfIndentFromSetter: number[];
-  shouldParseNextLine: boolean;
+}
+
+export interface LineCompiler {
+  parse: (line: LineElement, rawText: string, match: RegExpMatchArray | null) => void;
+  format: (line: LineElement, context: FormatContext) => FormatLineSummary;
+  updateContext?: (line: LineElement, context: FormatContext) => void;
 }
 
 interface FormatLineSummary {
   lengthChange: number;
-  lineType: LineType;
+  // lineType: LineType;
 }
 
 export interface FormatConfig {
@@ -50,22 +60,60 @@ export class FormatService {
     }
 
     const lines = [...root.querySelectorAll("[data-line]")] as LineElement[];
+
+    lines.forEach((line) => {
+      line.dataset.parsed = "";
+
+      const rawText = sanitizeHtml(line.textContent ?? "");
+
+      let match = rawText.match(HEADING_PATTERN);
+      if (match) return heading.parse(line, rawText, match);
+
+      match = rawText.match(LIST_PATTERN);
+      if (match) return list.parse(line, rawText, match);
+
+      match = rawText.match(META_PATTERN);
+      if (match) return meta.parse(line, rawText, match);
+
+      match = rawText.match(BLANK_PATTERN);
+      if (match) return blank.parse(line, rawText, match);
+
+      generic.parse(line, rawText, match);
+    });
+
     const context: FormatContext = {
       indentFromHeading: 0,
       indentFromList: 0,
       listSelfIndentFromSetter: [0],
-      shouldParseNextLine: false,
     };
 
     lines.forEach((line) => {
-      const { lengthChange, lineType } = this.formatLine(line, context);
-      this.updateContextFromLine(line, context);
+      let formatLineSummary: FormatLineSummary;
 
-      line.dataset.parsed = "";
+      switch (line.dataset.line as LineType) {
+        case "heading":
+          formatLineSummary = heading.format(line, context);
+          heading.updateContext?.(line, context);
+          break;
+        case "list":
+          formatLineSummary = list.format(line, context);
+          list.updateContext?.(line, context);
+          break;
+        case "blank":
+          formatLineSummary = blank.format(line, context);
+          blank.updateContext?.(line, context);
+          break;
+        case "meta":
+          formatLineSummary = meta.format(line, context);
+          meta.updateContext?.(line, context);
+          break;
+        default:
+          formatLineSummary = generic.format(line, context);
+      }
 
       // restore caret
       if ((line as any) === caretLine) {
-        const newOffset = Math.max(0, previousCaretOffset! + lengthChange);
+        const newOffset = Math.max(0, previousCaretOffset! + formatLineSummary.lengthChange);
         this.caretService.setCollapsedCaretToLineOffset({ line: caretLine, offset: newOffset });
       }
     });
@@ -83,40 +131,6 @@ export class FormatService {
       .join("");
 
     return text;
-  }
-
-  updateContextFromLine(line: LineElement, context: FormatContext) {
-    const rawText = line.textContent ?? "";
-
-    // heading
-    let match = rawText.match(/^(\s*)(#+) (.*)\n?/);
-    if (match) {
-      const [raw, spaces, hashes, text] = match;
-
-      context.indentFromHeading = hashes.length * 2;
-      context.indentFromList = 0; // heading resets list indent
-
-      return;
-    }
-
-    // list
-    match = rawText.match(/^(\s*)(-*)(-|\d+\.) (.*)\n?/);
-    if (match) {
-      const [raw, spaces, levelSetters, listMarker, text] = match;
-
-      const currentIdentSize = context.listSelfIndentFromSetter[levelSetters.length] ?? 0;
-      context.listSelfIndentFromSetter[levelSetters.length + 1] = currentIdentSize + listMarker.length;
-      context.indentFromList = currentIdentSize + levelSetters.length + listMarker.length + 1;
-
-      return;
-    }
-
-    // blank line
-    match = rawText.match(/^(\s+)$/);
-    if (match) {
-      context.indentFromList = 0;
-      context.listSelfIndentFromSetter = [0];
-    }
   }
 
   /**
@@ -141,7 +155,6 @@ export class FormatService {
 
       return {
         lengthChange: indent.length + hiddenHashes.length + 2 + text.length + 1 - raw.length,
-        lineType: "heading",
       };
     }
 
@@ -165,7 +178,6 @@ export class FormatService {
 
       return {
         lengthChange: indent.length + hiddenHyphens.length + listMarker.length + 1 + text.length + 1 - raw.length,
-        lineType: "list",
       };
     }
 
@@ -196,7 +208,6 @@ export class FormatService {
 
       return {
         lengthChange: 2 + metaKey.length + 2 + metaValue.length + 1 - raw.length,
-        lineType: "meta",
       };
     }
 
@@ -214,7 +225,6 @@ export class FormatService {
 
       return {
         lengthChange: indent.length + 1 - raw.length,
-        lineType: "",
       };
     }
 
@@ -264,14 +274,19 @@ export class FormatService {
 
     return {
       lengthChange: indent.length + paragraphLength + 1 - rawText.length,
-      lineType: "",
     };
   }
 
+  /**
+   * @deprecated incremental compile is TBD
+   */
   isIndentPollutingLineType(lineType?: string): boolean {
     return ["heading", "list", "blank"].includes(lineType as LineType);
   }
 
+  /**
+   * @deprecated incremental compile is TBD
+   */
   isIndentResetLineType(lineType?: string): boolean {
     return (lineType as LineType) === "heading";
   }

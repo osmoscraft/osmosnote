@@ -9,6 +9,8 @@ export interface LineElement extends HTMLDivElement {
     headingLevel?: string;
     /** Exists on list item lines */
     list?: "ordered" | "unordered";
+    /** The "bullet" or the number prefix of a list item, without surrounding space */
+    listMarker?: string;
     listLevel?: string;
     /** Exists on meta lines */
     meta?: "title" | "tags";
