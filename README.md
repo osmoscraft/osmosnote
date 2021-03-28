@@ -24,6 +24,10 @@
 
 # Manual
 
+## Launch with keyboard shortcut
+
+- PC: recommend ahk
+
 ## Native context menu
 
 - Use Shift + F10 in PC to trigger browser built-in context menu
