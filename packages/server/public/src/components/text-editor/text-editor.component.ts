@@ -73,8 +73,17 @@ export class TextEditorComponent extends HTMLElement {
     const { id, url, content, title } = this.routeService.getNoteConfigFromUrl();
     let note = "";
     if (id) {
-      const data = await this.noteService.loadNote(id);
-      note = data.note;
+      try {
+        const data = await this.noteService.loadNote(id);
+        note = data.note;
+      } catch {
+        this.notificationService.displayMessage(
+          `Error loading note with id ${id}, [ENTER] to open a new note`,
+          "error"
+        );
+        window.addEventListener("keydown", (event) => event.key === "Enter" && location.replace("/"));
+        return;
+      }
     } else {
       note = getNoteFromTemplate({ title, url, content });
     }

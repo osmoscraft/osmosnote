@@ -3,7 +3,6 @@
 ## Working on
 
 - IDE: Open and insert should use selection as default search query too.
-- IDE: delete note is not merged with staged change.
 
 ## Release candidate
 
@@ -11,6 +10,7 @@
 - Compiler: Consider MVP list rendering (use multiple - without space)
 - Compiler: Handle list indentation
 - Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
+- IDE: delete note is not merged with staged change.
 - IDE: Auto create list marker on enter
 - IDE: delete heading line will leave content below in clean state with wrong indentation
 - IDE: Disable spellchecker on metadata

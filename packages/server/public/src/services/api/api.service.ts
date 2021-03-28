@@ -27,7 +27,7 @@ import type {
 import type { QueryService } from "../query/query.service.js";
 
 export class ApiService {
-  constructor(private proxyService: QueryService) {}
+  constructor(private queryService: QueryService) {}
 
   loadNote = (id: string) => this.safeQuery<GetNoteOutput, GetNoteInput>(`/api/get-note`, { id });
 
@@ -79,7 +79,7 @@ export class ApiService {
   syncVersions = () => this.safeQuery<SyncVersionsOutput, SyncVersionsInput>(`/api/sync-versions`, {});
 
   private async safeQuery<OutputType, InputType>(path: string, input: InputType) {
-    const output = await this.proxyService.query<OutputType, InputType>(path, input);
+    const output = await this.queryService.query<OutputType, InputType>(path, input);
 
     return this.getSuccessData(output);
   }

@@ -6,6 +6,7 @@ export const handleFileDelete: CommandHandler = async ({ context }) => ({
     if (id) {
       try {
         await context.apiService.deleteNote(id);
+        await context.syncService.syncAllFileVersions();
         context.notificationService.displayMessage("Note deleted", "warning");
       } catch (error) {
         console.error(error);
