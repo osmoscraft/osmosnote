@@ -22,7 +22,6 @@ function parse(line: LineElement, match: RegExpMatchArray) {
       break;
     case "tags":
       line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="tags">${metaValue}</span>\n</span>`;
-      line.spellcheck = false;
       break;
     case "created":
       line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="created">${metaValue}</span>\n</span>`;
