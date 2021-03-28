@@ -26,7 +26,6 @@
 ## IDE
 
 - IDE: auto list order (need format context to track current level and order)
-- IDE: Graceful handling of invalid ID
 - UI managed metadata entry
   - Design interaction pattern
 - Validate metadata on-save
@@ -126,6 +125,7 @@ Map mouse click to cursor position: https://stackoverflow.com/questions/45332637
 - Compiler: Consider MVP list rendering (use multiple - without space)
 - Compiler: Handle list indentation
 - Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
+- IDE: Graceful handling of invalid ID
 - IDE: Open and insert should use selection as default search query too.
 - IDE: delete note is not merged with staged change.
 - IDE: Auto create list marker on enter
