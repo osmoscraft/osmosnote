@@ -29,6 +29,9 @@ export interface CaretContext {
   /** On the caret end line, all the raw text after caret, including line end */
   textAfterRaw: string;
   textSelected: string;
+  lineStart: LineElement;
+  lineEnd: LineElement;
+  lineCollapsed: LineElement | null;
 }
 
 /**
@@ -288,11 +291,11 @@ export class CaretService {
     const { offset: caretStartOffset } = this.getCaretLinePosition(caret.start);
     const { offset: caretEndOffset } = this.getCaretLinePosition(caret.end);
 
-    const startLine = selectedLines[0];
+    const startLine = selectedLines[0] as LineElement;
     const { indent: startLineIndent } = this.lineQueryService.getLineMetrics(startLine);
     const startLineText = startLine.textContent!;
 
-    const endLine = selectedLines[selectedLines.length - 1];
+    const endLine = selectedLines[selectedLines.length - 1] as LineElement;
     const endLineText = endLine.textContent!;
     const distanceToEnd = endLineText.length - caretEndOffset;
 
@@ -308,12 +311,17 @@ export class CaretService {
       .join("");
     textSelected = textSelected.slice(0, -distanceToEnd);
 
+    const lineCollapsed = caret.isCollapsed ? startLine : null;
+
     return {
       textBeforeRaw: textBefore,
       textAfterRaw: textAfter,
       textBefore: wrappableTextBefore,
       textAfter: selectableTextAfter,
       textSelected,
+      lineStart: startLine,
+      lineEnd: endLine,
+      lineCollapsed,
     };
   }
 

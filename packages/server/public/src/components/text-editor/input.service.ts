@@ -289,7 +289,7 @@ export class InputService {
   }
 
   private async handleEnterKeydown(event: KeyboardEvent, host: HTMLElement) {
-    // Open actions
+    // Open link
     const collapsedCaretParents = [...host.querySelectorAll(`[data-caret-collapsed]`)].reverse() as HTMLElement[];
     for (let container of collapsedCaretParents) {
       if (container.dataset.titleTarget) {
@@ -304,44 +304,62 @@ export class InputService {
       }
     }
 
-    // Data entry
+    // Insert new line
     if (!event.defaultPrevented) {
-      // hanlde list item
-      const listLine = host.querySelector(`[data-line="list"][data-caret-collapsed]`) as LineElement | null;
-      if (listLine) {
-        const caretContext = this.caretService.getCaretContext();
-        // enter at list end without any selection
-        if (caretContext?.textSelected === "" && caretContext?.textAfter === "") {
-          if (listLine.dataset.listEmpty === "") {
+      const caretContext = this.caretService.getCaretContext();
+      if (!caretContext) return;
+
+      const { lineCollapsed, textAfter, textBefore, textSelected } = caretContext;
+
+      // enter at line end
+      if (lineCollapsed && textSelected === "" && textAfter === "") {
+        const lineType = lineCollapsed.dataset.line;
+
+        if (lineType === "list") {
+          if (lineCollapsed.dataset.listEmpty === "") {
             // Empty list item: replace all text with space
             await this.historyService.runAtomic(host, () => {
+              // TODO implement replaceCurrentLineWithText
               this.caretService.selectHome(host);
-              this.editService.insertText(" ".repeat(caretContext.textBefore.length), host);
+              this.editService.insertText(" ".repeat(textBefore.length), host);
             });
           } else {
             // Non-empty item: create a new item at the same level
-            const { indent } = this.lineQueryService.getLineMetrics(listLine);
-            const hiddenHyphens = "-".repeat(parseInt(listLine.dataset.listLevel!) - 1);
+            const { indent } = this.lineQueryService.getLineMetrics(lineCollapsed);
+            const hiddenHyphens = "-".repeat(parseInt(lineCollapsed.dataset.listLevel!) - 1);
 
             let newListMarker: string;
-            if (listLine.dataset.list === "unordered") {
-              newListMarker = listLine.dataset.listMarker!;
+            if (lineCollapsed.dataset.list === "unordered") {
+              newListMarker = lineCollapsed.dataset.listMarker!;
             } else {
-              newListMarker = `${parseInt(listLine.dataset.listMarker!.replace(".", "")) + 1}.`;
+              newListMarker = `${parseInt(lineCollapsed.dataset.listMarker!.replace(".", "")) + 1}.`;
             }
 
             await this.historyService.runAtomic(host, () => {
               this.editService.insertBelow(host, " ".repeat(indent) + hiddenHyphens + newListMarker + " ");
             });
           }
+        } else if (lineType === "heading") {
+          const { indent } = this.lineQueryService.getLineMetrics(lineCollapsed);
+          const headingPrefixLength = parseInt(lineCollapsed.dataset.headingLevel!) + 1; // number of hash + space
 
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
-          event.preventDefault();
-          return;
+          await this.historyService.runAtomic(host, () => {
+            this.editService.insertBelow(host, " ".repeat(indent + headingPrefixLength));
+          });
+        } else {
+          const { indent } = this.lineQueryService.getLineMetrics(lineCollapsed);
+
+          await this.historyService.runAtomic(host, () => {
+            this.editService.insertBelow(host, " ".repeat(indent));
+          });
         }
+
+        this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
+        event.preventDefault();
+        return;
       }
 
-      // insert new line at point
+      // enter when there is selection
       await this.historyService.runAtomic(host, () => this.editService.insertNewLine(host));
       this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
       event.preventDefault();
