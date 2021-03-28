@@ -8,7 +8,9 @@ import type { LineQueryService } from "./line-query.service.js";
 export interface FormatContext {
   indentFromHeading: number;
   indentFromList: number;
-  isLevelDirty: boolean;
+  /** Given number of setter characters, what is the indent of the list item itself */
+  listSelfIndentFromSetter: number[];
+  shouldParseNextLine: boolean;
 }
 
 interface FormatLineSummary {
@@ -18,10 +20,6 @@ interface FormatLineSummary {
 
 export interface FormatConfig {
   syntaxOnly?: boolean;
-}
-
-export interface ParseDocumentConfig {
-  includeCleanLines?: boolean;
 }
 
 export class FormatService {
@@ -35,21 +33,20 @@ export class FormatService {
     const context: FormatContext = {
       indentFromHeading: 0,
       indentFromList: 0,
-      isLevelDirty: false,
+      listSelfIndentFromSetter: [0],
+      shouldParseNextLine: false,
     };
 
-    const lines = [...root.querySelectorAll("[data-line]")] as LineElement[];
+    const lines = [...root.querySelectorAll("[data-line]:not([data-parsed])")] as LineElement[];
 
     lines.forEach((line) => {
-      if (line.dataset.dirtySyntax !== undefined) {
-        this.formatLine(line, context, { syntaxOnly: true });
+      this.formatLine(line, context, { syntaxOnly: true });
 
-        delete line.dataset.dirtySyntax;
-      }
+      line.dataset.parsed = "";
     });
   }
 
-  parseDocument(root: HTMLElement | DocumentFragment, config: ParseDocumentConfig = {}) {
+  parseDocument(root: HTMLElement | DocumentFragment) {
     const caret = this.caretService.caret;
     let caretLine: HTMLElement;
     let previousCaretOffset: number | null = null;
@@ -64,34 +61,17 @@ export class FormatService {
     const context: FormatContext = {
       indentFromHeading: 0,
       indentFromList: 0,
-      isLevelDirty: false,
+      listSelfIndentFromSetter: [0],
+      shouldParseNextLine: false,
     };
 
     lines.forEach((line) => {
-      const isLineClean = line.dataset.dirtyIndent === undefined && line.dataset.dirtySyntax === undefined;
-
-      // update context without formatting when context and line are both clean
-      if (!config.includeCleanLines && !context.isLevelDirty && isLineClean) {
-        this.updateContextFromLine(line, context);
-        return;
-      }
-
       // otherwise, format the line
       const { lengthChange, lineType } = this.formatLine(line, context);
       this.updateContextFromLine(line, context);
 
       // update line dirty state (this is independent from context)
-      delete line.dataset.dirtyIndent;
-      delete line.dataset.dirtySyntax;
-
-      // update context dirty state
-      if (!context.isLevelDirty && !isLineClean) {
-        // when context is clean, any dirty line can pollute the levels below (e.g. fill a blank line with text can join some contexts)
-        context.isLevelDirty = true;
-      } else if (context.isLevelDirty && isLineClean && this.isIndentResetLineType(lineType)) {
-        // when context is dirty, a clean heading line cleans context (note, a clean list line alone cannot clean context)
-        context.isLevelDirty = false;
-      }
+      line.dataset.parsed = "";
 
       // restore caret
       if ((line as any) === caretLine) {
@@ -129,12 +109,14 @@ export class FormatService {
       return;
     }
 
-    // unordered list
-    match = rawText.match(/^(\s*)(-+) (.*)\n?/);
+    // list
+    match = rawText.match(/^(\s*)(-*)(-|\d+\.) (.*)\n?/);
     if (match) {
-      const [raw, spaces, hypens, text] = match;
+      const [raw, spaces, levelSetters, listMarker, text] = match;
 
-      context.indentFromList = hypens.length * 2;
+      const currentIdentSize = context.listSelfIndentFromSetter[levelSetters.length] ?? 0;
+      context.listSelfIndentFromSetter[levelSetters.length + 1] = currentIdentSize + listMarker.length;
+      context.indentFromList = currentIdentSize + levelSetters.length + listMarker.length + 1;
 
       return;
     }
@@ -143,6 +125,7 @@ export class FormatService {
     match = rawText.match(/^(\s+)$/);
     if (match) {
       context.indentFromList = 0;
+      context.listSelfIndentFromSetter = [0];
     }
   }
 
@@ -168,22 +151,26 @@ export class FormatService {
       };
     }
 
-    // unordered list
-    match = rawText.match(/^(\s*)(-+) (.*)\n?/);
+    // list
+    match = rawText.match(/^(\s*)(-*)(-|\d+\.) (.*)\n?/);
     if (match) {
-      const [raw, spaces, hypens, text] = match;
+      const [raw, spaces, levelSetters, listMarker, text] = match;
+
+      const listLevel = levelSetters.length + 1;
 
       line.dataset.line = "list";
-      line.dataset.listLevel = hypens.length.toString();
-      line.dataset.listType = "unordered";
+      line.dataset.listLevel = listLevel.toString();
+      line.dataset.list = listMarker === "-" ? "unordered" : "ordered";
 
-      const indent = config.syntaxOnly ? spaces : ` `.repeat(context.indentFromHeading + hypens.length - 1);
-      const hiddenHyphens = `-`.repeat(hypens.length - 1);
+      const listSelfIndent = context.listSelfIndentFromSetter[levelSetters.length] ?? 0;
 
-      line.innerHTML = `<span data-indent>${indent}</span><span data-wrap><span class="t--ghost">${hiddenHyphens}</span><span class="list-marker">-</span> ${text}\n</span>`;
+      const indent = config.syntaxOnly ? spaces : ` `.repeat(context.indentFromHeading + listSelfIndent);
+      const hiddenHyphens = `-`.repeat(levelSetters.length);
+
+      line.innerHTML = `<span data-indent>${indent}</span><span data-wrap><span class="t--ghost">${hiddenHyphens}</span><span class="list-marker">${listMarker}</span> ${text}\n</span>`;
 
       return {
-        lengthChange: indent.length + hiddenHyphens.length + 2 + text.length + 1 - raw.length,
+        lengthChange: indent.length + hiddenHyphens.length + listMarker.length + 1 + text.length + 1 - raw.length,
         lineType: "list",
       };
     }

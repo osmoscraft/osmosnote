@@ -292,7 +292,6 @@ export class EditService {
     if (isIndentDirty && updatedLine) {
       let dirtyLine = this.lineQueryService.getNextLine(updatedLine);
       while (dirtyLine && !this.isIndentReset(dirtyLine)) {
-        (dirtyLine as LineElement).dataset.dirtyIndent = "";
         dirtyLine = this.lineQueryService.getNextLine(dirtyLine);
       }
     }

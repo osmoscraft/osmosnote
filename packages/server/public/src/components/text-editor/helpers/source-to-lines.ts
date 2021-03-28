@@ -8,13 +8,12 @@ export interface LineElement extends HTMLDivElement {
     /** Exists on heading lines */
     headingLevel?: string;
     /** Exists on list item lines */
-    listType?: "ordered" | "unordered";
+    list?: "ordered" | "unordered";
     listLevel?: string;
     /** Exists on meta lines */
     meta?: "title" | "tags";
     /** Line state */
-    dirtySyntax?: "";
-    dirtyIndent?: "";
+    parsed?: "";
     /** Exists on the line that has collapsed caret */
     caretCollapsed?: "";
   };
@@ -29,9 +28,6 @@ export function sourceToLines(source: string) {
   lines.forEach((line) => {
     const lineDom = document.createElement("div") as LineElement;
     lineDom.dataset.line = "";
-    lineDom.dataset.dirtySyntax = "";
-    lineDom.dataset.dirtyIndent = "";
-
     lineDom.textContent = `${line}\n`;
 
     result.appendChild(lineDom);

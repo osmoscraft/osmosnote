@@ -272,53 +272,6 @@ export class LineQueryService {
     return ensureLineEnding(reverse(removeLineEnding(line.textContent!)));
   }
 
-  /**
-   * @deprecated This is no longer in use. Kept here in case we need the logic for parsing ordered list
-   * After ordered list implementation, ok to remove.
-   */
-  getFormatContext(line: HTMLElement): FormatContext {
-    const { headingLine, listLine } = this.getNearestIndentSettingLines(line);
-    if (headingLine) {
-      return {
-        indentFromHeading: parseInt(headingLine.dataset.headingLevel!) * 2,
-        indentFromList: listLine ? parseInt(listLine?.dataset.listLevel!) * 2 : 0, // TODO - handle ordered list
-        isLevelDirty: headingLine.dataset.dirtyIndent === "" || listLine?.dataset.dirtyIndent === "",
-      };
-    }
-
-    return {
-      indentFromHeading: 0,
-      indentFromList: 0,
-      isLevelDirty: false,
-    };
-  }
-
-  private getNearestIndentSettingLines(
-    line: HTMLElement
-  ): { headingLine: LineElement | null; listLine: LineElement | null } {
-    let currentLine: HTMLElement | null = this.getPreviousLine(line);
-
-    let foundListLine: LineElement | null | undefined = undefined;
-    let foundHeadingLine: LineElement | null = null;
-
-    while (currentLine && !foundHeadingLine) {
-      if (foundListLine === undefined && this.isBlankLine(currentLine)) {
-        foundListLine = null; // blank line termintes list
-      } else if (foundListLine === undefined && this.isListLine(currentLine)) {
-        foundListLine = currentLine;
-      } else if (this.isHeadingLine(currentLine)) {
-        foundHeadingLine = currentLine;
-      }
-
-      currentLine = this.getPreviousLine(currentLine);
-    }
-
-    return {
-      headingLine: foundHeadingLine,
-      listLine: foundListLine ?? null,
-    };
-  }
-
   private getIndentSize(line: HTMLElement): number {
     return (line.querySelector("[data-indent]") as HTMLElement)?.innerText.length ?? 0;
   }
@@ -331,17 +284,5 @@ export class LineQueryService {
     }
 
     return 0;
-  }
-
-  private isHeadingLine(line?: HTMLElement | null): line is LineElement {
-    return (line as LineElement)?.dataset?.line === "heading";
-  }
-
-  private isListLine(line?: HTMLElement | null): line is LineElement {
-    return (line as LineElement)?.dataset?.line === "list";
-  }
-
-  private isBlankLine(line?: HTMLElement | null): line is LineElement {
-    return (line as LineElement)?.dataset?.line === "blank";
   }
 }

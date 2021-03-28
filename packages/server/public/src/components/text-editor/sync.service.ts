@@ -21,7 +21,7 @@ export class SyncService {
 
   async saveFile() {
     const host = this.componentRefs.textEditor.host;
-    this.formatService.parseDocument(host, { includeCleanLines: true });
+    this.formatService.parseDocument(host);
     const lines = [...host.querySelectorAll("[data-line]")] as HTMLElement[];
     const note = this.formatService.getPortableText(lines);
     // TODO ensure any required metadata fields, e.g. title and ctime
