@@ -17,6 +17,7 @@ function parse(line: LineElement, match: RegExpMatchArray) {
   line.dataset.listLevel = listLevel.toString();
   line.dataset.list = listMarker === "-" ? "unordered" : "ordered";
   line.dataset.listMarker = listMarker;
+  if (!text.length) line.dataset.listEmpty = "";
 
   const hiddenHyphens = `-`.repeat(levelSetters.length);
 

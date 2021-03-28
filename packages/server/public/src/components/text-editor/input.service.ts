@@ -3,13 +3,17 @@ import type { WindowRefService } from "../../services/window-reference/window.se
 import { isUrl } from "../../utils/url.js";
 import type { CaretService } from "./caret.service.js";
 import type { EditService } from "./edit.service.js";
+import type { LineElement } from "./helpers/source-to-lines.js";
+import { removeLineEnding } from "./helpers/string.js";
 import type { HistoryService } from "./history/history.service.js";
+import type { LineQueryService } from "./line-query.service.js";
 import type { TrackChangeService } from "./track-change.service.js";
 
 export class InputService {
   constructor(
     private caretService: CaretService,
     private editService: EditService,
+    private lineQueryService: LineQueryService,
     private historyService: HistoryService,
     private trackChangeService: TrackChangeService,
     private componentRefService: ComponentRefService,
@@ -266,26 +270,7 @@ export class InputService {
         break;
 
       case "Enter": // Enter
-        const collapsedCaretParents = [...host.querySelectorAll(`[data-caret-collapsed]`)].reverse() as HTMLElement[];
-        for (let container of collapsedCaretParents) {
-          if (container.dataset.titleTarget) {
-            this.openTitleTarget(container.dataset.titleTarget, event);
-            event.preventDefault();
-            break;
-          } else if (container.dataset.url) {
-            // open external url
-            this.openUrl(container.dataset.url, event);
-            event.preventDefault();
-            break;
-          }
-        }
-
-        if (!event.defaultPrevented) {
-          // insert new line at point
-          await this.historyService.runAtomic(host, () => this.editService.insertNewLine(host));
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
-          event.preventDefault();
-        }
+        this.handleEnterKeydown(event, host);
         break;
     }
   }
@@ -300,6 +285,66 @@ export class InputService {
       if (insertedText.match(/\s|,|\./)) {
         this.historyService.save(host);
       }
+    }
+  }
+
+  private async handleEnterKeydown(event: KeyboardEvent, host: HTMLElement) {
+    // Open actions
+    const collapsedCaretParents = [...host.querySelectorAll(`[data-caret-collapsed]`)].reverse() as HTMLElement[];
+    for (let container of collapsedCaretParents) {
+      if (container.dataset.titleTarget) {
+        this.openTitleTarget(container.dataset.titleTarget, event);
+        event.preventDefault();
+        break;
+      } else if (container.dataset.url) {
+        // open external url
+        this.openUrl(container.dataset.url, event);
+        event.preventDefault();
+        break;
+      }
+    }
+
+    // Data entry
+    if (!event.defaultPrevented) {
+      // hanlde list item
+      const listLine = host.querySelector(`[data-line="list"][data-caret-collapsed]`) as LineElement | null;
+      if (listLine) {
+        const caretContext = this.caretService.getCaretContext();
+        // enter at list end without any selection
+        if (caretContext?.textSelected === "" && removeLineEnding(caretContext?.textAfter ?? "") === "") {
+          if (listLine.dataset.listEmpty === "") {
+            // Empty list item: clear the marker
+            await this.historyService.runAtomic(host, () => {
+              this.caretService.selectHome(host);
+              this.editService.deleteSelection(host);
+            });
+          } else {
+            // Non-empty item: create a new item at the same level
+            const { indent } = this.lineQueryService.getLineMetrics(listLine);
+            const hiddenHyphens = "-".repeat(parseInt(listLine.dataset.listLevel!) - 1);
+
+            let newListMarker: string;
+            if (listLine.dataset.list === "unordered") {
+              newListMarker = listLine.dataset.listMarker!;
+            } else {
+              newListMarker = `${parseInt(listLine.dataset.listMarker!.replace(".", "")) + 1}.`;
+            }
+
+            await this.historyService.runAtomic(host, () => {
+              this.editService.insertBelow(host, " ".repeat(indent) + hiddenHyphens + newListMarker + " ");
+            });
+          }
+
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
+          event.preventDefault();
+          return;
+        }
+      }
+
+      // insert new line at point
+      await this.historyService.runAtomic(host, () => this.editService.insertNewLine(host));
+      this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
+      event.preventDefault();
     }
   }
 

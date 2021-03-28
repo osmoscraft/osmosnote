@@ -38,6 +38,7 @@ di.registerClass(EditService, [CaretService, CompileService, LineQueryService]);
 di.registerClass(InputService, [
   CaretService,
   EditService,
+  LineQueryService,
   HistoryService,
   TrackChangeService,
   ComponentRefService,

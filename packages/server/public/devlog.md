@@ -4,7 +4,6 @@
 
 - IDE: Open and insert should use selection as default search query too.
 - IDE: delete note is not merged with staged change.
-- IDE: Auto create list marker on enter
 
 ## Release candidate
 
@@ -12,6 +11,7 @@
 - Compiler: Consider MVP list rendering (use multiple - without space)
 - Compiler: Handle list indentation
 - Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
+- IDE: Auto create list marker on enter
 - IDE: delete heading line will leave content below in clean state with wrong indentation
 - IDE: Disable spellchecker on metadata
 - IDE: Easy delete of notes
@@ -113,7 +113,7 @@
 
 - Difficult to decide between A link to B or B link to A.
 
-## Projectg North star
+## Project North star
 
 - CJK support (need pixel based column calc or unicode char visual length detection)
 - Display local menu next to caret

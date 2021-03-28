@@ -46,6 +46,9 @@ export class EditService {
     });
   }
 
+  /**
+   * This method will cause a full recompile. Use insertBelow if possible.
+   */
   insertNewLine(root: HTMLElement) {
     this.deleteSelectionExplicit(root);
 
@@ -72,6 +75,30 @@ export class EditService {
     this.caretService.setCollapsedCaretToLinePosition({
       line: newSecondLine,
       position: { row: 0, column: lineMetrics.indent },
+    });
+  }
+
+  /**
+   * @param inlineRawText must not contain new line character
+   */
+  insertBelow(root: HTMLElement, inlineRawText: string) {
+    const caret = this.caretService.caret;
+    if (!caret) return;
+
+    const currentLine = this.lineQueryService.getLine(caret.focus.node);
+    if (!currentLine) return;
+
+    const newLines = sourceToLines(inlineRawText + "\n");
+    this.formatService.parseLines(newLines);
+
+    const newSecondLine = newLines.children[0] as HTMLElement;
+
+    currentLine.parentElement?.insertBefore(newLines, currentLine.nextSibling);
+
+    // set caret to next line start
+    this.caretService.setCollapsedCaretToLinePosition({
+      line: newSecondLine,
+      position: { row: 0, column: inlineRawText.length },
     });
   }
 

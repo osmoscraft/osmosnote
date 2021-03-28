@@ -12,6 +12,8 @@ export interface LineElement extends HTMLDivElement {
     /** The "bullet" or the number prefix of a list item, without surrounding space */
     listMarker?: string;
     listLevel?: string;
+    /** For list item that contains only the marker */
+    listEmpty?: string;
     /** Exists on meta lines */
     meta?: "title" | "tags";
     /** Line state */
