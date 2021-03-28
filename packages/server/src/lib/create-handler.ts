@@ -13,7 +13,7 @@ export function createHandler<OutputType, InputType>(sourceHandler: (input: Inpu
         data: output,
       };
     } catch (error) {
-      console.error(`[error]`, error);
+      console.error(`[handler] caught error`, error);
       return {
         error: {
           name: (error as Error).name,
