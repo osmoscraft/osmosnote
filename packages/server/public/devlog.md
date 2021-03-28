@@ -46,6 +46,7 @@
 
 ## IDE
 
+- IDE: Graceful handling of invalid ID
 - UI managed metadata entry
   - Design interaction pattern
 - Validate metadata on-save
