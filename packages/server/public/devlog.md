@@ -2,29 +2,6 @@
 
 ## Working on
 
-## Release candidate
-
-- Compiler: mix link within list
-- Compiler: Consider MVP list rendering (use multiple - without space)
-- Compiler: Handle list indentation
-- Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
-- IDE: Open and insert should use selection as default search query too.
-- IDE: delete note is not merged with staged change.
-- IDE: Auto create list marker on enter
-- IDE: delete heading line will leave content below in clean state with wrong indentation
-- IDE: Disable spellchecker on metadata
-- IDE: Easy delete of notes
-- IDE: Display tags in Reference panel
-- IDE: Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
-- IDE: Loading settings from local storage
-- IDE: User settings service (communicate with local storage)
-- IDE: Spell check toggle on/off
-- IDE: ESC key to cancel selection
-- Bug: Status bar could overflow into multiple lines
-- Bug: open close command bar causes unwanted scroll
-- Bug: Ctrl + s causes unwanted scroll
-- Bug: url parser crash on `https://www.designmattersmedia.com/podcast/2010/Massimo-Vignelli` - No fix. It was a network issue
-
 ## Bug backlog
 
 - Bug: Disable browser built-in formatter: italic, underline, bold
@@ -143,7 +120,30 @@ Map mouse click to cursor position: https://stackoverflow.com/questions/45332637
 
 # Archive
 
-Recent project first
+## v0.0.10
+
+- Compiler: mix link within list
+- Compiler: Consider MVP list rendering (use multiple - without space)
+- Compiler: Handle list indentation
+- Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
+- IDE: Open and insert should use selection as default search query too.
+- IDE: delete note is not merged with staged change.
+- IDE: Auto create list marker on enter
+- IDE: delete heading line will leave content below in clean state with wrong indentation
+- IDE: Disable spellchecker on metadata
+- IDE: Easy delete of notes
+- IDE: Display tags in Reference panel
+- IDE: Display Title AND Tag in seach result, with overflow handling e.g. This is the name of a note that... Tag1, Tag2, Tag3...
+- IDE: Loading settings from local storage
+- IDE: User settings service (communicate with local storage)
+- IDE: Spell check toggle on/off
+- IDE: ESC key to cancel selection
+- Bug: Status bar could overflow into multiple lines
+- Bug: open close command bar causes unwanted scroll
+- Bug: Ctrl + s causes unwanted scroll
+- Bug: url parser crash on `https://www.designmattersmedia.com/podcast/2010/Massimo-Vignelli` - No fix. It was a network issue
+
+## Other
 
 - IDE: Click to open link in current window
 - IDE: Ctrl + Click to open link in new window
