@@ -41,6 +41,7 @@
   --theme-h4-color: var(--base0C);
   --theme-h5-color: var(--base0E);
   --theme-h6-color: var(--base0B);
+  --theme-list-marker-color: var(--base0A);
   --theme-success-background: var(--base0C);
   --theme-warning-background: var(--base09);
   --theme-error-background: var(--base08);

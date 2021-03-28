@@ -3,7 +3,7 @@ import type { ComponentRefService } from "../../services/component-reference/com
 import type { NotificationService } from "../../services/notification/notification.service";
 import type { RemoteClientService } from "../../services/remote/remote-client.service";
 import type { RouteService } from "../../services/route/route.service";
-import type { FormatService } from "./format.service";
+import type { CompileService } from "./compiler/compile.service";
 import type { HistoryService } from "./history/history.service";
 import type { TrackChangeService } from "./track-change.service";
 
@@ -15,13 +15,13 @@ export class SyncService {
     private notificationService: NotificationService,
     private remoteClientService: RemoteClientService,
     private componentRefs: ComponentRefService,
-    private formatService: FormatService,
+    private formatService: CompileService,
     private routeService: RouteService
   ) {}
 
   async saveFile() {
     const host = this.componentRefs.textEditor.host;
-    this.formatService.parseDocument(host);
+    this.formatService.compile(host);
     const lines = [...host.querySelectorAll("[data-line]")] as HTMLElement[];
     const note = this.formatService.getPortableText(lines);
     // TODO ensure any required metadata fields, e.g. title and ctime

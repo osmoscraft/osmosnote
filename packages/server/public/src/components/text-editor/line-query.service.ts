@@ -1,4 +1,4 @@
-import type { FormatContext } from "./format.service.js";
+import type { FormatContext } from "./compiler/compile.service.js";
 import {
   firstInnerLeafNode,
   firstInnerTextNode,
@@ -272,34 +272,6 @@ export class LineQueryService {
     return ensureLineEnding(reverse(removeLineEnding(line.textContent!)));
   }
 
-  getFormatContext(line: HTMLElement): FormatContext {
-    const indentSettingLine = this.getNearestIndentSettingLine(line);
-    if (indentSettingLine) {
-      return {
-        level: parseInt(indentSettingLine.dataset.level!),
-        isLevelDirty: indentSettingLine.dataset.dirtyIndent === "",
-      };
-    }
-
-    return {
-      level: 0,
-      isLevelDirty: false,
-    };
-  }
-
-  private getNearestIndentSettingLine(line: HTMLElement): LineElement | null {
-    let currentLine: HTMLElement | null = line;
-    while (currentLine) {
-      if (this.isIndentSettingLine(currentLine)) {
-        return currentLine;
-      }
-
-      currentLine = this.getPreviousLine(currentLine);
-    }
-
-    return null;
-  }
-
   private getIndentSize(line: HTMLElement): number {
     return (line.querySelector("[data-indent]") as HTMLElement)?.innerText.length ?? 0;
   }
@@ -312,9 +284,5 @@ export class LineQueryService {
     }
 
     return 0;
-  }
-
-  private isIndentSettingLine(line?: HTMLElement | null): line is LineElement {
-    return (line as LineElement)?.dataset?.line === "heading";
   }
 }

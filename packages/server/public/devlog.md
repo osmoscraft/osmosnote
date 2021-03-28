@@ -3,14 +3,16 @@
 ## Working on
 
 - IDE: Open and insert should use selection as default search query too.
-
-- Compiler: Consider MVP list rendering (use multiple - without space)
-- Compiler: Handle list indentation
-- Compiler: Handle list auto numbering
+- IDE: delete note is not merged with staged change.
+- IDE: Auto create list marker on enter
 
 ## Release candidate
 
+- Compiler: mix link within list
+- Compiler: Consider MVP list rendering (use multiple - without space)
+- Compiler: Handle list indentation
 - Compiler: DOM tags are being parsed. Need escape logic. (refer to prev. parser POC)
+- IDE: delete heading line will leave content below in clean state with wrong indentation
 - IDE: Disable spellchecker on metadata
 - IDE: Easy delete of notes
 - IDE: Display tags in Reference panel
@@ -26,6 +28,7 @@
 
 ## Bug backlog
 
+- Bug: Clicking didn't sync the ideal column for vertical travel
 - Bug: Ctrl + c can't access clipboard in http mode. (legacy copy command causes focus lost)
 - Bug: scrollbar has no hover effect and a wrong cursor style
 
@@ -45,6 +48,7 @@
 
 ## IDE
 
+- IDE: Graceful handling of invalid ID
 - UI managed metadata entry
   - Design interaction pattern
 - Validate metadata on-save
@@ -83,6 +87,7 @@
 - Multiple workspaces (with crosss workspace search?)
 - It's very easy to open the same doc twice and saving the older one will overwrite the new one.
 - Prompt for confirmation when deleting a note with references.
+- Backtick inline code snippet
 
 ## Compiler
 
@@ -102,6 +107,7 @@
 - Compiler: Require space after link
   - When line ends with link, insert a new line at the end causes link to open
   - When document ends with link, you can't add a new line without adding a space after the last link
+- Compiler: Handle list auto numbering
 
 ## Overarching issues
 
