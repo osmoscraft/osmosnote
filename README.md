@@ -40,6 +40,11 @@
 
 - Tags are case sensitive. However, during the search, tags are case insentivie to encourage spontaneous discovery
 
-## WLS network issue
+## WSL setup
+
+- In a Windows directory, create a vbs script that launches the server in WSL (See wsl launcher pacakge)
+- Create a shortcut to wscript.exe, in the target field, use `C:\Windows\System32\wscript.exe "PATH_TO_THE_VBS_SCRIPT"`.
+
+### WLS network issue
 
 - Device manager > Network adapters > Hyber-V Virtual Ethernet Adapter > Large Send Offload Version 2 > Set it to "Disabled"
