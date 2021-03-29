@@ -11,8 +11,10 @@ import type { LineQueryService } from "../line-query.service.js";
 export interface FormatContext {
   indentFromHeading: number;
   indentFromList: number;
-  /** Given number of setter characters, what is the indent of the list item itself */
-  listSelfIndentFromSetter: number[];
+  /** Indent of the list item at a given level specified by the number of setter characters */
+  listIndentFromSetter: number[];
+  /** Order number for the last list item at a given level indexed by the number of setter characters */
+  listOrderFromSetter: number[];
 }
 
 export interface LineCompiler {
@@ -67,7 +69,8 @@ export class CompileService {
     const context: FormatContext = {
       indentFromHeading: 0,
       indentFromList: 0,
-      listSelfIndentFromSetter: [0],
+      listIndentFromSetter: [],
+      listOrderFromSetter: [],
     };
 
     const lines = config.skipParsedLines

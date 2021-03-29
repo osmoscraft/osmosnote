@@ -35,6 +35,8 @@ function updateContext(line: LineElement, context: FormatContext) {
   const headingLevel = parseInt(line.dataset.headingLevel!);
   context.indentFromHeading = headingLevel * 2;
   context.indentFromList = 0; // heading resets list indent
+  context.listIndentFromSetter = [];
+  context.listOrderFromSetter = [];
 }
 
 export const heading: LineCompiler = {

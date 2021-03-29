@@ -1,4 +1,3 @@
-import type { FormatContext } from "./compiler/compile.service.js";
 import {
   firstInnerLeafNode,
   firstInnerTextNode,

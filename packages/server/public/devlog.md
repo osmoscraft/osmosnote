@@ -2,6 +2,10 @@
 
 ## Working on
 
+## Release candidate v0.0.10
+
+- IDE: auto list order (need format context to track current level and order)
+
 ## Bug backlog
 
 - Bug: Disable browser built-in formatter: italic, underline, bold
@@ -25,7 +29,6 @@
 
 ## IDE
 
-- IDE: auto list order (need format context to track current level and order)
 - UI managed metadata entry
   - Design interaction pattern
 - Validate metadata on-save
@@ -34,7 +37,8 @@
 - Sync without save (when the current file is deleted on the remote, sync & save will cause conflict).
 - Consider combine save and sync. I forget to sync often.
 - Search ranking algorithm is way off. Need to improve accuracy for literal match.
-- Display "New" as status when opening a new file.
+- IDE: Display "New" as status when opening a new file.
+- IDE: a deleted note should be marked as "Deleted" in status
 - Consider using orange border to indicate dirty document
 - A fraction of delay after entering any command that waits for server.
 - URL search needs debouncer. Invalid url blocks UI
@@ -65,6 +69,7 @@
 - It's very easy to open the same doc twice and saving the older one will overwrite the new one.
 - Prompt for confirmation when deleting a note with references.
 - Backtick inline code snippet
+- IDE: improve cursor restore after formatting: for list item marker update, cursor may be shifted after formatting
 
 ## Compiler
 

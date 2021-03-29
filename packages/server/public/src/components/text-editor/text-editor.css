@@ -64,7 +64,7 @@ s2-text-editor:focus-within {
   color: var(--theme-h3-color);
 }
 
-[data-line="list"] .list-marker {
+[data-line="list"] [data-list-marker] {
   color: var(--theme-list-marker-color);
   font-weight: 700;
 }

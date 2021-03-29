@@ -34,7 +34,8 @@ function format(line: LineElement, context: FormatContext) {
 
 function updateContext(_line: LineElement, context: FormatContext) {
   context.indentFromList = 0;
-  context.listSelfIndentFromSetter = [0];
+  context.listIndentFromSetter = [];
+  context.listOrderFromSetter = [];
 }
 
 export const blank: LineCompiler = {
