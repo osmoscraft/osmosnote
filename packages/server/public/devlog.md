@@ -12,6 +12,7 @@
 - Bug: Clicking didn't sync the ideal column for vertical travel
 - Bug: Ctrl + c can't access clipboard in http mode. (legacy copy command causes focus lost)
 - Bug: scrollbar has no hover effect and a wrong cursor style
+- Bug: CJK input composed input triggers raw input handler
 
 ## Code health
 
@@ -70,6 +71,12 @@
 - Prompt for confirmation when deleting a note with references.
 - Backtick inline code snippet
 - IDE: improve cursor restore after formatting: for list item marker update, cursor may be shifted after formatting
+
+## First run experience
+
+- Handle git setup (validate client version. validate local repo. validate remote. validate credentials.)
+- Hanlde dependencies: ripgrep, xargs
+- Consumer packaging: Investigate docker
 
 ## Compiler
 
