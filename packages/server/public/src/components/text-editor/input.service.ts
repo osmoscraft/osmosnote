@@ -216,6 +216,8 @@ export class InputService {
         event.preventDefault();
         if (event.shiftKey) {
           this.caretService.selectDown(host);
+        } else if (event.altKey) {
+          this.editService.shiftLinesDown();
         } else {
           this.caretService.moveDown(host);
         }
@@ -225,6 +227,8 @@ export class InputService {
         event.preventDefault();
         if (event.shiftKey) {
           this.caretService.selectUp(host);
+        } else if (event.altKey) {
+          this.editService.shiftLinesUp();
         } else {
           this.caretService.moveUp(host);
         }

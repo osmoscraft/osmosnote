@@ -356,4 +356,26 @@ export class EditService {
 
     this.insertText(textWithNormalizedLineEnding, root);
   }
+
+  async shiftLinesUp() {
+    const context = this.caretService.getCaretContext();
+    if (!context) return;
+
+    const { lineStart, lineEnd } = context;
+    const lineAbove = this.lineQueryService.getPreviousLine(lineStart);
+    if (lineAbove) {
+      lineEnd.insertAdjacentElement("afterend", lineAbove);
+    }
+  }
+
+  async shiftLinesDown() {
+    const context = this.caretService.getCaretContext();
+    if (!context) return;
+
+    const { lineStart, lineEnd } = context;
+    const lineBelow = this.lineQueryService.getNextLine(lineEnd);
+    if (lineBelow) {
+      lineStart.insertAdjacentElement("beforebegin", lineBelow);
+    }
+  }
 }
