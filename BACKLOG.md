@@ -20,6 +20,7 @@ v0.0.12 release goals:
 - Workflow: Cancel remote action after cursor move
 - Workflow: Keyboard shortcut to shift selected lines up/down: alt + arrow up/down
 - Workflow: Keyboard shortcut to indent/outdent section or list: ctrl + ,|.
+- Workflow: Show app version
 - Health: refactor history and change tracking: make runAtom auto update dirty state?
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
 
