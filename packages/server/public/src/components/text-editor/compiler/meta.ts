@@ -1,5 +1,6 @@
 import type { LineCompiler } from "./compile.service";
 import type { LineElement } from "../helpers/source-to-lines";
+import { UI_LINE_END } from "../../../utils/special-characters.js";
 
 const META_PATTERN = /^#\+(.+?): (.*)\n?/; // `#+key: value`
 
@@ -14,21 +15,21 @@ function parse(line: LineElement, match: RegExpMatchArray) {
 
   switch (metaKey) {
     case "url":
-      line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-url="${metaValue}">${metaValue}</span>\n</span>`;
+      line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-url="${metaValue}">${metaValue}</span>${UI_LINE_END}</span>`;
       line.spellcheck = false;
       break;
     case "title":
-      line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="title">${metaValue}</span>\n</span>`;
+      line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="title">${metaValue}</span>${UI_LINE_END}</span>`;
       break;
     case "tags":
-      line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="tags">${metaValue}</span>\n</span>`;
+      line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="tags">${metaValue}</span>${UI_LINE_END}</span>`;
       break;
     case "created":
-      line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="created">${metaValue}</span>\n</span>`;
+      line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value="created">${metaValue}</span>${UI_LINE_END}</span>`;
       line.spellcheck = false;
       break;
     default:
-      line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value>${metaValue}</span>\n</span>`;
+      line.innerHTML = `<span data-wrap><span class="t--secondary">#+${metaKey}: </span><span data-meta-value>${metaValue}</span>${UI_LINE_END}</span>`;
       console.error(`Unsupported meta key ${metaKey}`);
   }
 }

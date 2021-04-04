@@ -1,5 +1,7 @@
+import { UI_LINE_END } from "../../../utils/special-characters.js";
+
 export function removeLineEnding(text: string): string {
-  if (text.length && text[text.length - 1] === "\n") {
+  if (text.length && text[text.length - 1] === UI_LINE_END) {
     return text.slice(0, -1);
   } else {
     return text;
@@ -7,10 +9,10 @@ export function removeLineEnding(text: string): string {
 }
 
 export function ensureLineEnding(text: string): string {
-  if (text.length && text[text.length - 1] === "\n") {
+  if (text.length && text[text.length - 1] === UI_LINE_END) {
     return text;
   } else {
-    return text + "\n";
+    return text + UI_LINE_END;
   }
 }
 
@@ -35,5 +37,5 @@ export function getWordEndOffset(text: string): number {
   }
 
   // if there is no match, the line must be empty. Set to the character before line end
-  return text.indexOf("\n");
+  return text.indexOf(UI_LINE_END);
 }

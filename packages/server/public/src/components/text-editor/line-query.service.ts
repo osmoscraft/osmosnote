@@ -1,3 +1,4 @@
+import { UI_LINE_END } from "../../utils/special-characters.js";
 import {
   firstInnerLeafNode,
   firstInnerTextNode,
@@ -259,7 +260,7 @@ export class LineQueryService {
   }
 
   isAfterLineEnd(textNode: Text, offset: number) {
-    return offset === textNode.length && textNode.data?.[offset - 1] === "\n";
+    return offset === textNode.length && textNode.data?.[offset - 1] === UI_LINE_END;
   }
 
   sliceLine(line: HTMLElement, start?: number, end?: number): string {
@@ -279,7 +280,7 @@ export class LineQueryService {
     const inlineText = (line.querySelector("[data-wrap]") as HTMLElement)?.innerText;
     if (inlineText) {
       const fullLength = inlineText.length;
-      return inlineText[fullLength - 1] === "\n" ? fullLength - 1 : fullLength;
+      return inlineText[fullLength - 1] === UI_LINE_END ? fullLength - 1 : fullLength;
     }
 
     return 0;

@@ -1,3 +1,4 @@
+import { SRC_LINE_END, UI_LINE_END } from "../../../utils/special-characters.js";
 import { removeLineEnding } from "./string.js";
 
 export type LineType = "" | "heading" | "meta" | "list" | "blank";
@@ -27,12 +28,12 @@ export function sourceToLines(source: string) {
   const result = document.createDocumentFragment();
 
   const trimmedLines = removeLineEnding(source);
-  const lines = trimmedLines.split("\n");
+  const lines = trimmedLines.split(SRC_LINE_END);
 
   lines.forEach((line) => {
     const lineDom = document.createElement("div") as LineElement;
     lineDom.dataset.line = "";
-    lineDom.textContent = `${line}\n`;
+    lineDom.textContent = `${line}${UI_LINE_END}`;
 
     result.appendChild(lineDom);
   });

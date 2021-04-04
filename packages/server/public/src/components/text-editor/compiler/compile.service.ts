@@ -7,6 +7,7 @@ import { list } from "./list.js";
 import { meta } from "./meta.js";
 import type { LineElement, LineType } from "../helpers/source-to-lines.js";
 import type { LineQueryService } from "../line-query.service.js";
+import { SRC_LINE_END } from "../../../utils/special-characters.js";
 
 export interface FormatContext {
   indentFromHeading: number;
@@ -112,11 +113,11 @@ export class CompileService {
       .map((line, index) => {
         const metrics = this.lineQueryService.getLineMetrics(line);
         const startOffset = index === 0 ? Math.max(metrics.indent, startLineOffset) : metrics.indent;
-        const endOffset = index === lines.length - 1 ? endLineOffset : undefined;
+        const endOffset = index === lines.length - 1 ? endLineOffset : metrics.selectableLength;
 
         return line.textContent!.slice(startOffset, endOffset);
       })
-      .join("");
+      .join(SRC_LINE_END);
 
     return text;
   }

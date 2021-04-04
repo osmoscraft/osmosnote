@@ -4,6 +4,7 @@
 
 v0.0.12 release goals:
 
+- Workflow: On start: git pull
 - Workflow: On start: check config file and config values
 - Workflow: On start dependency validator
   - Check dependency and dump diagonostic info in console
@@ -22,9 +23,9 @@ v0.0.12 release goals:
 - Workflow: Keyboard shortcut to shift selected lines up/down: alt + arrow up/down
 - Workflow: Keyboard shortcut to indent/outdent section or list: ctrl + ,|.
 - Workflow: Show app version
+- Workflow: Highlight selected line with full width background
 - Health: refactor history and change tracking: make runAtom auto update dirty state?
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
-- Core: Experiment: zero width space as line-end in UI while keeping `\n` in source
 
 ## Bug backlog
 
@@ -32,6 +33,7 @@ v0.0.12 release goals:
 - Bug: Chinese character causes line height to jump.
 - Bug: Ctrl + c can't access clipboard in http mode. (legacy copy command causes focus lost)
 - Bug: scrollbar has no hover effect and a wrong cursor style
+- Bug: emoji (and other unicode characters) got split in caret movement.
 
 ## Code health
 
@@ -100,6 +102,7 @@ v0.0.12 release goals:
 - Compiler: Require space after link
   - When line ends with link, insert a new line at the end causes link to open
   - When document ends with link, you can't add a new line without adding a space after the last link
+- Core: Experiment: zero width space as line-end in UI while keeping `\n` in source. (Failed due to select indiciator becoming invisible on zero width space).
 
 ## Overarching issues
 

@@ -1,3 +1,4 @@
+import { UI_LINE_END } from "../../../utils/special-characters.js";
 import type { LineElement } from "../helpers/source-to-lines.js";
 import { removeLineEnding } from "../helpers/string.js";
 import type { FormatContext, LineCompiler } from "./compile.service.js";
@@ -15,7 +16,7 @@ function parse(line: LineElement, match: RegExpMatchArray) {
 
   const paragraphHtml = parseInlineParagraph(remainingText);
 
-  line.innerHTML = `<span data-indent>${indent}</span><span data-wrap>${paragraphHtml}\n</span>`;
+  line.innerHTML = `<span data-indent>${indent}</span><span data-wrap>${paragraphHtml}${UI_LINE_END}</span>`;
 }
 
 function format(line: LineElement, context: FormatContext) {

@@ -1,8 +1,9 @@
 import { writeClipboardText } from "../../utils/clipboard.js";
+import { SRC_LINE_END } from "../../utils/special-characters.js";
 import type { CaretService } from "./caret.service.js";
-import { LineElement, sourceToLines } from "./helpers/source-to-lines.js";
-import { splice } from "./helpers/string.js";
 import type { CompileService } from "./compiler/compile.service.js";
+import { sourceToLines } from "./helpers/source-to-lines.js";
+import { splice } from "./helpers/string.js";
 import type { LineQueryService } from "./line-query.service.js";
 
 /**
@@ -60,7 +61,7 @@ export class EditService {
     const textBefore = this.lineQueryService.sliceLine(currentLine, 0, offset);
     const textAfter = this.lineQueryService.sliceLine(currentLine, offset);
 
-    const newLines = sourceToLines(textBefore + "\n" + textAfter);
+    const newLines = sourceToLines(textBefore + SRC_LINE_END + textAfter);
     const newSecondLine = newLines.children[1] as HTMLElement;
 
     currentLine.parentElement?.insertBefore(newLines, currentLine);
@@ -86,7 +87,7 @@ export class EditService {
     const currentLine = this.lineQueryService.getLine(caret.focus.node);
     if (!currentLine) return;
 
-    const newLines = sourceToLines(inlineRawText + "\n");
+    const newLines = sourceToLines(inlineRawText + SRC_LINE_END);
     this.formatService.parseLines(newLines);
 
     const newSecondLine = newLines.children[0] as HTMLElement;
@@ -117,7 +118,7 @@ export class EditService {
       // at line start. Move rest of line content to the end of line above
       const previousLine = this.lineQueryService.getPreviousLine(currentLine);
       if (previousLine) {
-        const previousLineText = this.lineQueryService.sliceLine(previousLine, 0, -1); // remove \n
+        const previousLineText = this.lineQueryService.sliceLine(previousLine, 0, -1); // remove line end
         const currentLineRemainingText = currentLine.textContent;
         const newlines = sourceToLines(previousLineText + currentLineRemainingText);
         const updatedPreviousLine = newlines.children[0] as HTMLElement;
@@ -351,7 +352,7 @@ export class EditService {
     const caret = this.caretService.caret;
     if (!caret) return;
 
-    const textWithNormalizedLineEnding = text.replace(/\r\n?/g, "\n");
+    const textWithNormalizedLineEnding = text.replace(/\r\n?/g, SRC_LINE_END);
 
     this.insertText(textWithNormalizedLineEnding, root);
   }
