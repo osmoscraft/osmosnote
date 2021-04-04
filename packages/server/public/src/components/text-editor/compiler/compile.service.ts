@@ -109,16 +109,6 @@ export class CompileService {
   }
 
   getPortableText(lines: HTMLElement[], startLineOffset = 0, endLineOffset?: number): string {
-    const text = lines
-      .map((line, index) => {
-        const metrics = this.lineQueryService.getLineMetrics(line);
-        const startOffset = index === 0 ? Math.max(metrics.indent, startLineOffset) : metrics.indent;
-        const endOffset = index === lines.length - 1 ? endLineOffset : metrics.selectableLength;
-
-        return line.textContent!.slice(startOffset, endOffset);
-      })
-      .join(SRC_LINE_END);
-
-    return text;
+    return this.lineQueryService.getPortableText(lines, startLineOffset, endLineOffset);
   }
 }

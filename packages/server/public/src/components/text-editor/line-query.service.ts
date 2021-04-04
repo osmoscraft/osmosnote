@@ -1,4 +1,4 @@
-import { UI_LINE_END } from "../../utils/special-characters.js";
+import { SRC_LINE_END, UI_LINE_END } from "../../utils/special-characters.js";
 import {
   firstInnerLeafNode,
   firstInnerTextNode,
@@ -70,11 +70,11 @@ export class LineQueryService {
       .map((line, index) => {
         const metrics = this.getLineMetrics(line);
         const startOffset = index === 0 ? Math.max(metrics.indent, startLineOffset) : metrics.indent;
-        const endOffset = index === lines.length - 1 ? endLineOffset : undefined;
+        const endOffset = index === lines.length - 1 ? endLineOffset : metrics.selectableLength;
 
         return line.textContent!.slice(startOffset, endOffset);
       })
-      .join("");
+      .join(SRC_LINE_END);
 
     return text;
   }
