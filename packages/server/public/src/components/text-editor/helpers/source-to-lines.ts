@@ -21,6 +21,8 @@ export interface LineElement extends HTMLDivElement {
     parsed?: "";
     /** Exists on the line that has collapsed caret */
     caretCollapsed?: "";
+    /** Exists on the lines that overlap with selection */
+    caretSelected?: "";
   };
 }
 

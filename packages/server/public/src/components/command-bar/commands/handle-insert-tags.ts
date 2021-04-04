@@ -51,7 +51,7 @@ export const handleInsertTags: CommandHandler = async ({ input, context }) => {
           return `, ${phrase}`;
         }
       });
-      context.componentRefs.statusBar.setMessage(`[command-bar] inserted "${phrase}"`);
+      context.componentRefs.statusBar.setMessage(`inserted "${phrase}"`);
     },
   };
 };

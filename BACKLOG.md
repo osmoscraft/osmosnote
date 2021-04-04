@@ -2,9 +2,6 @@
 
 ## Working on
 
-v0.0.12 release goals:
-
-- Workflow: On start: git pull
 - Workflow: On start: check config file and config values
 - Workflow: On start dependency validator
   - Check dependency and dump diagonostic info in console
@@ -14,18 +11,23 @@ v0.0.12 release goals:
     - xargs
     - ripgrep
 - Workflow: A landing state (recent + open new).
-- Workflow: When opening a separate client, syncing on landing page forces landing page to be saved.
 - Workflow: Display "New" as status when opening a new file.
-- Workflow: Sync without save (when the current file is deleted on the remote, sync & save will cause conflict).
 - Workflow: Disable spellcheck on all the URLs
 - Workflow: Prompt for confirmation when deleting a note with references.
 - Workflow: Cancel remote action after cursor move
 - Workflow: Keyboard shortcut to shift selected lines up/down: alt + arrow up/down
 - Workflow: Keyboard shortcut to indent/outdent section or list: ctrl + ,|.
 - Workflow: Show app version
-- Workflow: Highlight selected line with full width background
 - Health: refactor history and change tracking: make runAtom auto update dirty state?
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
+
+v0.0.12 release candidate:
+
+- Workflow: Sync without save (when the current file is deleted on the remote, sync & save will cause conflict).
+- Workflow: When opening a separate client, syncing on landing page forces landing page to be saved.
+- Workflow: Highlight selected line with full width background
+- Workflow: Format without save
+- Health: Refactored line-ending character and parsing logic
 
 ## Bug backlog
 
@@ -65,7 +67,6 @@ v0.0.12 release goals:
 - Strong need to curate a list based on tags
 - Consider support shortcut to insert current time (northstar?)
 - Use History Service to track every keypress and use debouncer to improve performance
-- Add file format without save command
 - Customizable home page with blocks of queries
 - Note refactoring system: rename title, delete
 - Display per line dirty status in gutter

@@ -484,12 +484,19 @@ export class CaretService {
     root
       ?.querySelectorAll("[data-caret-collapsed]")
       .forEach((container) => delete (container as LineElement).dataset.caretCollapsed);
+
+    root
+      ?.querySelectorAll("[data-caret-selected]")
+      .forEach((container) => delete (container as LineElement).dataset.caretSelected);
   }
 
   private addCaretHighlight(caret: Caret, root: HTMLElement | Document | null = document) {
     if (caret.isCollapsed) {
       this.updateContainerStateRecursive(caret.focus.node, root);
     }
+
+    const selectedLines = this.lineQueryService.getLines(caret.start.node, caret.end.node) as LineElement[];
+    selectedLines.forEach((line) => (line.dataset.caretSelected = ""));
 
     this.scrollCaretIntoView(caret);
   }

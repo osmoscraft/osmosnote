@@ -33,6 +33,8 @@ s2-text-editor:focus-within {
 [data-line] [data-wrap] {
   flex: 1 1 auto;
 }
+
+[data-line][data-caret-selected],
 [data-line][data-caret-collapsed] {
   background-color: var(--theme-background-active);
 }

@@ -3,11 +3,12 @@ import { handleInsertNote } from "./commands/handle-insert-note.js";
 import { handleInsertTags } from "./commands/handle-insert-tags.js";
 import { handleLinkToNote } from "./commands/handle-link-to-note.js";
 import { handleOpenOrCreateNote } from "./commands/handle-open-note.js";
-import { handleFileVersionCheckAll } from "./commands/handle-file-version-check-all.js";
-import { handleVersionSyncAll } from "./commands/handle-file-version-sync-all.js";
+import { handleFileSyncAll } from "./commands/handle-file-sync-all.js";
+import { handleFileSaveAndSyncAll } from "./commands/handle-file-save-and-sync-all.js";
 import { handleFileSave } from "./commands/handle-file-save.js";
 import { handleToggleSpellcheck } from "./commands/handle-toggle-spellcheck.js";
 import { handleFileDelete } from "./commands/handle-file-delete.js";
+import { handleFileFormat } from "./commands/handle-file-format.js";
 
 export const commandTree: RegisteredCommand = {
   name: "All commands",
@@ -38,24 +39,29 @@ export const commandTree: RegisteredCommand = {
       key: "f",
       commands: [
         {
-          name: "Save",
+          name: "Save and sync",
           key: "s",
+          handler: handleFileSaveAndSyncAll,
+        },
+        {
+          name: "Sync",
+          key: "y",
+          handler: handleFileSyncAll,
+        },
+        {
+          name: "Save",
+          key: "v",
           handler: handleFileSave,
         },
         {
-          name: "Check versions",
-          key: "v",
-          handler: handleFileVersionCheckAll,
-        },
-        {
-          name: "Sync versions",
-          key: "a",
-          handler: handleVersionSyncAll,
-        },
-        {
           name: "Delete",
-          key: "t",
+          key: "q",
           handler: handleFileDelete,
+        },
+        {
+          name: "Format",
+          key: "f",
+          handler: handleFileFormat,
         },
       ],
     },
