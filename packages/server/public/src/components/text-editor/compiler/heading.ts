@@ -2,7 +2,7 @@ import type { FormatContext, LineCompiler } from "./compile.service";
 import type { LineElement } from "../helpers/source-to-lines";
 import { UI_LINE_END } from "../../../utils/special-characters.js";
 
-const HEADING_PATTERN = /^(\s*)(#+) (.*)\n?/; // `### Heading`
+const HEADING_PATTERN = /^(\s*)(#+) (.*)/; // `### Heading`
 
 function match(rawText: string) {
   return rawText.match(HEADING_PATTERN);

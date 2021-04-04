@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2020",
+    "lib": ["DOM", "DOM.Iterable", "esnext"],
     "moduleResolution": "node",
     "esModuleInterop": true,
     "module": "esnext",

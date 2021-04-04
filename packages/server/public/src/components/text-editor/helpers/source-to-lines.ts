@@ -27,13 +27,14 @@ export interface LineElement extends HTMLDivElement {
 export function sourceToLines(source: string) {
   const result = document.createDocumentFragment();
 
-  const trimmedLines = removeLineEnding(source);
-  const lines = trimmedLines.split(SRC_LINE_END);
+  // This can handle both src and ui line endings
+  const trimmedLines = removeLineEnding(source).replaceAll(SRC_LINE_END, UI_LINE_END);
+  const lines = trimmedLines.split(UI_LINE_END);
 
   lines.forEach((line) => {
     const lineDom = document.createElement("div") as LineElement;
     lineDom.dataset.line = "";
-    lineDom.textContent = `${line}${UI_LINE_END}`;
+    lineDom.textContent = line;
 
     result.appendChild(lineDom);
   });

@@ -2,7 +2,7 @@ import type { LineCompiler } from "./compile.service";
 import type { LineElement } from "../helpers/source-to-lines";
 import { UI_LINE_END } from "../../../utils/special-characters.js";
 
-const META_PATTERN = /^#\+(.+?): (.*)\n?/; // `#+key: value`
+const META_PATTERN = /^#\+(.+?): (.*)/; // `#+key: value`
 
 function match(rawText: string) {
   return rawText.match(META_PATTERN);

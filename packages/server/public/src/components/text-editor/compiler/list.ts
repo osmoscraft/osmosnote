@@ -3,7 +3,7 @@ import type { LineElement } from "../helpers/source-to-lines.js";
 import { parseInlineParagraph } from "./parse-inline-paragraph.js";
 import { UI_LINE_END } from "../../../utils/special-characters.js";
 
-const LIST_PATTERN = /^(\s*)(-*)(-|\d+\.) (.*)\n?/; // `-- Item`, or `--1. Item`
+const LIST_PATTERN = /^(\s*)(-*)(-|\d+\.) (.*)/; // `-- Item`, or `--1. Item`
 
 function match(rawText: string) {
   return rawText.match(LIST_PATTERN);

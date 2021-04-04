@@ -3,7 +3,7 @@ import type { LineElement } from "../helpers/source-to-lines.js";
 import { removeLineEnding } from "../helpers/string.js";
 import { UI_LINE_END } from "../../../utils/special-characters.js";
 
-const BLANK_PATTERN = /^(\s+)$/;
+const BLANK_PATTERN = /^(\s*)$/;
 
 function match(rawText: string) {
   return rawText.match(BLANK_PATTERN);
