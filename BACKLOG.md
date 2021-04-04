@@ -12,7 +12,6 @@
     - ripgrep
 - Workflow: A landing state (recent + open new).
 - Workflow: Display "New" as status when opening a new file.
-- Workflow: Disable spellcheck on all the URLs
 - Workflow: Prompt for confirmation when deleting a note with references.
 - Workflow: Cancel remote action after cursor move
 - Workflow: Keyboard shortcut to shift selected lines up/down: alt + arrow up/down
@@ -23,6 +22,7 @@
 
 v0.0.12 release candidate:
 
+- Workflow: Disable spellcheck on all the URLs
 - Workflow: Sync without save (when the current file is deleted on the remote, sync & save will cause conflict).
 - Workflow: When opening a separate client, syncing on landing page forces landing page to be saved.
 - Workflow: Highlight selected line with full width background

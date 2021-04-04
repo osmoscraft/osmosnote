@@ -14,7 +14,7 @@ export function parseInlineParagraph(inlineText: string) {
     if (match) {
       const [raw, plainText, linkTitle, linkTarget] = match;
       paragraphHtml += plainText;
-      paragraphHtml += `<span data-link class="t--ghost"><span class="link__title">[${linkTitle}]</span>(<span data-title-target="${linkTarget}" class="link__target">${linkTarget}</span>)</span>`;
+      paragraphHtml += `<span data-link class="t--ghost"><span class="link__title">[${linkTitle}]</span>(<span data-title-target="${linkTarget}" class="link__target" spellcheck="false">${linkTarget}</span>)</span>`;
 
       remainingText = remainingText.slice(raw.length);
       continue;
@@ -24,7 +24,7 @@ export function parseInlineParagraph(inlineText: string) {
     if (match) {
       const [raw, plainText, url] = match;
       paragraphHtml += plainText;
-      paragraphHtml += `<span data-url="${url}">${url}</span>`;
+      paragraphHtml += `<span spellcheck="false" data-url="${url}">${url}</span>`;
 
       remainingText = remainingText.slice(raw.length);
       continue;
