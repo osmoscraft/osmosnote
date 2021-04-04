@@ -3,6 +3,7 @@
 ## Working on
 
 v0.0.12 release goals:
+
 - Workflow: On start: check config file and config values
 - Workflow: On start dependency validator
   - Check dependency and dump diagonostic info in console
@@ -23,7 +24,7 @@ v0.0.12 release goals:
 - Workflow: Show app version
 - Health: refactor history and change tracking: make runAtom auto update dirty state?
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
-- Core: Experiment: replacr `\n` line ending with zero width space
+- Core: Experiment: zero width space as line-end in UI while keeping `\n` in source
 
 ## Bug backlog
 
@@ -45,7 +46,7 @@ v0.0.12 release goals:
   - Command bar should own its own keyboard shortcut service.
   - Input service should focus on handling text editing inputs, not command.
 - Refactor git utilities. They are a mess
-- Redesign and refactor core API to improve scalability 
+- Redesign and refactor core API to improve scalability
 
 ## Workflow
 
@@ -80,7 +81,6 @@ v0.0.12 release goals:
 - It's very easy to open the same doc twice and saving the older one will overwrite the new one.
 - First-run: Consumer packaging: Investigate docker?
 - Auto-update binaries?
-
 
 ## Compiler
 
