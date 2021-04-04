@@ -59,6 +59,8 @@ export class CaretService {
     if (!defaultPosition) return;
 
     this.setCaretCollapsed(defaultPosition.node, defaultPosition.offset, host);
+
+    this.catchUpToDom();
   }
 
   isCaretInElement(element: HTMLElement) {
@@ -67,7 +69,11 @@ export class CaretService {
     return element.contains(caret.anchor.node) && element.contains(caret.focus.node);
   }
 
-  catchUpToDom() {
+  catchUpToDom(saveColumnAsIdeal = true) {
+    if (saveColumnAsIdeal) {
+      this.updateIdealColumn();
+    }
+
     const dirtyDomCaret = this.getDirtyDomCaret();
     if (dirtyDomCaret !== undefined) {
       this._caret = dirtyDomCaret;
@@ -266,8 +272,7 @@ export class CaretService {
 
     this.setCaretCollapsed(seekOutput.node, seekOutput.offset, root);
 
-    if (rememberColumn) this.updateIdealColumn();
-    this.catchUpToDom();
+    this.catchUpToDom(rememberColumn);
     return seekOutput;
   }
 
@@ -391,7 +396,6 @@ export class CaretService {
       selection.collapse(newFocus.node, newFocus.offset);
     }
 
-    this.updateIdealColumn();
     this.catchUpToDom();
   }
 
@@ -408,7 +412,6 @@ export class CaretService {
     const selection = this.windowRef.window.getSelection()!;
     selection.setBaseAndExtent(anchor.node, anchor.offset, newFocus.node, newFocus.offset);
 
-    this.updateIdealColumn();
     this.catchUpToDom();
   }
 
@@ -428,8 +431,7 @@ export class CaretService {
     const selection = window.getSelection()!;
     selection.setBaseAndExtent(caret.anchor.node, caret.anchor.offset, newFocus.node, newFocus.offset);
 
-    if (rememberColumn) this.updateIdealColumn();
-    this.catchUpToDom();
+    this.catchUpToDom(rememberColumn);
   }
 
   private moveCaretCollapsed(config: {
@@ -459,8 +461,7 @@ export class CaretService {
       this.setCaretCollapsed(newFocus.node, newFocus.offset, root);
     }
 
-    if (rememberColumn) this.updateIdealColumn();
-    this.catchUpToDom();
+    this.catchUpToDom(rememberColumn);
   }
 
   private setCaretCollapsed(node: Node, offset: number = 0, root: HTMLElement | null = null) {
@@ -477,8 +478,6 @@ export class CaretService {
 
       selection.addRange(range);
     }
-
-    this.catchUpToDom();
   }
 
   private removeCaretHighlight(root: HTMLElement | Document | null = document) {

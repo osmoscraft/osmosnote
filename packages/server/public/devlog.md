@@ -2,16 +2,16 @@
 
 ## Working on
 
-- Bug: CJK input composed input triggers raw input handler
-- Bug: Clicking didn't sync the ideal column for vertical travel
-- Bug: Disable browser built-in formatter: italic, underline, bold
-
 ## Release candidate v0.0.10
 
+- Bug: Disable browser built-in formatter: italic, underline, bold
+- Bug: Clicking didn't sync the ideal column for vertical travel
+- Bug: CJK input composed input triggers raw input handler
 - IDE: auto list order (need format context to track current level and order)
 
 ## Bug backlog
 
+- Bug: CJK input doesn't work on blank lines
 - Bug: Ctrl + c can't access clipboard in http mode. (legacy copy command causes focus lost)
 - Bug: scrollbar has no hover effect and a wrong cursor style
 

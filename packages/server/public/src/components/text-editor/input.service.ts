@@ -3,13 +3,13 @@ import type { WindowRefService } from "../../services/window-reference/window.se
 import { isUrl } from "../../utils/url.js";
 import type { CaretService } from "./caret.service.js";
 import type { EditService } from "./edit.service.js";
-import type { LineElement } from "./helpers/source-to-lines.js";
-import { removeLineEnding } from "./helpers/string.js";
 import type { HistoryService } from "./history/history.service.js";
 import type { LineQueryService } from "./line-query.service.js";
 import type { TrackChangeService } from "./track-change.service.js";
 
 export class InputService {
+  private isMouseDown = false;
+
   constructor(
     private caretService: CaretService,
     private editService: EditService,
@@ -23,9 +23,10 @@ export class InputService {
   init(host: HTMLElement) {
     // mouse events: mousedown happens before selection change
     host.addEventListener("mousedown", (event) => this.handleMouseDownEvent(event));
+    host.addEventListener("mouseup", (event) => this.handleMouseUpEvent(event));
 
     // selection events
-    document.addEventListener("selectionchange", () => this.handleSelectionChangeEvent(host));
+    document.addEventListener("selectionchange", (e) => this.handleSelectionChangeEvent(e, host));
 
     // clipboard
     host.addEventListener("copy", (event) => this.handleClipboardEvents(event, host));
@@ -40,6 +41,8 @@ export class InputService {
   }
 
   private async handleMouseDownEvent(event: MouseEvent) {
+    this.isMouseDown = true;
+
     const noteLink = (event.target as HTMLElement)?.closest(`[data-title-target]`) as HTMLElement;
     if (noteLink) {
       // open internal id link
@@ -57,10 +60,16 @@ export class InputService {
     }
   }
 
-  private async handleSelectionChangeEvent(host: HTMLElement) {
+  private async handleMouseUpEvent(event: MouseEvent) {
+    this.isMouseDown = false;
+  }
+
+  private async handleSelectionChangeEvent(e: Event, host: HTMLElement) {
     // if selection leaves host, no op
     if (this.caretService.isCaretInElement(host)) {
-      this.caretService.catchUpToDom();
+      // Do not save ideal column unless selection change is caused by mouse down.
+      const updateIdealColumn = this.isMouseDown;
+      this.caretService.catchUpToDom(updateIdealColumn);
     }
   }
 
@@ -276,6 +285,13 @@ export class InputService {
   }
 
   private handleBeforeInputEvent(event: InputEvent, host: HTMLElement) {
+    if (event.inputType !== "insertText") {
+      // currently, only current plaintext input.
+      // add more types in the future to support: italic, bold, underline, or composing input (CJK)
+      event.preventDefault();
+      return;
+    }
+
     const insertedText = event.data;
     if (insertedText) {
       event.preventDefault();
