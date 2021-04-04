@@ -23,6 +23,7 @@ v0.0.12 release goals:
 - Workflow: Show app version
 - Health: refactor history and change tracking: make runAtom auto update dirty state?
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
+- Core: Experiment: replacr `\n` line ending with zero width space
 
 ## Bug backlog
 
