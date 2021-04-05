@@ -391,6 +391,7 @@ export class EditService {
 
     const lastLine = selectedLines[selectedLines.length - 1];
     lastLine.parentNode!.insertBefore(duplicatedLines, lastLine.nextSibling);
+    this.caretService.catchUpToDom({ saveColumnAsIdeal: false, detectSelectionChange: false });
   }
 
   async duplicateLinesDown() {
@@ -405,5 +406,6 @@ export class EditService {
 
     const firstLine = selectedLines[0];
     firstLine.parentNode!.insertBefore(duplicatedLines, firstLine);
+    this.caretService.catchUpToDom({ saveColumnAsIdeal: false, detectSelectionChange: false });
   }
 }

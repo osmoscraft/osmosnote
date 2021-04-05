@@ -69,7 +69,7 @@ export class InputService {
     if (this.caretService.isCaretInElement(host)) {
       // Do not save ideal column unless selection change is caused by mouse down.
       const updateIdealColumn = this.isMouseDown;
-      this.caretService.catchUpToDom(updateIdealColumn);
+      this.caretService.catchUpToDom({ saveColumnAsIdeal: updateIdealColumn });
     }
   }
 
@@ -215,9 +215,11 @@ export class InputService {
       case "ArrowDown":
         event.preventDefault();
         if (event.shiftKey && event.altKey) {
-          this.editService.duplicateLinesDown();
+          await this.historyService.runAtomic(host, () => this.editService.duplicateLinesDown());
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else if (event.altKey) {
-          this.editService.shiftLinesDown();
+          await this.historyService.runAtomic(host, () => this.editService.shiftLinesDown());
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else if (event.shiftKey) {
           this.caretService.selectDown(host);
         } else {
@@ -228,9 +230,11 @@ export class InputService {
       case "ArrowUp":
         event.preventDefault();
         if (event.shiftKey && event.altKey) {
-          this.editService.duplicateLinesUp();
+          await this.historyService.runAtomic(host, () => this.editService.duplicateLinesUp());
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else if (event.altKey) {
-          this.editService.shiftLinesUp();
+          await this.historyService.runAtomic(host, () => this.editService.shiftLinesUp());
+          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else if (event.shiftKey) {
           this.caretService.selectUp(host);
         } else {

@@ -69,12 +69,12 @@ export class CaretService {
     return element.contains(caret.anchor.node) && element.contains(caret.focus.node);
   }
 
-  catchUpToDom(saveColumnAsIdeal = true) {
+  catchUpToDom({ saveColumnAsIdeal = true, detectSelectionChange = true } = {}) {
     if (saveColumnAsIdeal) {
       this.updateIdealColumn();
     }
 
-    const dirtyDomCaret = this.getDirtyDomCaret();
+    const dirtyDomCaret = detectSelectionChange ? this.getDirtyDomCaret() : this.getCaretFromDom();
     if (dirtyDomCaret !== undefined) {
       this._caret = dirtyDomCaret;
       this.renderDomHighlightFromModel();
@@ -272,7 +272,7 @@ export class CaretService {
 
     this.setCaretCollapsed(seekOutput.node, seekOutput.offset, root);
 
-    this.catchUpToDom(rememberColumn);
+    this.catchUpToDom({ saveColumnAsIdeal: rememberColumn });
     return seekOutput;
   }
 
@@ -431,7 +431,7 @@ export class CaretService {
     const selection = window.getSelection()!;
     selection.setBaseAndExtent(caret.anchor.node, caret.anchor.offset, newFocus.node, newFocus.offset);
 
-    this.catchUpToDom(rememberColumn);
+    this.catchUpToDom({ saveColumnAsIdeal: rememberColumn });
   }
 
   private moveCaretCollapsed(config: {
@@ -461,7 +461,7 @@ export class CaretService {
       this.setCaretCollapsed(newFocus.node, newFocus.offset, root);
     }
 
-    this.catchUpToDom(rememberColumn);
+    this.catchUpToDom({ saveColumnAsIdeal: rememberColumn });
   }
 
   private setCaretCollapsed(node: Node, offset: number = 0, root: HTMLElement | null = null) {

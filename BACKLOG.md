@@ -85,6 +85,7 @@ v0.0.12 release candidate:
 - It's very easy to open the same doc twice and saving the older one will overwrite the new one.
 - First-run: Consumer packaging: Investigate docker?
 - Auto-update binaries?
+- alt + shift + arrow to increase/decrease selection scope: word, line, section, all
 
 ## Compiler
 
