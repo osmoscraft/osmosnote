@@ -1,9 +1,10 @@
 import { writeClipboardText } from "../../utils/clipboard.js";
 import { SRC_LINE_END } from "../../utils/special-characters.js";
-import type { CaretService } from "./caret.service.js";
+import type { CaretPosition, CaretService } from "./caret.service.js";
 import type { CompileService } from "./compiler/compile.service.js";
 import { HEADING_CONTROL_CHAR, HEADING_MAX_LEVEL } from "./compiler/heading.js";
 import { LIST_CONTROL_CHAR } from "./compiler/list.js";
+import type { SeekInput } from "./helpers/dom.js";
 import { LineElement, sourceToLines } from "./helpers/source-to-lines.js";
 import { splice } from "./helpers/string.js";
 import type { LineQueryService } from "./line-query.service.js";
@@ -412,12 +413,142 @@ export class EditService {
     this.caretService.catchUpToDom({ saveColumnAsIdeal: false, detectSelectionChange: false });
   }
 
+  // WIP
   async shiftIndent(root: HTMLElement, levelChange: 1 | -1) {
     // currently only support step size = 1. the logic won't work for step size larger than 1
+    // handle boundary
 
+    const caret = this.caretService.caret;
+    if (!caret) return;
+
+    const lines = this.lineQueryService.getLines(caret.start.node, caret.end.node);
+    const context = this.caretService.getCaretContext()!;
+
+    let anchor!: SeekInput;
+    let focus!: SeekInput;
+
+    lines.forEach((line) => {
+      const existingAnchor = line === context.lineAnchor ? caret.anchor : undefined;
+      const existingFocus = line === context.lineFocus ? caret.focus : undefined;
+
+      const result = this.shiftIndentLine(root, line, levelChange, existingAnchor, existingFocus);
+
+      if (!result) {
+        if (existingAnchor) {
+          anchor = {
+            source: line,
+            offset: existingAnchor.offset,
+          };
+        }
+        if (existingFocus) {
+          focus = {
+            source: line,
+            offset: existingFocus.offset,
+          };
+        }
+        return;
+      }
+
+      const { line: newLine, anchorOffset, focusOffset } = result;
+
+      if (anchorOffset !== undefined) {
+        anchor = {
+          source: newLine,
+          offset: anchorOffset,
+        };
+      }
+
+      if (focusOffset !== undefined) {
+        focus = {
+          source: newLine,
+          offset: focusOffset,
+        };
+      }
+    });
+
+    this.caretService.setCaretsBySeekInput({
+      anchor,
+      focus,
+    });
+
+    this.compileService.compile(root);
+  }
+
+  // WIP
+  private shiftIndentLine(
+    root: HTMLElement,
+    targetLine: LineElement,
+    levelChange: 1 | -1,
+    caretAnchor?: CaretPosition,
+    caretFocus?: CaretPosition
+  ):
+    | {
+        line: LineElement;
+        anchorOffset?: number;
+        focusOffset?: number;
+      }
+    | undefined {
+    let controlCharIndex!: number;
+    let newString!: string;
+    const existingString = targetLine.textContent!;
+
+    switch (targetLine.dataset.line) {
+      case "heading":
+        const headingLevel = parseInt(targetLine.dataset.headingLevel!);
+        const newHeadingLevel = headingLevel + levelChange;
+        if (newHeadingLevel > HEADING_MAX_LEVEL || newHeadingLevel < 1) return;
+        const headingControlString = HEADING_CONTROL_CHAR.repeat(headingLevel);
+        controlCharIndex = existingString.indexOf(headingControlString);
+        const newHeadingControlString = HEADING_CONTROL_CHAR.repeat(newHeadingLevel);
+        newString = existingString.replace(headingControlString, newHeadingControlString);
+        break;
+      case "list":
+        const listLevel = parseInt(targetLine.dataset.listLevel!);
+        const newListLevel = listLevel + levelChange;
+        if (newListLevel < 1) return;
+        const marker = targetLine.dataset.listMarker!;
+        const listControlString = LIST_CONTROL_CHAR.repeat(listLevel - 1) + marker;
+        controlCharIndex = existingString.indexOf(listControlString);
+        const newListControlString = LIST_CONTROL_CHAR.repeat(newListLevel - 1) + marker;
+        newString = existingString.replace(listControlString, newListControlString);
+        break;
+      default:
+        // No support for other line types yet
+        return;
+    }
+
+    const newLineFrag = sourceToLines(newString);
+    const newLine = newLineFrag.children[0] as LineElement;
+    this.compileService.parseLines(newLineFrag);
+    root.insertBefore(newLineFrag, targetLine);
+    targetLine.remove();
+
+    let anchorOffset: number | undefined = undefined;
+    let focusOffset: number | undefined = undefined;
+
+    if (caretAnchor) {
+      const caretLinePosition = this.caretService.getCaretLinePosition(caretAnchor);
+      const isChangeBeforeCaret = controlCharIndex - 1 < caretLinePosition.offset;
+      anchorOffset = caretLinePosition.offset + (isChangeBeforeCaret ? levelChange : 0);
+    }
+
+    if (caretFocus) {
+      const caretLinePosition = this.caretService.getCaretLinePosition(caretFocus);
+      const isChangeBeforeCaret = controlCharIndex - 1 < caretLinePosition.offset;
+      focusOffset = caretLinePosition.offset + (isChangeBeforeCaret ? levelChange : 0);
+    }
+
+    return {
+      line: newLine,
+      anchorOffset,
+      focusOffset,
+    };
+  }
+
+  /** @deprecated */
+  async shiftIndentCollapsed(root: HTMLElement, levelChange: 1 | -1) {
     const context = this.caretService.getCaretContext();
-    // TODO support multi-line
-    if (!context?.lineCollapsed) return;
+    if (!context?.lineCollapsed) return this.shiftIndent(root, levelChange);
 
     const targetLine = context.lineStart;
 
@@ -443,11 +574,11 @@ export class EditService {
 
     if ((levelChange > 0 && currentLevel === maxLevel) || (levelChange < 0 && currentLevel === minLevel)) return;
 
-    const controlCharIndex = context.textBeforeRaw.indexOf(controlChar);
+    const existingString = targetLine.textContent!;
+    const controlCharIndex = existingString.indexOf(controlChar);
     const caretLinePosition = this.caretService.getCaretLinePosition(this.caretService.caret!.focus);
     const isChangeBeforeCaret = controlCharIndex < caretLinePosition.offset;
 
-    const existingString = targetLine.textContent!;
     const charToAdd = levelChange > 0 ? controlChar.repeat(levelChange) : "";
     const lengthToRemove = Math.abs(Math.min(levelChange, 0));
     const newString =
