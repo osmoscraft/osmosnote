@@ -32,7 +32,7 @@ di.registerClass(PreferencesService, [WindowRefService]);
 di.registerClass(MeasureService, [WindowRefService]);
 di.registerClass(LineQueryService, [MeasureService]);
 di.registerClass(CaretService, [ComponentRefService, WindowRefService, LineQueryService]);
-di.registerClass(HistoryService, [CaretService, LineQueryService]);
+di.registerClass(HistoryService, [CaretService, LineQueryService, TrackChangeService]);
 di.registerClass(CompileService, [CaretService, LineQueryService]);
 di.registerClass(EditService, [CaretService, CompileService, LineQueryService, CompileService]);
 di.registerClass(InputService, [

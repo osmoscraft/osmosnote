@@ -82,14 +82,12 @@ export class InputService {
         break;
       case "cut":
         await this.historyService.runAtomic(host, () => this.editService.caretCut(host));
-        this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         break;
       case "paste":
         const pasteText = event.clipboardData?.getData("text");
         if (!pasteText) return;
 
         await this.historyService.runAtomic(host, () => this.editService.caretPaste(pasteText, host));
-        this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         break;
     }
   }
@@ -134,7 +132,6 @@ export class InputService {
         if (event.ctrlKey) {
           event.preventDefault();
           await this.historyService.runAtomic(host, () => this.editService.caretCut(host));
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         }
         break;
 
@@ -217,10 +214,8 @@ export class InputService {
         event.preventDefault();
         if (event.shiftKey && event.altKey) {
           await this.historyService.runAtomic(host, () => this.editService.duplicateLinesDown());
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else if (event.altKey) {
           await this.historyService.runAtomic(host, () => this.editService.shiftLinesDown());
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else if (event.shiftKey) {
           this.caretService.selectDown(host);
         } else {
@@ -232,10 +227,8 @@ export class InputService {
         event.preventDefault();
         if (event.shiftKey && event.altKey) {
           await this.historyService.runAtomic(host, () => this.editService.duplicateLinesUp());
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else if (event.altKey) {
           await this.historyService.runAtomic(host, () => this.editService.shiftLinesUp());
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else if (event.shiftKey) {
           this.caretService.selectUp(host);
         } else {
@@ -286,10 +279,8 @@ export class InputService {
       case "Delete":
         if (event.ctrlKey) {
           await this.historyService.runAtomic(host, () => this.editService.deleteWordAfter(host));
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else {
           await this.historyService.runAtomic(host, () => this.editService.deleteAfter(host));
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         }
         event.preventDefault();
         break;
@@ -297,10 +288,8 @@ export class InputService {
       case "Backspace":
         if (event.ctrlKey) {
           await this.historyService.runAtomic(host, () => this.editService.deleteWordBefore(host));
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         } else {
           await this.historyService.runAtomic(host, () => this.editService.deleteBefore(host));
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         }
         event.preventDefault();
         break;
@@ -397,14 +386,12 @@ export class InputService {
           });
         }
 
-        this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
         event.preventDefault();
         return;
       }
 
       // enter when there is selection
       await this.historyService.runAtomic(host, () => this.editService.insertNewLine(host));
-      this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
       event.preventDefault();
     }
   }

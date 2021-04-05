@@ -110,7 +110,6 @@ export class TextEditorComponent extends HTMLElement {
 
   async insertAtCaret(text: string) {
     await this.historyService.runAtomic(this.host, () => this.editService.caretPaste(text, this.host));
-    this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
   }
 
   getSelectedText(): string | null {
@@ -137,7 +136,6 @@ export class TextEditorComponent extends HTMLElement {
     const insertingContent = await getInsertingContent(caretContext);
 
     await this.historyService.runAtomic(this.host, () => this.editService.caretPaste(insertingContent, this.host));
-    this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
   }
 
   async insertNoteLinkOnSave(openUrl: string) {

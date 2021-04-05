@@ -1,6 +1,7 @@
 import type { CaretService } from "../caret.service.js";
 import type { LineElement } from "../helpers/source-to-lines.js";
 import type { LineQueryService } from "../line-query.service.js";
+import type { TrackChangeService } from "../track-change.service.js";
 import { HistoryStack } from "./history-stack.js";
 
 export interface Snapshot {
@@ -21,7 +22,11 @@ const compareSnapshots = (a: Snapshot | null, b: Snapshot | null) => {
 export class HistoryService {
   private stack = new HistoryStack<Snapshot>();
 
-  constructor(private caretService: CaretService, private lineQueryService: LineQueryService) {}
+  constructor(
+    private caretService: CaretService,
+    private lineQueryService: LineQueryService,
+    private trackChangeService: TrackChangeService
+  ) {}
 
   save(root: HTMLElement) {
     const snapshot = this.getSnapshot(root);
@@ -34,10 +39,12 @@ export class HistoryService {
     this.stack.push(snapshot);
   }
 
+  /** Create a snapshot in history, mutation content, create a new snapshot, and update dirty status */
   async runAtomic(root: HTMLElement, action: () => any) {
     this.save(root);
     await action();
     this.save(root);
+    this.trackChangeService.trackByText(this.peek()?.textContent);
   }
 
   undo(root: HTMLElement) {
