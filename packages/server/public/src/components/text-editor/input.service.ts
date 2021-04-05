@@ -267,6 +267,20 @@ export class InputService {
         }
         break;
 
+      // Indent/Outdent
+      case ".":
+        if (event.ctrlKey) {
+          event.preventDefault();
+          this.editService.indentLines(host);
+        }
+        break;
+      case ",":
+        if (event.ctrlKey) {
+          event.preventDefault();
+          this.editService.outdentLines(host);
+        }
+        break;
+
       // Inputs
       case "Delete":
         if (event.ctrlKey) {

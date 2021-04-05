@@ -3,6 +3,7 @@ import type { LineElement } from "../helpers/source-to-lines";
 import { UI_LINE_END } from "../../../utils/special-characters.js";
 
 export const HEADING_CHAR = "#";
+export const MAX_LEVEL = 6; // not enforced yet
 const HEADING_PATTERN = /^(\s*)(#+) (.*)/; // `### Heading`
 
 function match(rawText: string) {

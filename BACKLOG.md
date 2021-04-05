@@ -15,6 +15,8 @@
 - Workflow: Prompt for confirmation when deleting a note with references.
 - Workflow: Cancel remote action after cursor move
 - Workflow: Keyboard shortcut to indent/outdent section or list: ctrl + ,|.
+  - Single line indent
+  - All selected lines indent
 - Workflow: Show app version
 - Health: refactor history and change tracking: make runAtom auto update dirty state?
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.

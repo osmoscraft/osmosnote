@@ -2,7 +2,8 @@ import { writeClipboardText } from "../../utils/clipboard.js";
 import { SRC_LINE_END } from "../../utils/special-characters.js";
 import type { CaretService } from "./caret.service.js";
 import type { CompileService } from "./compiler/compile.service.js";
-import { sourceToLines } from "./helpers/source-to-lines.js";
+import { HEADING_CHAR } from "./compiler/heading.js";
+import { LineElement, sourceToLines } from "./helpers/source-to-lines.js";
 import { splice } from "./helpers/string.js";
 import type { LineQueryService } from "./line-query.service.js";
 
@@ -13,7 +14,8 @@ export class EditService {
   constructor(
     private caretService: CaretService,
     private formatService: CompileService,
-    private lineQueryService: LineQueryService
+    private lineQueryService: LineQueryService,
+    private compileService: CompileService
   ) {}
 
   insertText(text: string, root: HTMLElement) {
@@ -254,7 +256,7 @@ export class EditService {
     if (!newFocusLine) {
       // document will be empty after deletion. Create an empty line so we can set focus to it
       const newLines = sourceToLines("");
-      newFocusLine = newLines.children[0] as HTMLElement;
+      newFocusLine = newLines.children[0] as LineElement;
       this.formatService.parseLines(newLines);
 
       selectedLines[0].parentElement?.insertBefore(newLines, selectedLines[0]);
@@ -407,5 +409,71 @@ export class EditService {
     const firstLine = selectedLines[0];
     firstLine.parentNode!.insertBefore(duplicatedLines, firstLine);
     this.caretService.catchUpToDom({ saveColumnAsIdeal: false, detectSelectionChange: false });
+  }
+
+  async indentLines(root: HTMLElement) {
+    const context = this.caretService.getCaretContext();
+    // TODO support multi-line
+    if (!context?.lineCollapsed) return;
+
+    const targetLine = context.lineStart;
+
+    if (targetLine.dataset.line === "heading") {
+      const currentLevel = parseInt(targetLine.dataset.headingLevel!);
+      if (currentLevel > 5) return;
+
+      const headingCharIndex = context.textBeforeRaw.indexOf(HEADING_CHAR);
+      const caretLinePosition = this.caretService.getCaretLinePosition(this.caretService.caret!.focus);
+      const isChangeBeforeCaret = headingCharIndex < caretLinePosition.offset;
+
+      const existingHeadingString = targetLine.textContent!;
+      const newHeadingString =
+        existingHeadingString.slice(0, headingCharIndex) + HEADING_CHAR + existingHeadingString.slice(headingCharIndex);
+      const newHeadingLineFrag = sourceToLines(newHeadingString);
+      const newHeadingLine = newHeadingLineFrag.children[0] as LineElement;
+      this.compileService.parseLines(newHeadingLineFrag);
+      root.insertBefore(newHeadingLineFrag, targetLine);
+      targetLine.remove();
+
+      this.caretService.setCollapsedCaretToLineOffset({
+        line: newHeadingLine,
+        offset: caretLinePosition.offset + (isChangeBeforeCaret ? 1 : 0),
+      });
+
+      this.compileService.compile(root);
+    }
+  }
+
+  async outdentLines(root: HTMLElement) {
+    const context = this.caretService.getCaretContext();
+    // TODO support multi-line
+    if (!context?.lineCollapsed) return;
+
+    const targetLine = context.lineStart;
+
+    if (targetLine.dataset.line === "heading") {
+      const currentLevel = parseInt(targetLine.dataset.headingLevel!);
+      if (currentLevel < 2) return;
+
+      const headingCharIndex = context.textBeforeRaw.indexOf(HEADING_CHAR);
+      const caretLinePosition = this.caretService.getCaretLinePosition(this.caretService.caret!.focus);
+      const isChangeBeforeCaret = headingCharIndex < caretLinePosition.offset;
+
+      const existingHeadingString = targetLine.textContent!;
+      const newHeadingString =
+        existingHeadingString.slice(0, headingCharIndex) + existingHeadingString.slice(headingCharIndex + 1);
+      const newHeadingLineFrag = sourceToLines(newHeadingString);
+      const newHeadingLine = newHeadingLineFrag.children[0] as LineElement;
+      this.compileService.parseLines(newHeadingLineFrag);
+      root.insertBefore(newHeadingLineFrag, targetLine);
+      targetLine.remove();
+
+      this.caretService.setCollapsedCaretToLineOffset({
+        line: newHeadingLine,
+        offset: caretLinePosition.offset + (isChangeBeforeCaret ? -1 : 0),
+      });
+
+      this.compileService.compile(root);
+    }
   }
 }
