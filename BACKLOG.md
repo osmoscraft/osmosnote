@@ -14,15 +14,14 @@
 - Workflow: Display "New" as status when opening a new file.
 - Workflow: Prompt for confirmation when deleting a note with references.
 - Workflow: Cancel remote action after cursor move
-- Workflow: Keyboard shortcut to indent/outdent section or list: ctrl + ,|.
-  - Single line indent
-  - All selected lines indent
 - Workflow: Show app version
-- Health: refactor history and change tracking: make runAtom auto update dirty state?
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
 
 v0.0.12 release candidate:
 
+- Workflow: Keyboard shortcut to indent/outdent section or list: ctrl + ,|.
+  - Single line indent
+  - All selected lines indent
 - Workflow: Duplicate line up/down: alt + shift arrow up/down
 - Workflow: Keyboard shortcut to shift selected lines up/down: alt + arrow up/down
 - Workflow: Disable spellcheck on all the URLs
@@ -30,6 +29,7 @@ v0.0.12 release candidate:
 - Workflow: When opening a separate client, syncing on landing page forces landing page to be saved.
 - Workflow: Highlight selected line with full width background
 - Workflow: Format without save
+- Health: refactor history and change tracking: make runAtom auto update dirty state?
 - Health: Refactored line-ending character and parsing logic
 
 ## Bug backlog
@@ -57,6 +57,7 @@ v0.0.12 release candidate:
 
 ## Workflow
 
+- Workflow: Fully preserver selection state after formatting
 - First-run: Handle git setup (validate client version. validate local repo. validate remote. validate credentials.)
 - List auto indent fixing
 - UI managed metadata entry
