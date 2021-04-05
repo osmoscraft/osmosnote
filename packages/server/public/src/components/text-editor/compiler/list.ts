@@ -4,6 +4,7 @@ import { parseInlineParagraph } from "./parse-inline-paragraph.js";
 import { UI_LINE_END } from "../../../utils/special-characters.js";
 
 const LIST_PATTERN = /^(\s*)(-*)(-|\d+\.) (.*)/; // `-- Item`, or `--1. Item`
+export const LIST_CONTROL_CHAR = "-";
 
 function match(rawText: string) {
   return rawText.match(LIST_PATTERN);
@@ -20,7 +21,7 @@ function parse(line: LineElement, match: RegExpMatchArray) {
   line.dataset.listMarker = listMarker;
   if (!text.length) line.dataset.listEmpty = "";
 
-  const hiddenHyphens = `-`.repeat(levelSetters.length);
+  const hiddenHyphens = LIST_CONTROL_CHAR.repeat(levelSetters.length);
 
   const paragraphHtml = parseInlineParagraph(text);
 

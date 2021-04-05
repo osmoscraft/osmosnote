@@ -2,6 +2,7 @@ import type { ComponentRefService } from "../../services/component-reference/com
 import type { WindowRefService } from "../../services/window-reference/window.service.js";
 import { isUrl } from "../../utils/url.js";
 import type { CaretService } from "./caret.service.js";
+import { LIST_CONTROL_CHAR } from "./compiler/list.js";
 import type { EditService } from "./edit.service.js";
 import type { HistoryService } from "./history/history.service.js";
 import type { LineQueryService } from "./line-query.service.js";
@@ -271,13 +272,13 @@ export class InputService {
       case ".":
         if (event.ctrlKey) {
           event.preventDefault();
-          this.editService.indentLines(host);
+          this.editService.shiftIndent(host, 1);
         }
         break;
       case ",":
         if (event.ctrlKey) {
           event.preventDefault();
-          this.editService.outdentLines(host);
+          this.editService.shiftIndent(host, -1);
         }
         break;
 
@@ -368,7 +369,7 @@ export class InputService {
           } else {
             // Non-empty item: create a new item at the same level
             const { indent } = this.lineQueryService.getLineMetrics(lineCollapsed);
-            const hiddenHyphens = "-".repeat(parseInt(lineCollapsed.dataset.listLevel!) - 1);
+            const hiddenHyphens = LIST_CONTROL_CHAR.repeat(parseInt(lineCollapsed.dataset.listLevel!) - 1);
 
             let newListMarker: string;
             if (lineCollapsed.dataset.list === "unordered") {
