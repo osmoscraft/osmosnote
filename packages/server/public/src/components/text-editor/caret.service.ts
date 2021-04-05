@@ -1,7 +1,7 @@
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
 import type { WindowRefService } from "../../services/window-reference/window.service.js";
 import { scrollIntoView } from "../../utils/scroll-into-view.js";
-import { seek, SeekOutput } from "./helpers/dom.js";
+import { seek, SeekInput, SeekOutput } from "./helpers/dom.js";
 import type { LineElement } from "./helpers/source-to-lines.js";
 import { ensureLineEnding, getWordEndOffset, removeLineEnding, reverse } from "./helpers/string.js";
 import type { LinePosition, LineQueryService, VisualLinePosition } from "./line-query.service.js";
@@ -31,6 +31,8 @@ export interface CaretContext {
   textSelected: string;
   lineStart: LineElement;
   lineEnd: LineElement;
+  lineAnchor: LineElement;
+  lineFocus: LineElement;
   lineCollapsed: LineElement | null;
 }
 
@@ -276,6 +278,36 @@ export class CaretService {
     return seekOutput;
   }
 
+  setCaretsBySeekInput(config: {
+    anchor: SeekInput;
+    focus: SeekInput;
+    root?: HTMLElement | null;
+    /** @default true */
+    rememberColumn?: boolean;
+  }): [anchor: SeekOutput, focus: SeekOutput] | null {
+    const foundAnchor = seek(config.anchor);
+    const foundFocus = seek(config.focus);
+    if (!foundAnchor || !foundFocus) return null;
+
+    const selection = this.windowRef.window.getSelection()!;
+    selection.setBaseAndExtent(foundAnchor.node, foundAnchor.offset, foundFocus.node, foundFocus.offset);
+
+    this.catchUpToDom({ saveColumnAsIdeal: config.rememberColumn });
+
+    return [foundAnchor, foundFocus];
+  }
+
+  setCaretsBySeekOutput(config: {
+    anchor: SeekOutput;
+    focus: SeekOutput;
+    /** @default true */ rememberColumn?: boolean;
+  }) {
+    const selection = this.windowRef.window.getSelection()!;
+    selection.setBaseAndExtent(config.anchor.node, config.anchor.offset, config.focus.node, config.focus.offset);
+
+    this.catchUpToDom({ saveColumnAsIdeal: config.rememberColumn });
+  }
+
   getCaretLinePosition(caretPosition: CaretPosition): LinePosition {
     const { node, offset } = caretPosition;
     const position = this.lineQueryService.getNodeLinePosition(node, offset);
@@ -295,6 +327,7 @@ export class CaretService {
     const selectedLines = this.lineQueryService.getLines(caret.start.node, caret.end.node);
     const { offset: caretStartOffset } = this.getCaretLinePosition(caret.start);
     const { offset: caretEndOffset } = this.getCaretLinePosition(caret.end);
+    const isInverted = caret.start.node === caret.focus.node;
 
     const startLine = selectedLines[0] as LineElement;
     const { indent: startLineIndent } = this.lineQueryService.getLineMetrics(startLine);
@@ -325,7 +358,9 @@ export class CaretService {
       textAfter: selectableTextAfter,
       textSelected,
       lineStart: startLine,
+      lineAnchor: isInverted ? endLine : startLine,
       lineEnd: endLine,
+      lineFocus: isInverted ? startLine : endLine,
       lineCollapsed,
     };
   }
