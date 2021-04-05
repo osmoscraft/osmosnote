@@ -2,6 +2,7 @@ import type { FormatContext, LineCompiler } from "./compile.service";
 import type { LineElement } from "../helpers/source-to-lines";
 import { UI_LINE_END } from "../../../utils/special-characters.js";
 
+export const HEADING_CHAR = "#";
 const HEADING_PATTERN = /^(\s*)(#+) (.*)/; // `### Heading`
 
 function match(rawText: string) {
@@ -14,9 +15,9 @@ function parse(line: LineElement, match: RegExpMatchArray) {
   line.dataset.headingLevel = hashes.length.toString();
   line.dataset.line = "heading";
 
-  const hiddenHashes = `#`.repeat(hashes.length - 1);
+  const hiddenHashes = HEADING_CHAR.repeat(hashes.length - 1);
 
-  line.innerHTML = `<span data-indent>${spaces}</span><span data-wrap><span class="t--ghost">${hiddenHashes}</span><span class="t--bold"># ${text}</span>${UI_LINE_END}</span>`;
+  line.innerHTML = `<span data-indent>${spaces}</span><span data-wrap><span class="t--ghost">${hiddenHashes}</span><span class="t--bold">${HEADING_CHAR} ${text}</span>${UI_LINE_END}</span>`;
 }
 
 function format(line: LineElement) {

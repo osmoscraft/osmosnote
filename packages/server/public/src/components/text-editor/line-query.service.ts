@@ -39,18 +39,18 @@ export interface LinearLinePosition {
 export class LineQueryService {
   constructor(private measureService: MeasureService) {}
 
-  getLine(node: Node): HTMLElement | null {
-    const line = node.parentElement!.closest("[data-line]") as HTMLElement | null;
+  getLine(node: Node): LineElement | null {
+    const line = node.parentElement!.closest("[data-line]") as LineElement | null;
     return line;
   }
 
-  getLines(startNode: Node, endNode: Node): HTMLElement[] {
+  getLines(startNode: Node, endNode: Node): LineElement[] {
     const startLine = this.getLine(startNode);
     const endLine = this.getLine(endNode);
     if (!startLine || !endLine) return [];
 
     const results = [startLine];
-    let currentLine: HTMLElement = startLine;
+    let currentLine = startLine;
     while (currentLine !== endLine) {
       const nextLine = this.getNextLine(currentLine);
       if (nextLine) {
@@ -232,15 +232,15 @@ export class LineQueryService {
     return Math.min(feasibleOffset, offset);
   }
 
-  getNextLine(currentLine: HTMLElement): HTMLElement | null {
+  getNextLine(currentLine: HTMLElement): LineElement | null {
     return currentLine.nextElementSibling?.matches("[data-line]")
-      ? (currentLine.nextElementSibling as HTMLElement)
+      ? (currentLine.nextElementSibling as LineElement)
       : null;
   }
 
-  getPreviousLine(currentLine: HTMLElement): HTMLElement | null {
+  getPreviousLine(currentLine: HTMLElement): LineElement | null {
     return currentLine.previousElementSibling?.matches("[data-line]")
-      ? (currentLine.previousElementSibling as HTMLElement)
+      ? (currentLine.previousElementSibling as LineElement)
       : null;
   }
 
