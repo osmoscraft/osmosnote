@@ -15,13 +15,13 @@
 - Workflow: Prompt for confirmation when deleting a note with references.
 - Workflow: Cancel remote action after cursor move
 - Workflow: Keyboard shortcut to indent/outdent section or list: ctrl + ,|.
-- Workflow: Duplicate line up/down: alt + shift arrow up/down
 - Workflow: Show app version
 - Health: refactor history and change tracking: make runAtom auto update dirty state?
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
 
 v0.0.12 release candidate:
 
+- Workflow: Duplicate line up/down: alt + shift arrow up/down
 - Workflow: Keyboard shortcut to shift selected lines up/down: alt + arrow up/down
 - Workflow: Disable spellcheck on all the URLs
 - Workflow: Sync without save (when the current file is deleted on the remote, sync & save will cause conflict).

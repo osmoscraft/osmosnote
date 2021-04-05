@@ -378,4 +378,32 @@ export class EditService {
       lineStart.insertAdjacentElement("beforebegin", lineBelow);
     }
   }
+
+  async duplicateLinesUp() {
+    const caret = this.caretService.caret;
+    if (!caret) return;
+
+    const selectedLines = this.lineQueryService.getLines(caret?.start.node, caret?.end.node);
+    if (!selectedLines.length) return;
+
+    const duplicatedLines = document.createDocumentFragment();
+    selectedLines.forEach((existingLine) => duplicatedLines.appendChild(existingLine.cloneNode(true)));
+
+    const lastLine = selectedLines[selectedLines.length - 1];
+    lastLine.parentNode!.insertBefore(duplicatedLines, lastLine.nextSibling);
+  }
+
+  async duplicateLinesDown() {
+    const caret = this.caretService.caret;
+    if (!caret) return;
+
+    const selectedLines = this.lineQueryService.getLines(caret?.start.node, caret?.end.node);
+    if (!selectedLines.length) return;
+
+    const duplicatedLines = document.createDocumentFragment();
+    selectedLines.forEach((existingLine) => duplicatedLines.appendChild(existingLine.cloneNode(true)));
+
+    const firstLine = selectedLines[0];
+    firstLine.parentNode!.insertBefore(duplicatedLines, firstLine);
+  }
 }

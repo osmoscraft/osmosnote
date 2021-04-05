@@ -214,10 +214,12 @@ export class InputService {
 
       case "ArrowDown":
         event.preventDefault();
-        if (event.shiftKey) {
-          this.caretService.selectDown(host);
+        if (event.shiftKey && event.altKey) {
+          this.editService.duplicateLinesDown();
         } else if (event.altKey) {
           this.editService.shiftLinesDown();
+        } else if (event.shiftKey) {
+          this.caretService.selectDown(host);
         } else {
           this.caretService.moveDown(host);
         }
@@ -225,10 +227,12 @@ export class InputService {
 
       case "ArrowUp":
         event.preventDefault();
-        if (event.shiftKey) {
-          this.caretService.selectUp(host);
+        if (event.shiftKey && event.altKey) {
+          this.editService.duplicateLinesUp();
         } else if (event.altKey) {
           this.editService.shiftLinesUp();
+        } else if (event.shiftKey) {
+          this.caretService.selectUp(host);
         } else {
           this.caretService.moveUp(host);
         }
