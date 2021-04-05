@@ -286,10 +286,10 @@ export class CaretService {
     const caret = this._caret;
     if (!caret) return null;
 
-    let textBefore,
-      textSelected,
-      textAfter,
-      wrappableTextBefore,
+    let textBefore: string,
+      textSelected: string,
+      textAfter: string,
+      wrappableTextBefore: string,
       selectableTextAfter: string = "";
 
     const selectedLines = this.lineQueryService.getLines(caret.start.node, caret.end.node);
