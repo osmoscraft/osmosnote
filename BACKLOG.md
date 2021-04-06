@@ -11,6 +11,7 @@
     - ripgrep
 - Workflow: A landing state (recent + open new).
 - Workflow: Show app version
+- Workflow: Stop full page reload after save
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
 
 v0.0.12 release candidate:
