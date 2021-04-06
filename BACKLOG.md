@@ -2,7 +2,6 @@
 
 ## Working on
 
-- Workflow: On start: check config file and config values
 - Workflow: On start dependency validator
   - Check dependency and dump diagonostic info in console
     - localstorage api
@@ -11,12 +10,12 @@
     - xargs
     - ripgrep
 - Workflow: A landing state (recent + open new).
-- Workflow: Cancel remote action after cursor move
 - Workflow: Show app version
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
 
 v0.0.12 release candidate:
 
+- Workflow: Cancel remote action after any keypress
 - Workflow: Prompt for confirmation when deleting a note with references.
 - Workflow: Display "New" as status when opening a new file.
 - Workflow: Keyboard shortcut to indent/outdent section or list: ctrl + ,|.
@@ -57,6 +56,8 @@ v0.0.12 release candidate:
 
 ## Workflow
 
+- Workflow: Switch config to json for machine writablility?
+- Workflow: On start: check config file and config values
 - Workflow: Fully preserver selection state after formatting
 - First-run: Handle git setup (validate client version. validate local repo. validate remote. validate credentials.)
 - List auto indent fixing

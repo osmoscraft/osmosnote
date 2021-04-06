@@ -27,7 +27,7 @@ export class RemoteHostService {
       this.cancelInsertLinkOnSave();
     };
 
-    this.componentRefs.statusBar.setMessage("Waiting for remote window event, [ESC] to cancel", "warning");
+    this.componentRefs.statusBar.setMessage("Waiting for remote window event, [PRESS ANY KEY] to cancel", "warning");
 
     window.addEventListener("remote-service:child-note-created", this.callbackWithCleanUp);
     window.addEventListener("keydown", this.handleCancel, { capture: true });
@@ -36,14 +36,12 @@ export class RemoteHostService {
   }
 
   private handleCancel(e: KeyboardEvent) {
-    if (e.key === "Escape") {
-      this.cancelInsertLinkOnSave();
-      this.componentRefs.statusBar.setMessage(`Cancelled`);
-      console.log("[command-bar] cancelled handling child note created");
+    this.cancelInsertLinkOnSave();
+    this.componentRefs.statusBar.setMessage(`Cancelled`);
+    console.log("[command-bar] cancelled handling child note created");
 
-      e.preventDefault();
-      e.stopPropagation();
-    }
+    e.preventDefault();
+    e.stopPropagation();
   }
 
   private cancelInsertLinkOnSave() {
