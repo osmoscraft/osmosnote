@@ -10,8 +10,9 @@
     - xargs
     - ripgrep
 - Workflow: A landing state (recent + open new).
-- Workflow: Show app version
+- Workflow: Show app version on splash screen
 - Workflow: Stop full page reload after save
+- Workflow: Remove tagging from default template. Add auto prefix insertion to tag insertion command
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
 
 v0.0.12 release candidate:
