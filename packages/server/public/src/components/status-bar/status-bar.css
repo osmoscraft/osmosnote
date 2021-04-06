@@ -28,10 +28,16 @@ s2-status-bar {
   text-overflow: ellipsis;
 }
 
-.stsbar-chip--change[data-is-dirty="false"] {
+.stsbar-chip--change {
+  text-transform: capitalize;
+}
+.stsbar-chip--change[data-status="clean"] {
   background-color: var(--theme-success-background);
 }
-.stsbar-chip--change[data-is-dirty="true"] {
+.stsbar-chip--change[data-status="dirty"] {
+  background-color: var(--theme-warning-background);
+}
+.stsbar-chip--change[data-status="new"] {
   background-color: var(--theme-warning-background);
 }
 

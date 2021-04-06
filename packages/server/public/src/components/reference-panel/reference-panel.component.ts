@@ -5,7 +5,7 @@ import { di } from "../../utils/dependency-injector.js";
 
 export class ReferencePanelComponent extends HTMLElement {
   private listDom!: HTMLUListElement;
-  private noteService!: ApiService;
+  private apiService!: ApiService;
   private routeService!: RouteService;
 
   connectedCallback() {
@@ -13,7 +13,7 @@ export class ReferencePanelComponent extends HTMLElement {
 
     this.listDom = this.querySelector("#refpnl-list") as HTMLUListElement;
 
-    this.noteService = di.getSingleton(ApiService);
+    this.apiService = di.getSingleton(ApiService);
     this.routeService = di.getSingleton(RouteService);
     this.loadContent();
 
@@ -30,7 +30,7 @@ export class ReferencePanelComponent extends HTMLElement {
   private async loadContent() {
     const { id } = this.routeService.getNoteConfigFromUrl();
     if (id) {
-      const data = await this.noteService.getIncomingLinks(id);
+      const data = await this.apiService.getIncomingLinks(id);
       this.setIncomingLinks(data.incomingLinks);
     }
   }

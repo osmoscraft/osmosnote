@@ -4,6 +4,7 @@ import type { WindowRefService } from "../../services/window-reference/window.se
 export class TrackChangeService {
   private savedText!: string | null;
   private _isDirty = false;
+  private _isNew = false;
 
   constructor(private notificationService: NotificationService, private windowRef: WindowRefService) {
     this.windowRef.window.addEventListener("beforeunload", (event) => {
@@ -12,6 +13,16 @@ export class TrackChangeService {
         event.returnValue = "";
       }
     });
+  }
+
+  init({ isNew = false, isDirty = false } = {}) {
+    this._isNew = isNew;
+    this._isDirty = isDirty;
+    if (this._isNew) {
+      this.notificationService.setChangeStatus("new");
+    } else {
+      this.notificationService.setChangeStatus(isDirty ? "dirty" : "clean");
+    }
   }
 
   trackByText(text?: string) {
@@ -23,7 +34,9 @@ export class TrackChangeService {
   trackByState(isDirty: boolean) {
     if (isDirty !== this._isDirty) {
       this._isDirty = isDirty;
-      this.notificationService.setChangeStatus(isDirty);
+      if (!this._isNew) {
+        this.notificationService.setChangeStatus(isDirty ? "dirty" : "clean");
+      }
     }
   }
 
@@ -33,7 +46,13 @@ export class TrackChangeService {
   set(text: string | null, isDirty: boolean) {
     this.savedText = text;
     this._isDirty = isDirty;
-    this.notificationService.setChangeStatus(isDirty);
+    if (!this._isNew) {
+      this.notificationService.setChangeStatus(isDirty ? "dirty" : "clean");
+    }
+  }
+
+  isNew() {
+    return this._isNew;
   }
 
   isDirty() {

@@ -102,6 +102,7 @@ export class TextEditorComponent extends HTMLElement {
     this.historyService.save(this.host);
 
     const isNewNote = id === undefined;
+    this.trackChangeService.init({ isNew: isNewNote });
     this.trackChangeService.set(isNewNote ? null : this.historyService.peek()!.textContent, false);
 
     const preferences = this.preferencesService.getPreferences();

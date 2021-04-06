@@ -1,3 +1,5 @@
+export type ChangeSatus = "new" | "clean" | "dirty";
+
 export class StatusBarComponent extends HTMLElement {
   private messageOutputDom!: HTMLSpanElement;
   private changeStatusDom!: HTMLSpanElement;
@@ -12,9 +14,9 @@ export class StatusBarComponent extends HTMLElement {
     this.changeStatusDom = this.querySelector("#change-status") as HTMLOutputElement;
   }
 
-  setChangeStatus(isDirty: boolean) {
-    this.changeStatusDom.innerText = isDirty ? "Dirty" : "Clean";
-    this.changeStatusDom.dataset.isDirty = isDirty ? "true" : "false";
+  setChangeStatus(status: ChangeSatus) {
+    this.changeStatusDom.innerText = status;
+    this.changeStatusDom.dataset.status = status;
   }
 
   setMessage(text: string, kind: "error" | "info" | "warning" = "info") {

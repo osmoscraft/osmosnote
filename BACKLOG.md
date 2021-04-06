@@ -11,14 +11,14 @@
     - xargs
     - ripgrep
 - Workflow: A landing state (recent + open new).
-- Workflow: Display "New" as status when opening a new file.
-- Workflow: Prompt for confirmation when deleting a note with references.
 - Workflow: Cancel remote action after cursor move
 - Workflow: Show app version
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
 
 v0.0.12 release candidate:
 
+- Workflow: Prompt for confirmation when deleting a note with references.
+- Workflow: Display "New" as status when opening a new file.
 - Workflow: Keyboard shortcut to indent/outdent section or list: ctrl + ,|.
   - Single line indent
   - All selected lines indent

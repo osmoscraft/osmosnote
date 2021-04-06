@@ -30,12 +30,13 @@ export class SyncService {
 
     try {
       if (id) {
-        this.apiService.updateNote(id, note);
+        await this.apiService.updateNote(id, note);
         this.historyService.save(host);
         this.trackChangeService.set(this.historyService.peek()!.textContent, false);
         this.notificationService.displayMessage("Saved");
       } else {
         const result = await this.apiService.createNote(note);
+        await this.syncAllFileVersions(); // Force a sync before reporting back to ensure save success
         this.remoteClientService.notifyNoteCreated({ id: result.id, title: result.title });
 
         this.trackChangeService.set(this.historyService.peek()!.textContent, false);
