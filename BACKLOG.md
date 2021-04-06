@@ -14,6 +14,7 @@
 - Workflow: Stop full page reload after save
 - Workflow: Remove tagging from default template. Add auto prefix insertion to tag insertion command
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
+- Bug: Spellchecker cannot modify content (prevented by beforeinput handler).
 
 v0.0.12 release candidate:
 
