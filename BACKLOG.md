@@ -11,11 +11,12 @@
     - ripgrep
 - Workflow: A landing state (recent + open new).
 - Workflow: Show app version on splash screen
-- Workflow: Stop full page reload after save
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
 
 v0.0.12 release candidate:
 
+- Workflow: Update document title
+- Workflow: Stop full page reload after save
 - Workflow: Caret to last position when opening a new file
 - Workflow: Remove tagging from default template. Add auto prefix insertion to tag insertion command
 - Workflow: Cancel remote action after any keypress

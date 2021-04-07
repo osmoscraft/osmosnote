@@ -3,6 +3,7 @@ import { createHandler } from "../lib/create-handler";
 import { gitAdd } from "../lib/git";
 import { idToFilename } from "../lib/id-to-filename";
 import { writeNote } from "../lib/note-file-io";
+import { parseNote } from "../lib/parse-note";
 
 export interface UpdateNoteInput {
   id: string;
@@ -11,6 +12,7 @@ export interface UpdateNoteInput {
 
 export interface UpdateNoteOutput {
   note: string;
+  title: string;
 }
 
 export const handleUpdateNote = createHandler<UpdateNoteOutput, UpdateNoteInput>(async (input) => {
@@ -19,10 +21,13 @@ export const handleUpdateNote = createHandler<UpdateNoteOutput, UpdateNoteInput>
   const note = input.note;
   const config = await getConfig();
 
+  const parseResult = parseNote(note);
+
   await writeNote(filename, note);
   await gitAdd(config.notesDir);
 
   return {
     note,
+    title: parseResult.metadata.title,
   };
 });

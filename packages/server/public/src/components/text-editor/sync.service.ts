@@ -1,8 +1,10 @@
 import type { ApiService } from "../../services/api/api.service";
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service";
+import type { DocumentRefService } from "../../services/document-reference/document.service";
 import type { NotificationService } from "../../services/notification/notification.service";
 import type { RemoteClientService } from "../../services/remote/remote-client.service";
 import type { RouteService } from "../../services/route/route.service";
+import type { WindowRefService } from "../../services/window-reference/window.service";
 import type { CompileService } from "./compiler/compile.service";
 import type { HistoryService } from "./history/history.service";
 import type { TrackChangeService } from "./track-change.service";
@@ -16,7 +18,9 @@ export class SyncService {
     private remoteClientService: RemoteClientService,
     private componentRefs: ComponentRefService,
     private formatService: CompileService,
-    private routeService: RouteService
+    private routeService: RouteService,
+    private windowRef: WindowRefService,
+    private documentRef: DocumentRefService
   ) {}
 
   async saveFile() {
@@ -30,18 +34,21 @@ export class SyncService {
 
     try {
       if (id) {
-        await this.apiService.updateNote(id, note);
+        this.trackChangeService.set(this.historyService.peek()!.textContent, false);
         this.historyService.save(host);
-        this.trackChangeService.set(this.historyService.peek()!.textContent, false);
-        this.notificationService.displayMessage("Saved");
-      } else {
-        const result = await this.apiService.createNote(note);
-        await this.syncAllFileVersions(); // Force a sync before reporting back to ensure save success
-        this.remoteClientService.notifyNoteCreated({ id: result.id, title: result.title });
+        const result = await this.apiService.updateNote(id, note);
 
-        this.trackChangeService.set(this.historyService.peek()!.textContent, false);
-        location.replace(`/?id=${result.id}`);
+        this.documentRef.document.title = result.title;
+      } else {
+        this.trackChangeService.set(this.historyService.peek()!.textContent, false, false);
+        const result = await this.apiService.createNote(note);
+        this.remoteClientService.notifyNoteCreated({ id: result.id, title: result.title });
+        this.windowRef.window.history.replaceState(null, result.title, `/?id=${result.id}`);
+
+        this.documentRef.document.title = result.title;
       }
+
+      this.notificationService.displayMessage("Saved");
     } catch (error) {
       this.notificationService.displayMessage("Error saving note");
     }

@@ -14,6 +14,7 @@ import { RemoteHostService } from "../../services/remote/remote-host.service.js"
 import { NotificationService } from "../../services/notification/notification.service.js";
 import { SyncService } from "./sync.service.js";
 import { PreferencesService } from "../../services/preferences/preferences.service.js";
+import { DocumentRefService } from "../../services/document-reference/document.service.js";
 
 export interface InsertFunction {
   (context: CaretContext): string | Promise<string>;
@@ -26,19 +27,20 @@ export interface InsertContext {
 }
 
 export class TextEditorComponent extends HTMLElement {
-  private routeService!: RouteService;
-  private noteService!: ApiService;
-  private inputService!: InputService;
-  private historyService!: HistoryService;
   private caretService!: CaretService;
+  private documentRef!: DocumentRefService;
   private editService!: EditService;
   private formatService!: CompileService;
+  private historyService!: HistoryService;
+  private inputService!: InputService;
   private measureService!: MeasureService;
-  private trackChangeService!: TrackChangeService;
-  private remoteHostService!: RemoteHostService;
+  private noteService!: ApiService;
   private notificationService!: NotificationService;
-  private syncService!: SyncService;
   private preferencesService!: PreferencesService;
+  private remoteHostService!: RemoteHostService;
+  private routeService!: RouteService;
+  private syncService!: SyncService;
+  private trackChangeService!: TrackChangeService;
 
   private _host!: HTMLElement;
 
@@ -50,19 +52,20 @@ export class TextEditorComponent extends HTMLElement {
     this.innerHTML = /*html*/ `
     <div id="content-host" spellcheck="false" contenteditable="true"></div>`;
 
-    this.routeService = di.getSingleton(RouteService);
-    this.noteService = di.getSingleton(ApiService);
-    this.inputService = di.getSingleton(InputService);
-    this.historyService = di.getSingleton(HistoryService);
     this.caretService = di.getSingleton(CaretService);
+    this.documentRef = di.getSingleton(DocumentRefService);
     this.editService = di.getSingleton(EditService);
     this.formatService = di.getSingleton(CompileService);
+    this.historyService = di.getSingleton(HistoryService);
+    this.inputService = di.getSingleton(InputService);
     this.measureService = di.getSingleton(MeasureService);
-    this.trackChangeService = di.getSingleton(TrackChangeService);
-    this.remoteHostService = di.getSingleton(RemoteHostService);
+    this.noteService = di.getSingleton(ApiService);
     this.notificationService = di.getSingleton(NotificationService);
-    this.syncService = di.getSingleton(SyncService);
     this.preferencesService = di.getSingleton(PreferencesService);
+    this.remoteHostService = di.getSingleton(RemoteHostService);
+    this.routeService = di.getSingleton(RouteService);
+    this.syncService = di.getSingleton(SyncService);
+    this.trackChangeService = di.getSingleton(TrackChangeService);
 
     this._host = this.querySelector("#content-host") as HTMLElement;
 
@@ -71,11 +74,14 @@ export class TextEditorComponent extends HTMLElement {
 
   async init() {
     const { id, url, content, title } = this.routeService.getNoteConfigFromUrl();
-    let note = "";
+    let finalContent = "";
+    let finalTitle = "";
+
     if (id) {
       try {
         const data = await this.noteService.loadNote(id);
-        note = data.note;
+        finalTitle = data.title;
+        finalContent = data.note;
       } catch {
         this.notificationService.displayMessage(
           `Error loading note with id ${id}, [ENTER] to open a new note`,
@@ -85,12 +91,16 @@ export class TextEditorComponent extends HTMLElement {
         return;
       }
     } else {
-      note = getNoteFromTemplate({ title, url, content });
+      const { note, title: newTitle } = getNoteFromTemplate({ title, url, content });
+      finalTitle = newTitle;
+      finalContent = note;
     }
+
+    this.documentRef.document.title = finalTitle;
 
     this.syncService.checkAllFileVersions();
 
-    const dom = sourceToLines(note);
+    const dom = sourceToLines(finalContent);
 
     this.host.appendChild(dom);
     this.formatService.compile(this.host);
@@ -103,7 +113,7 @@ export class TextEditorComponent extends HTMLElement {
 
     const isNewNote = id === undefined;
     this.trackChangeService.init({ isNew: isNewNote });
-    this.trackChangeService.set(isNewNote ? null : this.historyService.peek()!.textContent, false);
+    this.trackChangeService.set(isNewNote ? null : this.historyService.peek()!.textContent, false, isNewNote);
 
     if (isNewNote) {
       this.caretService.moveDocumentEnd(this.host);

@@ -8,14 +8,26 @@ export interface TemplateInput {
   content?: string;
 }
 
-export function getNoteFromTemplate(input: TemplateInput) {
+export interface TemplateOutput {
+  title: string;
+  note: string;
+}
+
+export function getNoteFromTemplate(input: TemplateInput): TemplateOutput {
+  const title = ensureNoteTitle(input.title);
+
   const lines = [
-    `#+title: ${ensureNoteTitle(input.title)}${SRC_LINE_END}`,
+    `#+title: ${title}${SRC_LINE_END}`,
     `#+created: ${getLocalTimestamp(new Date())}${SRC_LINE_END}`,
     ...(input.url ? [`#+url: ${input.url}${SRC_LINE_END}`] : []),
     `${SRC_LINE_END}`,
     ...(input.content ? [input.content] : [SRC_LINE_END]),
   ];
 
-  return lines.join("");
+  const note = lines.join("");
+
+  return {
+    title,
+    note,
+  };
 }

@@ -43,8 +43,13 @@ export class TrackChangeService {
   /**
    * Set text to null indicates the state has no text
    */
-  set(text: string | null, isDirty: boolean) {
+  set(text: string | null, isDirty: boolean, isNew: boolean = false) {
     this.savedText = text;
+
+    if (isNew !== undefined) {
+      this._isNew = isNew;
+    }
+
     this._isDirty = isDirty;
     if (!this._isNew) {
       this.notificationService.setChangeStatus(isDirty ? "dirty" : "clean");
