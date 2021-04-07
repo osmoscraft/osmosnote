@@ -2,6 +2,7 @@
 
 ## Working on
 
+- Workflow: Dialog service: Get started | System information
 - Workflow: On start dependency validator
   - Check dependency and dump diagonostic info in console
     - localstorage api

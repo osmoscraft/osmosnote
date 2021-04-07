@@ -27,6 +27,7 @@ export interface InsertContext {
 }
 
 export class TextEditorComponent extends HTMLElement {
+  private apiService!: ApiService;
   private caretService!: CaretService;
   private documentRef!: DocumentRefService;
   private editService!: EditService;
@@ -34,7 +35,6 @@ export class TextEditorComponent extends HTMLElement {
   private historyService!: HistoryService;
   private inputService!: InputService;
   private measureService!: MeasureService;
-  private noteService!: ApiService;
   private notificationService!: NotificationService;
   private preferencesService!: PreferencesService;
   private remoteHostService!: RemoteHostService;
@@ -52,6 +52,7 @@ export class TextEditorComponent extends HTMLElement {
     this.innerHTML = /*html*/ `
     <div id="content-host" spellcheck="false" contenteditable="true"></div>`;
 
+    this.apiService = di.getSingleton(ApiService);
     this.caretService = di.getSingleton(CaretService);
     this.documentRef = di.getSingleton(DocumentRefService);
     this.editService = di.getSingleton(EditService);
@@ -59,7 +60,6 @@ export class TextEditorComponent extends HTMLElement {
     this.historyService = di.getSingleton(HistoryService);
     this.inputService = di.getSingleton(InputService);
     this.measureService = di.getSingleton(MeasureService);
-    this.noteService = di.getSingleton(ApiService);
     this.notificationService = di.getSingleton(NotificationService);
     this.preferencesService = di.getSingleton(PreferencesService);
     this.remoteHostService = di.getSingleton(RemoteHostService);
@@ -77,9 +77,13 @@ export class TextEditorComponent extends HTMLElement {
     let finalContent = "";
     let finalTitle = "";
 
+    if (!id && !title && !content && !url) {
+      this.apiService.getSystemInformation().then((info) => console.log(info));
+    }
+
     if (id) {
       try {
-        const data = await this.noteService.loadNote(id);
+        const data = await this.apiService.loadNote(id);
         finalTitle = data.title;
         finalContent = data.note;
       } catch {

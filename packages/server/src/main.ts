@@ -9,6 +9,7 @@ import { handleGetIncomingLinks } from "./routes/get-incoming-links";
 import { handleGetNote } from "./routes/get-note";
 import { handleGetRecentNotes } from "./routes/get-recent-notes";
 import { handleGetRecentTags } from "./routes/get-recent-tags";
+import { handleGetSystemInformation } from "./routes/get-system-information";
 import { handleGetVersionStatus } from "./routes/get-version-status";
 import { handleLookupTags } from "./routes/lookup-tags";
 import { handleSearchNote } from "./routes/search-note";
@@ -25,6 +26,7 @@ async function run() {
   server.post("/api/get-note", handleGetNote);
   server.post("/api/get-recent-notes", handleGetRecentNotes);
   server.post("/api/get-recent-tags", handleGetRecentTags);
+  server.post("/api/get-system-information", handleGetSystemInformation);
   server.post("/api/get-version-status", handleGetVersionStatus);
   server.post("/api/lookup-tags", handleLookupTags);
   server.post("/api/search-notes", handleSearchNote);

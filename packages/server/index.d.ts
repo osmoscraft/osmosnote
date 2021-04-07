@@ -4,6 +4,7 @@ export * from "./src/routes/delete-note";
 export * from "./src/routes/get-content-from-url";
 export * from "./src/routes/get-incoming-links";
 export * from "./src/routes/get-note";
+export * from "./src/routes/get-system-information";
 export * from "./src/routes/get-recent-notes";
 export * from "./src/routes/get-recent-tags";
 export * from "./src/routes/get-version-status";

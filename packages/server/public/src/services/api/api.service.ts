@@ -23,6 +23,8 @@ import type {
   UpdateNoteOutput,
   DeleteNoteInput,
   DeleteNoteOutput,
+  GetSystemInformationOutput,
+  GetSystemInformationInput,
 } from "@system-two/server";
 import type { QueryService } from "../query/query.service.js";
 
@@ -73,6 +75,9 @@ export class ApiService {
     this.safeQuery<GetContentFromUrlOutput, GetContentFromUrlInput>(`/api/get-content-from-url`, {
       url,
     });
+
+  getSystemInformation = () =>
+    this.safeQuery<GetSystemInformationOutput, GetSystemInformationInput>(`/api/get-system-information`, {});
 
   getVersionStatus = () => this.safeQuery<GetVersionStatusOutput, GetVersionStatusInput>(`/api/get-version-status`, {});
 
