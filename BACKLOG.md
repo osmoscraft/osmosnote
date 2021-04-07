@@ -2,6 +2,7 @@
 
 ## Working on
 
+- Workflow: After delete, avoid sync, navigate to a new note, to stay consistent with save behavior.
 - Workflow: Dialog service: Get started | System information
 - Workflow: On start dependency validator
   - Check dependency and dump diagonostic info in console
