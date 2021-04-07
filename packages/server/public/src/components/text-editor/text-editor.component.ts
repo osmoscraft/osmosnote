@@ -105,6 +105,10 @@ export class TextEditorComponent extends HTMLElement {
     this.trackChangeService.init({ isNew: isNewNote });
     this.trackChangeService.set(isNewNote ? null : this.historyService.peek()!.textContent, false);
 
+    if (isNewNote) {
+      this.caretService.moveDocumentEnd(this.host);
+    }
+
     const preferences = this.preferencesService.getPreferences();
     this.toggleSpellcheck(preferences.spellcheck);
   }

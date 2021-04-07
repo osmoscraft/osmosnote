@@ -209,6 +209,22 @@ export class CaretService {
     this.extendFocus({ seeker: this.getPositionAboveCaret, root, rememberColumn: false });
   }
 
+  moveDocumentStart(root: HTMLElement) {
+    this.moveCaretCollapsed({
+      seeker: this.getDocumentStartPosition,
+      requireCollapseTo: "start",
+      root,
+    });
+  }
+
+  moveDocumentEnd(root: HTMLElement) {
+    this.moveCaretCollapsed({
+      seeker: this.getDocumentEndPosition,
+      requireCollapseTo: "end",
+      root,
+    });
+  }
+
   selectAll(root: HTMLElement) {
     this.moveCaretCollapsed({
       seeker: this.getDocumentStartPosition,
