@@ -14,7 +14,6 @@
 - Workflow: Stop full page reload after save
 - Workflow: Remove tagging from default template. Add auto prefix insertion to tag insertion command
 - Core: Use real anchor to represent links for improved a11y. Need to disable focus.
-- Bug: Spellchecker cannot modify content (prevented by beforeinput handler).
 
 v0.0.12 release candidate:
 
@@ -33,6 +32,7 @@ v0.0.12 release candidate:
 - Workflow: Format without save
 - Health: refactor history and change tracking: make runAtom auto update dirty state?
 - Health: Refactored line-ending character and parsing logic
+- Bug: Spellchecker cannot modify content (prevented by beforeinput handler).
 
 ## Bug backlog
 

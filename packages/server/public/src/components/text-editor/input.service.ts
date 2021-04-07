@@ -8,6 +8,9 @@ import type { HistoryService } from "./history/history.service.js";
 import type { LineQueryService } from "./line-query.service.js";
 import type { TrackChangeService } from "./track-change.service.js";
 
+export const BLOCKED_INPUT_TYPES = ["formatItalic", "formatBold", "formatUnderline"];
+export const PASSTHROUGH_INPUT_TYPES = ["insertCompositionText"];
+
 export class InputService {
   private isMouseDown = false;
 
@@ -301,10 +304,14 @@ export class InputService {
   }
 
   private handleBeforeInputEvent(event: InputEvent, host: HTMLElement) {
-    if (event.inputType !== "insertText") {
+    if (BLOCKED_INPUT_TYPES.includes(event.inputType)) {
       // currently, only current plaintext input.
       // add more types in the future to support: italic, bold, underline, or composing input (CJK)
       event.preventDefault();
+      return;
+    }
+
+    if (PASSTHROUGH_INPUT_TYPES.includes(event.inputType)) {
       return;
     }
 
