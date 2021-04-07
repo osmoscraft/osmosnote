@@ -39,9 +39,9 @@ export const commandTree: RegisteredCommand = {
       key: "f",
       commands: [
         {
-          name: "Save and sync",
+          name: "Save",
           key: "s",
-          handler: handleFileSaveAndSyncAll,
+          handler: handleFileSave,
         },
         {
           name: "Sync",
@@ -49,9 +49,9 @@ export const commandTree: RegisteredCommand = {
           handler: handleFileSyncAll,
         },
         {
-          name: "Save",
-          key: "v",
-          handler: handleFileSave,
+          name: "Save and sync all",
+          key: "a",
+          handler: handleFileSaveAndSyncAll,
         },
         {
           name: "Delete",

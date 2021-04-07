@@ -15,6 +15,7 @@
 
 v0.0.12 release candidate:
 
+- Workflow: Ctrl+S to save, Ctrl+Shift+S to save and sync
 - Workflow: Update document title
 - Workflow: Stop full page reload after save
 - Workflow: Caret to last position when opening a new file

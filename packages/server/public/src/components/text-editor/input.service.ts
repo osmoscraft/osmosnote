@@ -96,34 +96,31 @@ export class InputService {
   }
 
   private async handleKeydownEvents(event: KeyboardEvent, host: HTMLElement) {
-    switch (event.key) {
+    switch (event.code) {
       // undo/redo
-      case "z":
+      case "KeyZ":
         if (event.ctrlKey && !event.shiftKey) {
+          event.preventDefault();
           this.historyService.undo(host);
           this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
-          event.preventDefault();
         }
-        break;
-
-      case "Z":
         if (event.ctrlKey && event.shiftKey) {
+          event.preventDefault();
           this.historyService.redo(host);
           this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
-          event.preventDefault();
         }
         break;
 
       // command bar
-      case " ":
+      case "Space":
         if (event.ctrlKey) {
-          this.componentRefService.commandBar.enterCommandMode();
           event.preventDefault();
+          this.componentRefService.commandBar.enterCommandMode();
         }
         break;
 
       // select all
-      case "a":
+      case "KeyA":
         if (event.ctrlKey) {
           event.preventDefault();
           this.caretService.selectAll(host);
@@ -131,7 +128,7 @@ export class InputService {
         break;
 
       // cut empty line
-      case "x":
+      case "KeyX":
         if (event.ctrlKey) {
           event.preventDefault();
           await this.historyService.runAtomic(host, () => this.editService.caretCut(host));
@@ -140,26 +137,28 @@ export class InputService {
 
       // Command bar short cuts
       // TODO refactor into command bar
-      case "s": // save
-        if (event.ctrlKey) {
+      case "KeyS": // save
+        if (event.ctrlKey && !event.shiftKey) {
+          // save only
           event.preventDefault();
-          event.stopPropagation();
           await this.componentRefService.commandBar.enterCommandMode("fs");
+        } else if (event.ctrlKey && event.shiftKey) {
+          event.preventDefault();
+          // save and sync all
+          await this.componentRefService.commandBar.enterCommandMode("fa");
         }
         break;
 
-      case "k": // link to
+      case "KeyK": // link to
         if (event.ctrlKey) {
           event.preventDefault();
-          event.stopPropagation();
           await this.componentRefService.commandBar.enterCommandMode("k");
         }
         break;
 
-      case "o": // open
+      case "KeyO": // open
         if (event.ctrlKey) {
           event.preventDefault();
-          event.stopPropagation();
           await this.componentRefService.commandBar.enterCommandMode("o");
         }
         break;
@@ -265,13 +264,13 @@ export class InputService {
         break;
 
       // Indent/Outdent
-      case ".":
+      case "Period":
         if (event.ctrlKey) {
           event.preventDefault();
           this.editService.shiftIndent(host, 1);
         }
         break;
-      case ",":
+      case "Comma":
         if (event.ctrlKey) {
           event.preventDefault();
           this.editService.shiftIndent(host, -1);

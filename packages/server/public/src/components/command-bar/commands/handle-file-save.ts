@@ -2,7 +2,9 @@ import type { CommandHandler, CommandHandlerContext } from "../command-bar.compo
 
 export const handleFileSave: CommandHandler = async ({ context }) => ({
   runOnMatch: async () => {
-    await context.syncService.saveFile();
+    if (context.trackChangeService.isDirty() || context.trackChangeService.isNew()) {
+      await context.syncService.saveFile();
+    }
     await context.syncService.checkAllFileVersions();
   },
 });
