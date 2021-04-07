@@ -44,9 +44,12 @@ export const handleInsertTags: CommandHandler = async ({ input, context }) => {
         if (context.textBeforeRaw.endsWith(":") || context.textBeforeRaw.endsWith(",")) {
           // "#+tags:" or "tag,"
           return ` ${phrase}`;
-          // "#+tags: ", or "tag, "
         } else if (context.textBeforeRaw.endsWith(": ") || context.textBeforeRaw.endsWith(", ")) {
+          // "#+tags: ", or "tag, "
           return phrase;
+        } else if (!context.textBeforeRaw.trim().length) {
+          // Empty line
+          return `#+tags: ${phrase}`;
         } else {
           return `, ${phrase}`;
         }

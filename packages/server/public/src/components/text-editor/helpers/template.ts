@@ -13,7 +13,6 @@ export function getNoteFromTemplate(input: TemplateInput) {
     `#+title: ${ensureNoteTitle(input.title)}${SRC_LINE_END}`,
     `#+created: ${getLocalTimestamp(new Date())}${SRC_LINE_END}`,
     ...(input.url ? [`#+url: ${input.url}${SRC_LINE_END}`] : []),
-    `#+tags: ${SRC_LINE_END}`,
     `${SRC_LINE_END}`,
     ...(input.content ? [input.content] : [SRC_LINE_END]),
   ];
