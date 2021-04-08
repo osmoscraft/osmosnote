@@ -2,7 +2,6 @@
 
 ## Working on
 
-- Workflow: After delete, avoid sync, navigate to a new note, to stay consistent with save behavior.
 - Workflow: Dialog service: Get started | System information
 - Workflow: On start dependency validator
   - Check dependency and dump diagonostic info in console
@@ -64,6 +63,7 @@ v0.0.12 release candidate:
 
 ## Workflow
 
+- Workflow: After delete, avoid sync, navigate to a new note, to stay consistent with save behavior.
 - Workflow: Switch config to json for machine writablility?
 - Workflow: On start: check config file and config values
 - Workflow: Fully preserver selection state after formatting
