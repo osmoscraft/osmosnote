@@ -1,11 +1,35 @@
-## v0.0.11
+# v0.0.12
+
+- Workflow: Ctrl+S to save, Ctrl+Shift+S to save and sync
+- Workflow: Update document title
+- Workflow: Stop full page reload after save
+- Workflow: Caret to last position when opening a new file
+- Workflow: Remove tagging from default template. Add auto prefix insertion to tag insertion command
+- Workflow: Cancel remote action after any keypress
+- Workflow: Prompt for confirmation when deleting a note with references.
+- Workflow: Display "New" as status when opening a new file.
+- Workflow: Keyboard shortcut to indent/outdent section or list: ctrl + ,|.
+  - Single line indent
+  - All selected lines indent
+- Workflow: Duplicate line up/down: alt + shift arrow up/down
+- Workflow: Keyboard shortcut to shift selected lines up/down: alt + arrow up/down
+- Workflow: Disable spellcheck on all the URLs
+- Workflow: Sync without save (when the current file is deleted on the remote, sync & save will cause conflict).
+- Workflow: When opening a separate client, syncing on landing page forces landing page to be saved.
+- Workflow: Highlight selected line with full width background
+- Workflow: Format without save
+- Health: refactor history and change tracking: make runAtom auto update dirty state?
+- Health: Refactored line-ending character and parsing logic
+- Bug: Spellchecker cannot modify content (prevented by beforeinput handler).
+
+# v0.0.11
 
 - Bug: Disable browser built-in formatter: italic, underline, bold
 - Bug: Clicking didn't sync the ideal column for vertical travel
 - Bug: CJK input composed input triggers raw input handler
 - IDE: auto list order (need format context to track current level and order)
 
-## v0.0.10
+# v0.0.10
 
 - Compiler: mix link within list
 - Compiler: Consider MVP list rendering (use multiple - without space)
