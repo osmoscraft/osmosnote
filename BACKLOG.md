@@ -72,6 +72,9 @@
 - First-run: Consumer packaging: Investigate docker?
 - Auto-update binaries?
 - alt + shift + arrow to increase/decrease selection scope: word, line, section, all
+- Unicode: emoji takes two arrow presses to skip over
+- Unicode: backspace on emoji splits the unicode
+- Unicode: when line is empty, typing with IME breaks line ending
 
 ## Compiler
 
