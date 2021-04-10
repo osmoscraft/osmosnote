@@ -2,7 +2,8 @@ import fastify from "fastify";
 import fastifyStatic from "fastify-static";
 import path from "path";
 import { getConfig } from "./config";
-import { getSystemInformation } from "./lib/diagnostics";
+import { getSystemInformation, printDiagnosticsToConsole } from "./lib/diagnostics";
+import { blue, bold, green } from "./lib/print";
 import { handleCreateNote } from "./routes/create-note";
 import { handleDeleteNote } from "./routes/delete-note";
 import { handleGetContentFromUrl } from "./routes/get-content-from-url";
@@ -38,26 +39,16 @@ async function run() {
   server.register(fastifyStatic, { root: publicPath });
 
   const config = await getConfig();
-  const systemInformation = await getSystemInformation();
 
   server.listen(config.port, (err, address) => {
     if (err) {
       console.error(err);
       process.exit(1);
     }
-    console.log(`==============================`);
-    console.log(`osmos note system information`);
-    console.log(`------------------------------`);
-    const dependencyNames = Object.keys(systemInformation);
-    const longestNameLength = Math.max(...dependencyNames.map((name) => name.length));
-    dependencyNames.forEach((dependencyNames) => {
-      console.log(
-        `${dependencyNames.padStart(longestNameLength)} ${(systemInformation as any)[dependencyNames] ?? "Unknown"}`
-      );
+
+    printDiagnosticsToConsole().finally(() => {
+      console.log(`Frontend: ${bold(green(address))}`);
     });
-    console.log(`------------------------------`);
-    console.log(`server started at ${address}`);
-    console.log(`==============================`);
   });
 }
 

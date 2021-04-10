@@ -1,4 +1,7 @@
+import { getConfig } from "../config";
+import { bold, gray, red } from "./print";
 import { getRunShellError, runShell } from "./run-shell";
+import { homedir } from "os";
 
 export interface SystemInformation {
   version: string | null;
@@ -10,8 +13,20 @@ export interface SystemInformation {
   xargsVersion: string | null;
 }
 
+export async function printDiagnosticsToConsole() {
+  const systemInformation = await getSystemInformation();
+  let { version, ...rest } = systemInformation;
+
+  console.log(bold(`Osmos Note ${version ?? bold(red("version unknown"))}`));
+  const dependencyNames = Object.keys(rest);
+  dependencyNames.forEach((dependencyNames) => {
+    const value = (rest as any)[dependencyNames];
+    console.log(gray(`${dependencyNames}: ${value ? value : bold(red(value))}`));
+  });
+}
+
 export async function getSystemInformation() {
-  const version = getPackageVersion();
+  const version = await getPackageVersion();
   const rgPath = await getBinPath("rg");
   const rgVersion = await getBinVersion("rg");
   const gitPath = await getBinPath("git");
@@ -30,7 +45,7 @@ export async function getSystemInformation() {
   };
 }
 
-export function getPackageVersion(): string | null {
+export async function getPackageVersion(): Promise<string | null> {
   try {
     const packageJson = require("../../../../package.json");
     return packageJson.version;
@@ -41,14 +56,18 @@ export function getPackageVersion(): string | null {
 }
 
 export async function getBinPath(bin: string): Promise<string | null> {
-  const result = await runShell(`which ${bin}`);
-  const error = getRunShellError(result, `Error executing \`which ${bin}\``);
-  if (error) {
-    console.error(error.message);
+  try {
+    const result = await runShell(`which ${bin}`, { cwd: homedir() });
+    const error = getRunShellError(result, `Error executing \`which ${bin}\``);
+    if (error) {
+      throw error;
+    }
+
+    return result.stdout.trim();
+  } catch (error) {
+    console.error(error?.message);
     return null;
   }
-
-  return result.stdout.trim();
 }
 
 export async function getBinVersion(
@@ -56,12 +75,16 @@ export async function getBinVersion(
   getVerionsFromStdout: (stdout: string) => string = (stdout) => stdout.split("\n")[0]?.split(" ")?.pop() ?? "Unknown",
   getVersionFlag: string = "--version"
 ): Promise<string | null> {
-  const result = await runShell(`${bin} ${getVersionFlag}`);
-  const error = getRunShellError(result, `Error executing \`${bin} ${getVersionFlag}\``);
-  if (error) {
-    console.error(error.message);
+  try {
+    const result = await runShell(`${bin} ${getVersionFlag}`, { cwd: homedir() });
+    const error = getRunShellError(result, `Error executing \`${bin} ${getVersionFlag}\``);
+    if (error) {
+      throw error;
+    }
+
+    return getVerionsFromStdout(result.stdout);
+  } catch (error) {
+    console.error(error?.message);
     return null;
   }
-
-  return getVerionsFromStdout(result.stdout);
 }

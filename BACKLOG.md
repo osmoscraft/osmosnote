@@ -3,17 +3,9 @@
 ## Upcoming release
 
 - Workflow: server side dependency checker
+- Workflow: Check dependency and dump diagonostic info in console
 
 ## Working on
-
-- Workflow: Dialog service: Get started | System information
-- Workflow: On start dependency validator
-  - Check dependency and dump diagonostic info in console
-    - localstorage api
-    - clipboard api
-    - custom elements api
-    - xargs
-    - ripgrep
 
 ## Bug backlog
 
@@ -40,6 +32,7 @@
 
 ## Workflow
 
+- Workflow: Check git repo status on launch
 - Workflow: A landing state (recent + open new).
 - Workflow: Show app version on splash screen
 - Workflow: After delete, avoid sync, navigate to a new note, to stay consistent with save behavior.

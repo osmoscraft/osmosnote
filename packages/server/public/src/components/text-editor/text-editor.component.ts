@@ -77,10 +77,6 @@ export class TextEditorComponent extends HTMLElement {
     let finalContent = "";
     let finalTitle = "";
 
-    if (!id && !title && !content && !url) {
-      this.apiService.getSystemInformation().then((info) => console.log(info));
-    }
-
     if (id) {
       try {
         const data = await this.apiService.loadNote(id);
