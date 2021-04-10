@@ -1,7 +1,19 @@
 # Roadmap
 
+## Upcoming release
+
+- Workflow: server side dependency checker
+
 ## Working on
-- Design: update to higher contrast palette for links using gruvbox 
+
+- Workflow: Dialog service: Get started | System information
+- Workflow: On start dependency validator
+  - Check dependency and dump diagonostic info in console
+    - localstorage api
+    - clipboard api
+    - custom elements api
+    - xargs
+    - ripgrep
 
 ## Bug backlog
 
@@ -28,14 +40,6 @@
 
 ## Workflow
 
-- Workflow: Dialog service: Get started | System information
-- Workflow: On start dependency validator
-  - Check dependency and dump diagonostic info in console
-    - localstorage api
-    - clipboard api
-    - custom elements api
-    - xargs
-    - ripgrep
 - Workflow: A landing state (recent + open new).
 - Workflow: Show app version on splash screen
 - Workflow: After delete, avoid sync, navigate to a new note, to stay consistent with save behavior.
