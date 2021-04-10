@@ -24,6 +24,8 @@ export class InputService {
     private windowRef: WindowRefService
   ) {}
 
+  private isDirty = false;
+
   init(host: HTMLElement) {
     // mouse events: mousedown happens before selection change
     host.addEventListener("mousedown", (event) => this.handleMouseDownEvent(event));
@@ -42,6 +44,28 @@ export class InputService {
 
     // literal keyboard events
     host.addEventListener("beforeinput", (e) => this.handleBeforeInputEvent(e as InputEvent, host));
+
+    document.addEventListener("selectionchange", (e) => {
+      console.log("selectionchange", e);
+      if (this.isDirty) {
+        this.editService.insertText("", host);
+        this.isDirty = false;
+      }
+    });
+
+    // WIP mutation observer
+    const observer = new MutationObserver((e) => {
+      const charChange = e.find((e) => e.type === "characterData");
+      if (charChange) {
+        console.log("mutation formatted");
+        this.isDirty = true;
+      }
+    });
+    observer.observe(host, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+    });
   }
 
   private async handleMouseDownEvent(event: MouseEvent) {
@@ -167,31 +191,31 @@ export class InputService {
       case "ArrowLeft":
         if (event.altKey) break;
 
-        event.preventDefault();
-        if (!event.ctrlKey && !event.shiftKey) {
-          this.caretService.moveLeft(host);
-        } else if (!event.ctrlKey && event.shiftKey) {
-          this.caretService.selectLeft(host);
-        } else if (event.ctrlKey && !event.shiftKey) {
-          this.caretService.moveWordStart(host);
-        } else if (event.ctrlKey && event.shiftKey) {
-          this.caretService.selectWordStart(host);
-        }
+        // event.preventDefault();
+        // if (!event.ctrlKey && !event.shiftKey) {
+        //   this.caretService.moveLeft(host);
+        // } else if (!event.ctrlKey && event.shiftKey) {
+        //   this.caretService.selectLeft(host);
+        // } else if (event.ctrlKey && !event.shiftKey) {
+        //   this.caretService.moveWordStart(host);
+        // } else if (event.ctrlKey && event.shiftKey) {
+        //   this.caretService.selectWordStart(host);
+        // }
         break;
 
       case "ArrowRight":
         if (event.altKey) break;
 
-        event.preventDefault();
-        if (!event.ctrlKey && !event.shiftKey) {
-          this.caretService.moveRight(host);
-        } else if (!event.ctrlKey && event.shiftKey) {
-          this.caretService.selectRight(host);
-        } else if (event.ctrlKey && !event.shiftKey) {
-          this.caretService.moveWordEnd(host);
-        } else if (event.ctrlKey && event.shiftKey) {
-          this.caretService.selectWordEnd(host);
-        }
+        // event.preventDefault();
+        // if (!event.ctrlKey && !event.shiftKey) {
+        //   this.caretService.moveRight(host);
+        // } else if (!event.ctrlKey && event.shiftKey) {
+        //   this.caretService.selectRight(host);
+        // } else if (event.ctrlKey && !event.shiftKey) {
+        //   this.caretService.moveWordEnd(host);
+        // } else if (event.ctrlKey && event.shiftKey) {
+        //   this.caretService.selectWordEnd(host);
+        // }
         break;
 
       case "Home":
@@ -314,16 +338,16 @@ export class InputService {
       return;
     }
 
-    const insertedText = event.data;
-    if (insertedText) {
-      event.preventDefault();
-      this.editService.insertText(insertedText, host);
-      this.trackChangeService.trackByState(true);
+    // const insertedText = event.data;
+    // if (insertedText) {
+    //   event.preventDefault();
+    //   this.editService.insertText(insertedText, host);
+    //   this.trackChangeService.trackByState(true);
 
-      if (insertedText.match(/\s|,|\./)) {
-        this.historyService.save(host);
-      }
-    }
+    //   if (insertedText.match(/\s|,|\./)) {
+    //     this.historyService.save(host);
+    //   }
+    // }
   }
 
   private async handleEnterKeydown(event: KeyboardEvent, host: HTMLElement) {
