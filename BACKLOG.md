@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Working on
+- Design: update to higher contrast palette for links using gruvbox 
 
 ## Bug backlog
 
