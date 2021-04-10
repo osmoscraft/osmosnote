@@ -35,8 +35,11 @@ export async function getConfig(): Promise<Config> {
     const config = { ...DEFAULT_CONFIG, ...customizedConfigObj };
 
     return config as Config;
-  } catch {
-    console.log("[config] Config file does not exist and cannot be auto created, using default");
+  } catch (error) {
+    console.log(error);
+    console.log(
+      `[config] Config file does not exist and cannot be auto created, using default ${DEFAULT_CONFIG.notesDir}`
+    );
 
     return DEFAULT_CONFIG;
   }

@@ -1,7 +1,6 @@
-import { getConfig } from "../config";
+import { homedir } from "os";
 import { bold, gray, red } from "./print";
 import { getRunShellError, runShell } from "./run-shell";
-import { homedir } from "os";
 
 export interface SystemInformation {
   version: string | null;
@@ -28,7 +27,7 @@ export async function printDiagnosticsToConsole() {
 export async function getSystemInformation() {
   const version = await getPackageVersion();
   const rgPath = await getBinPath("rg");
-  const rgVersion = await getBinVersion("rg");
+  const rgVersion = await getBinVersion("rg", (stdout) => stdout.split("\n")?.[0]?.replace("ripgrep ", ""));
   const gitPath = await getBinPath("git");
   const gitVersion = await getBinVersion("git");
   const xargsPath = await getBinPath("xargs");
