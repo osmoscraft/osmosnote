@@ -1,3 +1,8 @@
+# v0.0.13
+
+- Workflow: server side dependency checker
+- Workflow: Check dependency and dump diagonostic info in console
+
 # v0.0.12
 
 - Workflow: Ctrl+S to save, Ctrl+Shift+S to save and sync

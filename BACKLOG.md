@@ -2,9 +2,6 @@
 
 ## Upcoming release
 
-- Workflow: server side dependency checker
-- Workflow: Check dependency and dump diagonostic info in console
-
 ## Working on
 
 ## Bug backlog
