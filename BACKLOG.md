@@ -6,11 +6,12 @@
 
 ## Bug backlog
 
-- Bug: CJK input doesn't work on blank lines
+- Bug: List movement is broken in 202104122000878
+- Bug: CJK input doesn't work on blank lines: consider using `<br>` for empty line
+- Bug: emoji (and other unicode characters) got split in caret movement. Consider using default arrow key handling.
 - Bug: Chinese character causes line height to jump.
 - Bug: Ctrl + c can't access clipboard in http mode. (legacy copy command causes focus lost)
 - Bug: scrollbar has no hover effect and a wrong cursor style
-- Bug: emoji (and other unicode characters) got split in caret movement.
 
 ## Code health
 
