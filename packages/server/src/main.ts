@@ -40,7 +40,7 @@ async function run() {
 
   const config = await getConfig();
 
-  server.listen(config.port, (err, address) => {
+  server.listen(config.port, "0.0.0.0", (err, address) => {
     if (err) {
       console.error(err);
       process.exit(1);
