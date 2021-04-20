@@ -1,3 +1,7 @@
+# (unreleased) v0.0.14
+
+- Changed: favicon update.
+
 # v0.0.13
 
 - Workflow: server side dependency checker
