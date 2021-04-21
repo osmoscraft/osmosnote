@@ -1,3 +1,8 @@
+# (unreleased) v0.0.14
+
+- Changed: favicon update.
+- Changed: switch to esbuild for production bundling
+
 # v0.0.13
 
 - Workflow: server side dependency checker
