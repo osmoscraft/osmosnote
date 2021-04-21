@@ -14,7 +14,7 @@ const CONFIG_FILENAMER = "config.yaml";
 const DEFAULT_REPO_FROM_HOME = ".system-two/repo";
 
 const DEFAULT_CONFIG: Config = {
-  notesDir: path.join(os.homedir(), DEFAULT_REPO_FROM_HOME),
+  notesDir: "/data/osmosnotes",
   port: 2077,
 };
 
