@@ -8,18 +8,17 @@
 # LABEL maintainer="Michele Bologna <mb@michelebologna.net>"
 # RUN cargo install ripgrep
 
-FROM ubuntu AS build
-RUN apt-get -y update
-RUN apt-get install -y ripgrep 
-RUN apt-get install -y git
+# FROM ubuntu AS build
+# RUN apt-get -y update
+# RUN apt-get install -y ripgrep 
+# RUN apt-get install -y git
 
-FROM ubuntu
-# RUN apt-get install ripgrep git
-COPY --from=build /usr/bin/rg /usr/bin/rg
-COPY --from=build /usr/bin/git /usr/bin/git
-ADD ./bin/s2 usr/local/bin/s2
-RUN chmod +x usr/local/bin/s2
-ENTRYPOINT [ "s2" ]
+FROM node:15.14.0-alpine3.13
+RUN apk add --no-cache git
+RUN apk add --no-cache ripgrep
+ADD ./dist /usr/local/bin/osmosnote
 EXPOSE 2077
+ENTRYPOINT [ "node" ]
+CMD ["/usr/local/bin/osmosnote/main.js"]
 # ENTRYPOINT ["sh"]
 # CMD ["s2"]
