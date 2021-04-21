@@ -18,7 +18,7 @@ RUN apk add --no-cache findutils
 RUN apk add --no-cache git
 RUN apk add --no-cache ripgrep
 ADD ./dist /usr/local/bin/osmosnote/dist
-ADD ./public/dist /usr/local/bin/osmosnote/public/dist
+ADD ./public /usr/local/bin/osmosnote/public
 EXPOSE 2077
 ENTRYPOINT [ "node" ]
 CMD ["/usr/local/bin/osmosnote/dist/main.js"]

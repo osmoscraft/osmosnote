@@ -4,6 +4,7 @@ import path from "path";
 import { getConfig } from "./config";
 import { getSystemInformation, printDiagnosticsToConsole } from "./lib/diagnostics";
 import { blue, bold, green } from "./lib/print";
+import { runShell } from "./lib/run-shell";
 import { handleCreateNote } from "./routes/create-note";
 import { handleDeleteNote } from "./routes/delete-note";
 import { handleGetContentFromUrl } from "./routes/get-content-from-url";
@@ -40,11 +41,18 @@ async function run() {
 
   const config = await getConfig();
 
-  server.listen(config.port, "0.0.0.0", (err, address) => {
+  console.log(`repo: ${config.notesDir}`);
+  console.log(`public: ${publicPath}`);
+
+  server.listen(config.port, "0.0.0.0", async (err, address) => {
     if (err) {
       console.error(err);
       process.exit(1);
     }
+
+    // TODO, do this inside the repo dir
+    await runShell(`git config --global user.email "osmosnote-bot@osmoscraft.org"`);
+    await runShell(`git config --global user.name"osmosnote bot"`);
 
     printDiagnosticsToConsole().finally(() => {
       console.log(`Frontend: ${bold(green(address))}`);

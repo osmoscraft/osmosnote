@@ -13,7 +13,7 @@
     "build": "npm-run-all --print-label -p build:* -s pack:docker",
     "build:server": "node scripts/build-server.js",
     "build:client": "node scripts/build-client.js",
-    "pack:docker": "docker build .",
+    "pack:docker": "docker build -t osmosnote:alpha .",
     "pack:node": "pkg ./dist/main.js -c package.json -t latest-linux-x64 -o ./bin/s2",
     "clean": "npm-run-all --print-label -p clean:*",
     "clean:server": "rm -rf dist && rm -rf bin",
