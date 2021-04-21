@@ -20,7 +20,6 @@ RUN apk add --no-cache ripgrep
 ADD ./dist /usr/local/bin/osmosnote/dist
 ADD ./public /usr/local/bin/osmosnote/public
 EXPOSE 2077
-ENTRYPOINT [ "node" ]
-CMD ["/usr/local/bin/osmosnote/dist/main.js"]
+CMD [ "node", "/usr/local/bin/osmosnote/dist/main.js"]
 # ENTRYPOINT ["sh"]
 # CMD ["s2"]
