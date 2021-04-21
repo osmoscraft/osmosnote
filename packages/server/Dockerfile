@@ -14,11 +14,13 @@
 # RUN apt-get install -y git
 
 FROM node:15.14.0-alpine3.13
+RUN apk add --no-cache findutils
 RUN apk add --no-cache git
 RUN apk add --no-cache ripgrep
-ADD ./dist /usr/local/bin/osmosnote
+ADD ./dist /usr/local/bin/osmosnote/dist
+ADD ./public/dist /usr/local/bin/osmosnote/public/dist
 EXPOSE 2077
 ENTRYPOINT [ "node" ]
-CMD ["/usr/local/bin/osmosnote/main.js"]
+CMD ["/usr/local/bin/osmosnote/dist/main.js"]
 # ENTRYPOINT ["sh"]
 # CMD ["s2"]
