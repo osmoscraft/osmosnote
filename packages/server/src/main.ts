@@ -2,8 +2,8 @@ import fastify from "fastify";
 import fastifyStatic from "fastify-static";
 import path from "path";
 import { getConfig } from "./config";
-import { getSystemInformation, printDiagnosticsToConsole } from "./lib/diagnostics";
-import { blue, bold, green } from "./lib/print";
+import { printDiagnosticsToConsole } from "./lib/diagnostics";
+import { bold, green } from "./lib/print";
 import { runShell } from "./lib/run-shell";
 import { handleCreateNote } from "./routes/create-note";
 import { handleDeleteNote } from "./routes/delete-note";
@@ -40,6 +40,20 @@ async function run() {
   server.register(fastifyStatic, { root: publicPath });
 
   const config = await getConfig();
+
+  /**
+   * Initialization sequence
+   *
+   * 1. Check dependency
+   *    1. xargs
+   *    2. git
+   *    2. ripgrep
+   * 2. Check repo location
+   *    1. Check location from args
+   *    2. Check location from default docker mount point (/usr/local/data)
+   * 3. If location doesn't contain osmosnote.json, finish with need-initialization status.
+   * 4. Finish initialization sucess. Display config in console.
+   */
 
   console.log(`repo: ${config.notesDir}`);
   console.log(`public: ${publicPath}`);
