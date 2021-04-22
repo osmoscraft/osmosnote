@@ -11,8 +11,9 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 ## Start from docker
 
 ```sh
-docker volume create my-osmosnote-repo
-docker run --rm -ti -p 2077:2077 --mount source=my-osmosnote-repo,target=/data --env OSMOSNOTE_REPO_DIR=/data osmosnote:alpha
+git clone https://github.com/osmoscraft/osmosnote-template.git
+cd osmosnote-template
+docker-compose up
 ```
 
 ## Start from scratch
