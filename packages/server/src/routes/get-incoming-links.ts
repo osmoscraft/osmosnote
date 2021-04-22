@@ -1,4 +1,4 @@
-import { getConfig } from "../config";
+import { getAppConfig } from "../lib/app-config";
 import { createHandler } from "../lib/create-handler";
 import { filenameToId } from "../lib/filename-to-id";
 import { readNote } from "../lib/note-file-io";
@@ -30,7 +30,7 @@ export const handleGetIncomingLinks = createHandler<GetIncomingLinksOuput, GetIn
 });
 
 async function getIncomingLinks(id: string): Promise<IncomingLink[]> {
-  const config = await getConfig();
+  const config = await getAppConfig();
 
   const { error, stdout, stderr } = await runShell(`rg "\(${id}\)" --count-matches`, { cwd: config.notesDir });
 

@@ -1,4 +1,4 @@
-import { getConfig } from "../config";
+import { getAppConfig } from "../lib/app-config";
 import { createHandler } from "../lib/create-handler";
 import { parseTagsLine } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
@@ -15,7 +15,7 @@ export interface LookupTagsOutput {
 export const handleLookupTags = createHandler<LookupTagsOutput, LookupTagsInput>(async (input) => {
   const phrase = input.phrase.trim();
 
-  const config = await getConfig();
+  const config = await getAppConfig();
   const dir = config.notesDir;
 
   if (!phrase) {

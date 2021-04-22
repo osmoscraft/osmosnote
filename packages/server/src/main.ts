@@ -1,8 +1,9 @@
 import fastify from "fastify";
 import fastifyStatic from "fastify-static";
 import path from "path";
-import { getConfig } from "./config";
+import { getAppConfig } from "./lib/app-config";
 import { printDiagnosticsToConsole } from "./lib/diagnostics";
+import { ensureRepoConfig } from "./lib/repo-config";
 import { bold, green } from "./lib/print";
 import { runShell } from "./lib/run-shell";
 import { handleCreateNote } from "./routes/create-note";
@@ -19,7 +20,31 @@ import { handleSearchNote } from "./routes/search-note";
 import { handleSyncVersions } from "./routes/sync-versions";
 import { handleUpdateNote } from "./routes/update-note";
 
+// check if repo has .git dir
+
 async function run() {
+  /**
+   * Initialization sequence
+   *
+   * 1. Check dependency
+   *    1. xargs
+   *    2. git
+   *    2. ripgrep
+   * 2. Check repo location from ENV
+   * 3. If location doesn't contain osmosnote.json, finish with need-initialization status.
+   * 4. Finish initialization sucess. Display config in console.
+   */
+  await ensureRepoConfig();
+  const config = await getAppConfig();
+
+  console.log(`repo: ${config.notesDir}`);
+  const publicPath = path.join(__dirname, "../public");
+  console.log(`public: ${publicPath}`);
+
+  // TODO, do this inside the repo dir, after initialization
+  await runShell(`git config --global user.email "osmosnote-bot@osmoscraft.org"`);
+  await runShell(`git config --global user.name"osmosnote bot"`);
+
   const server = fastify();
 
   server.post("/api/create-note", handleCreateNote);
@@ -36,27 +61,7 @@ async function run() {
   server.post("/api/sync-versions", handleSyncVersions);
   server.post("/api/update-note", handleUpdateNote);
 
-  const publicPath = path.join(__dirname, "../public");
   server.register(fastifyStatic, { root: publicPath });
-
-  const config = await getConfig();
-
-  /**
-   * Initialization sequence
-   *
-   * 1. Check dependency
-   *    1. xargs
-   *    2. git
-   *    2. ripgrep
-   * 2. Check repo location
-   *    1. Check location from args
-   *    2. Check location from default docker mount point (/usr/local/data)
-   * 3. If location doesn't contain osmosnote.json, finish with need-initialization status.
-   * 4. Finish initialization sucess. Display config in console.
-   */
-
-  console.log(`repo: ${config.notesDir}`);
-  console.log(`public: ${publicPath}`);
 
   server.listen(config.port, "0.0.0.0", async (err, address) => {
     if (err) {
@@ -64,13 +69,7 @@ async function run() {
       process.exit(1);
     }
 
-    // TODO, do this inside the repo dir
-    await runShell(`git config --global user.email "osmosnote-bot@osmoscraft.org"`);
-    await runShell(`git config --global user.name"osmosnote bot"`);
-
-    printDiagnosticsToConsole().finally(() => {
-      console.log(`Frontend: ${bold(green(address))}`);
-    });
+    console.log(`Frontend: ${bold(green(address))}`);
   });
 }
 

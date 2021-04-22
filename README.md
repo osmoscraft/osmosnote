@@ -8,7 +8,14 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 - Keyboard-centeric design protects your train of thought from disruptive mouse interactions.
 - Web-based frontend easily customizable via JavaScript and CSS (coming soon).
 
-## Get started
+## Start from docker
+
+```sh
+docker volume create my-osmosnote-repo
+docker run --rm -ti -p 2077:2077 --mount source=my-osmosnote-repo,target=/data --env OSMOSNOTE_REPO_DIR=/data osmosnote:alpha
+```
+
+## Start from scratch
 
 ### Pre-requisite
 

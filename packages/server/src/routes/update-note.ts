@@ -1,4 +1,4 @@
-import { getConfig } from "../config";
+import { getAppConfig } from "../lib/app-config";
 import { createHandler } from "../lib/create-handler";
 import { gitAdd } from "../lib/git";
 import { idToFilename } from "../lib/id-to-filename";
@@ -19,7 +19,7 @@ export const handleUpdateNote = createHandler<UpdateNoteOutput, UpdateNoteInput>
   const id = input.id;
   const filename = idToFilename(id);
   const note = input.note;
-  const config = await getConfig();
+  const config = await getAppConfig();
 
   const parseResult = parseNote(note);
 
