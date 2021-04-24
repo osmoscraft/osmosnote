@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 import fs from "fs-extra";
 import path from "path";
 import { printDiagnosticsToConsole } from "./diagnostics";
+import { execAsync } from "./exec-async";
+import { getEnv } from "./get-env";
 
 export interface RepoConfig {
   serverVersion: string;
@@ -12,11 +14,13 @@ export interface RepoConfig {
 const CONFIG_FILENAME = "osmosnote.json";
 
 export async function ensureRepoConfig() {
+  // Todo stop if there is no git
   await printDiagnosticsToConsole();
 
-  const debugEnvPath = path.resolve(process.cwd(), ".env");
+  // read environment variables
+  const debugEnvPath = path.join(process.cwd(), ".env");
   if (debugEnvPath && fs.existsSync(debugEnvPath)) {
-    console.log(`[config] .env found ${debugEnvPath}`);
+    console.log(`[config] .env override ${debugEnvPath}`);
     const configResult = dotenv.config({ path: debugEnvPath });
     if (configResult.error) {
       console.error(`[config] .env contains error`, configResult.error);
@@ -24,7 +28,10 @@ export async function ensureRepoConfig() {
     }
   }
 
-  const repoDir = process.env.OSMOSNOTE_REPO_DIR;
+  const env = getEnv();
+
+  // ensure repo dir
+  const repoDir = env.OSMOSNOTE_REPO_DIR;
   if (!repoDir) {
     console.error(`[config] environment variable OSMOSNOTE_REPO_DIR is not set`);
     process.exit(1);
@@ -40,7 +47,8 @@ export async function ensureRepoConfig() {
     }
   }
 
-  const configFilePath = path.resolve(repoDir, CONFIG_FILENAME);
+  // ensure repo config file
+  const configFilePath = path.join(repoDir, CONFIG_FILENAME);
   if (!fs.existsSync(configFilePath)) {
     console.log(`[config] config file missing at ${configFilePath}. Creating...`);
     try {
@@ -56,12 +64,27 @@ export async function ensureRepoConfig() {
     }
   }
 
-  console.log(`[config] config file ready at ${configFilePath}`);
+  // ensure repo dir is managed by git
+  const dotGit = path.join(env.OSMOSNOTE_REPO_DIR!, ".git");
+  if (!fs.existsSync(dotGit)) {
+    console.log(`[config] ${repoDir} is not a git repo. Initializing...`);
+    try {
+      const initResult = await execAsync("git init", { cwd: repoDir });
+      if (initResult.stderr) {
+        console.log(initResult.stderr);
+      }
+    } catch (error) {
+      console.error(`[config] error initialize git at ${repoDir}`, error);
+    }
+  }
+
+  console.log(`[config] system ready at ${repoDir}`);
 }
 
 export async function getRepoConfig(): Promise<RepoConfig> {
-  const repoDir = process.env.OSMOSNOTE_REPO_DIR!;
-  const configFilePath = path.resolve(repoDir, CONFIG_FILENAME);
+  const env = getEnv();
+  const repoDir = env.OSMOSNOTE_REPO_DIR!;
+  const configFilePath = path.join(repoDir, CONFIG_FILENAME);
 
   try {
     return await fs.readJSON(configFilePath);

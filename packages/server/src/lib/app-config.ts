@@ -1,3 +1,4 @@
+import { getEnv } from "./get-env";
 import { getRepoConfig } from "./repo-config";
 
 export interface AppConfig {
@@ -10,9 +11,10 @@ const DEFAULT_PORT = 2077;
 export async function getAppConfig(): Promise<AppConfig> {
   try {
     const repoConfig = await getRepoConfig();
+    const env = getEnv();
 
     const appConfig = {
-      notesDir: process.env.OSMOSNOTE_REPO_DIR!,
+      notesDir: env.OSMOSNOTE_REPO_DIR!,
       port: repoConfig.port ?? DEFAULT_PORT,
     };
 
