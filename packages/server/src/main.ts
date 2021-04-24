@@ -40,10 +40,6 @@ async function run() {
   const publicPath = path.join(__dirname, "../public");
   console.log(`public: ${publicPath}`);
 
-  // TODO, do this inside the repo dir, after initialization
-  await runShell(`git config --global user.email "osmosnote-bot@osmoscraft.org"`);
-  await runShell(`git config --global user.name"osmosnote bot"`);
-
   const server = fastify();
 
   server.post("/api/create-note", handleCreateNote);

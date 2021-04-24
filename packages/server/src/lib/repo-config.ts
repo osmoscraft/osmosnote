@@ -13,6 +13,8 @@ export interface RepoConfig {
 
 const CONFIG_FILENAME = "osmosnote.json";
 const DEFAULT_PORT = 6683; // "NOTE" on a T9 keyboard
+const DEFAULT_GIT_USER_NAME = "osmosnote bot";
+const DEFAULT_GIT_USER_EMAIL = "osmosnote-bot@osmoscraft.org";
 
 export async function ensureRepoConfig() {
   // Todo stop if there is no git
@@ -83,7 +85,7 @@ export async function ensureRepoConfig() {
   if (!fs.existsSync(dotGit)) {
     console.log(`[config] Initializing git ${repoDir}`);
     try {
-      const initResult = await execAsync("git init", { cwd: repoDir });
+      const initResult = await execAsync("git init -q", { cwd: repoDir });
       if (initResult.stderr) {
         console.log(initResult.stderr);
       }
@@ -92,6 +94,10 @@ export async function ensureRepoConfig() {
       process.exit(1);
     }
   }
+
+  // ensure user name and email
+  await execAsync(`git config user.name "${DEFAULT_GIT_USER_NAME}"`, { cwd: repoDir });
+  await execAsync(`git config user.email "${DEFAULT_GIT_USER_EMAIL}"`, { cwd: repoDir });
 
   console.log(`[config] System ready ${repoDir}`);
 }
