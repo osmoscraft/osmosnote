@@ -9,16 +9,11 @@ export class SettingsFormComponent extends HTMLElement {
     this.innerHTML = /*html*/ `
     <form id="admin-settings" onsubmit="return false;">
     <fieldset>
-      <legend>Interface</legend>
-      <label for="spellcheck">Check spelling</label>
-      <input id="spellcheck" name="spellcheck" type="checkbox">
-    </fieldset>
-    <fieldset>
       <legend>Storage</legend>
       <label for="remote-url">Remote URL</label>
       <input id="remote-url" name="remoteUrl" type="url" required>
+      <button type="button">Save</button>
     </fieldset>
-    <button type="button">Save</button>
   </form>`;
 
     this.apiService = di.getSingleton(ApiService);
