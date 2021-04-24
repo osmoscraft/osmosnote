@@ -11,21 +11,9 @@
 
 <body>
   <main>
-    <h1>Admin settings</h1>
-    <form onsubmit="return false;">
-      <fieldset>
-        <legend>Interface</legend>
-        <label for="spellcheck">Check spelling</label>
-        <input id="spellcheck" name="spellcheck" type="checkbox">
-      </fieldset>
-      <fieldset>
-        <legend>Storage</legend>
-        <label for="remote-url">Remote URL</label>
-        <input id="remote-url" name="remoteUrl" type="url" required>
-      </fieldset>
-      <button type="button">Save</button>
-    </form>
+    <s2-admin-settings></s2-admin-settings>
   </main>
+  <script type="module" src="/dist/pages/admin/index.js"></script>
 </body>
 
 </html>

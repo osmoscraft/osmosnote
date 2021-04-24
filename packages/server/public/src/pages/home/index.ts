@@ -29,7 +29,6 @@ di.registerClass(QueryService, []);
 di.registerClass(RouteService, []);
 di.registerClass(NotificationService, [ComponentRefService]);
 di.registerClass(ApiService, [QueryService]);
-di.registerClass(DiagnosticsService, [ApiService]);
 di.registerClass(DocumentRefService, []);
 di.registerClass(WindowRefService, []);
 di.registerClass(PreferencesService, [WindowRefService]);
@@ -63,12 +62,6 @@ di.registerClass(SyncService, [
   WindowRefService,
   DocumentRefService,
 ]);
-
-// Do this as early as possible
-const diagnostics = di.getSingleton(DiagnosticsService);
-(async () => {
-  (await diagnostics.init()).printToConsole();
-})();
 
 customElements.define("s2-command-bar", CommandBarComponent);
 customElements.define("s2-status-bar", StatusBarComponent);
