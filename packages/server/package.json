@@ -17,7 +17,7 @@
     "pack:node": "pkg ./dist/main.js -c package.json -t latest-linux-x64 -o ./bin/s2",
     "clean": "npm-run-all --print-label -p clean:*",
     "clean:server": "rm -rf dist && rm -rf bin",
-    "clean:client": "rm -rf dist && rm -rf bin"
+    "clean:client": "rm -rf public/dist"
   },
   "pkg": {
     "scripts": "dist/**/*.js",

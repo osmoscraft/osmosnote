@@ -1,9 +1,11 @@
-require("esbuild")
+  require("esbuild")
   .build({
-    platform: "node",
-    entryPoints: ["src/main.ts"],
+    entryPoints: [
+      "public/src/pages/home/index.ts",
+      "public/src/pages/admin/index.ts"
+    ],
     bundle: true,
-    target: "node14",
-    outfile: "dist/main.js",
+    outdir: "public/dist/pages",
+    sourcemap: true,
   })
   .catch(() => process.exit(1));

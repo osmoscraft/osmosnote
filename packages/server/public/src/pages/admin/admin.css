@@ -1,3 +1,4 @@
 body {
-  background-color: var(--base00);
+  padding: 1rem;
+  background-color: var(--base01);
 }
