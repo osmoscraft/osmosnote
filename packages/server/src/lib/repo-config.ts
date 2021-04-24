@@ -12,6 +12,7 @@ export interface RepoConfig {
 }
 
 const CONFIG_FILENAME = "osmosnote.json";
+const DEFAULT_PORT = 6683; // "NOTE" on a T9 keyboard
 
 export async function ensureRepoConfig() {
   // Todo stop if there is no git
@@ -55,7 +56,7 @@ export async function ensureRepoConfig() {
       fs.writeJSONSync(
         configFilePath,
         {
-          port: 2077,
+          port: DEFAULT_PORT,
         },
         { spaces: 2 }
       );

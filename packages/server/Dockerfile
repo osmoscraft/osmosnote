@@ -19,7 +19,7 @@ RUN apk add --no-cache git
 RUN apk add --no-cache ripgrep
 ADD ./dist /usr/local/bin/osmosnote/dist
 ADD ./public /usr/local/bin/osmosnote/public
-EXPOSE 2077
+EXPOSE 6683
 CMD [ "node", "/usr/local/bin/osmosnote/dist/main.js"]
 # ENTRYPOINT ["sh"]
 # CMD ["s2"]

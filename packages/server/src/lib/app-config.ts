@@ -6,8 +6,6 @@ export interface AppConfig {
   port: number;
 }
 
-const DEFAULT_PORT = 2077;
-
 export async function getAppConfig(): Promise<AppConfig> {
   try {
     const repoConfig = await getRepoConfig();
@@ -15,7 +13,7 @@ export async function getAppConfig(): Promise<AppConfig> {
 
     const appConfig = {
       notesDir: env.OSMOSNOTE_REPO_DIR!,
-      port: repoConfig.port ?? DEFAULT_PORT,
+      port: repoConfig.port!,
     };
 
     return appConfig;
