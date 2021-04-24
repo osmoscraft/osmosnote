@@ -30,6 +30,7 @@
 
 ## Workflow
 
+- Workflow: Use single console logger with color, symbol, and verbosity control
 - Workflow: Check git repo status on launch
 - Workflow: A landing state (recent + open new).
 - Workflow: Show app version on splash screen
