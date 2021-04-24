@@ -61,13 +61,26 @@ export async function ensureRepoConfig() {
       );
     } catch (error) {
       console.error(`[config] Error creating config file ${configFilePath}`, error);
+      process.exit(1);
+    }
+  }
+
+  // Git ignore config file (it will contain access token)
+  const dotGitIgnore = path.join(env.OSMOSNOTE_REPO_DIR!, ".gitignore");
+  if (!fs.existsSync(dotGitIgnore)) {
+    console.log(`[config] Initializing gitignore ${dotGitIgnore}`);
+    try {
+      fs.writeFileSync(dotGitIgnore, `${CONFIG_FILENAME}\n`);
+    } catch (error) {
+      console.error(`[config] Error creating .gitnore ${dotGitIgnore}`);
+      process.exit(1);
     }
   }
 
   // ensure repo dir is managed by git
   const dotGit = path.join(env.OSMOSNOTE_REPO_DIR!, ".git");
   if (!fs.existsSync(dotGit)) {
-    console.log(`[config] Initializing git ${repoDir} `);
+    console.log(`[config] Initializing git ${repoDir}`);
     try {
       const initResult = await execAsync("git init", { cwd: repoDir });
       if (initResult.stderr) {
@@ -75,6 +88,7 @@ export async function ensureRepoConfig() {
       }
     } catch (error) {
       console.error(`[config] Error initialize git at ${repoDir}`, error);
+      process.exit(1);
     }
   }
 
