@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin</title>
+  <link href="/src/pages/admin/index.css" rel="stylesheet" />
+</head>
+
+<body>
+  <main>
+    <h1>Admin settings</h1>
+    <form onsubmit="return false;">
+      <fieldset>
+        <legend>Interface</legend>
+        <label for="spellcheck">Check spelling</label>
+        <input id="spellcheck" name="spellcheck" type="checkbox">
+      </fieldset>
+      <fieldset>
+        <legend>Storage</legend>
+        <label for="remote-url">Remote URL</label>
+        <input id="remote-url" name="remoteUrl" type="url" required>
+      </fieldset>
+      <button type="button">Save</button>
+    </form>
+  </main>
+</body>
+
+</html>

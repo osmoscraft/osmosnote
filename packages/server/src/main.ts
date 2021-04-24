@@ -36,11 +36,13 @@ async function run() {
   await ensureRepoConfig();
   const config = await getAppConfig();
 
-  console.log(`repo: ${config.notesDir}`);
-  const publicPath = path.join(__dirname, "../public");
-  console.log(`public: ${publicPath}`);
+  const server = fastify({ ignoreTrailingSlash: true });
 
-  const server = fastify();
+  const publicPath = path.join(__dirname, "../public");
+  server.register(fastifyStatic, { root: publicPath });
+  server.get("/admin", (_req, reply) => {
+    reply.sendFile("admin.html");
+  });
 
   server.post("/api/create-note", handleCreateNote);
   server.post("/api/delete-note", handleDeleteNote);
@@ -56,15 +58,13 @@ async function run() {
   server.post("/api/sync-versions", handleSyncVersions);
   server.post("/api/update-note", handleUpdateNote);
 
-  server.register(fastifyStatic, { root: publicPath });
-
   server.listen(config.port, "0.0.0.0", async (err, address) => {
     if (err) {
       console.error(err);
       process.exit(1);
     }
 
-    console.log(`Frontend: ${bold(green(address))}`);
+    console.log(`Internal address: ${bold(green(address))}`);
   });
 }
 
