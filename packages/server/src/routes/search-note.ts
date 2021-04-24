@@ -33,7 +33,7 @@ export const handleSearchNote = createHandler<SearchNoteOutput, SearchNoteInput>
   const phrase = input.phrase;
   const tags = input.tags ?? [];
   const limit = input.limit ?? DEFAULT_RESULT_LIMIT;
-  const notesDir = config.notesDir;
+  const notesDir = config.repoDir;
 
   const now = performance.now();
   const items = await searchRipgrep(phrase, tags, notesDir, limit);

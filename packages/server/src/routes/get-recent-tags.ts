@@ -22,7 +22,7 @@ const RECENT_TAG_LIMIT = 10;
 export const handleGetRecentTags = createHandler<GetRecentTagsOutput, GetRecentTagsInput>(async (input) => {
   const config = await getAppConfig();
 
-  const notesDir = config.notesDir;
+  const notesDir = config.repoDir;
 
   const limit = input.limit ?? RECENT_TAG_LIMIT;
 

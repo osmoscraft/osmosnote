@@ -4,7 +4,6 @@ import path from "path";
 import { getAppConfig } from "./lib/app-config";
 import { bold, green } from "./lib/print";
 import { ensureRepoConfig } from "./lib/repo-config";
-import { runShell } from "./lib/run-shell";
 import { handleCreateNote } from "./routes/create-note";
 import { handleDeleteNote } from "./routes/delete-note";
 import { handleGetContentFromUrl } from "./routes/get-content-from-url";
@@ -12,6 +11,7 @@ import { handleGetIncomingLinks } from "./routes/get-incoming-links";
 import { handleGetNote } from "./routes/get-note";
 import { handleGetRecentNotes } from "./routes/get-recent-notes";
 import { handleGetRecentTags } from "./routes/get-recent-tags";
+import { handleGetSettings } from "./routes/get-settings";
 import { handleGetSystemInformation } from "./routes/get-system-information";
 import { handleGetVersionStatus } from "./routes/get-version-status";
 import { handleLookupTags } from "./routes/lookup-tags";
@@ -34,14 +34,14 @@ async function run() {
    * 4. Finish initialization sucess. Display config in console.
    */
   await ensureRepoConfig();
-  const config = await getAppConfig();
+  const appConfig = await getAppConfig();
 
   const server = fastify({ ignoreTrailingSlash: true });
 
   const publicPath = path.join(__dirname, "../public");
   server.register(fastifyStatic, { root: publicPath });
-  server.get("/admin", (_req, reply) => {
-    reply.sendFile("admin.html");
+  server.get("/settings", (_req, reply) => {
+    reply.sendFile("settings.html");
   });
 
   server.post("/api/create-note", handleCreateNote);
@@ -51,6 +51,7 @@ async function run() {
   server.post("/api/get-note", handleGetNote);
   server.post("/api/get-recent-notes", handleGetRecentNotes);
   server.post("/api/get-recent-tags", handleGetRecentTags);
+  server.post("/api/get-settings", handleGetSettings);
   server.post("/api/get-system-information", handleGetSystemInformation);
   server.post("/api/get-version-status", handleGetVersionStatus);
   server.post("/api/lookup-tags", handleLookupTags);
@@ -58,7 +59,7 @@ async function run() {
   server.post("/api/sync-versions", handleSyncVersions);
   server.post("/api/update-note", handleUpdateNote);
 
-  server.listen(config.port, "0.0.0.0", async (err, address) => {
+  server.listen(appConfig.repoConfig.port, "0.0.0.0", async (err, address) => {
     if (err) {
       console.error(err);
       process.exit(1);

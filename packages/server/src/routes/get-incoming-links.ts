@@ -32,7 +32,7 @@ export const handleGetIncomingLinks = createHandler<GetIncomingLinksOuput, GetIn
 async function getIncomingLinks(id: string): Promise<IncomingLink[]> {
   const config = await getAppConfig();
 
-  const { error, stdout, stderr } = await runShell(`rg "\(${id}\)" --count-matches`, { cwd: config.notesDir });
+  const { error, stdout, stderr } = await runShell(`rg "\(${id}\)" --count-matches`, { cwd: config.repoDir });
 
   if (error) {
     if (error.code === 1) {

@@ -16,7 +16,7 @@ export const handleLookupTags = createHandler<LookupTagsOutput, LookupTagsInput>
   const phrase = input.phrase.trim();
 
   const config = await getAppConfig();
-  const dir = config.notesDir;
+  const dir = config.repoDir;
 
   if (!phrase) {
     return {

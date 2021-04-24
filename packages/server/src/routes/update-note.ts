@@ -24,7 +24,7 @@ export const handleUpdateNote = createHandler<UpdateNoteOutput, UpdateNoteInput>
   const parseResult = parseNote(note);
 
   await writeNote(filename, note);
-  await gitAdd(config.notesDir);
+  await gitAdd(config.repoDir);
 
   return {
     note,

@@ -2,7 +2,7 @@
   .build({
     entryPoints: [
       "public/src/pages/home/index.ts",
-      "public/src/pages/admin/index.ts"
+      "public/src/pages/settings/index.ts"
     ],
     bundle: true,
     outdir: "public/dist/pages",

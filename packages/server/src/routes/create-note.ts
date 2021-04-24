@@ -25,7 +25,7 @@ export const handleCreateNote = createHandler<CreateNoteOutput, CreateNoteInput>
   const { metadata } = parseNote(note);
 
   await writeNote(filename, note);
-  await gitAdd(config.notesDir);
+  await gitAdd(config.repoDir);
 
   return {
     id,

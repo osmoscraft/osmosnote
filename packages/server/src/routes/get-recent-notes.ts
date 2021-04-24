@@ -25,7 +25,7 @@ export interface RecentNoteItem {
 export const handleGetRecentNotes = createHandler<GetRecentNotesOutput, GetRecentNotesInput>(async (input) => {
   const config = await getAppConfig();
 
-  const notesDir = config.notesDir;
+  const notesDir = config.repoDir;
   const { limit = DEFAULT_LIMIT } = input;
 
   const { stdout, stderr, error } = await runShell(`ls -1t *.md | head -n ${limit}`, { cwd: notesDir });

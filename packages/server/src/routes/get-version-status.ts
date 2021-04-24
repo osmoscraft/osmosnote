@@ -11,7 +11,7 @@ export interface GetVersionStatusOutput {
 
 export const handleGetVersionStatus = createHandler<GetVersionStatusOutput, GetVersionStatusInput>(async (input) => {
   const config = await getAppConfig();
-  const notesDir = config.notesDir;
+  const notesDir = config.repoDir;
 
   let { error: fetchError } = await gitFetch(notesDir);
   if (fetchError !== null) {

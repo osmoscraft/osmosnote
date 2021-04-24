@@ -6,7 +6,6 @@ import { execAsync } from "./exec-async";
 import { getEnv } from "./get-env";
 
 export interface RepoConfig {
-  serverVersion: string;
   port: number;
   remoteUrl?: string;
 }

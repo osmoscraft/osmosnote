@@ -10,6 +10,8 @@ import type {
   GetRecentNotesInput,
   GetRecentNotesOutput,
   GetRecentTagsOutput,
+  GetSettingsInput,
+  GetSettingsOutput,
   GetVersionStatusInput,
   GetVersionStatusOutput,
   LookupTagsInput,
@@ -75,6 +77,8 @@ export class ApiService {
     this.safeQuery<GetContentFromUrlOutput, GetContentFromUrlInput>(`/api/get-content-from-url`, {
       url,
     });
+
+  getSettings = () => this.safeQuery<GetSettingsOutput, GetSettingsInput>(`/api/get-settings`, {});
 
   getSystemInformation = () =>
     this.safeQuery<GetSystemInformationOutput, GetSystemInformationInput>(`/api/get-system-information`, {});

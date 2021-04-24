@@ -1,4 +1,4 @@
-import { AdminSettingsComponent } from "../../components/admin-settings/admin-settings.component.js";
+import { SettingsFormComponent } from "../../components/settings-form/settings-form.component.js";
 import { ApiService } from "../../services/api/api.service.js";
 import { DiagnosticsService } from "../../services/diagnostics/diagnostics-service.js";
 import { QueryService } from "../../services/query/query.service.js";
@@ -14,4 +14,4 @@ const diagnostics = di.getSingleton(DiagnosticsService);
   (await diagnostics.init()).printToConsole();
 })();
 
-customElements.define("s2-admin-settings", AdminSettingsComponent);
+customElements.define("s2-settings-form", SettingsFormComponent);

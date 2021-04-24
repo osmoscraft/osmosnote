@@ -1,7 +1,7 @@
 import { ApiService } from "../../services/api/api.service.js";
 import { di } from "../../utils/dependency-injector.js";
 
-export class AdminSettingsComponent extends HTMLElement {
+export class SettingsFormComponent extends HTMLElement {
   private formDom!: HTMLFormElement;
   private apiService!: ApiService;
 
@@ -28,6 +28,9 @@ export class AdminSettingsComponent extends HTMLElement {
     this.handleEvents();
   }
 
-  private async loadData() {}
+  private async loadData() {
+    const settings = await this.apiService.getSettings();
+    console.dir(settings.repoConfig);
+  }
   private handleEvents() {}
 }

@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import path from "path";
 
 export const readNote = async (filename: string): Promise<string> => {
-  const { notesDir } = await getAppConfig();
+  const { repoDir: notesDir } = await getAppConfig();
 
   const rawMarkdown = await fs.readFile(path.join(notesDir, filename), "utf-8");
 
@@ -11,13 +11,13 @@ export const readNote = async (filename: string): Promise<string> => {
 };
 
 export const writeNote = async (filename: string, data: string): Promise<void> => {
-  const { notesDir } = await getAppConfig();
+  const { repoDir: notesDir } = await getAppConfig();
 
   await fs.writeFile(path.join(notesDir, filename), data);
 };
 
 export const deleteNote = async (filename: string): Promise<void> => {
-  const { notesDir } = await getAppConfig();
+  const { repoDir: notesDir } = await getAppConfig();
 
   const candidatePath = path.join(notesDir, filename);
 

@@ -1,9 +1,9 @@
 import { getEnv } from "./get-env";
-import { getRepoConfig } from "./repo-config";
+import { getRepoConfig, RepoConfig } from "./repo-config";
 
 export interface AppConfig {
-  notesDir: string;
-  port: number;
+  repoDir: string;
+  repoConfig: RepoConfig;
 }
 
 export async function getAppConfig(): Promise<AppConfig> {
@@ -12,8 +12,8 @@ export async function getAppConfig(): Promise<AppConfig> {
     const env = getEnv();
 
     const appConfig = {
-      notesDir: env.OSMOSNOTE_REPO_DIR!,
-      port: repoConfig.port!,
+      repoDir: env.OSMOSNOTE_REPO_DIR!,
+      repoConfig,
     };
 
     return appConfig;

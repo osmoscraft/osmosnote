@@ -10,7 +10,7 @@ export interface SyncVersionsOutput {
 
 export const handleSyncVersions = createHandler<SyncVersionsOutput, SyncVersionsInput>(async (input) => {
   const config = await getAppConfig();
-  const notesDir = config.notesDir;
+  const notesDir = config.repoDir;
   let error: string | null;
   let message: string | null;
   let isDifferent: boolean | null;
