@@ -71,7 +71,7 @@ export async function ensureRepoConfig() {
   // Git ignore config file (it will contain access token)
   const dotGitIgnore = path.join(env.OSMOSNOTE_REPO_DIR!, ".gitignore");
   if (!fs.existsSync(dotGitIgnore)) {
-    console.log(`[config] Initializing gitignore ${dotGitIgnore}`);
+    console.log(`[config] Initializing .gitignore ${dotGitIgnore}`);
     try {
       fs.writeFileSync(dotGitIgnore, `${CONFIG_FILENAME}\n`);
     } catch (error) {
@@ -83,7 +83,7 @@ export async function ensureRepoConfig() {
   // ensure repo dir is managed by git
   const dotGit = path.join(env.OSMOSNOTE_REPO_DIR!, ".git");
   if (!fs.existsSync(dotGit)) {
-    console.log(`[config] Initializing git ${repoDir}`);
+    console.log(`[config] Initializing .git ${dotGit}`);
     try {
       const initResult = await execAsync("git init -q", { cwd: repoDir });
       if (initResult.stderr) {
