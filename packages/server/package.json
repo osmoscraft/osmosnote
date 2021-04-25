@@ -1,7 +1,7 @@
 {
-  "name": "@system-two/server",
+  "name": "@osmoscraft/osmosnote",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.14-alpha.0",
   "description": "",
   "main": "dist/main.js",
   "types": "index.d.ts",
@@ -25,15 +25,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/platojar/system-two.git"
+    "url": "git+https://github.com/osmoscraft/osmosnote.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/platojar/system-two/issues"
+    "url": "https://github.com/osmoscraft/osmosnote/issues"
   },
-  "homepage": "https://github.com/platojar/system-two#readme",
+  "homepage": "https://github.com/osmoscraft/osmosnote#readme",
   "dependencies": {
     "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.5",
