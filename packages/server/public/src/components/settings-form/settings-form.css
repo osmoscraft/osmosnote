@@ -9,8 +9,12 @@ form {
 
 fieldset {
   padding: 0.5rem 1rem 1rem 1rem;
-  border: 1px solid var(--base05);
+  border: 1px solid var(--base03);
+  border-radius: 2px;
   margin: 0;
+}
+fieldset:focus-within {
+  border-color: var(--base0D);
 }
 
 legend {
@@ -22,11 +26,27 @@ legend {
   gap: 1rem;
 }
 
+.form-field {
+  display: grid;
+  grid-template:
+    "label action" auto
+    "gap gap" 0.5rem
+    "control control" auto / 1fr auto;
+}
+
 .form-field__label {
-  display: block;
+  grid-area: label;
   font-size: 1rem;
-  margin-bottom: 0.5rem;
   font-weight: bold;
+}
+
+.form-field__action {
+  grid-area: action;
+  font-weight: bold;
+}
+
+.form-field__control {
+  grid-area: control;
 }
 
 .option-set {
@@ -72,4 +92,39 @@ input[type="radio"]:focus-visible {
 
 .form-status-container:not([data-active]) {
   display: none;
+}
+
+.details__label {
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0.5rem 1rem;
+}
+.details__label:is(:hover, :focus-visible) {
+  outline: none;
+  color: var(--base08);
+  background-color: var(--base00);
+}
+
+.danger-zone {
+  margin-top: 1rem;
+  border: 1px solid var(--base03);
+  border-radius: 2px;
+}
+.danger-zone[open] {
+  border-color: var(--base08);
+}
+
+.danger-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.danger-sections {
+  display: grid;
+  gap: 1rem;
+}
+
+.danger-section {
+  padding: 1rem;
 }

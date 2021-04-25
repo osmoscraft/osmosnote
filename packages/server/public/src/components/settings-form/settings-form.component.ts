@@ -18,7 +18,9 @@ export class SettingsFormComponent extends HTMLElement {
   private customOriginInput!: HTMLInputElement;
   private apiService!: ApiService;
   private saveButton!: HTMLButtonElement;
-  private testConnectionButton!: HTMLButtonElement;
+  private testButton!: HTMLButtonElement;
+  private resetLocalButton!: HTMLButtonElement;
+  private forcePushButton!: HTMLButtonElement;
   private formStatusContainer!: HTMLFieldSetElement;
   private formStatusOuput!: HTMLOutputElement;
 
@@ -30,7 +32,7 @@ export class SettingsFormComponent extends HTMLElement {
         <legend>Git hosting</legend>
         <div class="form-fields">
           <div class="form-field">
-            <div class="option-set">
+            <div class="form-field__control option-set">
               <label class="option-label"><input type="radio" name="hostingProvider" value="github"><span>GitHub</span></label>
               <label class="option-label"><input type="radio" name="hostingProvider" value="custom"><span>Custom</span></label>
             </div>
@@ -43,22 +45,22 @@ export class SettingsFormComponent extends HTMLElement {
         <div class="form-fields">
           <div class="form-field">
             <label class="form-field__label" for="git-owner">Owner</label>
-            <input id="git-owner" name="owner" type="text" placeholder="Username or organization" required>
+            <input class="form-field__control" id="git-owner" name="owner" type="text" placeholder="Username or organization" required>
           </div>
           <div class="form-field">
             <label class="form-field__label" for="git-repo">Repo</label>
-            <input id="git-repo" name="repo" type="text" required>
+            <input class="form-field__control" id="git-repo" name="repo" type="text" required>
           </div>
           <div class="form-field">
             <span class="form-field__label">Network protocol</span>
-            <div class="option-set">
+            <div class="form-field__control option-set">
               <label class="option-label"><input type="radio" name="networkProtocol" value="https">HTTPS</label>
               <label class="option-label"><input type="radio" name="networkProtocol" value="ssh">SSH</label>
             </div>
           </div>
           <div data-if-network-protocol="https" class="form-field">
-            <label class="form-field__label" for="git-token">Personal access token</label>
-            <input id="git-token" name="accessToken" type="password" required>
+            <label class="form-field__label" for="git-token">Personal access token</label><a class="form-field__action" href="https://github.com/settings/tokens/new">Create</a>
+            <input id="git-token" class="form-field__control" name="accessToken" type="password" placeholder="e.g. ghp_ABCDEFGHIKLMNN1234567890abcdefhijklm" required>
           </div>
         </div>
       </fieldset>
@@ -67,9 +69,9 @@ export class SettingsFormComponent extends HTMLElement {
         <legend>Custom connection</legend>
           <div class="form-field">
             <label class="form-field__label" for="custom-origin">Origin</label>
-            <input id="custom-origin" name="customOrigin" type="text" required>
+            <input id="custom-origin" class="form-field__control" name="customOrigin" type="text" required>
           </div>
-          <p>Origins examples</p>
+          <p>Examples</p>
           <ul>
             <li><samp><kbd>https://&lt;token_name>:&lt;token_value>@gitlab.com/&lt;owner>/&lt;repo>.git</kbd></samp></li>
             <li><samp><kbd>ssh://git@gitlab.com:&lt;owner>/&lt;repo>.git</kbd></samp></li>
@@ -84,14 +86,22 @@ export class SettingsFormComponent extends HTMLElement {
       </fieldset>
       
       <div>
-        <button type="submit" id="save">Save connection</button>
-        <button type="button" id="test-connection">Test</button>
-        <details>
-          <summary>Danger zone</summary>
-          <p>Reset local content to be the latest remote content. This will wipe out all the work you haven't synced to the remote. You can use this to initialize local content after switching to use a different remote host. It is equivalent to <code><kbd>git reset --hard origin/main</kbd></code>.</p>
-          <button type="button" id="reset-local">Reset local</button>
-          <p>Reset remote content to be the latest local content. This will wipe out everything on the remote and there will be no backup copies. You can use this to initialize a remote host with existing content from your local machine. It is equivalent to <code><kbd>git push --force</kbd></code>.</p>
-          <button type="button" id="reset-remote">Force push to remote</button>
+        <button class="btn--box btn--neutral" type="submit" id="save">Save connection</button>
+        <button class="btn--box btn--neutral" type="button" id="test-connection">Test</button>
+        <details class="danger-zone">
+          <summary class="details__label">Danger zone</summary>
+          <div class="danger-sections">
+          <section class="danger-section">
+            <h1 class="danger-title">Reset local</h1>
+            <p class="danger-description">Wipe out content from your local machine, then initialize it with content from the remote host.<br>It is equivalent to <code><kbd>git fetch && git reset --hard origin/main</kbd></code>.</p>
+            <button class="btn--box btn--danger" type="button" id="reset-local">Reset local</button>
+          </section>
+          <section class="danger-section">
+            <h1 class="danger-title">Force push to remote</h1>
+            <p class="danger-description">Wipe out content from your remote host, then initialize it with content from your local machine.<br>It is equivalent to <code><kbd>git push --force</kbd></code>.</p>
+            <button class="btn--box btn--danger" type="button" id="force-push">Force push</button>
+          </section>
+          </div>
         </details>
       </div>
     </form>`;
@@ -103,7 +113,9 @@ export class SettingsFormComponent extends HTMLElement {
     this.accessTokenInput = this.formDom.querySelector(`input[name="accessToken"]`)!;
     this.customOriginInput = this.formDom.querySelector(`input[name="customOrigin"]`)!;
     this.saveButton = this.formDom.querySelector(`#save`)!;
-    this.testConnectionButton = this.formDom.querySelector(`#test-connection`)!;
+    this.testButton = this.formDom.querySelector(`#test-connection`)!;
+    this.resetLocalButton = this.formDom.querySelector(`#reset-local`)!;
+    this.forcePushButton = this.formDom.querySelector(`#force-push`)!;
     this.formStatusOuput = this.formDom.querySelector(`#form-status-output`)!;
     this.formStatusContainer = this.formDom.querySelector(`#form-status-container`)!;
 
@@ -122,8 +134,9 @@ export class SettingsFormComponent extends HTMLElement {
     });
 
     this.saveButton.addEventListener("click", (e) => this.save());
-
-    this.testConnectionButton.addEventListener("click", (e) => this.testConnection());
+    this.testButton.addEventListener("click", (e) => this.test());
+    this.resetLocalButton.addEventListener("click", (e) => this.resetLocal());
+    this.forcePushButton.addEventListener("click", (e) => this.forcePush());
   }
 
   private async loadData() {
@@ -192,7 +205,6 @@ export class SettingsFormComponent extends HTMLElement {
 
     const model = this.getModelFromDom();
     const originUrl = this.getOriginUrlFromModel(model);
-    // TODO update on server
 
     this.formStatusOuput.innerText = "Saving…";
     this.formStatusContainer.dataset.active = "";
@@ -204,7 +216,7 @@ export class SettingsFormComponent extends HTMLElement {
     }
   }
 
-  private async testConnection() {
+  private async test() {
     if (!this.formDom.checkValidity()) {
       this.formDom.reportValidity();
       return;
@@ -222,6 +234,68 @@ export class SettingsFormComponent extends HTMLElement {
     } else {
       this.formStatusOuput.innerText = result.message ?? "Unknown error";
     }
+  }
+
+  private async resetLocal() {
+    if (!this.formDom.checkValidity()) {
+      this.formDom.reportValidity();
+      return;
+    }
+
+    if (!window.confirm("Are you sure you want to reset local?")) return;
+
+    const model = this.getModelFromDom();
+    const originUrl = this.getOriginUrlFromModel(model);
+
+    this.formStatusOuput.innerText = "Saving…";
+    this.formStatusContainer.dataset.active = "";
+    const saveResult = await this.apiService.setGitRemote(originUrl);
+
+    if (!saveResult.success) {
+      this.formStatusOuput.innerText = saveResult.message ?? "Unknown error saving";
+      return;
+    }
+
+    this.formStatusOuput.innerText = "Resetting…";
+    const resetResult = await this.apiService.resetLocalVersion();
+
+    if (!resetResult.success) {
+      this.formStatusOuput.innerText = resetResult.message ?? "Unknown error resetting";
+      return;
+    }
+
+    this.formStatusOuput.innerText = "Success!";
+  }
+
+  private async forcePush() {
+    if (!this.formDom.checkValidity()) {
+      this.formDom.reportValidity();
+      return;
+    }
+
+    if (!window.confirm("Are you sure you want to force push to remote?")) return;
+
+    const model = this.getModelFromDom();
+    const originUrl = this.getOriginUrlFromModel(model);
+
+    this.formStatusOuput.innerText = "Saving…";
+    this.formStatusContainer.dataset.active = "";
+    const saveResult = await this.apiService.setGitRemote(originUrl);
+
+    if (!saveResult.success) {
+      this.formStatusOuput.innerText = saveResult.message ?? "Unknown error saving";
+      return;
+    }
+
+    this.formStatusOuput.innerText = "Pushing…";
+    const resetResult = await this.apiService.forcePush();
+
+    if (!resetResult.success) {
+      this.formStatusOuput.innerText = resetResult.message ?? "Unknown error pushing";
+      return;
+    }
+
+    this.formStatusOuput.innerText = "Success!";
   }
 
   private getDefaultModel(): SettingsModel {

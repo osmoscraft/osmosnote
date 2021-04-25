@@ -3,6 +3,8 @@ import type {
   CreateNoteOutput,
   DeleteNoteInput,
   DeleteNoteOutput,
+  ForcePushInput,
+  ForcePushOutput,
   GetContentFromUrlInput,
   GetContentFromUrlOutput,
   GetIncomingLinksInput,
@@ -22,6 +24,8 @@ import type {
   LookupTagsInput,
   LookupTagsOutput,
   OutputSuccessOrError,
+  ResetLocalVersionInput,
+  ResetLocalVersionOutput,
   SearchNoteInput,
   SearchNoteOutput,
   SetGitRemoteInput,
@@ -39,6 +43,8 @@ export class ApiService {
   constructor(private queryService: QueryService) {}
 
   loadNote = (id: string) => this.safeQuery<GetNoteOutput, GetNoteInput>(`/api/get-note`, { id });
+
+  forcePush = () => this.safeQuery<ForcePushOutput, ForcePushInput>(`/api/force-push`, {});
 
   getRecentNotes = (limit?: number) =>
     this.safeQuery<GetRecentNotesOutput, GetRecentNotesInput>(`/api/get-recent-notes`, { limit });
@@ -89,6 +95,9 @@ export class ApiService {
     this.safeQuery<GetSystemInformationOutput, GetSystemInformationInput>(`/api/get-system-information`, {});
 
   getVersionStatus = () => this.safeQuery<GetVersionStatusOutput, GetVersionStatusInput>(`/api/get-version-status`, {});
+
+  resetLocalVersion = () =>
+    this.safeQuery<ResetLocalVersionOutput, ResetLocalVersionInput>(`/api/reset-local-version`, {});
 
   setGitRemote = (url: string) => this.safeQuery<SetGitRemoteOutput, SetGitRemoteInput>(`/api/set-git-remote`, { url });
 

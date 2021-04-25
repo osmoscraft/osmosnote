@@ -19,9 +19,7 @@ export async function gitAdd(repoRoot: string): Promise<GitCommandOutput> {
 }
 
 export async function gitFetch(repoRoot: string): Promise<GitCommandOutput> {
-  const branch = await gitCurrentBranch(repoRoot);
-
-  const fetchResult = await runShell(`git fetch ${DEFAULT_REMOTE} ${branch}`, { cwd: repoRoot });
+  const fetchResult = await runShell(`git fetch`, { cwd: repoRoot });
   const error = getRunShellError(fetchResult, "Fetch error");
 
   return {
@@ -33,7 +31,7 @@ export async function gitFetch(repoRoot: string): Promise<GitCommandOutput> {
 export async function gitPull(repoRoot: string): Promise<GitCommandOutput> {
   const branch = await gitCurrentBranch(repoRoot);
 
-  const pullResult = await runShell(`git pull ${DEFAULT_REMOTE} ${branch}`, { cwd: repoRoot });
+  const pullResult = await runShell(`git pull`, { cwd: repoRoot });
   const error = getRunShellError(pullResult, "Fetch error");
 
   return {
@@ -224,12 +222,12 @@ export async function gitGetRemoteUrl(repoRoot: string, name = "origin"): Promis
   }
 }
 
-export interface SetRemoteUrlResult {
+export interface GitOperationResult {
   success: boolean;
   message?: string;
 }
 
-export async function gitSetRemoteUrl(repoRoot: string, url: string): Promise<SetRemoteUrlResult> {
+export async function gitSetRemoteUrl(repoRoot: string, url: string): Promise<GitOperationResult> {
   const remoteUrl = await gitGetRemoteUrl(repoRoot, DEFAULT_REMOTE);
   if (remoteUrl !== null) {
     try {
@@ -260,12 +258,7 @@ export async function gitSetRemoteUrl(repoRoot: string, url: string): Promise<Se
   };
 }
 
-export interface TestConnectionResult {
-  success: boolean;
-  message?: string;
-}
-
-export async function gitLsRemoteUrl(repoRoot: string, remoteUrl: string): Promise<TestConnectionResult> {
+export async function gitLsRemoteUrl(repoRoot: string, remoteUrl: string): Promise<GitOperationResult> {
   try {
     const { stdout, stderr } = await execAsync(`git ls-remote ${remoteUrl}`, { cwd: repoRoot });
     if (stderr) {
@@ -295,5 +288,101 @@ export async function gitLsRemoteExists(repoRoot: string): Promise<boolean> {
 
     console.error(`[git] error ls-remote`, error);
     throw error;
+  }
+}
+
+export interface GitDefaultRemoteBranchResult extends GitOperationResult {
+  branch?: string;
+}
+
+export async function gitRemoteDefaultBranch(repoRoot: string): Promise<GitDefaultRemoteBranchResult> {
+  try {
+    const PATTERN = "HEAD branch:";
+    const { stdout } = await execAsync(`git remote show ${DEFAULT_REMOTE}`, { cwd: repoRoot });
+    const lines = stdout.split("\n");
+    const branch =
+      lines
+        .find((line) => line.includes(PATTERN))
+        ?.trim()
+        ?.slice(PATTERN.length)
+        .trim() ?? "";
+    if (!branch || branch.toLocaleLowerCase() === "(unknown)") {
+      return {
+        success: false,
+        message: `No HEAD branch found.\n${stdout}`,
+      };
+    }
+
+    return {
+      success: true,
+      branch,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error?.message ?? `git remote show ${DEFAULT_REMOTE}`,
+    };
+  }
+}
+
+export async function gitFetchV2(repoRoot: string, remoteBranch?: string): Promise<GitOperationResult> {
+  const branch = remoteBranch ?? (await gitCurrentBranch(repoRoot));
+
+  try {
+    await execAsync(`git fetch ${DEFAULT_REMOTE} ${branch}`, { cwd: repoRoot });
+    return {
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error?.message ?? `Error git fetch ${DEFAULT_REMOTE}/${branch}`,
+    };
+  }
+}
+
+export async function gitReset(repoRoot: string, remoteBranch?: string): Promise<GitOperationResult> {
+  const branch = remoteBranch ?? (await gitCurrentBranch(repoRoot));
+
+  try {
+    await execAsync(`git reset --hard ${DEFAULT_REMOTE}/${branch}`, { cwd: repoRoot });
+    return {
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error?.message ?? `Error reset --hard ${DEFAULT_REMOTE}/${branch}`,
+    };
+  }
+}
+
+export async function gitTrackBranch(repoRoot: string, remoteBranch: string): Promise<GitOperationResult> {
+  try {
+    await execAsync(`git branch -u ${DEFAULT_REMOTE}/${remoteBranch}`, { cwd: repoRoot });
+    return {
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error?.message ?? `Error git branch -u ${DEFAULT_REMOTE}/${remoteBranch}`,
+    };
+  }
+}
+
+export async function gitForcePush(repoRoot: string): Promise<GitOperationResult> {
+  const branch = await gitCurrentBranch(repoRoot);
+
+  try {
+    await execAsync(`git push --force -u ${DEFAULT_REMOTE} ${branch}`, { cwd: repoRoot });
+    return {
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error?.message ?? `Error push --force -u ${DEFAULT_REMOTE} ${branch}`,
+    };
   }
 }

@@ -7,6 +7,7 @@
 @import url("../../styles/03-generic.css");
 
 /* Elements – styling for bare HTML elements (like H1, A, etc.). These come with default styling from the browser so we can redefine them here. */
+@import url("../../styles/04-elements.css");
 
 /* Components – specific UI components. This is where the majority of our work takes place and our UI components are often composed of Objects and Components */
 @import url("./settings.css");

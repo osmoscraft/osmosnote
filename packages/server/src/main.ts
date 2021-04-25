@@ -20,6 +20,8 @@ import { handleSyncVersions } from "./routes/sync-versions";
 import { handleUpdateNote } from "./routes/update-note";
 import { handleTestGitRemote } from "./routes/test-git-remote";
 import { handleSetGitRemote } from "./routes/set-git-remote";
+import { handleResetLocalVersion } from "./routes/reset-local-version";
+import { handleForcePush } from "./routes/force-push";
 
 // check if repo has .git dir
 
@@ -48,6 +50,7 @@ async function run() {
 
   server.post("/api/create-note", handleCreateNote);
   server.post("/api/delete-note", handleDeleteNote);
+  server.post("/api/force-push", handleForcePush);
   server.post("/api/get-content-from-url", handleGetContentFromUrl);
   server.post("/api/get-incoming-links", handleGetIncomingLinks);
   server.post("/api/get-note", handleGetNote);
@@ -57,6 +60,7 @@ async function run() {
   server.post("/api/get-system-information", handleGetSystemInformation);
   server.post("/api/get-version-status", handleGetVersionStatus);
   server.post("/api/lookup-tags", handleLookupTags);
+  server.post("/api/reset-local-version", handleResetLocalVersion);
   server.post("/api/search-notes", handleSearchNote);
   server.post("/api/set-git-remote", handleSetGitRemote);
   server.post("/api/sync-versions", handleSyncVersions);
