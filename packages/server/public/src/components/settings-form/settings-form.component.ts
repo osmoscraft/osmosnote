@@ -84,7 +84,6 @@ export class SettingsFormComponent extends HTMLElement {
       </fieldset>
 
       <div>
-
         <button type="submit" id="save">Save</button>
         <button type="button" id="test-connection">Test connection</button>
       </div>
@@ -179,6 +178,18 @@ export class SettingsFormComponent extends HTMLElement {
     }
   }
 
+  private async save() {
+    if (!this.formDom.checkValidity()) {
+      this.formDom.reportValidity();
+      return;
+    }
+
+    const model = this.getModelFromDom();
+    const originUrl = this.getOriginUrlFromModel(model);
+    // TODO update on server
+    console.log(originUrl);
+  }
+
   private async testConnection() {
     if (!this.formDom.checkValidity()) {
       this.formDom.reportValidity();
@@ -186,24 +197,12 @@ export class SettingsFormComponent extends HTMLElement {
     }
 
     const model = this.getModelFromDom();
-    let originUrl = "";
-    if (model.hostingProvider === "custom") {
-      originUrl = model.customOrigin;
-    } else {
-      // github
-      if (model.networkProtocol === "ssh") {
-        // github ssh
-        originUrl = `git@github.com:${model.owner}/${model.repo}.git`;
-      } else {
-        // github https (token is required)
-        originUrl = `https://${model.owner}:${model.accessToken}@github.com/${model.owner}/${model.repo}.git`;
-      }
-    }
+    const originUrl = this.getOriginUrlFromModel(model);
 
     this.formStatusOuput.innerText = "Testing…";
     this.formStatusContainer.dataset.active = "";
 
-    const testResult = await this.apiService.testGitHostConnection(originUrl);
+    const testResult = await this.apiService.testGitRemote(originUrl);
     if (testResult.success) {
       this.formStatusOuput.innerText = "Success!";
     } else {
@@ -220,6 +219,24 @@ export class SettingsFormComponent extends HTMLElement {
       accessToken: "",
       customOrigin: "",
     };
+  }
+
+  private getOriginUrlFromModel(model: SettingsModel) {
+    let originUrl = "";
+    if (model.hostingProvider === "custom") {
+      originUrl = model.customOrigin;
+    } else {
+      // github
+      if (model.networkProtocol === "ssh") {
+        // github ssh
+        originUrl = `git@github.com:${model.owner}/${model.repo}.git`;
+      } else {
+        // github https (token is required)
+        originUrl = `https://${model.owner}:${model.accessToken}@github.com/${model.owner}/${model.repo}.git`;
+      }
+    }
+
+    return originUrl;
   }
 
   /**

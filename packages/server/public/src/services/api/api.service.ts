@@ -27,8 +27,8 @@ import type {
   DeleteNoteOutput,
   GetSystemInformationOutput,
   GetSystemInformationInput,
-  TestGitHostConnectionOutput,
-  TestGitHostConnectionInput,
+  TestGitRemoteOutput,
+  TestGitRemoteInput,
 } from "@system-two/server";
 import type { QueryService } from "../query/query.service.js";
 
@@ -89,8 +89,8 @@ export class ApiService {
 
   syncVersions = () => this.safeQuery<SyncVersionsOutput, SyncVersionsInput>(`/api/sync-versions`, {});
 
-  testGitHostConnection = (remoteUrl: string) =>
-    this.safeQuery<TestGitHostConnectionOutput, TestGitHostConnectionInput>(`/api/test-git-host-connection`, {
+  testGitRemote = (remoteUrl: string) =>
+    this.safeQuery<TestGitRemoteOutput, TestGitRemoteInput>(`/api/test-git-remote`, {
       remoteUrl,
     });
 
