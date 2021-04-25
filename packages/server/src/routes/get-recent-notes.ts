@@ -1,4 +1,4 @@
-import { getAppConfig } from "../lib/app-config";
+import { getRepoMetadata } from "../lib/repo-metadata";
 import { createHandler } from "../lib/create-handler";
 import { filenameToId } from "../lib/filename-to-id";
 import { readNote } from "../lib/note-file-io";
@@ -23,7 +23,7 @@ export interface RecentNoteItem {
 }
 
 export const handleGetRecentNotes = createHandler<GetRecentNotesOutput, GetRecentNotesInput>(async (input) => {
-  const config = await getAppConfig();
+  const config = await getRepoMetadata();
 
   const notesDir = config.repoDir;
   const { limit = DEFAULT_LIMIT } = input;

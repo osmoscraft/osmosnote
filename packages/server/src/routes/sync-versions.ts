@@ -1,4 +1,4 @@
-import { getAppConfig } from "../lib/app-config";
+import { getRepoMetadata } from "../lib/repo-metadata";
 import { createHandler } from "../lib/create-handler";
 import { gitAdd, gitCommit, gitDiffStaged, gitDiffUnstaged, gitPull, gitPush, gitStatus } from "../lib/git";
 
@@ -9,7 +9,7 @@ export interface SyncVersionsOutput {
 }
 
 export const handleSyncVersions = createHandler<SyncVersionsOutput, SyncVersionsInput>(async (input) => {
-  const config = await getAppConfig();
+  const config = await getRepoMetadata();
   const notesDir = config.repoDir;
   let error: string | null;
   let message: string | null;

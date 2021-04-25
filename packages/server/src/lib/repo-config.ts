@@ -7,7 +7,8 @@ import { getEnv } from "./get-env";
 
 export interface RepoConfig {
   port: number;
-  remoteUrl?: string;
+  storageProvider: "github" | "custom";
+  storageConfig: any;
 }
 
 const CONFIG_FILENAME = "osmosnote.json";

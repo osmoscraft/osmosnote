@@ -1,4 +1,4 @@
-import { getAppConfig } from "../lib/app-config";
+import { getRepoMetadata } from "../lib/repo-metadata";
 import { createHandler } from "../lib/create-handler";
 import { getTimestampId } from "../lib/get-timestamp-id";
 import { gitAdd } from "../lib/git";
@@ -20,7 +20,7 @@ export const handleCreateNote = createHandler<CreateNoteOutput, CreateNoteInput>
   const note = input.note;
   const id = getTimestampId();
   const filename = idToFilename(id);
-  const config = await getAppConfig();
+  const config = await getRepoMetadata();
 
   const { metadata } = parseNote(note);
 

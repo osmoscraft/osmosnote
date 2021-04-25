@@ -1,7 +1,7 @@
 import fastify from "fastify";
 import fastifyStatic from "fastify-static";
 import path from "path";
-import { getAppConfig } from "./lib/app-config";
+import { getRepoMetadata } from "./lib/repo-metadata";
 import { bold, green } from "./lib/print";
 import { ensureRepoConfig } from "./lib/repo-config";
 import { handleCreateNote } from "./routes/create-note";
@@ -34,7 +34,7 @@ async function run() {
    * 4. Finish initialization sucess. Display config in console.
    */
   await ensureRepoConfig();
-  const appConfig = await getAppConfig();
+  const appConfig = await getRepoMetadata();
 
   const server = fastify({ ignoreTrailingSlash: true });
 

@@ -1,4 +1,4 @@
-import { getAppConfig } from "../lib/app-config";
+import { getRepoMetadata } from "../lib/repo-metadata";
 import { createHandler } from "../lib/create-handler";
 import { parseTagsLine } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
@@ -20,7 +20,7 @@ export interface SuggestedTag {
 const RECENT_TAG_LIMIT = 10;
 
 export const handleGetRecentTags = createHandler<GetRecentTagsOutput, GetRecentTagsInput>(async (input) => {
-  const config = await getAppConfig();
+  const config = await getRepoMetadata();
 
   const notesDir = config.repoDir;
 

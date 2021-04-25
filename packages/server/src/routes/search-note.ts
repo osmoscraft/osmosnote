@@ -1,5 +1,5 @@
 import { performance } from "perf_hooks";
-import { getAppConfig } from "../lib/app-config";
+import { getRepoMetadata } from "../lib/repo-metadata";
 import { createHandler } from "../lib/create-handler";
 import { filenameToId } from "../lib/filename-to-id";
 import { readNote } from "../lib/note-file-io";
@@ -28,7 +28,7 @@ export interface SearchResultItem {
 }
 
 export const handleSearchNote = createHandler<SearchNoteOutput, SearchNoteInput>(async (input) => {
-  const config = await getAppConfig();
+  const config = await getRepoMetadata();
 
   const phrase = input.phrase;
   const tags = input.tags ?? [];

@@ -1,9 +1,9 @@
-import { getAppConfig } from "./app-config";
+import { getRepoMetadata } from "./repo-metadata";
 import fs from "fs-extra";
 import path from "path";
 
 export const readNote = async (filename: string): Promise<string> => {
-  const { repoDir: notesDir } = await getAppConfig();
+  const { repoDir: notesDir } = await getRepoMetadata();
 
   const rawMarkdown = await fs.readFile(path.join(notesDir, filename), "utf-8");
 
@@ -11,13 +11,13 @@ export const readNote = async (filename: string): Promise<string> => {
 };
 
 export const writeNote = async (filename: string, data: string): Promise<void> => {
-  const { repoDir: notesDir } = await getAppConfig();
+  const { repoDir: notesDir } = await getRepoMetadata();
 
   await fs.writeFile(path.join(notesDir, filename), data);
 };
 
 export const deleteNote = async (filename: string): Promise<void> => {
-  const { repoDir: notesDir } = await getAppConfig();
+  const { repoDir: notesDir } = await getRepoMetadata();
 
   const candidatePath = path.join(notesDir, filename);
 
