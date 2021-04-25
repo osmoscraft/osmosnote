@@ -197,9 +197,9 @@ export async function gitStatus(repoRoot: string): Promise<GitStatusOutput> {
   };
 }
 
-export async function getRemoteUrl(name = "origin"): Promise<string | null> {
+export async function getRemoteUrl(repoRoot: string, name = "origin"): Promise<string | null> {
   try {
-    const { stdout } = await execAsync(`git remote get-url ${name}`);
+    const { stdout } = await execAsync(`git remote get-url ${name}`, { cwd: repoRoot });
     return stdout.trim();
   } catch (error) {
     console.error(error);
@@ -212,9 +212,9 @@ export interface TestConnectionResult {
   message?: string;
 }
 
-export async function testConnection(remoteUrl: string): Promise<TestConnectionResult> {
+export async function testConnection(repoRoot: string, remoteUrl: string): Promise<TestConnectionResult> {
   try {
-    const { stdout, stderr } = await execAsync(`git ls-remote ${remoteUrl}`);
+    const { stdout, stderr } = await execAsync(`git ls-remote ${remoteUrl}`, { cwd: repoRoot });
     if (stderr) {
       return {
         success: false,

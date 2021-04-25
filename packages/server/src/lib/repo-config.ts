@@ -54,7 +54,7 @@ export async function ensureRepoConfig() {
 
   // ensure user.name
   try {
-    const { stdout } = await execAsync(`git config --get user.name`);
+    const { stdout } = await execAsync(`git config --get user.name`, { cwd: repoDir });
     console.log(`[config] Git username: ${stdout.trim()}`);
   } catch (error) {
     console.log(`[config] Initializing git username: ${DEFAULT_GIT_USER_NAME}`);
@@ -63,7 +63,7 @@ export async function ensureRepoConfig() {
 
   // ensure user.email
   try {
-    const { stdout } = await execAsync(`git config --get user.email`);
+    const { stdout } = await execAsync(`git config --get user.email`, { cwd: repoDir });
     console.log(`[config] Git email: ${stdout.trim()}`);
   } catch (error) {
     console.log(`[config] Initializing git user email: ${DEFAULT_GIT_USER_EMAIL}`);

@@ -1,5 +1,6 @@
 import { createHandler } from "../lib/create-handler";
 import { testConnection } from "../lib/git";
+import { getRepoMetadata } from "../lib/repo-metadata";
 
 export interface TestGitRemoteInput {
   remoteUrl: string;
@@ -11,5 +12,6 @@ export interface TestGitRemoteOutput {
 }
 
 export const handleTestGitRemote = createHandler<TestGitRemoteOutput, TestGitRemoteInput>(async (input) => {
-  return testConnection(input.remoteUrl);
+  const config = await getRepoMetadata();
+  return testConnection(config.repoDir, input.remoteUrl);
 });
