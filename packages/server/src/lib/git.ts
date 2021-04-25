@@ -206,3 +206,29 @@ export async function getRemoteUrl(name = "origin"): Promise<string | null> {
     return null;
   }
 }
+
+export interface TestConnectionResult {
+  success: boolean;
+  message?: string;
+}
+
+export async function testConnection(remoteUrl: string): Promise<TestConnectionResult> {
+  try {
+    const { stdout, stderr } = await execAsync(`git ls-remote ${remoteUrl}`);
+    if (stderr) {
+      return {
+        success: false,
+        message: stderr.trim(),
+      };
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error?.message ?? "git ls-remote error",
+    };
+  }
+}

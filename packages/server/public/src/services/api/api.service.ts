@@ -27,6 +27,8 @@ import type {
   DeleteNoteOutput,
   GetSystemInformationOutput,
   GetSystemInformationInput,
+  TestGitHostConnectionOutput,
+  TestGitHostConnectionInput,
 } from "@system-two/server";
 import type { QueryService } from "../query/query.service.js";
 
@@ -86,6 +88,11 @@ export class ApiService {
   getVersionStatus = () => this.safeQuery<GetVersionStatusOutput, GetVersionStatusInput>(`/api/get-version-status`, {});
 
   syncVersions = () => this.safeQuery<SyncVersionsOutput, SyncVersionsInput>(`/api/sync-versions`, {});
+
+  testGitHostConnection = (remoteUrl: string) =>
+    this.safeQuery<TestGitHostConnectionOutput, TestGitHostConnectionInput>(`/api/test-git-host-connection`, {
+      remoteUrl,
+    });
 
   private async safeQuery<OutputType, InputType>(path: string, input: InputType) {
     const output = await this.queryService.query<OutputType, InputType>(path, input);

@@ -18,6 +18,7 @@ import { handleLookupTags } from "./routes/lookup-tags";
 import { handleSearchNote } from "./routes/search-note";
 import { handleSyncVersions } from "./routes/sync-versions";
 import { handleUpdateNote } from "./routes/update-note";
+import { handleTestGitHostConnection } from "./routes/test-git-host-connection";
 
 // check if repo has .git dir
 
@@ -57,6 +58,7 @@ async function run() {
   server.post("/api/lookup-tags", handleLookupTags);
   server.post("/api/search-notes", handleSearchNote);
   server.post("/api/sync-versions", handleSyncVersions);
+  server.post("/api/test-git-host-connection", handleTestGitHostConnection);
   server.post("/api/update-note", handleUpdateNote);
 
   server.listen(appConfig.port, "0.0.0.0", async (err, address) => {

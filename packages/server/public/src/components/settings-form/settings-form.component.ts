@@ -19,64 +19,77 @@ export class SettingsFormComponent extends HTMLElement {
   private apiService!: ApiService;
   private saveButton!: HTMLButtonElement;
   private testConnectionButton!: HTMLButtonElement;
+  private formStatusContainer!: HTMLFieldSetElement;
+  private formStatusOuput!: HTMLOutputElement;
 
   connectedCallback() {
     this.innerHTML = /*html*/ `
-    <form id="settings-form">
+    <form id="settings-form" spellcheck="false">
 
-    <fieldset>
-      <legend>Git hosting</legend>
-      <div class="form-fields">
-        <div class="form-field">
-          <label><input type="radio" name="hostingProvider" value="github">GitHub<label/>
-          <label><input type="radio" name="hostingProvider" value="custom">Custom<label/>
+      <fieldset class="form-fieldset">
+        <legend>Git hosting</legend>
+        <div class="form-fields">
+          <div class="form-field">
+            <div class="option-set">
+              <label class="option-label"><input type="radio" name="hostingProvider" value="github"><span>GitHub</span></label>
+              <label class="option-label"><input type="radio" name="hostingProvider" value="custom"><span>Custom</span></label>
+            </div>
+          </div>
         </div>
+      </fieldset>
+
+      <fieldset class="form-fieldset" data-if-hosting-provider="github">
+        <legend>GitHub connection</legend>
+        <div class="form-fields">
+          <div class="form-field">
+            <label class="form-field__label" for="git-owner">Owner</label>
+            <input id="git-owner" name="owner" type="text" placeholder="Username or organization" required>
+          </div>
+          <div class="form-field">
+            <label class="form-field__label" for="git-repo">Repo</label>
+            <input id="git-repo" name="repo" type="text" required>
+          </div>
+          <div class="form-field">
+            <span class="form-field__label">Network protocol</span>
+            <div class="option-set">
+              <label class="option-label"><input type="radio" name="networkProtocol" value="https">HTTPS</label>
+              <label class="option-label"><input type="radio" name="networkProtocol" value="ssh">SSH</label>
+            </div>
+          </div>
+          <div data-if-network-protocol="https" class="form-field">
+            <label class="form-field__label" for="git-token">Personal access token</label>
+            <input id="git-token" name="accessToken" type="password" required>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-fieldset" data-if-hosting-provider="custom">
+        <legend>Custom connection</legend>
+          <div class="form-field">
+            <label class="form-field__label" for="custom-origin">Origin</label>
+            <input id="custom-origin" name="customOrigin" type="text" required>
+          </div>
+          <p>Origins examples</p>
+          <ul>
+            <li><samp><kbd>https://&lt;token_name>:&lt;token_value>@gitlab.com/&lt;owner>/&lt;repo>.git</kbd></samp></li>
+            <li><samp><kbd>ssh://git@gitlab.com:&lt;owner>/&lt;repo>.git</kbd></samp></li>
+            <li><samp><kbd>git@gitlab.com:&lt;owner>/&lt;repo>.git</kbd></samp></li>
+          </ul>
+        </div>
+      </fieldset>
+
+      <fieldset id="form-status-container" class="form-status-container" role="presentation">
+        <legend>Status</legend>
+        <output class="form-status-output" id="form-status-output" role="status" aria-live="polite"></output>
+      </fieldset>
+
+      <div>
+
+        <button type="submit" id="save">Save</button>
+        <button type="button" id="test-connection">Test connection</button>
       </div>
-    </fieldset>
 
-    <fieldset data-if-hosting-provider="github">
-      <legend>GitHub connection</legend>
-      <div class="form-fields">
-        <div class="form-field">
-          <label class="form-field__label" for="git-owner">Owner</label>
-          <input id="git-owner" name="owner" type="text" placeholder="Username or organization" required>
-        </div>
-        <div class="form-field">
-          <label class="form-field__label" for="git-repo">Repo</label>
-          <input id="git-repo" name="repo" type="text" required>
-        </div>
-        <div class="form-field">
-          <span class="form-field__label">Network protocol</span>
-          <label><input type="radio" name="networkProtocol" value="https">HTTPS<label/>
-          <label><input type="radio" name="networkProtocol" value="ssh">SSH<label/>
-        </div>
-        <div data-if-network-protocol="https" class="form-field">
-          <label class="form-field__label" for="git-token">Personal access token</label>
-          <input id="git-token" name="accessToken" type="password">
-        </div>
-      </div>
-    </fieldset>
-
-
-
-    <fieldset data-if-hosting-provider="custom">
-      <legend>Custom connection</legend>
-        <div class="form-field">
-          <label class="form-field__label" for="custom-origin">Origin</label>
-          <input id="custom-origin" name="customOrigin" type="text" required>
-        </div>
-        <p>Origins examples</p>
-        <ul>
-          <li><samp><kbd>https://&lt;token_name>:&lt;token_value>@gitlab.com/&lt;owner>/&lt;repo>.git</kbd></samp></li>
-          <li><samp><kbd>ssh://git@gitlab.com:&lt;owner>/&lt;repo>.git</kbd></samp></li>
-          <li><samp><kbd>git@gitlab.com:&lt;owner>/&lt;repo>.git</kbd></samp></li>
-        </ul>
-      </div>
-    </fieldset>
-
-    <button type="submit" id="save">Save</button>
-    <button type="button" id="test-connection">Test connection</button>
-  </form>`;
+    </form>`;
 
     this.apiService = di.getSingleton(ApiService);
     this.formDom = this.querySelector("#settings-form")!;
@@ -86,6 +99,8 @@ export class SettingsFormComponent extends HTMLElement {
     this.customOriginInput = this.formDom.querySelector(`input[name="customOrigin"]`)!;
     this.saveButton = this.formDom.querySelector(`#save`)!;
     this.testConnectionButton = this.formDom.querySelector(`#test-connection`)!;
+    this.formStatusOuput = this.formDom.querySelector(`#form-status-output`)!;
+    this.formStatusContainer = this.formDom.querySelector(`#form-status-container`)!;
 
     this.loadData();
     this.handleEvents();
@@ -164,7 +179,7 @@ export class SettingsFormComponent extends HTMLElement {
     }
   }
 
-  private testConnection() {
+  private async testConnection() {
     if (!this.formDom.checkValidity()) {
       this.formDom.reportValidity();
       return;
@@ -180,13 +195,19 @@ export class SettingsFormComponent extends HTMLElement {
         // github ssh
         originUrl = `git@github.com:${model.owner}/${model.repo}.git`;
       } else {
-        // github https
-        if (model.accessToken) {
-          originUrl = `https://${model.owner}:${model.accessToken}@github.com/${model.owner}/${model.repo}.git`;
-        } else {
-          originUrl = `https://github.com/${model.owner}/${model.repo}.git`;
-        }
+        // github https (token is required)
+        originUrl = `https://${model.owner}:${model.accessToken}@github.com/${model.owner}/${model.repo}.git`;
       }
+    }
+
+    this.formStatusOuput.innerText = "Testing…";
+    this.formStatusContainer.dataset.active = "";
+
+    const testResult = await this.apiService.testGitHostConnection(originUrl);
+    if (testResult.success) {
+      this.formStatusOuput.innerText = "Success!";
+    } else {
+      this.formStatusOuput.innerText = testResult.message ?? "Unknown error";
     }
   }
 
