@@ -63,7 +63,6 @@ legend {
 input:is([type="text"], [type="url"], [type="password"]) {
   padding: 0.5rem;
   font-size: 1rem;
-  width: 100%;
   color: var(--base05);
   border: 1px solid transparent;
   font-family: var(--theme-font-monospace);

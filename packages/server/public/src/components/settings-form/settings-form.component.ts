@@ -19,8 +19,8 @@ export class SettingsFormComponent extends HTMLElement {
   private apiService!: ApiService;
   private saveButton!: HTMLButtonElement;
   private testButton!: HTMLButtonElement;
-  private resetLocalButton!: HTMLButtonElement;
-  private forcePushButton!: HTMLButtonElement;
+  private importButton!: HTMLButtonElement;
+  private exportButton!: HTMLButtonElement;
   private formStatusContainer!: HTMLFieldSetElement;
   private formStatusOuput!: HTMLOutputElement;
 
@@ -92,14 +92,14 @@ export class SettingsFormComponent extends HTMLElement {
           <summary class="details__label">Danger zone</summary>
           <div class="danger-sections">
           <section class="danger-section">
-            <h1 class="danger-title">Reset local</h1>
+            <h1 class="danger-title">Import from remote</h1>
             <p class="danger-description">Wipe out content from your local machine, then initialize it with content from the remote host.<br>It is equivalent to <code><kbd>git fetch && git reset --hard origin/main</kbd></code>.</p>
-            <button class="btn--box btn--danger" type="button" id="reset-local">Reset local</button>
+            <button class="btn--box btn--danger" type="button" id="import-remote">Import</button>
           </section>
           <section class="danger-section">
-            <h1 class="danger-title">Force push to remote</h1>
+            <h1 class="danger-title">Export to remote</h1>
             <p class="danger-description">Wipe out content from your remote host, then initialize it with content from your local machine.<br>It is equivalent to <code><kbd>git push --force</kbd></code>.</p>
-            <button class="btn--box btn--danger" type="button" id="force-push">Force push</button>
+            <button class="btn--box btn--danger" type="button" id="export-remote">Export</button>
           </section>
           </div>
         </details>
@@ -114,8 +114,8 @@ export class SettingsFormComponent extends HTMLElement {
     this.customOriginInput = this.formDom.querySelector(`input[name="customOrigin"]`)!;
     this.saveButton = this.formDom.querySelector(`#save`)!;
     this.testButton = this.formDom.querySelector(`#test-connection`)!;
-    this.resetLocalButton = this.formDom.querySelector(`#reset-local`)!;
-    this.forcePushButton = this.formDom.querySelector(`#force-push`)!;
+    this.importButton = this.formDom.querySelector(`#import-remote`)!;
+    this.exportButton = this.formDom.querySelector(`#export-remote`)!;
     this.formStatusOuput = this.formDom.querySelector(`#form-status-output`)!;
     this.formStatusContainer = this.formDom.querySelector(`#form-status-container`)!;
 
@@ -135,8 +135,8 @@ export class SettingsFormComponent extends HTMLElement {
 
     this.saveButton.addEventListener("click", (e) => this.save());
     this.testButton.addEventListener("click", (e) => this.test());
-    this.resetLocalButton.addEventListener("click", (e) => this.resetLocal());
-    this.forcePushButton.addEventListener("click", (e) => this.forcePush());
+    this.importButton.addEventListener("click", (e) => this.import());
+    this.exportButton.addEventListener("click", (e) => this.export());
   }
 
   private async loadData() {
@@ -236,16 +236,21 @@ export class SettingsFormComponent extends HTMLElement {
     }
   }
 
-  private async resetLocal() {
+  private async import() {
     if (!this.formDom.checkValidity()) {
       this.formDom.reportValidity();
       return;
     }
 
-    if (!window.confirm("Are you sure you want to reset local?")) return;
-
     const model = this.getModelFromDom();
     const originUrl = this.getOriginUrlFromModel(model);
+
+    if (
+      !window.confirm(
+        `Any existing content on your local machine will be wiped out.\nAre you sure you want to import from:\n\n${model.owner}\\${model.repo}?`
+      )
+    )
+      return;
 
     this.formStatusOuput.innerText = "Saving…";
     this.formStatusContainer.dataset.active = "";
@@ -256,27 +261,32 @@ export class SettingsFormComponent extends HTMLElement {
       return;
     }
 
-    this.formStatusOuput.innerText = "Resetting…";
+    this.formStatusOuput.innerText = "Importing…";
     const resetResult = await this.apiService.resetLocalVersion();
 
     if (!resetResult.success) {
-      this.formStatusOuput.innerText = resetResult.message ?? "Unknown error resetting";
+      this.formStatusOuput.innerText = resetResult.message ?? "Unknown error importing";
       return;
     }
 
     this.formStatusOuput.innerText = "Success!";
   }
 
-  private async forcePush() {
+  private async export() {
     if (!this.formDom.checkValidity()) {
       this.formDom.reportValidity();
       return;
     }
 
-    if (!window.confirm("Are you sure you want to force push to remote?")) return;
-
     const model = this.getModelFromDom();
     const originUrl = this.getOriginUrlFromModel(model);
+
+    if (
+      !window.confirm(
+        `Any existing content on the remote will be wiped out.\nAre you sure you want to export to:\n\n${model.owner}\\${model.repo}?`
+      )
+    )
+      return;
 
     this.formStatusOuput.innerText = "Saving…";
     this.formStatusContainer.dataset.active = "";
@@ -287,11 +297,11 @@ export class SettingsFormComponent extends HTMLElement {
       return;
     }
 
-    this.formStatusOuput.innerText = "Pushing…";
-    const resetResult = await this.apiService.forcePush();
+    this.formStatusOuput.innerText = "Exporting…";
+    const pushResult = await this.apiService.forcePush();
 
-    if (!resetResult.success) {
-      this.formStatusOuput.innerText = resetResult.message ?? "Unknown error pushing";
+    if (!pushResult.success) {
+      this.formStatusOuput.innerText = pushResult.message ?? "Unknown error exporting";
       return;
     }
 

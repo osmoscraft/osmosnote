@@ -4,7 +4,6 @@
 /* Tools – globally used mixins and functions. It’s important not to output any CSS in the first 2 layers. */
 
 /* Generic – reset and/or normalize styles, box-sizing definition, etc. This is the first layer which generates actual CSS. */
-@import url("../../styles/03-generic.css");
 
 /* Elements – styling for bare HTML elements (like H1, A, etc.). These come with default styling from the browser so we can redefine them here. */
 @import url("../../styles/04-elements.css");
