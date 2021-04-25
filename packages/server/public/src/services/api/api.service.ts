@@ -36,7 +36,7 @@ import type {
   UpdateNoteInput,
   UpdateNoteOutput,
   TestGitRemoteInput,
-} from "@system-two/server";
+} from "@osmoscraft/osmosnote";
 import type { QueryService } from "../query/query.service.js";
 
 export class ApiService {

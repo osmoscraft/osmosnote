@@ -4,7 +4,7 @@ import type {
   GetContentFromUrlOutput,
   RecentNoteItem,
   SearchResultItem,
-} from "@system-two/server";
+} from "@osmoscraft/osmosnote";
 import type { RegisteredCommand } from "../command-bar.component.js";
 import { PayloadAction } from "./menu-row.component.js";
 
