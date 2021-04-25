@@ -1,19 +1,18 @@
-import { getEnv } from "./get-env";
-import { getRepoConfig, RepoConfig } from "./repo-config";
+import { getAppEnv } from "./get-env";
 
 export interface RepoMetadata {
   repoDir: string;
-  repoConfig: RepoConfig;
+  port: number;
 }
 
 export async function getRepoMetadata(): Promise<RepoMetadata> {
   try {
-    const repoConfig = await getRepoConfig();
-    const env = getEnv();
+    const env = getAppEnv();
+    const port = env.OSMOSNOTE_SERVER_PORT;
 
     const appConfig = {
       repoDir: env.OSMOSNOTE_REPO_DIR!,
-      repoConfig,
+      port,
     };
 
     return appConfig;

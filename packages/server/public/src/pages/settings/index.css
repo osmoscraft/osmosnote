@@ -9,6 +9,7 @@
 /* Elements – styling for bare HTML elements (like H1, A, etc.). These come with default styling from the browser so we can redefine them here. */
 
 /* Components – specific UI components. This is where the majority of our work takes place and our UI components are often composed of Objects and Components */
-@import url("./admin.css");
+@import url("./settings.css");
+@import url("../../components/settings-form/settings-form.css");
 
 /* Utilities – utilities and helper classes with ability to override anything which goes before in the triangle, eg. hide helper class */

@@ -1,16 +1,16 @@
 import { createHandler } from "../lib/create-handler";
-import { getRepoConfig, RepoConfig } from "../lib/repo-config";
+import { getRemoteUrl } from "../lib/git";
 
 export interface GetSettingsInput {}
 
 export interface GetSettingsOutput {
-  repoConfig: RepoConfig;
+  remoteUrl: string | null;
 }
 
 export const handleGetSettings = createHandler<GetSettingsOutput, GetSettingsInput>(async (input) => {
-  const repoConfig = await getRepoConfig();
+  const remoteUrl = await getRemoteUrl();
 
   return {
-    repoConfig,
+    remoteUrl,
   };
 });

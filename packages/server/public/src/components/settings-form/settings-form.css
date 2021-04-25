@@ -1,0 +1,13 @@
+.form-fields {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.form-field__label {
+  display: block;
+}
+
+[data-if-hosting-provider]:not([data-active]),
+[data-if-network-protocol]:not([data-active]) {
+  display: none;
+}

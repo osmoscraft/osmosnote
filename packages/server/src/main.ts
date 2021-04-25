@@ -59,7 +59,7 @@ async function run() {
   server.post("/api/sync-versions", handleSyncVersions);
   server.post("/api/update-note", handleUpdateNote);
 
-  server.listen(appConfig.repoConfig.port, "0.0.0.0", async (err, address) => {
+  server.listen(appConfig.port, "0.0.0.0", async (err, address) => {
     if (err) {
       console.error(err);
       process.exit(1);

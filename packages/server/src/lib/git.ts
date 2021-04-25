@@ -1,3 +1,4 @@
+import { execAsync } from "./exec-async";
 import { getRunShellError, runShell } from "./run-shell";
 
 export interface GitCommandOutput {
@@ -194,4 +195,14 @@ export async function gitStatus(repoRoot: string): Promise<GitStatusOutput> {
     isUpToDate: true,
     error: null,
   };
+}
+
+export async function getRemoteUrl(name = "origin"): Promise<string | null> {
+  try {
+    const { stdout } = await execAsync(`git remote get-url ${name}`);
+    return stdout.trim();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
