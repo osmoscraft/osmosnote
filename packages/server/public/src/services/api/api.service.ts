@@ -1,6 +1,8 @@
 import type {
   CreateNoteInput,
   CreateNoteOutput,
+  DeleteNoteInput,
+  DeleteNoteOutput,
   GetContentFromUrlInput,
   GetContentFromUrlOutput,
   GetIncomingLinksInput,
@@ -9,9 +11,12 @@ import type {
   GetNoteOutput,
   GetRecentNotesInput,
   GetRecentNotesOutput,
+  GetRecentTagsInput,
   GetRecentTagsOutput,
   GetSettingsInput,
   GetSettingsOutput,
+  GetSystemInformationInput,
+  GetSystemInformationOutput,
   GetVersionStatusInput,
   GetVersionStatusOutput,
   LookupTagsInput,
@@ -19,15 +24,13 @@ import type {
   OutputSuccessOrError,
   SearchNoteInput,
   SearchNoteOutput,
+  SetGitRemoteInput,
+  SetGitRemoteOutput,
   SyncVersionsInput,
   SyncVersionsOutput,
+  TestGitRemoteOutput,
   UpdateNoteInput,
   UpdateNoteOutput,
-  DeleteNoteInput,
-  DeleteNoteOutput,
-  GetSystemInformationOutput,
-  GetSystemInformationInput,
-  TestGitRemoteOutput,
   TestGitRemoteInput,
 } from "@system-two/server";
 import type { QueryService } from "../query/query.service.js";
@@ -40,7 +43,7 @@ export class ApiService {
   getRecentNotes = (limit?: number) =>
     this.safeQuery<GetRecentNotesOutput, GetRecentNotesInput>(`/api/get-recent-notes`, { limit });
 
-  getRecentTags = () => this.safeQuery<GetRecentTagsOutput, GetRecentNotesInput>(`/api/get-recent-tags`, {});
+  getRecentTags = () => this.safeQuery<GetRecentTagsOutput, GetRecentTagsInput>(`/api/get-recent-tags`, {});
 
   lookupTags = (phrase: string) =>
     this.safeQuery<LookupTagsOutput, LookupTagsInput>(`/api/lookup-tags`, {
@@ -86,6 +89,8 @@ export class ApiService {
     this.safeQuery<GetSystemInformationOutput, GetSystemInformationInput>(`/api/get-system-information`, {});
 
   getVersionStatus = () => this.safeQuery<GetVersionStatusOutput, GetVersionStatusInput>(`/api/get-version-status`, {});
+
+  setGitRemote = (url: string) => this.safeQuery<SetGitRemoteOutput, SetGitRemoteInput>(`/api/set-git-remote`, { url });
 
   syncVersions = () => this.safeQuery<SyncVersionsOutput, SyncVersionsInput>(`/api/sync-versions`, {});
 

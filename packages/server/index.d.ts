@@ -11,6 +11,7 @@ export * from "./src/routes/get-recent-tags";
 export * from "./src/routes/get-version-status";
 export * from "./src/routes/lookup-tags";
 export * from "./src/routes/search-note";
+export * from "./src/routes/set-git-remote";
 export * from "./src/routes/sync-versions";
 export * from "./src/routes/test-git-remote";
 export * from "./src/routes/update-note";

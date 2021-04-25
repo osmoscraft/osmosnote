@@ -6,6 +6,8 @@ export interface GitCommandOutput {
   error: string | null;
 }
 
+export const DEFAULT_REMOTE = "origin";
+
 export async function gitAdd(repoRoot: string): Promise<GitCommandOutput> {
   const stageResult = await runShell("git add -A", { cwd: repoRoot });
   const error = getRunShellError(stageResult, "Stage error");
@@ -17,7 +19,9 @@ export async function gitAdd(repoRoot: string): Promise<GitCommandOutput> {
 }
 
 export async function gitFetch(repoRoot: string): Promise<GitCommandOutput> {
-  const fetchResult = await runShell("git fetch", { cwd: repoRoot });
+  const branch = await gitCurrentBranch(repoRoot);
+
+  const fetchResult = await runShell(`git fetch ${DEFAULT_REMOTE} ${branch}`, { cwd: repoRoot });
   const error = getRunShellError(fetchResult, "Fetch error");
 
   return {
@@ -27,7 +31,9 @@ export async function gitFetch(repoRoot: string): Promise<GitCommandOutput> {
 }
 
 export async function gitPull(repoRoot: string): Promise<GitCommandOutput> {
-  const pullResult = await runShell("git pull", { cwd: repoRoot });
+  const branch = await gitCurrentBranch(repoRoot);
+
+  const pullResult = await runShell(`git pull ${DEFAULT_REMOTE} ${branch}`, { cwd: repoRoot });
   const error = getRunShellError(pullResult, "Fetch error");
 
   return {
@@ -46,8 +52,9 @@ export async function gitCommit(repoRoot: string, message = "Auto-generated comm
   };
 }
 
-export async function gitPush(repoRoot: string): Promise<GitCommandOutput> {
-  const pushResult = await runShell(`git push`, { cwd: repoRoot });
+export async function gitPush(repoRoot: string, remote = DEFAULT_REMOTE): Promise<GitCommandOutput> {
+  const branch = await gitCurrentBranch(repoRoot);
+  const pushResult = await runShell(`git push -u ${remote} ${branch}`, { cwd: repoRoot });
   const error = getRunShellError(pushResult, "Push error");
   if (error)
     return {
@@ -197,7 +204,17 @@ export async function gitStatus(repoRoot: string): Promise<GitStatusOutput> {
   };
 }
 
-export async function getRemoteUrl(repoRoot: string, name = "origin"): Promise<string | null> {
+export async function gitCurrentBranch(repoRoot: string): Promise<string | null> {
+  try {
+    const { stdout } = await execAsync(`git branch --show-current`, { cwd: repoRoot });
+    return stdout.trim();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function gitGetRemoteUrl(repoRoot: string, name = "origin"): Promise<string | null> {
   try {
     const { stdout } = await execAsync(`git remote get-url ${name}`, { cwd: repoRoot });
     return stdout.trim();
@@ -207,12 +224,48 @@ export async function getRemoteUrl(repoRoot: string, name = "origin"): Promise<s
   }
 }
 
+export interface SetRemoteUrlResult {
+  success: boolean;
+  message?: string;
+}
+
+export async function gitSetRemoteUrl(repoRoot: string, url: string): Promise<SetRemoteUrlResult> {
+  const remoteUrl = await gitGetRemoteUrl(repoRoot, DEFAULT_REMOTE);
+  if (remoteUrl !== null) {
+    try {
+      await execAsync(`git remote remove ${DEFAULT_REMOTE}`, { cwd: repoRoot });
+      console.log(`[update-git-remote] Removed existing remote ${DEFAULT_REMOTE} ${remoteUrl}`);
+    } catch (error) {
+      console.log(`[update-git-remote] Error removing existing remote ${DEFAULT_REMOTE} ${remoteUrl}`);
+      return {
+        success: false,
+        message: error?.message ?? `Error removing existing remote ${DEFAULT_REMOTE} ${remoteUrl}`,
+      };
+    }
+  }
+
+  try {
+    await execAsync(`git remote add ${DEFAULT_REMOTE} ${url}`, { cwd: repoRoot });
+    console.log(`[update-git-remote] Added remote ${DEFAULT_REMOTE} ${url}`);
+  } catch (error) {
+    console.log(`[update-git-remote] Error adding remote ${DEFAULT_REMOTE} ${url}`);
+    return {
+      success: false,
+      message: error?.message ?? `Error adding remote ${DEFAULT_REMOTE} ${url}`,
+    };
+  }
+
+  return {
+    success: true,
+  };
+}
+
 export interface TestConnectionResult {
   success: boolean;
   message?: string;
 }
 
-export async function testConnection(repoRoot: string, remoteUrl: string): Promise<TestConnectionResult> {
+export async function gitLsRemoteUrl(repoRoot: string, remoteUrl: string): Promise<TestConnectionResult> {
   try {
     const { stdout, stderr } = await execAsync(`git ls-remote ${remoteUrl}`, { cwd: repoRoot });
     if (stderr) {
@@ -230,5 +283,17 @@ export async function testConnection(repoRoot: string, remoteUrl: string): Promi
       success: false,
       message: error?.message ?? "git ls-remote error",
     };
+  }
+}
+
+export async function gitLsRemoteExists(repoRoot: string): Promise<boolean> {
+  try {
+    await execAsync(`git ls-remote --exit-code -q`, { cwd: repoRoot });
+    return true;
+  } catch (error) {
+    if (error.code === 2) return false;
+
+    console.error(`[git] error ls-remote`, error);
+    throw error;
   }
 }

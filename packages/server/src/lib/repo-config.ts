@@ -41,14 +41,24 @@ export async function ensureRepoConfig() {
   const dotGit = path.join(env.OSMOSNOTE_REPO_DIR!, ".git");
   if (!fs.existsSync(dotGit)) {
     console.log(`[config] Initializing git: ${dotGit}`);
+    let mainBranchCreated = false;
     try {
-      const initResult = await execAsync("git init -q", { cwd: repoDir });
-      if (initResult.stderr) {
-        console.log(initResult.stderr);
-      }
+      const initResult = await execAsync("git init --q --initial-branch=main", { cwd: repoDir });
+      mainBranchCreated = true;
     } catch (error) {
-      console.error(`[config] Error initialize git: ${repoDir}`, error);
-      process.exit(1);
+      console.error(`[config] Error creating main branch. Fallback to master`);
+    }
+
+    if (!mainBranchCreated) {
+      try {
+        const initResult = await execAsync("git init -q", { cwd: repoDir });
+        if (initResult.stderr) {
+          console.log(initResult.stderr);
+        }
+      } catch (error) {
+        console.error(`[config] Error initialize git: ${repoDir}`, error);
+        process.exit(1);
+      }
     }
   }
 

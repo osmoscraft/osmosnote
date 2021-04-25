@@ -82,12 +82,18 @@ export class SettingsFormComponent extends HTMLElement {
         <legend>Status</legend>
         <output class="form-status-output" id="form-status-output" role="status" aria-live="polite"></output>
       </fieldset>
-
+      
       <div>
-        <button type="submit" id="save">Save</button>
-        <button type="button" id="test-connection">Test connection</button>
+        <button type="submit" id="save">Save connection</button>
+        <button type="button" id="test-connection">Test</button>
+        <details>
+          <summary>Danger zone</summary>
+          <p>Reset local content to be the latest remote content. This will wipe out all the work you haven't synced to the remote. You can use this to initialize local content after switching to use a different remote host. It is equivalent to <code><kbd>git reset --hard origin/main</kbd></code>.</p>
+          <button type="button" id="reset-local">Reset local</button>
+          <p>Reset remote content to be the latest local content. This will wipe out everything on the remote and there will be no backup copies. You can use this to initialize a remote host with existing content from your local machine. It is equivalent to <code><kbd>git push --force</kbd></code>.</p>
+          <button type="button" id="reset-remote">Force push to remote</button>
+        </details>
       </div>
-
     </form>`;
 
     this.apiService = di.getSingleton(ApiService);
@@ -115,7 +121,7 @@ export class SettingsFormComponent extends HTMLElement {
       e.preventDefault();
     });
 
-    this.saveButton.addEventListener("click", (e) => {});
+    this.saveButton.addEventListener("click", (e) => this.save());
 
     this.testConnectionButton.addEventListener("click", (e) => this.testConnection());
   }
@@ -187,7 +193,15 @@ export class SettingsFormComponent extends HTMLElement {
     const model = this.getModelFromDom();
     const originUrl = this.getOriginUrlFromModel(model);
     // TODO update on server
-    console.log(originUrl);
+
+    this.formStatusOuput.innerText = "Saving…";
+    this.formStatusContainer.dataset.active = "";
+    const result = await this.apiService.setGitRemote(originUrl);
+    if (result.success) {
+      this.formStatusOuput.innerText = "Success!";
+    } else {
+      this.formStatusOuput.innerText = result.message ?? "Unknown error";
+    }
   }
 
   private async testConnection() {
@@ -202,11 +216,11 @@ export class SettingsFormComponent extends HTMLElement {
     this.formStatusOuput.innerText = "Testing…";
     this.formStatusContainer.dataset.active = "";
 
-    const testResult = await this.apiService.testGitRemote(originUrl);
-    if (testResult.success) {
+    const result = await this.apiService.testGitRemote(originUrl);
+    if (result.success) {
       this.formStatusOuput.innerText = "Success!";
     } else {
-      this.formStatusOuput.innerText = testResult.message ?? "Unknown error";
+      this.formStatusOuput.innerText = result.message ?? "Unknown error";
     }
   }
 
