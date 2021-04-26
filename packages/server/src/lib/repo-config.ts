@@ -12,6 +12,10 @@ export async function ensureRepoConfig() {
   // Todo stop if there is no git
   await printDiagnosticsToConsole();
 
+  // Show user's name
+  const whoAmIResult = await execAsync(`whoami`);
+  console.log(`[config] Username: ${whoAmIResult.stdout.trim()}`);
+
   // load environment variables
   const debugEnvPath = path.join(process.cwd(), ".env");
   if (debugEnvPath && fs.existsSync(debugEnvPath)) {

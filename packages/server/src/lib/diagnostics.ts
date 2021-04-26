@@ -46,7 +46,7 @@ export async function getSystemInformation() {
 
 export async function getPackageVersion(): Promise<string | null> {
   try {
-    const packageJson = require("../../../../package.json");
+    const packageJson = require("../../package.json");
     return packageJson.version;
   } catch (error) {
     console.error("[diagnostics] error getting package version");
