@@ -29,6 +29,7 @@
 
 ## Workflow
 
+- Node package: ship a bin file and support `npx @osmoscraft/osmosnote`.
 - Workflow: Use single console logger with color, symbol, and verbosity control
 - Workflow: Fully preserver selection state after formatting
 - List auto indent fixing
