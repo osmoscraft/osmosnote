@@ -12,6 +12,7 @@
 - Bug: Chinese character causes line height to jump.
 - Bug: Ctrl + c can't access clipboard in http mode. (legacy copy command causes focus lost)
 - Bug: scrollbar has no hover effect and a wrong cursor style
+- Bug: when spellcheck auto-fix, even type `insertReplacementText` won't trigger dirty state
 
 ## Code health
 
