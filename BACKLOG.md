@@ -1,7 +1,5 @@
 # Roadmap
 
-## Upcoming release
-
 ## Working on
 
 ## Bug backlog
@@ -32,14 +30,7 @@
 ## Workflow
 
 - Workflow: Use single console logger with color, symbol, and verbosity control
-- Workflow: Check git repo status on launch
-- Workflow: A landing state (recent + open new).
-- Workflow: Show app version on splash screen
-- Workflow: After delete, avoid sync, navigate to a new note, to stay consistent with save behavior.
-- Workflow: Switch config to json for machine writablility?
-- Workflow: On start: check config file and config values
 - Workflow: Fully preserver selection state after formatting
-- First-run: Handle git setup (validate client version. validate local repo. validate remote. validate credentials.)
 - List auto indent fixing
 - UI managed metadata entry
   - Design interaction pattern
@@ -50,25 +41,17 @@
 - A fraction of delay after entering any command that waits for server.
 - URL search needs debouncer. Invalid url blocks UI
 - Strong need to curate a list based on tags
-- Consider support shortcut to insert current time (northstar?)
+- Consider support shortcut to insert current time or date
 - Use History Service to track every keypress and use debouncer to improve performance
 - Customizable home page with blocks of queries
 - Note refactoring system: rename title, delete
 - Display per line dirty status in gutter
-- First run: config repo
-  - Init repo with demo content
-- Support default "Triage" tag (any alternatives?)
+- Add demo repo content to template repo
 - Backtick inline code snippet
-- Quick insert of ISO local date could help
 - Tag suggestion based on content
 - Link suggestion based on tags
 - After navigation back, scroll position is lost
-- IDE: improve cursor restore after formatting: for list item marker update, cursor may be shifted after formatting
-- Multiple workspaces (with crosss workspace search?)
 - Validate metadata on-save
-- It's very easy to open the same doc twice and saving the older one will overwrite the new one.
-- First-run: Consumer packaging: Investigate docker?
-- Auto-update binaries?
 - alt + shift + arrow to increase/decrease selection scope: word, line, section, all
 - Unicode: emoji takes two arrow presses to skip over
 - Unicode: backspace on emoji splits the unicode
