@@ -28,6 +28,10 @@
     - Tagging
     - List formatting
     - Heading formatting
+- Logistics
+  - Share roadmap on GitHub project
+  - Share backlog on GitHub project
+  - Bug issue templates
 
 ## Bug backlog
 
