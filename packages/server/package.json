@@ -1,7 +1,7 @@
 {
   "name": "@osmoscraft/osmosnote",
   "private": true,
-  "version": "0.0.14-alpha.1",
+  "version": "1.0.0-alpha.0",
   "description": "",
   "main": "dist/main.js",
   "types": "index.d.ts",
