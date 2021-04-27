@@ -1,6 +1,33 @@
 # Roadmap
 
-## Working on
+## Working on: 1st alpha release
+
+- Documentation
+  - Project principles
+    - Connected notes
+  - Haiku language
+    - Specs
+    - Philosophy
+      - Usability (trade off with Markdown and Org mode)
+      - Technical (line parsing efficiency, portability)
+  - Check credits and licenses
+  - Future roadmap (e.g. theming, extension, markdown mode, org mode, vim mode)
+  - Quick start
+    - Docker run mode
+  - Docker compose mode
+    - Recipes
+  - Node.js + dependencies mode
+  - Known issues
+  - Compare to other software (notion, org-roam, etc)
+- Demo content
+  - Make self documenting tutorial available in docker run
+  - GIF capture of key features
+    - Command bar
+    - Back linking
+    - Instant search
+    - Tagging
+    - List formatting
+    - Heading formatting
 
 ## Bug backlog
 
