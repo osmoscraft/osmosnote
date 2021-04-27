@@ -8,6 +8,10 @@ export function green(input: string) {
   return `\x1b[32m${input}\x1b[89m${RESET}`;
 }
 
+export function yellow(input: string) {
+  return `\x1b[33m${input}\x1b[89m${RESET}`;
+}
+
 export function blue(input: string) {
   return `\x1b[34m${input}\x1b[89m${RESET}`;
 }

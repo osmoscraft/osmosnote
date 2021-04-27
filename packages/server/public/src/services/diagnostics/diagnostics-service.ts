@@ -1,4 +1,4 @@
-import type { GetSystemInformationOutput } from "@system-two/server";
+import type { GetSystemInformationOutput } from "@osmoscraft/osmosnote";
 import type { ApiService } from "../api/api.service";
 
 interface FrontendInformation {

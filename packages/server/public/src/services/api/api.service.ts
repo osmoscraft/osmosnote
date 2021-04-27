@@ -1,6 +1,10 @@
 import type {
   CreateNoteInput,
   CreateNoteOutput,
+  DeleteNoteInput,
+  DeleteNoteOutput,
+  ForcePushInput,
+  ForcePushOutput,
   GetContentFromUrlInput,
   GetContentFromUrlOutput,
   GetIncomingLinksInput,
@@ -9,23 +13,30 @@ import type {
   GetNoteOutput,
   GetRecentNotesInput,
   GetRecentNotesOutput,
+  GetRecentTagsInput,
   GetRecentTagsOutput,
+  GetSettingsInput,
+  GetSettingsOutput,
+  GetSystemInformationInput,
+  GetSystemInformationOutput,
   GetVersionStatusInput,
   GetVersionStatusOutput,
   LookupTagsInput,
   LookupTagsOutput,
   OutputSuccessOrError,
+  ResetLocalVersionInput,
+  ResetLocalVersionOutput,
   SearchNoteInput,
   SearchNoteOutput,
+  SetGitRemoteInput,
+  SetGitRemoteOutput,
   SyncVersionsInput,
   SyncVersionsOutput,
+  TestGitRemoteOutput,
   UpdateNoteInput,
   UpdateNoteOutput,
-  DeleteNoteInput,
-  DeleteNoteOutput,
-  GetSystemInformationOutput,
-  GetSystemInformationInput,
-} from "@system-two/server";
+  TestGitRemoteInput,
+} from "@osmoscraft/osmosnote";
 import type { QueryService } from "../query/query.service.js";
 
 export class ApiService {
@@ -33,10 +44,12 @@ export class ApiService {
 
   loadNote = (id: string) => this.safeQuery<GetNoteOutput, GetNoteInput>(`/api/get-note`, { id });
 
+  forcePush = () => this.safeQuery<ForcePushOutput, ForcePushInput>(`/api/force-push`, {});
+
   getRecentNotes = (limit?: number) =>
     this.safeQuery<GetRecentNotesOutput, GetRecentNotesInput>(`/api/get-recent-notes`, { limit });
 
-  getRecentTags = () => this.safeQuery<GetRecentTagsOutput, GetRecentNotesInput>(`/api/get-recent-tags`, {});
+  getRecentTags = () => this.safeQuery<GetRecentTagsOutput, GetRecentTagsInput>(`/api/get-recent-tags`, {});
 
   lookupTags = (phrase: string) =>
     this.safeQuery<LookupTagsOutput, LookupTagsInput>(`/api/lookup-tags`, {
@@ -76,12 +89,24 @@ export class ApiService {
       url,
     });
 
+  getSettings = () => this.safeQuery<GetSettingsOutput, GetSettingsInput>(`/api/get-settings`, {});
+
   getSystemInformation = () =>
     this.safeQuery<GetSystemInformationOutput, GetSystemInformationInput>(`/api/get-system-information`, {});
 
   getVersionStatus = () => this.safeQuery<GetVersionStatusOutput, GetVersionStatusInput>(`/api/get-version-status`, {});
 
+  resetLocalVersion = () =>
+    this.safeQuery<ResetLocalVersionOutput, ResetLocalVersionInput>(`/api/reset-local-version`, {});
+
+  setGitRemote = (url: string) => this.safeQuery<SetGitRemoteOutput, SetGitRemoteInput>(`/api/set-git-remote`, { url });
+
   syncVersions = () => this.safeQuery<SyncVersionsOutput, SyncVersionsInput>(`/api/sync-versions`, {});
+
+  testGitRemote = (remoteUrl: string) =>
+    this.safeQuery<TestGitRemoteOutput, TestGitRemoteInput>(`/api/test-git-remote`, {
+      remoteUrl,
+    });
 
   private async safeQuery<OutputType, InputType>(path: string, input: InputType) {
     const output = await this.queryService.query<OutputType, InputType>(path, input);

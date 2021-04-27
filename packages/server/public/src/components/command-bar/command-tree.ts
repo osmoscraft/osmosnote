@@ -9,6 +9,7 @@ import { handleFileSave } from "./commands/handle-file-save.js";
 import { handleToggleSpellcheck } from "./commands/handle-toggle-spellcheck.js";
 import { handleFileDelete } from "./commands/handle-file-delete.js";
 import { handleFileFormat } from "./commands/handle-file-format.js";
+import { handleOpenSettings } from "./commands/handle-open-settings.js";
 
 export const commandTree: RegisteredCommand = {
   name: "All commands",
@@ -69,6 +70,11 @@ export const commandTree: RegisteredCommand = {
       name: "Settings",
       key: "s",
       commands: [
+        {
+          name: "Open settings page",
+          key: "s",
+          handler: handleOpenSettings,
+        },
         {
           name: "Toggle spellcheck",
           key: "l",

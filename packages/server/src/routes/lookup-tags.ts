@@ -1,4 +1,4 @@
-import { getConfig } from "../config";
+import { getRepoMetadata } from "../lib/repo-metadata";
 import { createHandler } from "../lib/create-handler";
 import { parseTagsLine } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
@@ -15,8 +15,8 @@ export interface LookupTagsOutput {
 export const handleLookupTags = createHandler<LookupTagsOutput, LookupTagsInput>(async (input) => {
   const phrase = input.phrase.trim();
 
-  const config = await getConfig();
-  const dir = config.notesDir;
+  const config = await getRepoMetadata();
+  const dir = config.repoDir;
 
   if (!phrase) {
     return {

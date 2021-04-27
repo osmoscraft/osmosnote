@@ -46,7 +46,7 @@ export async function getSystemInformation() {
 
 export async function getPackageVersion(): Promise<string | null> {
   try {
-    const packageJson = require("../../../../package.json");
+    const packageJson = require("../../package.json");
     return packageJson.version;
   } catch (error) {
     console.error("[diagnostics] error getting package version");
@@ -56,7 +56,7 @@ export async function getPackageVersion(): Promise<string | null> {
 
 export async function getBinPath(bin: string): Promise<string | null> {
   try {
-    const result = await runShell(`which ${bin}`, { cwd: homedir() });
+    const result = await runShell(`which ${bin}`);
     const error = getRunShellError(result, `Error executing \`which ${bin}\``);
     if (error) {
       throw error;
@@ -75,7 +75,7 @@ export async function getBinVersion(
   getVersionFlag: string = "--version"
 ): Promise<string | null> {
   try {
-    const result = await runShell(`${bin} ${getVersionFlag}`, { cwd: homedir() });
+    const result = await runShell(`${bin} ${getVersionFlag}`);
     const error = getRunShellError(result, `Error executing \`${bin} ${getVersionFlag}\``);
     if (error) {
       throw error;

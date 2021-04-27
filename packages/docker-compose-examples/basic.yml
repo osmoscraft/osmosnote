@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  osmosnote:
+    environment:
+      OSMOSNOTE_REPO_DIR: "/data"
+    image: osmoscraft/osmosnote:latest
+    volumes:
+      - my-osmosnote-repo:/data
+    ports:
+      - 6683:6683 # <frontend port>:<internal port>
+
+volumes:
+  my-osmosnote-repo:
+    external: false # `false` creates the volume if none exists.

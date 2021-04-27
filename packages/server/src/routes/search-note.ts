@@ -1,5 +1,5 @@
 import { performance } from "perf_hooks";
-import { getConfig } from "../config";
+import { getRepoMetadata } from "../lib/repo-metadata";
 import { createHandler } from "../lib/create-handler";
 import { filenameToId } from "../lib/filename-to-id";
 import { readNote } from "../lib/note-file-io";
@@ -28,12 +28,12 @@ export interface SearchResultItem {
 }
 
 export const handleSearchNote = createHandler<SearchNoteOutput, SearchNoteInput>(async (input) => {
-  const config = await getConfig();
+  const config = await getRepoMetadata();
 
   const phrase = input.phrase;
   const tags = input.tags ?? [];
   const limit = input.limit ?? DEFAULT_RESULT_LIMIT;
-  const notesDir = config.notesDir;
+  const notesDir = config.repoDir;
 
   const now = performance.now();
   const items = await searchRipgrep(phrase, tags, notesDir, limit);

@@ -1,4 +1,4 @@
-import { getConfig } from "../config";
+import { getRepoMetadata } from "../lib/repo-metadata";
 import { createHandler } from "../lib/create-handler";
 import { filenameToId } from "../lib/filename-to-id";
 import { readNote } from "../lib/note-file-io";
@@ -30,9 +30,9 @@ export const handleGetIncomingLinks = createHandler<GetIncomingLinksOuput, GetIn
 });
 
 async function getIncomingLinks(id: string): Promise<IncomingLink[]> {
-  const config = await getConfig();
+  const config = await getRepoMetadata();
 
-  const { error, stdout, stderr } = await runShell(`rg "\(${id}\)" --count-matches`, { cwd: config.notesDir });
+  const { error, stdout, stderr } = await runShell(`rg "\(${id}\)" --count-matches`, { cwd: config.repoDir });
 
   if (error) {
     if (error.code === 1) {

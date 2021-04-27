@@ -1,0 +1,46 @@
+a {
+  color: var(--base0D);
+  text-decoration: none;
+}
+
+.btn--box {
+  min-width: 5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: var(--base01);
+  background-color: var(--base0D);
+  font-weight: bold;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+}
+
+.btn--box:active {
+  opacity: 0.75;
+}
+
+.btn--box:focus-visible {
+  outline: none;
+}
+
+.btn--neutral {
+  color: var(--base06);
+  background-color: var(--base03);
+}
+.btn--neutral:is(:hover, :focus-visible) {
+  color: var(--base00);
+  background-color: var(--base0D);
+}
+
+.btn--danger {
+  color: var(--base08);
+  background-color: var(--base00);
+}
+.btn--danger:is(:hover, :focus-visible) {
+  color: var(--base00);
+  background-color: var(--base08);
+}

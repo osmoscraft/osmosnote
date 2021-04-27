@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  osmosnote:
+    environment:
+      OSMOSNOTE_REPO_DIR: "/data"
+    image: osmoscraft/osmosnote:latest
+    volumes:
+      - my-osmosnote-repo:/data
+      - /home/<username>/.ssh:/home/<username>/.ssh
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+    ports:
+      - 6683:6683 # <frontend port>:<internal port>
+    user: 1000:1000
+
+volumes:
+  my-osmosnote-repo:
+    external: false # `false` creates the volume if none exists.
