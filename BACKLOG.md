@@ -92,6 +92,7 @@
   - When line ends with link, insert a new line at the end causes link to open
   - When document ends with link, you can't add a new line without adding a space after the last link
 - Core: Experiment: zero width space as line-end in UI while keeping `\n` in source. (Failed due to select indiciator becoming invisible on zero width space).
+- Use mutation observer to handle line update AFTER user enters the data. Only intercept events that could cause the line dom to change. Ref: https://medium.engineering/why-contenteditable-is-terrible-122d8a40e480
 
 ## Overarching issues
 
