@@ -3,5 +3,5 @@
 ' oShell.Run strArgs, 0, false
 Set oShell = CreateObject ("Wscript.Shell")
 Dim strArgs
-strArgs = "wsl bash -c '~/repos/project-platojar/system-two/packages/server/bin/s2'"
+strArgs = "wsl bash -c 'docker-compose -f ~/my-osmosnote/docker-compose.yml up'"
 oShell.Run strArgs, 1, false

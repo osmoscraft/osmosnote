@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  osmosnote:
+    environment:
+      OSMOSNOTE_REPO_DIR: "/data"
+    image: osmoscraft/osmosnote:latest
+    volumes:
+      - <path_to_local_git_repo>:/data
+    ports:
+      - 6683:6683 # <frontend port>:<internal port>

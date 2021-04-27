@@ -1,0 +1,129 @@
+body {
+  font-family: var(--theme-font-monospace);
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+fieldset {
+  padding: 0.5rem 1rem 1rem 1rem;
+  border: 1px solid var(--base03);
+  border-radius: 2px;
+  margin: 0;
+}
+fieldset:focus-within {
+  border-color: var(--base0D);
+}
+
+legend {
+  font-size: 20px;
+}
+
+.form-fields {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-field {
+  display: grid;
+  grid-template:
+    "label action" auto
+    "gap gap" 0.5rem
+    "control control" auto / 1fr auto;
+}
+
+.form-field__label {
+  grid-area: label;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.form-field__action {
+  grid-area: action;
+  font-weight: bold;
+}
+
+.form-field__control {
+  grid-area: control;
+}
+
+.option-set {
+  display: flex;
+  gap: 1rem;
+}
+
+.option-label {
+  font-size: 1rem;
+  display: inline-flex;
+  line-height: 1rem;
+}
+
+input:is([type="text"], [type="url"], [type="password"]) {
+  padding: 0.5rem;
+  font-size: 1rem;
+  color: var(--base05);
+  border: 1px solid transparent;
+  font-family: var(--theme-font-monospace);
+  background-color: var(--base00);
+}
+input:is([type="text"], [type="url"], [type="password"]):focus {
+  background-color: var(--theme-background-active);
+  outline: 1px solid var(--theme-outline-color);
+  outline-offset: -1px;
+}
+
+input[type="radio"] {
+  margin: 0 0.5rem 0 0;
+  width: 1rem;
+  height: 1rem;
+}
+
+input[type="radio"]:focus-visible {
+  outline: 2px solid var(--theme-outline-color);
+}
+
+[data-if-hosting-provider]:not([data-active]),
+[data-if-network-protocol]:not([data-active]) {
+  display: none;
+}
+
+.form-status-container:not([data-active]) {
+  display: none;
+}
+
+.details__label {
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0.5rem 1rem;
+}
+.details__label:is(:hover, :focus-visible) {
+  outline: none;
+  color: var(--base08);
+  background-color: var(--base00);
+}
+
+.danger-zone {
+  margin-top: 1rem;
+  border: 1px solid var(--base03);
+  border-radius: 2px;
+}
+.danger-zone[open] {
+  border-color: var(--base08);
+}
+
+.danger-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.danger-sections {
+  display: grid;
+  gap: 1rem;
+}
+
+.danger-section {
+  padding: 1rem;
+}

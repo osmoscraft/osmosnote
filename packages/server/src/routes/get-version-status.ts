@@ -1,4 +1,4 @@
-import { getConfig } from "../config";
+import { getRepoMetadata } from "../lib/repo-metadata";
 import { createHandler } from "../lib/create-handler";
 import { gitDiffStaged, gitDiffUnstaged, gitFetch, gitStatus } from "../lib/git";
 
@@ -10,8 +10,8 @@ export interface GetVersionStatusOutput {
 }
 
 export const handleGetVersionStatus = createHandler<GetVersionStatusOutput, GetVersionStatusInput>(async (input) => {
-  const config = await getConfig();
-  const notesDir = config.notesDir;
+  const config = await getRepoMetadata();
+  const notesDir = config.repoDir;
 
   let { error: fetchError } = await gitFetch(notesDir);
   if (fetchError !== null) {

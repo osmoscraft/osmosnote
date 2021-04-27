@@ -1,4 +1,4 @@
-import { getConfig } from "../config";
+import { getRepoMetadata } from "../lib/repo-metadata";
 import { createHandler } from "../lib/create-handler";
 import { filenameToId } from "../lib/filename-to-id";
 import { readNote } from "../lib/note-file-io";
@@ -23,9 +23,9 @@ export interface RecentNoteItem {
 }
 
 export const handleGetRecentNotes = createHandler<GetRecentNotesOutput, GetRecentNotesInput>(async (input) => {
-  const config = await getConfig();
+  const config = await getRepoMetadata();
 
-  const notesDir = config.notesDir;
+  const notesDir = config.repoDir;
   const { limit = DEFAULT_LIMIT } = input;
 
   const { stdout, stderr, error } = await runShell(`ls -1t *.md | head -n ${limit}`, { cwd: notesDir });

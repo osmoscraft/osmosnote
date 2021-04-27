@@ -1,4 +1,4 @@
-import type { IncomingLink } from "@system-two/server";
+import type { IncomingLink } from "@osmoscraft/osmosnote";
 import { ApiService } from "../../services/api/api.service.js";
 import { RouteService } from "../../services/route/route.service.js";
 import { di } from "../../utils/dependency-injector.js";

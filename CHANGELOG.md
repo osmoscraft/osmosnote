@@ -1,7 +1,10 @@
 # (unreleased) v0.0.14
 
+- Added: Handle git setup in settings page
 - Changed: favicon update.
 - Changed: switch to esbuild for production bundling
+- Changed: replaced config file with .git and docker-compose.yml.
+- Changed: replaced single executable with docker image and docker compose template
 
 # v0.0.13
 

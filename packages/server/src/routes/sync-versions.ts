@@ -1,6 +1,6 @@
-import { getConfig } from "../config";
 import { createHandler } from "../lib/create-handler";
-import { gitAdd, gitCommit, gitDiffStaged, gitDiffUnstaged, gitPull, gitPush, gitStatus } from "../lib/git";
+import { gitAdd, gitCommit, gitDiffStaged, gitLsRemoteExists, gitPull, gitPush, gitStatus } from "../lib/git";
+import { getRepoMetadata } from "../lib/repo-metadata";
 
 export interface SyncVersionsInput {}
 
@@ -9,8 +9,8 @@ export interface SyncVersionsOutput {
 }
 
 export const handleSyncVersions = createHandler<SyncVersionsOutput, SyncVersionsInput>(async (input) => {
-  const config = await getConfig();
-  const notesDir = config.notesDir;
+  const config = await getRepoMetadata();
+  const notesDir = config.repoDir;
   let error: string | null;
   let message: string | null;
   let isDifferent: boolean | null;
@@ -18,9 +18,13 @@ export const handleSyncVersions = createHandler<SyncVersionsOutput, SyncVersions
 
   ({ error } = await gitPull(notesDir));
   if (error !== null) {
-    return {
-      message: error,
-    };
+    const remoteExists = await gitLsRemoteExists(notesDir);
+    console.log(`[sync-version] Remote does not exist. Pull skipped.`);
+    if (remoteExists) {
+      return {
+        message: error,
+      };
+    }
   }
 
   ({ error } = await gitAdd(notesDir));

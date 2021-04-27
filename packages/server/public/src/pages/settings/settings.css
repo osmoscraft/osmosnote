@@ -1,0 +1,7 @@
+body {
+  margin: 0;
+  padding: 1rem;
+  background-color: var(--base01);
+  color: var(--theme-text-color);
+  font-family: var(--theme-font-propotional);
+}

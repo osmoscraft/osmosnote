@@ -304,7 +304,7 @@ export class InputService {
 
   private handleBeforeInputEvent(event: InputEvent, host: HTMLElement) {
     if (BLOCKED_INPUT_TYPES.includes(event.inputType)) {
-      // currently, only current plaintext input.
+      // currently, only handle plaintext input.
       // add more types in the future to support: italic, bold, underline, or composing input (CJK)
       event.preventDefault();
       return;

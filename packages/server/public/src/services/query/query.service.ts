@@ -1,4 +1,4 @@
-import type { OutputSuccessOrError } from "@system-two/server";
+import type { OutputSuccessOrError } from "@osmoscraft/osmosnote";
 
 export class QueryService {
   /**
