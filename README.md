@@ -8,7 +8,7 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 - Keyboard-centeric design protects your train of thought from disruptive mouse interactions.
 - Web-based frontend easily customizable via JavaScript and CSS (coming soon).
 
-## Start from docker
+## Get started
 
 ```sh
 git clone https://github.com/osmoscraft/osmosnote-template.git
@@ -16,39 +16,20 @@ cd osmosnote-template
 docker-compose up
 ```
 
-## Start from scratch
+## Next steps
 
-### Pre-requisite
+1. Follow the tutorial to capture your first note.
+2. Learn [Haiku](docs/haiku-language-reference.md), a simple language for knowledge capture.
 
-1. Choose your operating system:
-   - Linux: primary support
-   - Windows: support via [Windows Subsystem for Linux (WLS)](https://docs.microsoft.com/en-us/windows/wsl/)
-   - MacOS: should work. Not tested.
-2. Install depedendencies
-   - [ripgrep](https://github.com/BurntSushi/ripgrep): used for full-text search.
-   - [xargs](https://man7.org/linux/man-pages/man1/xargs.1.html): used for search result parsing. Most linux distro comes with it.
-   - [git](https://git-scm.com/): 2.28.0 minimum. used for storage and version control. Most linux distro comes with it.
-3. Create an empty Git repository for storing notes. For easy start, clone from the template.
+## Advanced guides
 
-### Install and run
+1. Capture knowledge with browser bookmarklet.
+2. Connect to GitHub with with SSH
+3. [Alternative installations](docs/alternative-installations.md)
 
-1. Download the latest binary `osmosnote` from [releases](https://github.com/osmoscraft/osmosnote/releases)
-2. Make the binary executable
-   ```sh
-   chmod +x ./osmosnote
-   ```
-3. Start the server
-   ```sh
-   ./osmosnote
-   ```
-4. Open frontend at https://localhost:2077. In the app, press <kbd>Ctrl</kbd>+<kbd>SPACE</kbd> to open command input.
-5. settings > set git repository
+## Roadmap
 
-### Next steps
+- Theming
+- Extensibility
 
-- Create and save your first note.
-- Tag and search.
-- Learn how to perform common tasks.
-- Learn Haiku, a plaintext language for knowledge keeping.
-
-# Compare with other tools
+## Compare with other tools

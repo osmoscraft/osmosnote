@@ -1,4 +1,4 @@
-# (unreleased) v0.0.14
+# v1.0.0-alpha.0
 
 - Added: Handle git setup in settings page
 - Changed: favicon update.
