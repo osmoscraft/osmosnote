@@ -73,7 +73,8 @@ async function run() {
       process.exit(1);
     }
 
-    console.log(`Internal address: ${bold(green(address))}`);
+    console.log(`Server address: ${bold(green(`http://localhost:${appConfig.port}`))}`);
+    console.log(`If you are running from Docker, the port number may be different.`);
   });
 }
 

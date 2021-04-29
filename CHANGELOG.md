@@ -1,5 +1,6 @@
 # v1.0.0-alpha.0
 
+- Added: Haiku language reference
 - Added: Handle git setup in settings page
 - Changed: favicon update.
 - Changed: switch to esbuild for production bundling

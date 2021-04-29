@@ -10,10 +10,21 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 
 ## Get started
 
+Run the demo in a container. Note that you won't be able to persist any data after you exit the container.
+
 ```sh
-git clone https://github.com/osmoscraft/osmosnote-template.git
-cd osmosnote-template
-docker-compose up
+docker run -p 6683:6683 osmoscraft/osmosnote
+```
+
+The app will be live at http://localhost:6683
+
+To exit
+
+```sh
+docker ps
+# Find your <container_id> in the output
+
+docker kill <container_id>
 ```
 
 ## Next steps
