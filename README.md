@@ -8,6 +8,10 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 - Efficient navigation and command powered by keyboard-centeric interaction design.
 - Easy theming and customziation with JavaScript and CSS (coming soon).
 
+## Screenshot
+
+![image](https://user-images.githubusercontent.com/1895289/116659117-ed0fb800-a945-11eb-9e97-c28eeaf29ab0.png)
+
 ## Get started
 
 ### Install Docker
@@ -57,7 +61,7 @@ This project is still in its early stage. Expect breaking changes and feature ov
 
 ## Contributions
 
-My top priority is to modularize the sytem so I can tackle customization and theming without building technical debt. Until then, I have limited bandwidth for new features. As always, ideas and bug reports are welcome. I'll get to them as soon as I free up. Thank you for being patient with this project.
+My top priority is to modularize the sytem so I can tackle customization and theming without building technical debt. Until then, I have limited bandwidth for new features. Ideas and bug reports are welcome. I'll get to them as soon as I free up. Thank you for being patient with this project.
 
 ## Credits
 
