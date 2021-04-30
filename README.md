@@ -75,3 +75,9 @@ This project is inspired by all of the great text editors and note taking apps o
 - [Semilattice](https://www.semilattice.xyz)
 - [Emacs Org Mode](https://orgmode.org), [Org roam](https://github.com/org-roam/org-roam)
 - [Project Xanadu](https://www.xanadu.net)
+
+## Ecosystem
+
+osmos::note is part of the [osmos::craft](https://osmoscraft.org) ecosystem. If you enjoy this tool, you might also like:
+- [osmos::feed](https://github.com/osmoscraft/osmosfeed): A web-based RSS reader running entirely from your GitHub repo.
+- [osmos::memo](https://github.com/osmoscraft/osmosmemo): An in-browser bookmark manager optimized for tagging and retrieval speed.
