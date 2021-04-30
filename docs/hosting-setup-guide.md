@@ -22,7 +22,7 @@ In this tutorial, you will create a new GitHub repository to host your notes.
 ### Initialize the repo for knowledge capture
 
 1. Open a GitHub a
-2. Use <kbd>Ctrl</kbd>+<kbd>Space</kdb> to open command input. Type <kbd>ss</kbd> to open settings page.
+2. Use <kbd>Ctrl</kbd>+<kbd>Space</kbd> to open command input. Type <kbd>ss</kbd> to open settings page.
 3. Fill in `Owner` field with your GitHub username.
 4. Fill in `Repo` field with the name of the repo you just created.
 5. Select `HTTPS` as your Network protocol.
