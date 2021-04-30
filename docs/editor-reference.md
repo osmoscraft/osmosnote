@@ -3,9 +3,9 @@
 - Use keyboard arrow keys to move around.
 - Use <kbd>Ctrl</kbd>+<kbd>ArrowLeft</kbd> and <kbd>Ctrl</kbd>+<kbd>ArrowRight</kbd> to move by words.
 - Use <kbd>Home</kbd> and <kbd>End</kbd> to move to line start and line end.
-- Use <kbd>PageUp</kbd>/</kbd>PageDown</kbd> to jump by blocks.
-- When opening a different note, you can use browser Back/Forward to navigate. By default, <kbd>Alt</kbd>+<kbd>ArrowLeft</kbd> goes back. <kbd>Alt</kbd>+<kbd>ArrowRight</kbd> goes forward. It may differ for each browser.
-- When you place cursor inside numbers portion of a link, use <kbd>Enter</kbd> to open the link.
+- Use <kbd>PageUp</kbd>/<kbd>PageDown</kbd> to jump by blocks.
+- When opening a different note, you can use browser Back/Forward button to navigate. By default, <kbd>Alt</kbd>+<kbd>ArrowLeft</kbd> goes back. <kbd>Alt</kbd>+<kbd>ArrowRight</kbd> goes forward. It may differ across browsers.
+- When you place cursor inside the `()` portion of a link, use <kbd>Enter</kbd> to open the link.
 
 # Using command bar
 
@@ -86,7 +86,7 @@
 
 ### Save file locally
 
-- Use <kbd>Ctrl</kbd>+s (shortcut for <kbd>Ctrl</kbd>+<kbd>Space</kbd>, <kbd>fs</kbd>) to save the file you are editing.
+- Use <kbd>Ctrl</kbd>+<kbd>s</kbd> (shortcut for <kbd>Ctrl</kbd>+<kbd>Space</kbd>, <kbd>fs</kbd>) to save the file you are editing.
 
 ### Sync with remote
 
@@ -101,4 +101,4 @@
 ## Find on page
 
 - Use the browser find on page (<kbd>Ctrl</kbd>+<kbd>F</kbd>) feature.
-  -- Use <kbd>Escape</kbd> key to exit find on page mode. Your caret should select the matching words.
+- Use <kbd>Escape</kbd> key to exit find on page mode. Your caret should select the matching phrase.
