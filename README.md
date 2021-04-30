@@ -29,14 +29,15 @@ docker kill <container_id>
 
 ## Next steps
 
-1. Follow the tutorial to capture your first note.
+1. Create your first knowledge repository
 2. Learn [Haiku](docs/haiku-language-reference.md), a simple language for knowledge capture.
 
-## Advanced guides
+## Guides
 
 1. Capture knowledge with browser bookmarklet.
 2. Connect to GitHub with with SSH
 3. [Alternative installations](docs/alternative-installations.md)
+4. Update
 
 ## Roadmap
 

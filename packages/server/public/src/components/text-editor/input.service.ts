@@ -265,13 +265,13 @@ export class InputService {
 
       // Indent/Outdent
       case "Period":
-        if (event.ctrlKey) {
+        if (event.altKey) {
           event.preventDefault();
           this.editService.shiftIndent(host, 1);
         }
         break;
       case "Comma":
-        if (event.ctrlKey) {
+        if (event.altKey) {
           event.preventDefault();
           this.editService.shiftIndent(host, -1);
         }

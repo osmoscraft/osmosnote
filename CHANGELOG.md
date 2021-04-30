@@ -2,6 +2,8 @@
 
 - Added: Haiku language reference
 - Added: Handle git setup in settings page
+- Changed: alt + ,. for indent to avoid conflict with system input method
+- Changed: spellcheck is now disabled by default
 - Changed: favicon update.
 - Changed: switch to esbuild for production bundling
 - Changed: replaced config file with .git and docker-compose.yml.

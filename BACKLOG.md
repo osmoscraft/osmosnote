@@ -2,6 +2,7 @@
 
 ## Working on: 1st alpha release
 
+- Finalize file extension: use `haiku`
 - Documentation
   - Project principles
     - Connected notes

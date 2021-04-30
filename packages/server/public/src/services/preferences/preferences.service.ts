@@ -5,7 +5,7 @@ export interface Preferences {
 }
 
 const DEFAULT_PREFERENCES: Preferences = {
-  spellcheck: true,
+  spellcheck: false,
 };
 
 const STORAGE_KEY = "s2-preferences";
