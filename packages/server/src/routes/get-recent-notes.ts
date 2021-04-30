@@ -4,6 +4,7 @@ import { filenameToId } from "../lib/filename-to-id";
 import { readNote } from "../lib/note-file-io";
 import { parseNote } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
+import { STORAGE_FILE_EXTENSION } from "../lib/id-to-filename";
 
 const DEFAULT_LIMIT = 10;
 
@@ -28,7 +29,9 @@ export const handleGetRecentNotes = createHandler<GetRecentNotesOutput, GetRecen
   const notesDir = config.repoDir;
   const { limit = DEFAULT_LIMIT } = input;
 
-  const { stdout, stderr, error } = await runShell(`ls -1t *.md | head -n ${limit}`, { cwd: notesDir });
+  const { stdout, stderr, error } = await runShell(`ls -1t *.${STORAGE_FILE_EXTENSION} | head -n ${limit}`, {
+    cwd: notesDir,
+  });
 
   if (error || stderr.length) {
     if (stderr) console.log("[note-list] cannot list", stderr);
