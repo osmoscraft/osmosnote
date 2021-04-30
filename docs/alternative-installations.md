@@ -2,6 +2,8 @@
 
 ## Node.js based
 
+This is work in progress...
+
 ### Install dependencies
 
 1. Choose your operating system:
@@ -16,16 +18,4 @@
 
 ### Install node package
 
-TODO: This seciont is out-of-date
-
-1. Download the latest binary `osmosnote` from [releases](https://github.com/osmoscraft/osmosnote/releases)
-2. Make the binary executable
-   ```sh
-   chmod +x ./osmosnote
-   ```
-3. Start the server
-   ```sh
-   ./osmosnote
-   ```
-4. Open frontend at https://localhost:2077. In the app, press <kbd>Ctrl</kbd>+<kbd>SPACE</kbd> to open command input.
-5. settings > set git repository
+TBD...

@@ -18,6 +18,9 @@
     "clean:server": "rm -rf dist && rm -rf bin",
     "clean:client": "rm -rf public/dist"
   },
+  "bin": {
+    "osmosnote": "dist/main.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/osmoscraft/osmosnote.git"
