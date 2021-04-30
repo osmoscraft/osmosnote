@@ -16,6 +16,8 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 
 ### Install Docker
 
+[Get Docker for your operating system](https://docs.docker.com/get-docker)
+
 ### Run the app
 
 ```sh
