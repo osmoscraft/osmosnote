@@ -2,6 +2,7 @@
 
 - Added: Haiku language reference
 - Added: Handle git setup in settings page
+- Changed: use `haiku` instead of `md` as file extension
 - Changed: alt + ,. for indent to avoid conflict with system input method
 - Changed: spellcheck is now disabled by default
 - Changed: favicon update.

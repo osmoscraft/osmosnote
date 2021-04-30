@@ -2,7 +2,6 @@
 
 ## Working on: 1st alpha release
 
-- Finalize file extension: use `haiku`
 - Documentation
   - Project principles
     - Connected notes
@@ -15,15 +14,6 @@
   - Node.js + dependencies mode
   - Known issues
   - Compare to other software (notion, org-roam, etc)
-- Demo content
-  - Make self documenting tutorial available in docker run
-  - GIF capture of key features
-    - Command bar
-    - Back linking
-    - Instant search
-    - Tagging
-    - List formatting
-    - Heading formatting
 - Logistics
   - Share roadmap on GitHub project
   - Share backlog on GitHub project
