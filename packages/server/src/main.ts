@@ -76,7 +76,7 @@ async function run() {
     }
 
     console.log(`Server address: ${bold(green(`http://localhost:${appConfig.port}`))}`);
-    console.log(`If you are running from Docker, the port number may be different.`);
+    console.log(`When running from Docker, port number is specified by host.`);
   });
 }
 
