@@ -27,8 +27,9 @@ In this tutorial, you will create a new GitHub repository to host your notes.
 4. Fill in `Repo` field with the name of the repo you just created.
 5. Select `HTTPS` as your Network protocol.
 6. Fill in the personal access token you just created.
-7. Click "Save connection".
+7. Click "Test" to make sure your credentials are correct.
+8. Click "Save connection" to connect and initialize the repo.
 
 ## Other hosting options
 
-TBD...
+1. If you want to use SSH protocol, you need to make sure the SSH private keys are available on the container. See [Storage setup guide](./storage-setup-guide#mount-a-directory-with-ssh-private-keys)
