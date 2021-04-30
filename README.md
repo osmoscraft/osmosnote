@@ -10,7 +10,7 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 
 ## Screenshot
 
-![image](https://user-images.githubusercontent.com/1895289/116658667-2dbb0180-a945-11eb-949d-abcc5887d614.png)
+![image](https://user-images.githubusercontent.com/1895289/116659117-ed0fb800-a945-11eb-9e97-c28eeaf29ab0.png)
 
 ## Get started
 
