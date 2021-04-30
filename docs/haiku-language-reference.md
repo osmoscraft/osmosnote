@@ -45,7 +45,7 @@ Unordered list:
 #+key3: item1, item2, item3
 ```
 
-### Links
+### Link
 
 ```haiku
 This is [an internal link](YYYYMMDDHHMMSSS).
