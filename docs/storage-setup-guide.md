@@ -42,3 +42,7 @@ docker run -p 6683:6683 \
  -u 1000:1000 \
  osmoscraft/osmosnote
 ```
+
+## Next steps
+
+- Learn how to back up your notes from [Hosting setup guide](./hosting-setup-guide.md).
