@@ -2,13 +2,14 @@
 
 - Added: Haiku language reference
 - Added: Handle git setup in settings page
-- Changed: use `haiku` instead of `md` as file extension
-- Changed: alt + ,. for indent to avoid conflict with system input method
-- Changed: spellcheck is now disabled by default
-- Changed: favicon update.
-- Changed: switch to esbuild for production bundling
-- Changed: replaced config file with .git and docker-compose.yml.
-- Changed: replaced single executable with docker image and docker compose template
+- Added: Basic documentation for public release
+- Changed: Use `haiku` instead of `md` as file extension
+- Changed: Alt + ,. for indent to avoid conflict with system input method
+- Changed: Spellcheck is now disabled by default
+- Changed: Favicon update.
+- Changed: Switch to esbuild for production bundling
+- Changed: Replaced config file with .git and docker-compose.yml.
+- Changed: Replaced single executable with docker image and docker compose template
 
 # v0.0.13
 

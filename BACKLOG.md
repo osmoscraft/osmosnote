@@ -1,24 +1,5 @@
 # Roadmap
 
-## Working on: 1st alpha release
-
-- Documentation
-  - Project principles
-    - Connected notes
-  - Check credits and licenses
-  - Future roadmap (e.g. theming, extension, markdown mode, org mode, vim mode)
-  - Quick start
-    - Docker run mode
-  - Docker compose mode
-    - Recipes
-  - Node.js + dependencies mode
-  - Known issues
-  - Compare to other software (notion, org-roam, etc)
-- Logistics
-  - Share roadmap on GitHub project
-  - Share backlog on GitHub project
-  - Bug issue templates
-
 ## Bug backlog
 
 - Bug: List movement is broken in 202104122000878
