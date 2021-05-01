@@ -8,7 +8,7 @@ on:
       - "v*"
 
 jobs:
-  build-and-pack:
+  build and publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,16 +33,19 @@ jobs:
           draft: true
           prerelease: false
       - name: Publish to npm
+        if: startsWith(github.ref, 'refs/tags/v')
         run: npm publish --access=public
         working-directory: packages/server
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Login to Dockerhub
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
+        if: startsWith(github.ref, 'refs/tags/v')
         id: docker_build
         uses: docker/build-push-action@v2
         with:
