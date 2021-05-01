@@ -2,6 +2,8 @@ name: Branch and tag based release
 
 on:
   push:
+    branches:
+      - master
     tags:
       - "v*"
 
@@ -15,8 +17,10 @@ jobs:
         uses: actions/setup-node@v2.1.4
         with:
           node-version: 15.x
-      - run: npm install
+      - run: npm ci
+        working-directory: packages/server
       - run: npm run build
+        working-directory: packages/server
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -28,6 +32,6 @@ jobs:
           draft: true
           prerelease: false
       - run: npm publish --access=public
+        working-directory: packages/server
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        working-directory: packages/server
