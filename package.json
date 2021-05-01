@@ -11,7 +11,6 @@
     "serve": "npm-run-all -p serve:*",
     "clean": "npm-run-all -p clean:*",
     "build": "npm-run-all -p clean:* -p build:*",
-    "pack": "npm run pack:node --prefix packages/server",
     "release": "node packages/scripts/release.js",
     "clean:server": "npm run clean --prefix packages/server",
     "dev:server": "npm run dev --prefix packages/server",
