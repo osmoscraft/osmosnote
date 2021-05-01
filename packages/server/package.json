@@ -20,6 +20,11 @@
   "bin": {
     "osmosnote": "dist/main.js"
   },
+  "files": [
+    "src",
+    "dist",
+    "public"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/osmoscraft/osmosnote.git"
