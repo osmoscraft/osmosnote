@@ -1,4 +1,4 @@
-# v1.0.0-alpha.3
+# v1.0.0-alpha.4
 
 - Added: Haiku language reference
 - Added: Handle git setup in settings page
