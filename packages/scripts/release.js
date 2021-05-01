@@ -1,5 +1,5 @@
-// Create a tag using the current root package version and push the tag to origin
-const { version } = require("../../package.json");
+// Create a tag using the current server package version and push the tag to origin
+const { version } = require("../../packages/server/package.json");
 const { exec } = require("child_process");
 const { exit } = require("process");
 

@@ -6,13 +6,14 @@
 npm version <major|minor|patch|prerelease>
 ```
 
-## Tag a commit
+## Tag and share to remote
 ```sh
+# Auto pick up version from package.json
+# In root package
+npm run release
+
+# OR, manually tag the version
 # In root package
 git tag v<major>.<minor>.<patch>-<alpha|beta>.<prerelease>
-```
-
-## Share the tag to remote
-```sh
 git push origin vX.Y.Z
 ```
