@@ -1,6 +1,6 @@
 {
   "name": "@osmoscraft/osmosnote",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.3",
   "description": "",
   "main": "dist/main.js",
   "types": "index.d.ts",
@@ -21,9 +21,9 @@
     "osmosnote": "dist/main.js"
   },
   "files": [
-    "src",
-    "dist",
-    "public"
+    "src/**/*",
+    "dist/**/*",
+    "public/**/*"
   ],
   "repository": {
     "type": "git",
