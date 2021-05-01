@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-node@v2.1.4
         with:
           node-version: 15.x
-      - run: npm ci
+      - run: npm install
       - run: npm run build
       - name: Create Release
         id: create_release
