@@ -30,8 +30,8 @@
     "url": "git+https://github.com/osmoscraft/osmosnote.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "osmoscraft",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/osmoscraft/osmosnote/issues"
   },
