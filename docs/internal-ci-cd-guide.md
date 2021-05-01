@@ -4,6 +4,8 @@
 ```sh
 # In server package
 npm version <major|minor|patch|prerelease>
+
+# Git commit and push
 ```
 
 ## Tag and share to remote
