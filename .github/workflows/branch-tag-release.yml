@@ -6,9 +6,6 @@ on:
       - master
     tags:
       - "v*"
-  pull_request:
-    branches:
-      - master
 
 jobs:
   build-and-publish:
@@ -53,4 +50,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: osmoscraft/osmosnote:latest,osmoscraft/osmosnote:${{ github.ref }}
+          tags: osmoscraft/osmosnote:latest
