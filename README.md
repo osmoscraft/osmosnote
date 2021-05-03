@@ -1,3 +1,5 @@
+![image](https://user-images.githubusercontent.com/1895289/116900721-eacf8700-abed-11eb-8178-8d28601b52fc.png)
+
 # osmos::note
 
 A web-based text editor for networked note-taking, self-hostable on any Git repository.
