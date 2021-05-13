@@ -1,8 +1,9 @@
-# v1.0.0-alpha.4
+# v1.0.0-alpha.8
 
 - Added: Haiku language reference
 - Added: Handle git setup in settings page
 - Added: Basic documentation for public release
+- Added: CI/CD automation for node.js and docker based publish
 - Changed: Use `haiku` instead of `md` as file extension
 - Changed: Alt + ,. for indent to avoid conflict with system input method
 - Changed: Spellcheck is now disabled by default
