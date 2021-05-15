@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/1895289/116900721-eacf8700-abed-11eb-8178-8d28601b52fc.png)
+[![image](./docs/media/osmosnote-square-badge.svg)](#get-started)
 
 # osmos::note
 
@@ -81,5 +81,6 @@ This project is inspired by all of the great text editors and note taking apps o
 ## Ecosystem
 
 osmos::note is part of the [osmos::craft](https://osmoscraft.org) ecosystem. If you enjoy this tool, you might also like:
+
 - [osmos::feed](https://github.com/osmoscraft/osmosfeed): A web-based RSS reader running entirely from your GitHub repo.
 - [osmos::memo](https://github.com/osmoscraft/osmosmemo): An in-browser bookmark manager optimized for tagging and retrieval speed.
