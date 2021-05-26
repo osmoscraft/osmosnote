@@ -1,3 +1,7 @@
+# v1.0.0-alpha.9
+
+- Fixed: Case sensitive URLs were transformed to lowercase
+
 # v1.0.0-alpha.8
 
 - Added: Haiku language reference
