@@ -2,6 +2,7 @@
 
 ## Bug backlog
 
+- Bug: When moving lines with Ctrl + up/down arrow, the window won't scroll up/down.
 - Bug: List movement is broken in 202104122000878
 - Bug: CJK input doesn't work on blank lines: consider using `<br>` for empty line
 - Bug: emoji (and other unicode characters) got split in caret movement. Consider using default arrow key handling.
