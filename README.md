@@ -65,7 +65,7 @@ This project is still in its early stage. Expect breaking changes and feature ov
 
 ## Contributions
 
-My top priority is to modularize the sytem so I can tackle customization and theming without building technical debt. Until then, I have limited bandwidth for new features. Ideas and bug reports are welcome. I'll get to them as soon as I free up. Thank you for being patient with this project.
+My top priority is to modularize the system so I can tackle customization and theming without building technical debt. Until then, I have limited bandwidth for new features. Ideas and bug reports are welcome. I'll get to them as soon as I free up. Thank you for being patient with this project.
 
 ## Credits
 

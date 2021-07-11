@@ -35,7 +35,7 @@ If you want to connect to Git host using SSH instead of HTTPS protocol:
 ```sh
 docker run -p 6683:6683 \
  -e "OSMOSNOTE_REPO_DIR=/data" \
- -v /home/<username>/.ssh:/home/<username>/.ssh
+ -v /home/<username>/.ssh:/home/<username>/.ssh \
  -v </absolute/path/to/dir>:/data \
  -v /etc/passwd:/etc/passwd:ro \
  -v /etc/group:/etc/group:ro \
