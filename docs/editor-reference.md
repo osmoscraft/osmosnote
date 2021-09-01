@@ -56,7 +56,7 @@
 ### Add link to selected text
 
 1. Select text (<kbd>Shift</kbd>+Arrow keys)
-2. Use <kbd>Ctrl</kbd>+<kbd>k</kbd> (Shortcut for <kbd>Ctrl</kbd>+<kbd>Space</kbd>, <kbd>k</kbd>) to open command input.
+2. Use <kbd>Ctrl</kbd>+<kbd>i</kbd> (Shortcut for <kbd>Ctrl</kbd>+<kbd>Space</kbd>, <kbd>k</kbd>) to open command input.
 3. Type in your query to search notes.
 4. Use <kbd>ArrowUp</kbd> and <kbd>ArrowDown</kbd> to select result.
 5. Press <kbd>Enter</kbd> to confirm.
@@ -102,3 +102,17 @@
 
 - Use the browser find on page (<kbd>Ctrl</kbd>+<kbd>F</kbd>) feature.
 - Use <kbd>Escape</kbd> key to exit find on page mode. Your caret should select the matching phrase.
+
+# Vim users
+
+1. In the short term, a vim-like keybinding is supported but instead of being modal, holding <kbd>Ctrl</kbd> is required.
+   - Command bar movement with <kbd>Ctrl</kbd> + <kbd>J</kbd> and <kbd>Ctrl</kbd> + <kbd>K</kbd>
+   - Editor movement
+      - Arrow keys: <kbd>Ctrl</kbd> + <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd> 
+      - <kbd>Ctrl</kbd> + <kbd>Shift</kbd> for selection
+      - <kbd>Ctrl</kbd> + <kbd>Alt</kbd> for greater distance movement: word-wise for horizontal, block-wise for vertical. Combine with <kbd>Shift</kbd> for selection
+      - <kbd>Alt</kbd> + <kbd>J</kbd>/<kbd>K</kbd>for moving lines
+      - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>J</kbd>/<kbd>K</kbd>for duplicating lines
+2. In the long term:
+   - Allow custom key binding.
+   - Support modal vim.
