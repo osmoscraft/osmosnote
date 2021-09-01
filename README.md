@@ -59,9 +59,7 @@ When running from the container, you won't be able to persist any content after 
 This project is still in its early stage. Expect breaking changes and feature overhauls. Some ideas on top of my head:
 
 1. **Theming**. Since we have web technology, supporting CSS based theming is a no-brainer.
-2. **Customizable Text Editor**. I wrote my own text editor in order to optimize the UX for link insertion and indentation control. As a trade-off, the editor is not as customizable as other off-the-shelf solutions such as `CodeMirror` and `Monaco`. I will continue assess this trade-off and adopt open-source editor library as needed. In the short term:
-   - I plan to add custom key binding.
-   - I won't be able to support `vim` like modal binding.
+2. **Customizable Text Editor**. I wrote my own text editor in order to optimize the UX for link insertion and indentation control. As a trade-off, the editor is not as customizable as other off-the-shelf solutions such as `CodeMirror` and `Monaco`. I will continue assess this trade-off and adopt open-source editor library as needed. Currently, a vim-like keybinding is supported with caveats. See [notes for vim users](https://github.com/osmoscraft/osmosnote/blob/master/docs/editor-reference.md#vim-users).
 
 ## Contributions
 
