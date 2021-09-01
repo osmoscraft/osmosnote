@@ -17,7 +17,7 @@ export class QueryService {
 
       const result = await response.json();
       return result;
-    } catch (error) {
+    } catch (error: any) {
       return {
         error,
       };

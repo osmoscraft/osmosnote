@@ -233,7 +233,7 @@ export async function gitSetRemoteUrl(repoRoot: string, url: string): Promise<Gi
     try {
       await execAsync(`git remote remove ${DEFAULT_REMOTE}`, { cwd: repoRoot });
       console.log(`[update-git-remote] Removed existing remote ${DEFAULT_REMOTE} ${remoteUrl}`);
-    } catch (error) {
+    } catch (error: any) {
       console.log(`[update-git-remote] Error removing existing remote ${DEFAULT_REMOTE} ${remoteUrl}`);
       return {
         success: false,
@@ -245,7 +245,7 @@ export async function gitSetRemoteUrl(repoRoot: string, url: string): Promise<Gi
   try {
     await execAsync(`git remote add ${DEFAULT_REMOTE} ${url}`, { cwd: repoRoot });
     console.log(`[update-git-remote] Added remote ${DEFAULT_REMOTE} ${url}`);
-  } catch (error) {
+  } catch (error: any) {
     console.log(`[update-git-remote] Error adding remote ${DEFAULT_REMOTE} ${url}`);
     return {
       success: false,
@@ -271,7 +271,7 @@ export async function gitLsRemoteUrl(repoRoot: string, remoteUrl: string): Promi
     return {
       success: true,
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
       message: error?.message ?? "git ls-remote error",
@@ -283,7 +283,7 @@ export async function gitLsRemoteExists(repoRoot: string): Promise<boolean> {
   try {
     await execAsync(`git ls-remote --exit-code -q`, { cwd: repoRoot });
     return true;
-  } catch (error) {
+  } catch (error: any) {
     if (error.code === 2) return false;
 
     console.error(`[git] error ls-remote`, error);
@@ -317,7 +317,7 @@ export async function gitRemoteDefaultBranch(repoRoot: string): Promise<GitDefau
       success: true,
       branch,
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
       message: error?.message ?? `git remote show ${DEFAULT_REMOTE}`,
@@ -333,7 +333,7 @@ export async function gitFetchV2(repoRoot: string, remoteBranch?: string): Promi
     return {
       success: true,
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
       message: error?.message ?? `Error git fetch ${DEFAULT_REMOTE}/${branch}`,
@@ -349,7 +349,7 @@ export async function gitReset(repoRoot: string, remoteBranch?: string): Promise
     return {
       success: true,
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
       message: error?.message ?? `Error reset --hard ${DEFAULT_REMOTE}/${branch}`,
@@ -363,7 +363,7 @@ export async function gitTrackBranch(repoRoot: string, remoteBranch: string): Pr
     return {
       success: true,
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
       message: error?.message ?? `Error git branch -u ${DEFAULT_REMOTE}/${remoteBranch}`,
@@ -379,7 +379,7 @@ export async function gitForcePush(repoRoot: string): Promise<GitOperationResult
     return {
       success: true,
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
       message: error?.message ?? `Error push --force -u ${DEFAULT_REMOTE} ${branch}`,

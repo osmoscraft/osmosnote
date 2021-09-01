@@ -149,8 +149,8 @@ export class InputService {
         }
         break;
 
-      case "KeyK": // link to
-        if (event.ctrlKey) {
+      case "KeyI": // link to
+        if (event.ctrlKey && !event.shiftKey) {
           event.preventDefault();
           await this.componentRefService.commandBar.enterCommandMode("k");
         }
@@ -164,6 +164,26 @@ export class InputService {
         break;
 
       // Caret movement
+      case "KeyH":
+        if (event.ctrlKey) {
+          event.preventDefault();
+
+          if (event.shiftKey) {
+            this.caretService.selectLeft(host);
+          } else {
+            this.caretService.moveLeft(host);
+          }
+
+          if (event.altKey) {
+            if (event.shiftKey) {
+              this.caretService.selectWordStart(host);
+            } else {
+              this.caretService.moveWordStart(host);
+            }
+          }
+        }
+        break;
+
       case "ArrowLeft":
         if (event.altKey) break;
 
@@ -176,6 +196,26 @@ export class InputService {
           this.caretService.moveWordStart(host);
         } else if (event.ctrlKey && event.shiftKey) {
           this.caretService.selectWordStart(host);
+        }
+        break;
+
+      case "KeyL":
+        if (event.ctrlKey) {
+          event.preventDefault();
+
+          if (event.shiftKey) {
+            this.caretService.selectRight(host);
+          } else {
+            this.caretService.moveRight(host);
+          }
+
+          if (event.altKey) {
+            if (event.shiftKey) {
+              this.caretService.selectWordEnd(host);
+            } else {
+              this.caretService.moveWordEnd(host);
+            }
+          }
         }
         break;
 
@@ -212,6 +252,32 @@ export class InputService {
         }
         break;
 
+      case "KeyJ":
+        if (event.ctrlKey) {
+          event.preventDefault();
+          if (event.shiftKey) {
+            if (event.altKey) {
+              this.caretService.selectBlockEnd(host);
+            } else {
+              this.caretService.selectDown(host);
+            }
+          } else {
+            if (event.altKey) {
+              this.caretService.moveBlockEnd(host);
+            } else {
+              this.caretService.moveDown(host);
+            }
+          }
+        } else if (event.altKey) {
+          event.preventDefault();
+          if (event.shiftKey) {
+            await this.historyService.runAtomic(host, () => this.editService.duplicateLinesDown());
+          } else {
+            await this.historyService.runAtomic(host, () => this.editService.shiftLinesDown());
+          }
+        }
+        break;
+
       case "ArrowDown":
         event.preventDefault();
         if (event.shiftKey && event.altKey) {
@@ -222,6 +288,32 @@ export class InputService {
           this.caretService.selectDown(host);
         } else {
           this.caretService.moveDown(host);
+        }
+        break;
+
+      case "KeyK":
+        if (event.ctrlKey) {
+          event.preventDefault();
+          if (event.shiftKey) {
+            if (event.altKey) {
+              this.caretService.selectBlockStart(host);
+            } else {
+              this.caretService.selectUp(host);
+            }
+          } else {
+            if (event.altKey) {
+              this.caretService.moveBlockStart(host);
+            } else {
+              this.caretService.moveUp(host);
+            }
+          }
+        } else if (event.altKey) {
+          event.preventDefault();
+          if (event.shiftKey) {
+            await this.historyService.runAtomic(host, () => this.editService.duplicateLinesUp());
+          } else {
+            await this.historyService.runAtomic(host, () => this.editService.shiftLinesUp());
+          }
         }
         break;
 

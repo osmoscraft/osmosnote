@@ -1,3 +1,15 @@
+# v1.0.0-alpha.10
+
+- Added: Support command bar vertical movement with <kbd>Ctrl</kbd> + <kbd>J</kbd> and <kbd>Ctrl</kbd> + <kbd>K</kbd>
+- Added: Support vim-like editor movement
+   - Arrow keys: <kbd>Ctrl</kbd> + <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd> 
+   - <kbd>Ctrl</kbd> + <kbd>Shift</kbd> for selection
+   - <kbd>Ctrl</kbd> + <kbd>Alt</kbd> for greater distance movement: word-wise for horizontal, block-wise for vertical. Combine with <kbd>Shift</kbd> for selection
+   - <kbd>Alt</kbd> + <kbd>J</kbd>/<kbd>K</kbd>for moving lines
+   - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>J</kbd>/<kbd>K</kbd>for duplicating lines
+- Chore: Updated dependencies
+- Chore: Removed unused test package
+
 # v1.0.0-alpha.9
 
 - Fixed: Case sensitive URLs were transformed to lowercase
