@@ -1,3 +1,9 @@
+# v1.0.0-alpha.10
+
+- Added: Support command bar vertical movement with <kbd>Ctrl</kbd> + <kbd>J</kbd> and <kbd>Ctrl</kbd> + <kbd>N</kbd>
+- Chore: Updated dependencies
+- Chore: Removed unused test package
+
 # v1.0.0-alpha.9
 
 - Fixed: Case sensitive URLs were transformed to lowercase
