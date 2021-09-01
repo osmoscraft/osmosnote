@@ -63,7 +63,7 @@ export async function getBinPath(bin: string): Promise<string | null> {
     }
 
     return result.stdout.trim();
-  } catch (error) {
+  } catch (error: any) {
     console.error(error?.message);
     return null;
   }
@@ -82,7 +82,7 @@ export async function getBinVersion(
     }
 
     return getVerionsFromStdout(result.stdout);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error?.message);
     return null;
   }
