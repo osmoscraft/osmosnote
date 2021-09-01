@@ -2,8 +2,8 @@
 
 ## Update version
 ```sh
-# In server package
-npm version <major|minor|patch|prerelease>
+# In root package
+npm version <major|minor|patch|prerelease> -w packages/server
 
 # Git commit and push
 ```

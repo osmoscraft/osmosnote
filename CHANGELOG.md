@@ -9,6 +9,7 @@
    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>J</kbd>/<kbd>K</kbd>for duplicating lines
 - Chore: Updated dependencies
 - Chore: Removed unused test package
+- Chore: Updated Docker image to node 16
 
 # v1.0.0-alpha.9
 
