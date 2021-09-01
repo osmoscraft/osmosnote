@@ -7,7 +7,7 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 - Retrieve knowledge as fast as you can type with zero-latency full-text search.
 - Make serendipitous discovery via backlink traversal.
 - Durable knowledge preservation with plaintext and Git backend.
-- Efficient navigation and command powered by keyboard-centeric interaction design.
+- Keyboard-centeric design for max efficiency.
 - Easy theming and customziation with JavaScript and CSS (coming soon).
 
 ## Screenshot
