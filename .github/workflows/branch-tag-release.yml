@@ -19,9 +19,7 @@ jobs:
           node-version: 16.x
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-        working-directory: packages/server
       - run: npm run build
-        working-directory: packages/server
       - name: Publish to npm
         if: startsWith(github.ref, 'refs/tags/v')
         run: npm publish --access=public
