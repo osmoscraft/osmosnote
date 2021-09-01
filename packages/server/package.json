@@ -2,13 +2,13 @@
   "name": "@osmoscraft/osmosnote",
   "version": "1.0.0-alpha.10",
   "description": "",
-  "main": "dist/main.js",
+  "main": "main.js",
   "types": "index.d.ts",
   "scripts": {
     "dev": "npm-run-all --print-label -p dev:*",
     "dev:client": "tsc -p public --watch",
     "dev:server": "ts-node-dev --inspect=4321 --respawn --transpile-only src/main.ts",
-    "serve": "node dist/main.js",
+    "serve": "node main.js",
     "build": "npm-run-all --print-label -p build:* -s pack:docker",
     "build:server": "node scripts/build-server.js",
     "build:client": "node scripts/build-client.js",
@@ -18,7 +18,7 @@
     "clean:client": "rm -rf public/dist"
   },
   "bin": {
-    "osmosnote": "dist/main.js"
+    "osmosnote": "main.js"
   },
   "files": [
     "src/**/*",

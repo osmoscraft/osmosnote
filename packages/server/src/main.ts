@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import fastify from "fastify";
 import fastifyStatic from "fastify-static";
 import path from "path";
