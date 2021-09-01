@@ -1,6 +1,6 @@
 # v1.0.0-alpha.10
 
-- Added: Support command bar vertical movement with <kbd>Ctrl</kbd> + <kbd>J</kbd> and <kbd>Ctrl</kbd> + <kbd>N</kbd>
+- Added: Support command bar vertical movement with <kbd>Ctrl</kbd> + <kbd>J</kbd> and <kbd>Ctrl</kbd> + <kbd>K</kbd>
 - Added: Support vim-like editor movement
    - Arrow keys: <kbd>Ctrl</kdb> + <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd> 
    - <kbd>Ctrl</kbd> + <kbd>Shift</kbd> for selection
