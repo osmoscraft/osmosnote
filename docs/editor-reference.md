@@ -108,11 +108,12 @@
 1. In the short term, a vim-like keybinding is supported but instead of being modal, holding <kbd>Ctrl</kbd> is required.
    - Command bar movement with <kbd>Ctrl</kbd> + <kbd>J</kbd> and <kbd>Ctrl</kbd> + <kbd>K</kbd>
    - Editor movement
-      - Arrow keys: <kbd>Ctrl</kbd> + <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd> 
-      - <kbd>Ctrl</kbd> + <kbd>Shift</kbd> for selection
-      - <kbd>Ctrl</kbd> + <kbd>Alt</kbd> for greater distance movement: word-wise for horizontal, block-wise for vertical. Combine with <kbd>Shift</kbd> for selection
-      - <kbd>Alt</kbd> + <kbd>J</kbd>/<kbd>K</kbd>for moving lines
-      - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>J</kbd>/<kbd>K</kbd>for duplicating lines
+     - Arrow keys: <kbd>Ctrl</kbd> + <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd>
+     - <kbd>Ctrl</kbd> + <kbd>Shift</kbd> for selection
+     - <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd><kbd>L</kbd> for word-wise movement. Combine with <kbd>Shift</kbd> for selection
+     - <kbd>Ctrl</kbd> + <kbd>[</kbd>/<kbd>]</kbd> for block travel. Combine with <kbd>Shift</kbd> for selection
+     - <kbd>Alt</kbd> + <kbd>J</kbd>/<kbd>K</kbd>for moving lines
+     - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>J</kbd>/<kbd>K</kbd>for duplicating lines
 2. In the long term:
    - Allow custom key binding.
    - Support modal vim.
