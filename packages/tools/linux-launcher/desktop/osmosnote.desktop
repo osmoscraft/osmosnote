@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Name=osmosnote
+Comment=Networked note taking
+Exec=/home/sora/Desktop/portable/osmosnote/osmosnote.sh
+Icon=/home/sora/Desktop/portable/osmosnote/osmosnote-favicon.png
+Terminal=true
+Type=Application
+Categories=Application;
