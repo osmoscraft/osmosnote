@@ -1,3 +1,8 @@
+# v1.0.0-alpha.13
+
+- Fixed: `main` vs `master` branch name conflict when initializing from remote
+- Chore: Updated dependencies
+
 # v1.0.0-alpha.12
 
 - Changed: Block travel now uses <kbd>Ctrl</kbd> + bracket keys instead of <kbd>Ctrl</kbd> + <kbd>Atl</kbd> + <kbd>J</kbd>/<kbd>K</kbd>

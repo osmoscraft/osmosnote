@@ -360,6 +360,7 @@ export async function gitReset(repoRoot: string, remoteBranch?: string): Promise
 export async function gitTrackBranch(repoRoot: string, remoteBranch: string): Promise<GitOperationResult> {
   try {
     await execAsync(`git branch -u ${DEFAULT_REMOTE}/${remoteBranch}`, { cwd: repoRoot });
+    console.log(`[git-track-branch] local branch set to track ${DEFAULT_REMOTE}/${remoteBranch}`);
     return {
       success: true,
     };
@@ -367,6 +368,21 @@ export async function gitTrackBranch(repoRoot: string, remoteBranch: string): Pr
     return {
       success: false,
       message: error?.message ?? `Error git branch -u ${DEFAULT_REMOTE}/${remoteBranch}`,
+    };
+  }
+}
+
+export async function gitRenameBranch(repoRoot: string, newBranchName: string): Promise<GitOperationResult> {
+  try {
+    await execAsync(`git branch -m ${newBranchName}`, { cwd: repoRoot });
+    console.log(`[git-rename-branch] working branch renamed to ${newBranchName}`);
+    return {
+      success: true,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message ?? `Error git branch -m ${newBranchName}`,
     };
   }
 }

@@ -1,5 +1,5 @@
 import { createHandler } from "../lib/create-handler";
-import { gitFetch, gitFetchV2, gitRemoteDefaultBranch, gitReset, gitSetRemoteUrl, gitTrackBranch } from "../lib/git";
+import { gitFetchV2, gitRemoteDefaultBranch, gitRenameBranch, gitReset, gitTrackBranch } from "../lib/git";
 import { getRepoMetadata } from "../lib/repo-metadata";
 
 export interface ResetLocalVersionInput {}
@@ -41,6 +41,14 @@ export const handleResetLocalVersion = createHandler<ResetLocalVersionOutput, Re
     return {
       success: false,
       message: trackBranchResult.message,
+    };
+  }
+
+  const renameBranchResult = await gitRenameBranch(config.repoDir, remoteBranchResult.branch!);
+  if (!renameBranchResult.success) {
+    return {
+      success: false,
+      message: renameBranchResult.message,
     };
   }
 
