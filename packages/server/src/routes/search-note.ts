@@ -6,6 +6,7 @@ import { readNote } from "../lib/note-file-io";
 import { parseNote } from "../lib/parse-note";
 import { runShell } from "../lib/run-shell";
 import { TAG_SEPARATOR } from "../lib/tag";
+import { unique } from "../lib/unique";
 
 const DEFAULT_RESULT_LIMIT = 30;
 
@@ -62,10 +63,11 @@ async function searchRipgrep(phrase: string, tags: string[], dir: string, limit:
      * Each tag will cause a full search pass. Optimization TBD
      * -l list file names only
      * -0 removes new line character after each file name
+     *  ./ forces rg to stop waiting for more input from stdin (https://github.com/BurntSushi/ripgrep/issues/2056)
      * xargs -0 formats the file names into a space separate list that can be piped into the next rg command. -r stops processing if it's empty
      */
     getFilenamesPreprocess = tags
-      .map((tag) => String.raw`rg "#\+tags(: |.+, )${tag}(,|\$)" -l --ignore-case -0 | xargs -0 -r `)
+      .map((tag) => String.raw`rg "#\+tags(: |.+, )${tag}.*(,|\$)" -l --ignore-case -0 ./ | xargs -0 -r `)
       .join("");
   }
 
@@ -95,7 +97,7 @@ async function tagOnlySearch(dir: string, getFilenamesPreprocess: string, limit:
   } else {
     const filenames = stdout.trim().split(" ");
 
-    const notesAsync = filenames.map(async (filename) => {
+    const notesAsync = unique(filenames).map(async (filename) => {
       const markdown = await readNote(filename);
       const parseResult = parseNote(markdown);
 
@@ -103,7 +105,7 @@ async function tagOnlySearch(dir: string, getFilenamesPreprocess: string, limit:
         id: filenameToId(filename),
         title: parseResult.metadata.title,
         tags: parseResult.metadata.tags,
-        score: 0, // can't tally tag core yet
+        score: 0, // can't tally tag score yet
       };
     });
 
@@ -122,8 +124,12 @@ async function keywordSearch(dir: string, keywords: string[], getFilenamesPrepro
 
   let searchCommand = "";
   if (keywords.length) {
-    // -H ensures file path is displayed even when there is only one result
-    searchCommand = String.raw`${getFilenamesPreprocess}rg "\b${wordsInput}" -H --ignore-case --count-matches | head -n ${limit}`;
+    if (getFilenamesPreprocess) {
+      // -H ensures file path is displayed even when there is only one result
+      searchCommand = String.raw`${getFilenamesPreprocess}rg "\b${wordsInput}" -H --ignore-case --count-matches | head -n ${limit}`;
+    } else {
+      searchCommand = String.raw`rg "\b${wordsInput}" -H --ignore-case --count-matches ./ | head -n ${limit}`;
+    }
   }
 
   /**

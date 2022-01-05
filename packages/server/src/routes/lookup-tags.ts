@@ -33,7 +33,7 @@ export const handleLookupTags = createHandler<LookupTagsOutput, LookupTagsInput>
    * -N hides line number
    * --no-heading removes blank line between files
    */
-  const findAllMatchingTagLinesCommand = String.raw`rg "^#\+tags:.*?\b${phrase}" --no-heading --ignore-case -IN`;
+  const findAllMatchingTagLinesCommand = String.raw`rg "^#\+tags:.*?\b${phrase}" --no-heading --ignore-case -IN ./`;
   const { error, stdout, stderr } = await runShell(findAllMatchingTagLinesCommand, { cwd: dir });
 
   if (error) {

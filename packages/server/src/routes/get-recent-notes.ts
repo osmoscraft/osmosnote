@@ -29,7 +29,7 @@ export const handleGetRecentNotes = createHandler<GetRecentNotesOutput, GetRecen
   const notesDir = config.repoDir;
   const { limit = DEFAULT_LIMIT } = input;
 
-  const { stdout, stderr, error } = await runShell(`ls -1t *.${STORAGE_FILE_EXTENSION} | head -n ${limit}`, {
+  const { stdout, stderr, error } = await runShell(`ls -1t *${STORAGE_FILE_EXTENSION} | head -n ${limit}`, {
     cwd: notesDir,
   });
 

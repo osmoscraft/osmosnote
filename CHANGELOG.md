@@ -1,3 +1,8 @@
+# v1.0.0-alpha.14
+
+- Fixed: `-t` tag search shows no result until some tag string is typed in
+- Fixed: rg v13.0.0 hangs on search
+
 # v1.0.0-alpha.13
 
 - Fixed: `main` vs `master` branch name conflict when initializing from remote

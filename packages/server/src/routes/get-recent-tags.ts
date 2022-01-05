@@ -37,7 +37,7 @@ export const handleGetRecentTags = createHandler<GetRecentTagsOutput, GetRecentT
    * --no-heading removes blank line between files
    */
   const { stdout, stderr, error } = await runShell(
-    String.raw`ls -1t *.${STORAGE_FILE_EXTENSION} | head -n ${limit} | xargs -d "\n" rg "^#\+tags: " --no-heading --ignore-case -IN`,
+    String.raw`ls -1t *${STORAGE_FILE_EXTENSION} | head -n ${limit} | xargs -d "\n" rg "^#\+tags: " --no-heading --ignore-case -IN ./`,
     {
       cwd: notesDir,
     }

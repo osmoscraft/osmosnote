@@ -7,15 +7,15 @@ export function parseQuery(query: string): ParsedQuery {
   let phraseResult = "";
   let tagsResult: string[] = [];
 
-  // naive parsing for now, since we only one args type
-  const tagsStartIndex = raw.indexOf(" -t ");
+  // naive parsing for now, since we only have one args type
+  const tagsStartIndex = raw.indexOf(" -t");
 
   if (tagsStartIndex < 0) {
     phraseResult = raw.trim();
     tagsResult = [];
   } else {
-    phraseResult = raw.slice(0, tagsStartIndex);
-    const tagsRaw = raw.slice(tagsStartIndex + " -t ".length);
+    phraseResult = raw.slice(0, tagsStartIndex).trim();
+    const tagsRaw = raw.slice(tagsStartIndex + " -t".length).trim();
     tagsResult = tagsRaw
       .split(",")
       .map((tagRaw) => tagRaw.trim())
