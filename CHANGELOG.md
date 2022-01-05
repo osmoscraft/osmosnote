@@ -2,6 +2,7 @@
 
 - Fixed: `-t` tag search shows no result until some tag string is typed in
 - Fixed: rg v13.0.0 hangs on search
+- Chore: Updated dependencies
 
 # v1.0.0-alpha.13
 
