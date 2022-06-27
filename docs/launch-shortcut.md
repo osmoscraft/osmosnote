@@ -1,6 +1,9 @@
 # Linux
 
 ## gnome desktop launcher
+
+Create the file `s2.desktop` in `~/.local/share/applications` with the content below
+
 ```desktop
 #!/usr/bin/env xdg-open
 [Desktop Entry]
