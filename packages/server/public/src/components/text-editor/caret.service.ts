@@ -115,6 +115,10 @@ export class CaretService {
     this.extendFocus({ seeker: this.getWordEndPositionFromCaret, root });
   }
 
+  selectWordEndLazy(root: HTMLElement) {
+    this.extendFocus({ seeker: this.getWordEndLazyPositionFromCaret, root });
+  }
+
   moveLeft(root: HTMLElement) {
     this.moveCaretCollapsedByOffset(-1, root);
   }
@@ -133,6 +137,10 @@ export class CaretService {
 
   selectWordStart(root: HTMLElement) {
     this.extendFocus({ seeker: this.getWordStartPositionFromCaret, root });
+  }
+
+  selectWordStartLazy(root: HTMLElement) {
+    this.extendFocus({ seeker: this.getWordStartLazyPositionFromCaret, root });
   }
 
   moveHome(root: HTMLElement) {
@@ -609,6 +617,29 @@ export class CaretService {
     return null;
   }
 
+  // similar to getWordEndPosition but treats line ending as a word
+  private getWordEndLazyPositionFromCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
+    const currentLineMetrics = this.lineQueryService.getLineMetrics(currentLine);
+    const { offset: caretOffset } = this.getCaretLinePosition(caret.focus);
+
+    if (caretOffset === currentLineMetrics.selectableLength) {
+      // if at line end, search next line
+      const nextLine = this.lineQueryService.getNextLine(currentLine);
+      if (nextLine) {
+        return this.lineQueryService.seekToLineStart(nextLine);
+      }
+    } else {
+      // search current line (a result is guaranteed)
+      const textAfterCaret = this.lineQueryService.sliceLine(currentLine, caretOffset);
+      const wordEndOffset = getWordEndOffset(textAfterCaret);
+      const foundPosition = seek({ source: currentLine, offset: caretOffset + wordEndOffset })!;
+      return foundPosition;
+    }
+
+    return null;
+  }
+
   private getWordStartPositionFromCaret(caret: Caret): SeekOutput | null {
     const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
     const { offset: caretOffset } = this.getCaretLinePosition(caret.focus);
@@ -623,6 +654,30 @@ export class CaretService {
         const wordEndOffset = previousLineMetrics.selectableLength - wordEndOffsetBackward;
         const foundPosition = seek({ source: previousLine, offset: wordEndOffset })!;
         return foundPosition;
+      }
+    } else {
+      // search current line (a result is guaranteed)
+      const textBeforeCaretBackward = ensureLineEnding(
+        reverse(this.lineQueryService.sliceLine(currentLine, 0, caretOffset))
+      );
+      const wordEndOffsetBackward = getWordEndOffset(textBeforeCaretBackward);
+      const foundPosition = seek({ source: currentLine, offset: caretOffset - wordEndOffsetBackward })!;
+      return foundPosition;
+    }
+
+    return null;
+  }
+
+  // similar to getWordStartPosition but treats line ending as a word
+  private getWordStartLazyPositionFromCaret(caret: Caret): SeekOutput | null {
+    const currentLine = this.lineQueryService.getLine(caret.focus.node)!;
+    const { offset: caretOffset } = this.getCaretLinePosition(caret.focus);
+
+    if (caretOffset === 0) {
+      // if at line start, search previous line
+      const previousLine = this.lineQueryService.getPreviousLine(currentLine);
+      if (previousLine) {
+        return this.lineQueryService.seekToLineEnd(previousLine);
       }
     } else {
       // search current line (a result is guaranteed)

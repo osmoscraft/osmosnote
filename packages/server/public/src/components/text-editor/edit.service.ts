@@ -212,7 +212,9 @@ export class EditService {
       return;
     }
 
-    this.caretService.selectWordStart(root);
+    // Note that most editors seek word boundary more conservatively when deleting compared to just moving
+    // Using the lazy mode to ensure line ending is treated as a word
+    this.caretService.selectWordStartLazy(root);
     this.deleteSelectionExplicit(root);
   }
 
@@ -225,7 +227,7 @@ export class EditService {
       return;
     }
 
-    this.caretService.selectWordEnd(root);
+    this.caretService.selectWordEndLazy(root);
     this.deleteSelectionExplicit(root);
   }
 
