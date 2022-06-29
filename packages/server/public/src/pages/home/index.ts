@@ -13,7 +13,6 @@ import { TextEditorComponent } from "../../components/text-editor/text-editor.co
 import { TrackChangeService } from "../../components/text-editor/track-change.service.js";
 import { ApiService } from "../../services/api/api.service.js";
 import { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
-import { DiagnosticsService } from "../../services/diagnostics/diagnostics-service.js";
 import { DocumentRefService } from "../../services/document-reference/document.service.js";
 import { NotificationService } from "../../services/notification/notification.service.js";
 import { PreferencesService } from "../../services/preferences/preferences.service.js";

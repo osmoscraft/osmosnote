@@ -6,8 +6,8 @@
   "types": "index.d.ts",
   "scripts": {
     "dev": "npm-run-all --print-label -p dev:*",
-    "dev:client": "tsc -p public --watch",
-    "dev:server": "ts-node-dev --inspect=4321 --respawn --transpile-only src/main.ts",
+    "dev:client": "node scripts/build-client.js --watch",
+    "dev:server": "tsx watch --clear-screen=false src/main.ts",
     "serve": "node main.js",
     "build": "npm-run-all --print-label -p build:* -s pack:docker",
     "build:server": "node scripts/build-server.js",
@@ -50,7 +50,6 @@
     "esbuild": "^0.14.47",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
-    "ts-node-dev": "^1.1.8",
     "typescript": "^4.7.4"
   }
 }
