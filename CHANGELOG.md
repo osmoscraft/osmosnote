@@ -1,4 +1,4 @@
-# v1.0.0-alpha.14
+# v1.0.0-alpha.15
 
 - Added: Support for xmodmap custom keyboard maps
 - Fixed: Ctrl + Delete/Backspace movement was too aggressive at line boundary
