@@ -217,7 +217,7 @@ export class InputService {
         }
         break;
 
-      case "BracketRight":
+      case "]":
         if (event.ctrlKey) {
           event.preventDefault();
           if (event.shiftKey) {
@@ -241,7 +241,7 @@ export class InputService {
         }
         break;
 
-      case "BracketLeft":
+      case "[":
         if (event.ctrlKey) {
           event.preventDefault();
           if (event.shiftKey) {
@@ -291,13 +291,13 @@ export class InputService {
         break;
 
       // Indent/Outdent
-      case "Period":
+      case ".":
         if (event.altKey) {
           event.preventDefault();
           this.editService.shiftIndent(host, 1);
         }
         break;
-      case "Comma":
+      case ",":
         if (event.altKey) {
           event.preventDefault();
           this.editService.shiftIndent(host, -1);
