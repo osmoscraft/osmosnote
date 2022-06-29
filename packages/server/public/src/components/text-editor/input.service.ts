@@ -217,17 +217,6 @@ export class InputService {
         }
         break;
 
-      case "]":
-        if (event.ctrlKey) {
-          event.preventDefault();
-          if (event.shiftKey) {
-            this.caretService.selectBlockEnd(host);
-          } else {
-            this.caretService.moveBlockEnd(host);
-          }
-        }
-        break;
-
       case "ArrowDown":
         event.preventDefault();
         if (event.shiftKey && event.altKey) {
@@ -238,17 +227,6 @@ export class InputService {
           this.caretService.selectDown(host);
         } else {
           this.caretService.moveDown(host);
-        }
-        break;
-
-      case "[":
-        if (event.ctrlKey) {
-          event.preventDefault();
-          if (event.shiftKey) {
-            this.caretService.selectBlockStart(host);
-          } else {
-            this.caretService.moveBlockStart(host);
-          }
         }
         break;
 
@@ -265,6 +243,8 @@ export class InputService {
         }
         break;
 
+      case "]":
+      case "}":
       case "PageDown":
         event.preventDefault();
         if (event.shiftKey) {
@@ -274,6 +254,8 @@ export class InputService {
         }
         break;
 
+      case "[":
+      case "{":
       case "PageUp":
         event.preventDefault();
         if (event.shiftKey) {
