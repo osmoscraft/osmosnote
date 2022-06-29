@@ -32,11 +32,12 @@ import type {
   SetGitRemoteOutput,
   SyncVersionsInput,
   SyncVersionsOutput,
+  TestGitRemoteInput,
   TestGitRemoteOutput,
   UpdateNoteInput,
   UpdateNoteOutput,
-  TestGitRemoteInput,
 } from "@osmoscraft/osmosnote";
+import type { ShutdownInput, ShutdownOutput } from "../../../../src/routes/shutdown.js";
 import type { QueryService } from "../query/query.service.js";
 
 export class ApiService {
@@ -100,6 +101,8 @@ export class ApiService {
     this.safeQuery<ResetLocalVersionOutput, ResetLocalVersionInput>(`/api/reset-local-version`, {});
 
   setGitRemote = (url: string) => this.safeQuery<SetGitRemoteOutput, SetGitRemoteInput>(`/api/set-git-remote`, { url });
+
+  shutdown = () => this.safeQuery<ShutdownOutput, ShutdownInput>(`/api/shutdown`, {});
 
   syncVersions = () => this.safeQuery<SyncVersionsOutput, SyncVersionsInput>(`/api/sync-versions`, {});
 

@@ -1,15 +1,16 @@
 import type { RegisteredCommand } from "./command-bar.component.js";
+import { handleFileDelete } from "./commands/handle-file-delete.js";
+import { handleFileFormat } from "./commands/handle-file-format.js";
+import { handleFileSaveAndSyncAll } from "./commands/handle-file-save-and-sync-all.js";
+import { handleFileSave } from "./commands/handle-file-save.js";
+import { handleFileSyncAll } from "./commands/handle-file-sync-all.js";
 import { handleInsertNote } from "./commands/handle-insert-note.js";
 import { handleInsertTags } from "./commands/handle-insert-tags.js";
 import { handleLinkToNote } from "./commands/handle-link-to-note.js";
 import { handleOpenOrCreateNote } from "./commands/handle-open-note.js";
-import { handleFileSyncAll } from "./commands/handle-file-sync-all.js";
-import { handleFileSaveAndSyncAll } from "./commands/handle-file-save-and-sync-all.js";
-import { handleFileSave } from "./commands/handle-file-save.js";
-import { handleToggleSpellcheck } from "./commands/handle-toggle-spellcheck.js";
-import { handleFileDelete } from "./commands/handle-file-delete.js";
-import { handleFileFormat } from "./commands/handle-file-format.js";
 import { handleOpenSettings } from "./commands/handle-open-settings.js";
+import { handleShutdown } from "./commands/handle-shutdown.js";
+import { handleToggleSpellcheck } from "./commands/handle-toggle-spellcheck.js";
 
 export const commandTree: RegisteredCommand = {
   name: "All commands",
@@ -81,6 +82,11 @@ export const commandTree: RegisteredCommand = {
           handler: handleToggleSpellcheck,
         },
       ],
+    },
+    {
+      name: "Shutdown",
+      key: "q",
+      handler: handleShutdown,
     },
   ],
 };

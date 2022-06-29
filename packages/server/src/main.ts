@@ -19,6 +19,7 @@ import { handleLookupTags } from "./routes/lookup-tags";
 import { handleResetLocalVersion } from "./routes/reset-local-version";
 import { handleSearchNote } from "./routes/search-note";
 import { handleSetGitRemote } from "./routes/set-git-remote";
+import { handleShutdown } from "./routes/shutdown";
 import { handleSyncVersions } from "./routes/sync-versions";
 import { handleTestGitRemote } from "./routes/test-git-remote";
 import { handleUpdateNote } from "./routes/update-note";
@@ -63,6 +64,7 @@ async function run() {
   server.post("/api/reset-local-version", handleResetLocalVersion);
   server.post("/api/search-notes", handleSearchNote);
   server.post("/api/set-git-remote", handleSetGitRemote);
+  server.post("/api/shutdown", handleShutdown);
   server.post("/api/sync-versions", handleSyncVersions);
   server.post("/api/test-git-remote", handleTestGitRemote);
   server.post("/api/update-note", handleUpdateNote);
