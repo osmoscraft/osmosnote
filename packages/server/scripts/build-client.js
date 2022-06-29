@@ -9,8 +9,8 @@ require("esbuild")
     watch: isWatch
       ? {
           onRebuild(error, result) {
-            if (error) console.error("watch build failed:", error);
-            else console.log("watch build succeeded:", result);
+            if (error) console.error("rebuild failed:", error);
+            else console.log(`[${new Date().toISOString()}] rebuild successful`);
           },
         }
       : undefined,
