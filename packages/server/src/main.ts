@@ -1,11 +1,12 @@
+import fastifyStatic from "@fastify/static";
 import fastify from "fastify";
-import fastifyStatic from "fastify-static";
 import path from "path";
-import { getRepoMetadata } from "./lib/repo-metadata";
 import { bold, green } from "./lib/print";
 import { ensureRepoConfig } from "./lib/repo-config";
+import { getRepoMetadata } from "./lib/repo-metadata";
 import { handleCreateNote } from "./routes/create-note";
 import { handleDeleteNote } from "./routes/delete-note";
+import { handleForcePush } from "./routes/force-push";
 import { handleGetContentFromUrl } from "./routes/get-content-from-url";
 import { handleGetIncomingLinks } from "./routes/get-incoming-links";
 import { handleGetNote } from "./routes/get-note";
@@ -15,13 +16,12 @@ import { handleGetSettings } from "./routes/get-settings";
 import { handleGetSystemInformation } from "./routes/get-system-information";
 import { handleGetVersionStatus } from "./routes/get-version-status";
 import { handleLookupTags } from "./routes/lookup-tags";
-import { handleSearchNote } from "./routes/search-note";
-import { handleSyncVersions } from "./routes/sync-versions";
-import { handleUpdateNote } from "./routes/update-note";
-import { handleTestGitRemote } from "./routes/test-git-remote";
-import { handleSetGitRemote } from "./routes/set-git-remote";
 import { handleResetLocalVersion } from "./routes/reset-local-version";
-import { handleForcePush } from "./routes/force-push";
+import { handleSearchNote } from "./routes/search-note";
+import { handleSetGitRemote } from "./routes/set-git-remote";
+import { handleSyncVersions } from "./routes/sync-versions";
+import { handleTestGitRemote } from "./routes/test-git-remote";
+import { handleUpdateNote } from "./routes/update-note";
 
 // check if repo has .git dir
 
@@ -67,7 +67,7 @@ async function run() {
   server.post("/api/test-git-remote", handleTestGitRemote);
   server.post("/api/update-note", handleUpdateNote);
 
-  server.listen(appConfig.port, "0.0.0.0", async (err, address) => {
+  server.listen({ port: appConfig.port, host: "0.0.0.0" }, async (err, address) => {
     if (err) {
       console.error(err);
       process.exit(1);

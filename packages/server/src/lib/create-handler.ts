@@ -1,14 +1,10 @@
 import type { FastifyRequest } from "fastify";
 
 export function createHandler<OutputType, InputType>(sourceHandler: (input: InputType) => Promise<OutputType>) {
-  const decoratedHandler = async (
-    request: FastifyRequest<{
-      Body: InputType;
-      Reply: OutputSuccessOrError<OutputType>;
-    }>
-  ) => {
+  const decoratedHandler = async (request: FastifyRequest) => {
     try {
-      const output = await sourceHandler(request.body);
+      const body = request.body;
+      const output = await sourceHandler(request.body as InputType);
       return {
         data: output,
       };
