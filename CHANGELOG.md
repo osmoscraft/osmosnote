@@ -1,3 +1,7 @@
+# v1.0.0-alpha.17
+
+- Fixed: BLock selection was broken by the new keyboard event handler
+
 # v1.0.0-alpha.16
 
 - Fixed: Block movement and indentation were broken by the new keyboard event handler
