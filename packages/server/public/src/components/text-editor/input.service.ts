@@ -245,6 +245,14 @@ export class InputService {
 
       case "]":
       case "}":
+        if (event.ctrlKey) {
+          if (event.shiftKey) {
+            this.caretService.selectBlockEnd(host);
+          } else {
+            this.caretService.moveBlockEnd(host);
+          }
+        }
+        break;
       case "PageDown":
         event.preventDefault();
         if (event.shiftKey) {
@@ -256,6 +264,15 @@ export class InputService {
 
       case "[":
       case "{":
+        if (event.ctrlKey) {
+          event.preventDefault();
+          if (event.shiftKey) {
+            this.caretService.selectBlockStart(host);
+          } else {
+            this.caretService.moveBlockStart(host);
+          }
+        }
+        break;
       case "PageUp":
         event.preventDefault();
         if (event.shiftKey) {

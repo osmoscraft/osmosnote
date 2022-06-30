@@ -1,3 +1,7 @@
+# v1.0.0-alpha.18
+
+- Fixed: Bracket characters could not be enetered due to keymap conflict
+
 # v1.0.0-alpha.17
 
 - Fixed: BLock selection was broken by the new keyboard event handler
