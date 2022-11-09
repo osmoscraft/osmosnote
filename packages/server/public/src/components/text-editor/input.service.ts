@@ -1,5 +1,6 @@
 import type { ComponentRefService } from "../../services/component-reference/component-ref.service.js";
 import type { WindowRefService } from "../../services/window-reference/window.service.js";
+import { getCombo } from "../../utils/keyboard.js";
 import { isUrl } from "../../utils/url.js";
 import type { CaretService } from "./caret.service.js";
 import { LIST_CONTROL_CHAR } from "./compiler/list.js";
@@ -96,234 +97,229 @@ export class InputService {
   }
 
   private async handleKeydownEvents(event: KeyboardEvent, host: HTMLElement) {
-    switch (event.key) {
-      // undo/redo
-      case "z":
-        if (event.ctrlKey) {
-          event.preventDefault();
-          this.historyService.undo(host);
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
-        }
+    const combo = getCombo(event);
+
+    switch (combo) {
+      // edit
+      case "delete":
+        event.preventDefault();
+        await this.historyService.runAtomic(host, () => this.editService.deleteAfter(host));
         break;
-      case "Z":
-        if (event.ctrlKey) {
-          event.preventDefault();
-          this.historyService.redo(host);
-          this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
-        }
+      case "ctrl+delete":
+        event.preventDefault();
+        await this.historyService.runAtomic(host, () => this.editService.deleteWordAfter(host));
         break;
 
-      // command bar
-      case " ":
-        if (event.ctrlKey) {
-          event.preventDefault();
-          this.componentRefService.commandBar.enterCommandMode();
-        }
+      case "backspace":
+        event.preventDefault();
+        await this.historyService.runAtomic(host, () => this.editService.deleteBefore(host));
+        break;
+      case "ctrl+backspace":
+        event.preventDefault();
+        await this.historyService.runAtomic(host, () => this.editService.deleteWordBefore(host));
+        break;
+
+      case "enter":
+      case "shift+enter":
+      case "ctrl+enter":
+      case "ctrl+shift+enter":
+        // delegate, do not prefvent default
+        this.handleEnterKeydown(event, host);
+        break;
+
+      case "ctrl+x":
+        event.preventDefault();
+        await this.historyService.runAtomic(host, () => this.editService.caretCut(host));
+        break;
+
+      // cancel
+      case "escape":
+        event.preventDefault();
+        this.caretService.collapseToFocus(host);
+        break;
+
+      // undo/redo
+      case "ctrl+z":
+        event.preventDefault();
+        this.historyService.undo(host);
+        this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
+        break;
+      case "ctrl+shift+z":
+        event.preventDefault();
+        this.historyService.redo(host);
+        this.trackChangeService.trackByText(this.historyService.peek()?.textContent);
+        break;
+
+      // left
+      case "arrowLeft":
+        event.preventDefault();
+        this.caretService.moveLeft(host);
+        break;
+      case "shift+arrowLeft":
+        event.preventDefault();
+        this.caretService.selectLeft(host);
+        break;
+      case "ctrl+arrowLeft":
+        event.preventDefault();
+        this.caretService.moveWordStart(host);
+        break;
+      case "ctrl+shift+arrowLeft":
+        event.preventDefault();
+        this.caretService.selectWordStart(host);
+        break;
+      case "home":
+      case "ctrl+home":
+        event.preventDefault();
+        this.caretService.moveHome(host);
+        break;
+      case "shift+home":
+      case "ctrl+shift+home":
+        event.preventDefault();
+        this.caretService.selectHome(host);
+        break;
+
+      // right
+      case "arrowRight":
+        event.preventDefault();
+        this.caretService.moveRight(host);
+        break;
+      case "shift+arrowRight":
+        event.preventDefault();
+        this.caretService.selectRight(host);
+        break;
+      case "ctrl+arrowRight":
+        event.preventDefault();
+        this.caretService.moveWordEnd(host);
+        break;
+      case "ctrl+shift+arrowRight":
+        event.preventDefault();
+        this.caretService.selectWordEnd(host);
+        break;
+      case "end":
+      case "ctrl+end":
+        event.preventDefault();
+        this.caretService.moveEnd(host);
+        break;
+      case "shift+end":
+      case "ctrl+shift+end":
+        event.preventDefault();
+        this.caretService.selectEnd(host);
+        break;
+
+      // line outdent
+      case "alt+h":
+      case "alt+,":
+        event.preventDefault();
+        this.editService.shiftIndent(host, -1);
+        break;
+
+      // line indent
+      case "alt+l":
+      case "alt+.":
+        event.preventDefault();
+        this.editService.shiftIndent(host, 1);
+        break;
+
+      // line down
+      case "arrowDown":
+      case "ctrl+arrowDown":
+        event.preventDefault();
+        this.caretService.moveDown(host);
+        break;
+      case "shift+arrowDown":
+      case "ctrl+shift+arrowDown":
+        event.preventDefault();
+        this.caretService.selectDown(host);
+        break;
+      case "alt+arrowDown":
+      case "alt+j":
+        event.preventDefault();
+        await this.historyService.runAtomic(host, () => this.editService.shiftLinesDown());
+        break;
+      case "alt+shift+arrowDown":
+        event.preventDefault();
+        await this.historyService.runAtomic(host, () => this.editService.duplicateLinesDown());
+        break;
+
+      // line up
+      case "arrowUp":
+      case "ctrl+arrowUp":
+        event.preventDefault();
+        this.caretService.moveUp(host);
+        break;
+      case "shift+arrowUp":
+      case "ctrl+shift+arrowUp":
+        event.preventDefault();
+        this.caretService.selectUp(host);
+        break;
+      case "alt+arrowUp":
+      case "alt+k":
+        event.preventDefault();
+        await this.historyService.runAtomic(host, () => this.editService.shiftLinesUp());
+        break;
+      case "alt+shift+arrowUp":
+        event.preventDefault();
+        await this.historyService.runAtomic(host, () => this.editService.duplicateLinesUp());
+        break;
+
+      // block down
+      case "ctrl+]":
+      case "pageDown":
+        event.preventDefault();
+        this.caretService.moveBlockEnd(host);
+        break;
+      case "ctrl+shift+}":
+      case "shift+pageDown":
+        event.preventDefault();
+        this.caretService.selectBlockEnd(host);
+        break;
+
+      // block up
+      case "ctrl+[":
+      case "pageUp":
+        event.preventDefault();
+        this.caretService.moveBlockStart(host);
+        break;
+      case "ctrl+shift+{":
+      case "shift+pageUp":
+        event.preventDefault();
+        this.caretService.selectBlockStart(host);
         break;
 
       // select all
-      case "a":
-        if (event.ctrlKey) {
-          event.preventDefault();
-          this.caretService.selectAll(host);
-        }
-        break;
-
-      // cut empty line
-      case "x":
-        if (event.ctrlKey) {
-          event.preventDefault();
-          await this.historyService.runAtomic(host, () => this.editService.caretCut(host));
-        }
-        break;
-
-      // Command bar short cuts
-      // TODO refactor into command bar
-      case "s": // save
-        if (event.ctrlKey) {
-          // save only
-          event.preventDefault();
-          await this.componentRefService.commandBar.enterCommandMode("fs");
-        }
-        break;
-      case "S": // save
-        if (event.ctrlKey) {
-          event.preventDefault();
-          // save and sync all
-          await this.componentRefService.commandBar.enterCommandMode("fa");
-        }
-        break;
-
-      case "k": // link to
-        if (event.ctrlKey) {
-          event.preventDefault();
-          await this.componentRefService.commandBar.enterCommandMode("k");
-        }
-        break;
-
-      case "o": // open
-        if (event.ctrlKey) {
-          event.preventDefault();
-          await this.componentRefService.commandBar.enterCommandMode("o");
-        }
-        break;
-
-      // Caret movement
-      case "ArrowLeft":
-        if (event.altKey) break;
-
+      case "ctrl+a":
         event.preventDefault();
-        if (!event.ctrlKey && !event.shiftKey) {
-          this.caretService.moveLeft(host);
-        } else if (!event.ctrlKey && event.shiftKey) {
-          this.caretService.selectLeft(host);
-        } else if (event.ctrlKey && !event.shiftKey) {
-          this.caretService.moveWordStart(host);
-        } else if (event.ctrlKey && event.shiftKey) {
-          this.caretService.selectWordStart(host);
-        }
+        this.caretService.selectAll(host);
         break;
 
-      case "ArrowRight":
-        if (event.altKey) break;
-
+      // command bar
+      case "ctrl+space":
         event.preventDefault();
-        if (!event.ctrlKey && !event.shiftKey) {
-          this.caretService.moveRight(host);
-        } else if (!event.ctrlKey && event.shiftKey) {
-          this.caretService.selectRight(host);
-        } else if (event.ctrlKey && !event.shiftKey) {
-          this.caretService.moveWordEnd(host);
-        } else if (event.ctrlKey && event.shiftKey) {
-          this.caretService.selectWordEnd(host);
-        }
+        this.componentRefService.commandBar.enterCommandMode();
         break;
 
-      case "Home":
+      // save
+      case "ctrl+s":
         event.preventDefault();
-        if (!event.shiftKey) {
-          this.caretService.moveHome(host);
-        } else if (event.shiftKey) {
-          this.caretService.selectHome(host);
-        }
+        await this.componentRefService.commandBar.enterCommandMode("fs");
         break;
 
-      case "End":
+      // save and sync
+      case "ctrl+shift+s":
         event.preventDefault();
-        if (!event.shiftKey) {
-          this.caretService.moveEnd(host);
-        } else if (event.shiftKey) {
-          this.caretService.selectEnd(host);
-        }
+        await this.componentRefService.commandBar.enterCommandMode("fa");
         break;
 
-      case "ArrowDown":
+      // link to
+      case "ctrl+k":
         event.preventDefault();
-        if (event.shiftKey && event.altKey) {
-          await this.historyService.runAtomic(host, () => this.editService.duplicateLinesDown());
-        } else if (event.altKey) {
-          await this.historyService.runAtomic(host, () => this.editService.shiftLinesDown());
-        } else if (event.shiftKey) {
-          this.caretService.selectDown(host);
-        } else {
-          this.caretService.moveDown(host);
-        }
+        await this.componentRefService.commandBar.enterCommandMode("k");
         break;
 
-      case "ArrowUp":
+      // open
+      case "ctrl+o":
         event.preventDefault();
-        if (event.shiftKey && event.altKey) {
-          await this.historyService.runAtomic(host, () => this.editService.duplicateLinesUp());
-        } else if (event.altKey) {
-          await this.historyService.runAtomic(host, () => this.editService.shiftLinesUp());
-        } else if (event.shiftKey) {
-          this.caretService.selectUp(host);
-        } else {
-          this.caretService.moveUp(host);
-        }
-        break;
-
-      case "]":
-      case "}":
-        if (event.ctrlKey) {
-          if (event.shiftKey) {
-            this.caretService.selectBlockEnd(host);
-          } else {
-            this.caretService.moveBlockEnd(host);
-          }
-        }
-        break;
-      case "PageDown":
-        event.preventDefault();
-        if (event.shiftKey) {
-          this.caretService.selectBlockEnd(host);
-        } else {
-          this.caretService.moveBlockEnd(host);
-        }
-        break;
-
-      case "[":
-      case "{":
-        if (event.ctrlKey) {
-          event.preventDefault();
-          if (event.shiftKey) {
-            this.caretService.selectBlockStart(host);
-          } else {
-            this.caretService.moveBlockStart(host);
-          }
-        }
-        break;
-      case "PageUp":
-        event.preventDefault();
-        if (event.shiftKey) {
-          this.caretService.selectBlockStart(host);
-        } else {
-          this.caretService.moveBlockStart(host);
-        }
-        break;
-
-      case "Escape":
-        if (!event.ctrlKey && !event.shiftKey) {
-          event.preventDefault();
-          this.caretService.collapseToFocus(host);
-        }
-        break;
-
-      // Indent/Outdent
-      case ".":
-        if (event.altKey) {
-          event.preventDefault();
-          this.editService.shiftIndent(host, 1);
-        }
-        break;
-      case ",":
-        if (event.altKey) {
-          event.preventDefault();
-          this.editService.shiftIndent(host, -1);
-        }
-        break;
-
-      // Inputs
-      case "Delete":
-        if (event.ctrlKey) {
-          await this.historyService.runAtomic(host, () => this.editService.deleteWordAfter(host));
-        } else {
-          await this.historyService.runAtomic(host, () => this.editService.deleteAfter(host));
-        }
-        event.preventDefault();
-        break;
-
-      case "Backspace":
-        if (event.ctrlKey) {
-          await this.historyService.runAtomic(host, () => this.editService.deleteWordBefore(host));
-        } else {
-          await this.historyService.runAtomic(host, () => this.editService.deleteBefore(host));
-        }
-        event.preventDefault();
-        break;
-
-      case "Enter": // Enter
-        this.handleEnterKeydown(event, host);
+        await this.componentRefService.commandBar.enterCommandMode("o");
         break;
     }
   }

@@ -1,8 +1,11 @@
 # v1.0.0-alpha.20
 
+- Added: <kbd>Alt</kbd> + <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd> for 2D shifting
+- Added: Search result ranker based on title match
+- Changed: Node 16 to 18 upgrade
+- Changed: Replaced fs-extra with Node fs API
+- Changed: Replaced axios with Node 18 native fetch API
 - Fixed: URL was not case sensitive
-- Changed: Replaced fs-extra with node fs API
-- Changed: Replaced axios with node 18 native fetch API
 - Chore: Replaced `npm-run-all` with `concurrenly` due to discontinued maintenance
 - Chore: Updated dependencies
 
