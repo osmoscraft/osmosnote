@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:18-alpine
 RUN apk add --no-cache findutils
 RUN apk add --no-cache git
 RUN apk add --no-cache openssh-client

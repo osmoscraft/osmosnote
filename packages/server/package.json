@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
-    "@types/node": "^16.11.41",
+    "@types/node": "^18.11.9",
     "axios": "^0.27.2",
     "esbuild": "^0.14.47",
     "prettier": "^2.7.1",
