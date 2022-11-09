@@ -237,6 +237,7 @@ export class InputService {
         await this.historyService.runAtomic(host, () => this.editService.shiftLinesDown());
         break;
       case "alt+shift+arrowDown":
+      case "alt+shift+j":
         event.preventDefault();
         await this.historyService.runAtomic(host, () => this.editService.duplicateLinesDown());
         break;
@@ -258,6 +259,7 @@ export class InputService {
         await this.historyService.runAtomic(host, () => this.editService.shiftLinesUp());
         break;
       case "alt+shift+arrowUp":
+      case "alt+shift+k":
         event.preventDefault();
         await this.historyService.runAtomic(host, () => this.editService.duplicateLinesUp());
         break;

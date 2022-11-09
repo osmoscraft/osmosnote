@@ -18,6 +18,7 @@
 - Use <kbd>Alt</kbd>+<kbd>ArrowUp</kbd> and <kbd>Alt</kbd>+<kbd>ArrowDown</kbd> to move a line.
 - Use <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>ArrowUp</kbd> and <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>ArrowDown</kbd> to duplicate a line.
 - Use <kbd>Alt</kbd>+<kbd>,</kbd> and <kbd>Alt</kbd>+<kbd>.</kbd> to decrease/increase indentation.
+- All manipulations also support vim keys: <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd>
 
 # Knowledge capture
 
