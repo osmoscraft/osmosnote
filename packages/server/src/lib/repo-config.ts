@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
-import fs from "fs-extra";
+import { existsSync } from "fs";
+import fs from "fs/promises";
 import path from "path";
 import { printDiagnosticsToConsole } from "./diagnostics";
 import { execAsync } from "./exec-async";
@@ -18,7 +19,7 @@ export async function ensureRepoConfig() {
 
   // load environment variables
   const debugEnvPath = path.join(process.cwd(), ".env");
-  if (debugEnvPath && fs.existsSync(debugEnvPath)) {
+  if (debugEnvPath && existsSync(debugEnvPath)) {
     console.log(`[config] Using dotenv: ${debugEnvPath}`);
     const configResult = dotenv.config({ path: debugEnvPath });
     if (configResult.error) {
@@ -31,10 +32,10 @@ export async function ensureRepoConfig() {
 
   // ensure repo dir
   const repoDir = env.OSMOSNOTE_REPO_DIR;
-  if (!fs.existsSync(repoDir)) {
+  if (!existsSync(repoDir)) {
     console.log(`[config] Creating dir: ${repoDir}`);
     try {
-      fs.ensureDirSync(repoDir);
+      await fs.mkdir(repoDir, { recursive: true });
     } catch (error) {
       console.error(`[config] Error creating repo directory: ${repoDir}`, error);
       process.exit(1);
@@ -43,7 +44,7 @@ export async function ensureRepoConfig() {
 
   // ensure repo dir is managed by git
   const dotGit = path.join(env.OSMOSNOTE_REPO_DIR!, ".git");
-  if (!fs.existsSync(dotGit)) {
+  if (!existsSync(dotGit)) {
     console.log(`[config] Initializing git: ${dotGit}`);
     let mainBranchCreated = false;
     try {

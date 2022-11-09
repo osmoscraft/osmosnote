@@ -1,6 +1,6 @@
-import { getRepoMetadata } from "./repo-metadata";
-import fs from "fs-extra";
+import fs from "fs/promises";
 import path from "path";
+import { getRepoMetadata } from "./repo-metadata";
 
 export const readNote = async (filename: string): Promise<string> => {
   const { repoDir: notesDir } = await getRepoMetadata();
@@ -27,5 +27,5 @@ export const deleteNote = async (filename: string): Promise<void> => {
     throw new Error("Delete note received a directory. Nothing is deleted. Likely a mistake.");
   }
 
-  await fs.remove(path.join(notesDir, filename));
+  await fs.rm(path.join(notesDir, filename));
 };
