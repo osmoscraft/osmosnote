@@ -9,16 +9,17 @@ export function getSearchRankScore(needle: string, haystack: string) {
     .map((segment) => ({ seg: segment.segment, lowerSeg: segment.segment.toLocaleLowerCase() }));
 
   const result = titleSegments.reduce(
-    (total, titleSegment) =>
+    (total, titleSegment, titlePos) =>
       total +
       querySegments.reduce((subTotal, querySegment) => {
+        const posBoost = titlePos === 0 ? 5 : 1;
         switch (true) {
           case titleSegment.seg === querySegment.seg:
-            return 8 + subTotal;
+            return 8 * posBoost + subTotal;
           case titleSegment.lowerSeg === querySegment.lowerSeg:
-            return 5 + subTotal;
+            return 5 * posBoost + subTotal;
           case titleSegment.lowerSeg.startsWith(querySegment.lowerSeg):
-            return 3 + subTotal;
+            return 3 * posBoost + subTotal;
           case titleSegment.lowerSeg.endsWith(querySegment.lowerSeg):
             return 2 + subTotal;
           case titleSegment.lowerSeg.includes(querySegment.lowerSeg):
