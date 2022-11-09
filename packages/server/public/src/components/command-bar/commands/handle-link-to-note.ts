@@ -1,5 +1,5 @@
 import { ensureNoteTitle } from "../../../utils/ensure-note-title.js";
-import { getLowerCaseUrl, getUrlWithSearchParams } from "../../../utils/url.js";
+import { findUrl, getUrlWithSearchParams } from "../../../utils/url.js";
 import type { CommandHandler } from "../command-bar.component.js";
 import { PayloadAction } from "../menu/menu-row.component.js";
 import {
@@ -21,7 +21,7 @@ export const handleLinkToNote: CommandHandler = async ({ input, context }) => {
 
   const query = input.args?.trim() ?? "";
   const { phrase, tags } = parseQuery(query);
-  const targetUrl = getLowerCaseUrl(phrase);
+  const targetUrl = findUrl(phrase);
   const newNoteTitle = ensureNoteTitle(phrase);
 
   return {

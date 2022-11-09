@@ -1,5 +1,6 @@
 # v1.0.0-alpha.20
 
+- Fixed: URL was not case sensitive
 - Changed: Replaced fs-extra with node fs API
 - Changed: Replaced axios with node 18 native fetch API
 - Chore: Replaced `npm-run-all` with `concurrenly` due to discontinued maintenance

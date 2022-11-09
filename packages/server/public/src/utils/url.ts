@@ -8,10 +8,10 @@ export function isUrl(input: string): boolean {
 }
 
 /**
- * If the input is URL, a lowercased version will be returned. Otherwise, null will be returned
+ * If the input is URL, return the URL. Otherwise, null will be returned
  */
-export function getLowerCaseUrl(input: string): string | null {
-  return isUrl(input) ? input.toLowerCase() : null;
+export function findUrl(input: string): string | null {
+  return isUrl(input) ? input : null;
 }
 
 export function getUrlWithSearchParams(path: string, parameters: Record<string, null | undefined | string>): string {
