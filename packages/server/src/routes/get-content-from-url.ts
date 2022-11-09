@@ -1,5 +1,4 @@
-import axios from "axios";
-import cheerio from "cheerio";
+import { load } from "cheerio";
 import { createHandler } from "../lib/create-handler";
 import { getPageDescription, getPageTitle, getPageUrl } from "../lib/parse-page";
 
@@ -21,13 +20,13 @@ export const handleGetContentFromUrl = createHandler<GetContentFromUrlOutput, Ge
   }
 
   try {
-    const response = await axios.get(url);
+    const response = await fetch(url);
 
     if (response.status !== 200) {
       throw new Error(`Fetch status (${response.status}) is not OK`);
     }
 
-    const $ = cheerio.load(response.data);
+    const $ = load(await response.text());
 
     return {
       title: getPageTitle($),

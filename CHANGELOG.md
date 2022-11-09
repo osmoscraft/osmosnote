@@ -1,5 +1,6 @@
 # v1.0.0-alpha.20
 
+- Changed: Replaced axios with node 18 native fetch API
 - Chore: Replaced `npm-run-all` with `concurrenly` due to discontinued maintenance
 - Chore: Updated dependencies
 

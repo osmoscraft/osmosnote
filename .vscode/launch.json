@@ -2,13 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
-      "request": "attach",
-      "name": "Attach to dev:debug",
-      "protocol": "inspector",
-      "port": 4321,
-      "restart": true,
-      "cwd": "${workspaceRoot}"
+      "name": "Debug with sandbox",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "dev"],
+      "runtimeVersion": "18",
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
     }
   ]
 }
