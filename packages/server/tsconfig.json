@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+    "target": "ES2022",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "module": "commonjs",
@@ -9,7 +9,5 @@
     "skipDefaultLibCheck": true,
     "outDir": "dist"
   },
-  "include": [
-    "src/**/*.ts"
-  ]
+  "include": ["src/**/*.ts"]
 }

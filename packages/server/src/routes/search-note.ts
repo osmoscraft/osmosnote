@@ -1,9 +1,10 @@
 import { performance } from "perf_hooks";
-import { getRepoMetadata } from "../lib/repo-metadata";
 import { createHandler } from "../lib/create-handler";
 import { filenameToId } from "../lib/filename-to-id";
+import { getSearchRankScore } from "../lib/get-search-rank-score";
 import { readNote } from "../lib/note-file-io";
 import { parseNote } from "../lib/parse-note";
+import { getRepoMetadata } from "../lib/repo-metadata";
 import { runShell } from "../lib/run-shell";
 import { TAG_SEPARATOR } from "../lib/tag";
 import { unique } from "../lib/unique";
@@ -120,7 +121,8 @@ async function tagOnlySearch(dir: string, getFilenamesPreprocess: string, limit:
 }
 
 async function keywordSearch(dir: string, keywords: string[], getFilenamesPreprocess: string, limit: number) {
-  const wordsInput = keywords.join(String.raw`\W+(?:\w+\W+){0,3}?`); // two words separated by 0 to 3 other words
+  const wordsInput = keywords.join(String.raw`\W+(?:\w+\W+){0,5}?`); // two words separated by 0 to 5 other words
+  const fullPhrase = keywords.join(" ");
 
   let searchCommand = "";
   if (keywords.length) {
@@ -151,18 +153,19 @@ async function keywordSearch(dir: string, keywords: string[], getFilenamesPrepro
     const lines = stdout.trim().split("\n");
     const searchResultItems = lines
       .map((line) => line.split(":") as [filename: string, count: string])
-      .map((line) => ({ filename: line[0], score: parseInt(line[1]) }));
+      .map((line) => ({ filename: line[0], frequencyScore: parseInt(line[1]) }));
 
     // open each note to parse its title
     const notesAsync = searchResultItems.map(async (item) => {
       const markdown = await readNote(item.filename);
       const parseResult = parseNote(markdown);
+      const score = item.frequencyScore + 100 * getSearchRankScore(fullPhrase, parseResult.metadata.title); // title should be very heavy
 
       return {
         id: filenameToId(item.filename),
         title: parseResult.metadata.title,
         tags: parseResult.metadata.tags,
-        score: item.score,
+        score,
       };
     });
 
