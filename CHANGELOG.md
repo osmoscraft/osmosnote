@@ -1,5 +1,6 @@
 # v1.0.0-alpha.20
 
+- Chore: Replaced `npm-run-all` with `concurrenly` due to discontinued maintenance
 - Chore: Updated dependencies
 
 # v1.0.0-alpha.19
