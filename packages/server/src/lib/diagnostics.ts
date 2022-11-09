@@ -1,4 +1,3 @@
-import { homedir } from "os";
 import { bold, gray, red } from "./print";
 import { getRunShellError, runShell } from "./run-shell";
 
@@ -26,6 +25,7 @@ export async function printDiagnosticsToConsole() {
 
 export async function getSystemInformation() {
   const version = await getPackageVersion();
+  const nodeVersion = getNodeVersion();
   const rgPath = await getBinPath("rg");
   const rgVersion = await getBinVersion("rg", (stdout) => stdout.split("\n")?.[0]?.replace("ripgrep ", ""));
   const gitPath = await getBinPath("git");
@@ -35,6 +35,7 @@ export async function getSystemInformation() {
 
   return {
     version,
+    nodeVersion,
     rgPath,
     rgVersion,
     gitPath,
@@ -86,4 +87,8 @@ export async function getBinVersion(
     console.error(error?.message);
     return null;
   }
+}
+
+export function getNodeVersion() {
+  return process.version;
 }

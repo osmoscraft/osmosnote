@@ -1,5 +1,6 @@
 # v1.0.0-alpha.23
 
+- Added: Minimum required Node version in package.json
 - Fixed: YouTube title extraction didn't work
 
 # v1.0.0-alpha.21
