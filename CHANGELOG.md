@@ -1,3 +1,7 @@
+# v1.0.0-alpha.20
+
+- Chore: Updated dependencies
+
 # v1.0.0-alpha.19
 
 - Fixed: Bracket characters could not be enetered due to keymap conflict
