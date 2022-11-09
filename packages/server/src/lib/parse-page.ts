@@ -1,7 +1,6 @@
-import type cheerio from "cheerio";
-type CheerioRoot = ReturnType<typeof cheerio["load"]>;
+import type { CheerioAPI } from "cheerio";
 
-export function getPageUrl($: CheerioRoot, fallbackUrl?: string) {
+export function getPageUrl($: CheerioAPI, fallbackUrl?: string) {
   let url = $(`link[rel="canonical"]`).attr("href")?.trim();
 
   if (!url) {
@@ -15,7 +14,9 @@ export function getPageUrl($: CheerioRoot, fallbackUrl?: string) {
   return url;
 }
 
-export function getPageTitle($: CheerioRoot) {
+const titlePatern = /<title>(.+)<\/title>/;
+
+export function getPageTitle($: CheerioAPI) {
   let title = $(`meta[property="og:title"]`).attr("content")?.trim();
 
   if (!title) {
@@ -31,13 +32,18 @@ export function getPageTitle($: CheerioRoot) {
   }
 
   if (!title) {
-    title = "";
+    // edge case: cheerio cannot parse YouTube title
+    title = titlePatern.exec($.html())?.[1];
+  }
+
+  if (!title) {
+    title = "Untitled";
   }
 
   return title;
 }
 
-export function getPageDescription($: CheerioRoot) {
+export function getPageDescription($: CheerioAPI) {
   let content = $(`meta[name="description"]`).attr("content")?.trim();
 
   if (!content) {

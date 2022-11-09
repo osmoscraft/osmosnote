@@ -1,6 +1,6 @@
 {
   "name": "@osmoscraft/osmosnote",
-  "version": "1.0.0-alpha.22",
+  "version": "1.0.0-alpha.23",
   "description": "",
   "main": "main.js",
   "types": "index.d.ts",
