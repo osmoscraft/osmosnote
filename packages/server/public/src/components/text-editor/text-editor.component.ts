@@ -1,20 +1,21 @@
 import { ApiService } from "../../services/api/api.service.js";
-import { HistoryService } from "./history/history.service.js";
+import { DocumentRefService } from "../../services/document-reference/document.service.js";
+import { NotificationService } from "../../services/notification/notification.service.js";
+import { PreferencesService } from "../../services/preferences/preferences.service.js";
+import { RemoteHostService } from "../../services/remote/remote-host.service.js";
 import { RouteService } from "../../services/route/route.service.js";
 import { di } from "../../utils/dependency-injector.js";
 import { CaretContext, CaretService } from "./caret.service.js";
-import { EditService } from "./edit.service.js";
 import { CompileService } from "./compiler/compile.service.js";
+import { EditService } from "./edit.service.js";
 import { sourceToLines } from "./helpers/source-to-lines.js";
 import { getNoteFromTemplate } from "./helpers/template.js";
+import { HistoryService } from "./history/history.service.js";
 import { InputService } from "./input.service.js";
+import { LineQueryService } from "./line-query.service.js";
 import { MeasureService } from "./measure.service.js";
-import { TrackChangeService } from "./track-change.service.js";
-import { RemoteHostService } from "../../services/remote/remote-host.service.js";
-import { NotificationService } from "../../services/notification/notification.service.js";
 import { SyncService } from "./sync.service.js";
-import { PreferencesService } from "../../services/preferences/preferences.service.js";
-import { DocumentRefService } from "../../services/document-reference/document.service.js";
+import { TrackChangeService } from "./track-change.service.js";
 
 export interface InsertFunction {
   (context: CaretContext): string | Promise<string>;
@@ -34,6 +35,7 @@ export class TextEditorComponent extends HTMLElement {
   private formatService!: CompileService;
   private historyService!: HistoryService;
   private inputService!: InputService;
+  private lineQueryService!: LineQueryService;
   private measureService!: MeasureService;
   private notificationService!: NotificationService;
   private preferencesService!: PreferencesService;
@@ -59,6 +61,7 @@ export class TextEditorComponent extends HTMLElement {
     this.formatService = di.getSingleton(CompileService);
     this.historyService = di.getSingleton(HistoryService);
     this.inputService = di.getSingleton(InputService);
+    this.lineQueryService = di.getSingleton(LineQueryService);
     this.measureService = di.getSingleton(MeasureService);
     this.notificationService = di.getSingleton(NotificationService);
     this.preferencesService = di.getSingleton(PreferencesService);
@@ -121,6 +124,22 @@ export class TextEditorComponent extends HTMLElement {
 
     const preferences = this.preferencesService.getPreferences();
     this.toggleSpellcheck(preferences.spellcheck);
+
+    // Store and recover caret position across page loads
+    if (id) {
+      const storedCaret = sessionStorage.getItem(id);
+      if (storedCaret) {
+        this.caretService.deserializePosition(storedCaret, this.host);
+      }
+    }
+
+    window.addEventListener("beforeunload", () => {
+      const { id } = this.routeService.getNoteConfigFromUrl();
+      if (!id) return;
+      const serializedPosition = this.caretService.serializePosition();
+      if (!serializedPosition) return;
+      sessionStorage.setItem(id.toString(), serializedPosition);
+    });
   }
 
   async insertAtCaret(text: string) {

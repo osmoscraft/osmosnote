@@ -95,6 +95,27 @@ export class CaretService {
     }
   }
 
+  serializePosition() {
+    if (!this._caret) return null;
+    const line = this.lineQueryService.getLine(this._caret.focus.node)!;
+    const linePosition = this.getCaretLinePosition(this._caret.focus);
+    const row = [...(line?.parentElement?.children ?? [])].indexOf(line);
+
+    return JSON.stringify({
+      row,
+      linePosition,
+    });
+  }
+
+  deserializePosition(serializedPosition: string, host: HTMLElement) {
+    const position = JSON.parse(serializedPosition) as { row: number; linePosition: LinePosition };
+    const line = host.querySelectorAll("[data-line]")[position.row] as HTMLElement;
+    if (line) {
+      this.setCollapsedCaretToLinePosition({ line, position: position.linePosition });
+      this.caret?.focus?.node.parentElement?.scrollIntoView();
+    }
+  }
+
   moveRight(root: HTMLElement) {
     this.moveCaretCollapsedByOffset(1, root);
   }

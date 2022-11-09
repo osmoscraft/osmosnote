@@ -2,6 +2,7 @@
 
 - Added: <kbd>Alt</kbd> + <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd> for 2D shifting
 - Added: Search result ranker based on title match
+- Added: Restore caret position on page reload
 - Changed: Node 16 to 18 upgrade
 - Changed: Replaced fs-extra with Node fs API
 - Changed: Replaced axios with Node 18 native fetch API
