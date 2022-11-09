@@ -1,4 +1,4 @@
-# v1.0.0-alpha.20
+# v1.0.0-alpha.21
 
 - Added: <kbd>Alt</kbd> + <kbd>H</kbd>/<kbd>J</kbd>/<kbd>K</kbd>/<kbd>L</kbd> for 2D shifting
 - Added: Search result ranker based on title match
