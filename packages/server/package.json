@@ -5,15 +5,15 @@
   "main": "main.js",
   "types": "index.d.ts",
   "scripts": {
-    "dev": "npm-run-all --print-label -p dev:*",
+    "dev": "concurrently npm:dev:*",
     "dev:client": "node scripts/build-client.js --watch",
     "dev:server": "tsx watch --clear-screen=false src/main.ts",
     "serve": "node main.js",
-    "build": "npm-run-all --print-label -p build:* -s pack:docker",
+    "build": "npm run clean && concurrently npm:build:* && npm run pack:docker",
     "build:server": "node scripts/build-server.js",
     "build:client": "node scripts/build-client.js",
     "pack:docker": "docker build -t osmoscraft/osmosnote:latest .",
-    "clean": "npm-run-all --print-label -p clean:*",
+    "clean": "concurrently npm:clean:*",
     "clean:server": "rm -rf dist && rm -rf bin",
     "clean:client": "rm -rf public/dist"
   },
@@ -48,7 +48,6 @@
     "@types/node": "^16.11.41",
     "axios": "^0.27.2",
     "esbuild": "^0.14.47",
-    "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "typescript": "^4.7.4"
   }
