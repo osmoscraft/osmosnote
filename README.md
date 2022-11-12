@@ -16,7 +16,19 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 
 ## Get started
 
-### Install Docker
+### With NPM (only tested on Linux and WSL)
+
+Install dependencies
+- [Node.js](https://nodejs.org) (v18 or newer)
+- [Git](https://git-scm.com/downloads)
+- [ripgrep](https://github.com/BurntSushi/ripgrep#installation)
+
+Then run in terminal
+```
+npx @osmoscraft/osmosnote@latest
+```
+
+### With Docker
 
 [Get Docker for your operating system](https://docs.docker.com/get-docker)
 
@@ -26,16 +38,15 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 docker run -p 6683:6683 osmoscraft/osmosnote
 ```
 
-You can open the app in your browser, at http://localhost:6683
+You can open the app in your browser, at [http://localhost:6683](http://localhost:6683).
+To exit, press <kbd>Ctrl</kbd> + <kbd>Space</kbd>, then press <kbd>q</kbd>.
 
-### Clean up
-
-```sh
-docker ps
-# Find your <container_id> in the output
-
-docker kill <container_id>
-```
+<details>
+<summary>Having trouble exit?</summary>
+<pre><code lang="sh">docker ps # Find your container_id in the output
+docker kill container_id # Manually stop the container
+</code></pre>
+</details>
 
 ### Next steps
 
