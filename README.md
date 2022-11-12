@@ -16,7 +16,7 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 
 ## Get started
 
-### With NPM (only tested on Linux and WSL)
+### With NPM (Linux, WSL, MacOS)
 
 Install dependencies
 - [Node.js](https://nodejs.org) (v18 or newer)
@@ -28,7 +28,7 @@ Then run in terminal
 npx @osmoscraft/osmosnote@latest
 ```
 
-### With Docker
+### With Docker (All platforms)
 
 [Get Docker for your operating system](https://docs.docker.com/get-docker)
 
