@@ -1,3 +1,8 @@
+# v1.0.0-alpha.24
+
+- Fixed: Line ends with url could not receive new line input
+- Chore: Updated dependencies
+
 # v1.0.0-alpha.23
 
 - Added: Minimum required Node version in package.json

@@ -1,6 +1,6 @@
 {
   "name": "@osmoscraft/osmosnote",
-  "version": "1.0.0-alpha.23",
+  "version": "1.0.0-alpha.24",
   "description": "",
   "main": "main.js",
   "types": "index.d.ts",
@@ -42,13 +42,13 @@
   "dependencies": {
     "@fastify/static": "^6.5.0",
     "cheerio": "^1.0.0-rc.12",
-    "dotenv": "^16.0.1",
-    "fastify": "^4.9.2"
+    "dotenv": "^16.0.3",
+    "fastify": "^4.10.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
-    "esbuild": "^0.15.13",
+    "esbuild": "^0.15.14",
     "prettier": "^2.7.1",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.3"
   }
 }

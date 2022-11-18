@@ -359,10 +359,14 @@ export class InputService {
         event.preventDefault();
         break;
       } else if (container.dataset.url) {
-        // open external url
-        this.openUrl(container.dataset.url, event);
-        event.preventDefault();
-        break;
+        const context = this.caretService.getCaretContext();
+
+        // open external url if caret is not at the end of a url
+        if (context?.textAfter !== "") {
+          this.openUrl(container.dataset.url, event);
+          event.preventDefault();
+          break;
+        }
       }
     }
 

@@ -15,5 +15,5 @@ require("esbuild")
         }
       : undefined,
   })
-  .then(() => console.log("watching..."))
+  .then(() => isWatch && console.log("watching..."))
   .catch(() => process.exit(1));
