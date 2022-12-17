@@ -112,7 +112,7 @@ export class CaretService {
     const line = host.querySelectorAll("[data-line]")[position.row] as HTMLElement;
     if (line) {
       this.setCollapsedCaretToLinePosition({ line, position: position.linePosition });
-      this.caret?.focus?.node.parentElement?.scrollIntoView();
+      this.caret?.focus?.node.parentElement?.scrollIntoView({ block: "center" });
     }
   }
 

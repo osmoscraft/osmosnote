@@ -1,3 +1,7 @@
+# v1.0.0-alpha.25
+
+- Changed: Scroll position restore aligns to center
+
 # v1.0.0-alpha.24
 
 - Fixed: Line ends with url could not receive new line input
