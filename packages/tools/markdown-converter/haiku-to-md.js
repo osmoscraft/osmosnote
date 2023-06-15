@@ -85,6 +85,8 @@ async function main(inputDir) {
       // console.log(frontmatter);
       // console.log(bodyText);
 
+      assert(frontmatterLines.length > 0, `${haikuFile} has no frontmatter`);
+
       if (!bodyText.length) {
         console.warn(`${haikuFile} has no body text`);
       }
