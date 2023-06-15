@@ -6,6 +6,11 @@ const inputDir = path.resolve(__dirname, "./input");
 console.log(inputDir);
 
 async function main(inputDir) {
+  try {
+    // clear output
+    await fs.rm(path.resolve(__dirname, "./output"), { force: true, recursive: true });
+  } catch {}
+
   fs.mkdir(path.resolve(__dirname, "./output"), { recursive: true });
   const haikuFiles = await fs.readdir(inputDir);
   console.log(haikuFiles);
