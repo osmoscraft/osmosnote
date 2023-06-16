@@ -1,0 +1,15 @@
+{
+  "name": "markdown-converter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "haiku-to-md.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "yaml": "^2.3.1"
+  }
+}
