@@ -198,6 +198,7 @@ function handleBodyLines(haikuFile, bodyLines) {
   // TODO Add two spaces to the line before paragraph lines
   // increment of list item depth must be 1
   // ordered list cannot be nested under unordered list
+  // test with markdown parser
   const markdownLines = astLines.map((astLine) => astLine.line);
 
   const bodyText = markdownLines.join("\n");
