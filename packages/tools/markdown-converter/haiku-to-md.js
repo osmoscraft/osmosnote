@@ -6,6 +6,8 @@ const yaml = require("yaml");
 
 console.log(inputDir);
 
+// console.warn = () => {};
+
 async function main(inputDir) {
   try {
     // clear output
@@ -49,24 +51,32 @@ async function main(inputDir) {
  * @param {string[]} headerLines
  */
 function handleHeaderLines(haikuFile, headerLines) {
-  const frontmatterLines = headerLines.map((line) => {
-    let [_, key, value] = line.match(/^#\+(.+?):\s(.*)$/);
+  const frontmatterLines = headerLines
+    .map((line) => {
+      let [_, key, value] = line.match(/^#\+(.+?):\s(.*)$/);
 
-    assert(!value.includes(`"`), `${value} contains double quotes`);
-    if (value.includes(`: `)) {
-      console.warn(`Title "${value}" contains colon`);
-      value = `"${value}"`;
-    }
+      assert(!value.includes(`"`), `${value} contains double quotes`);
+      if (value.includes(`: `)) {
+        console.log(`[colon in title] ${haikuFile} "${value}" contains colon`);
+        value = `"${value}"`;
+      }
 
-    if (key === "tags") {
-      return `${key}: [${value
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter(Boolean)
-        .join(", ")}]`;
-    }
-    return `${key}: ${value}`;
-  });
+      if (key === "tags") {
+        const tags = value
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean);
+
+        if (!tags.length) {
+          console.log(`[empty tag] ${haikuFile}`);
+          return null;
+        }
+
+        return `${key}: [${tags.join(", ")}]`;
+      }
+      return `${key}: ${value}`;
+    })
+    .filter(Boolean);
 
   assert(frontmatterLines.length > 0, `${haikuFile} has no frontmatter`);
 
@@ -84,12 +94,12 @@ function handleHeaderLines(haikuFile, headerLines) {
       try {
         new URL(parsedYaml.url);
       } catch (e) {
-        console.log(`${haikuFile} has invalid url`);
+        console.error(`${haikuFile} has invalid url`);
         throw e;
       }
     }
   } catch (e) {
-    console.log(`${haikuFile} has invalid yaml`);
+    console.error(`${haikuFile} has invalid yaml`);
     throw e;
   }
   assert(parsedYaml.title, `${haikuFile} has no title`);
@@ -193,7 +203,7 @@ function handleBodyLines(haikuFile, bodyLines) {
   const bodyText = markdownLines.join("\n");
 
   if (!bodyText.length) {
-    console.warn(`${haikuFile} has no body text`);
+    console.log(`[no body text] ${haikuFile} has no body text`);
   }
 
   return bodyText;
