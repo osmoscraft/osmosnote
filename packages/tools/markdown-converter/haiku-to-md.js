@@ -192,6 +192,27 @@ function handleBodyLines(haikuFile, bodyLines) {
     }
   });
 
+  const normalizedLines = interBlockFormat(haikuFile, astLines);
+
+  // TODO
+  // relative link url
+
+  const markdownLines = normalizedLines.map((astLine) => astLine.line);
+
+  const bodyText = markdownLines.join("\n");
+
+  if (bodyText.includes("```")) {
+    console.log(`[code block] ${haikuFile} has code block`);
+  }
+
+  if (!bodyText.length) {
+    console.log(`[no body text] ${haikuFile} has no body text`);
+  }
+
+  return bodyText;
+}
+
+function interBlockFormat(haikuFile, astLines = []) {
   const normalizedLines = [];
   astLines.forEach((currentLine, index) => {
     const prevLine = astLines[index - 1];
@@ -236,18 +257,7 @@ function handleBodyLines(haikuFile, bodyLines) {
     }
   });
 
-  // relative link url
-  // TODO
-  // Make sure we don't have code blocks (```) in the body text
-  const markdownLines = normalizedLines.map((astLine) => astLine.line);
-
-  const bodyText = markdownLines.join("\n");
-
-  if (!bodyText.length) {
-    console.log(`[no body text] ${haikuFile} has no body text`);
-  }
-
-  return bodyText;
+  return normalizedLines;
 }
 
 main(inputDir);
