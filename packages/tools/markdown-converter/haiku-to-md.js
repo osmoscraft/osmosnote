@@ -214,10 +214,9 @@ function handleBodyLines(haikuFile, bodyLines) {
         // - Paragraph -> Paragraph
         prevLine.line += "  ";
         normalizedLines.push(currentLine);
-      } else if (prevLine?.type === "BLANK_LINE") {
+      } else if (prevLine?.type === "BLANK_LINE" || prevLine === undefined) {
+        // Noop
         // - blank line -> Paragraph
-        normalizedLines.push(currentLine);
-      } else if (prevLine === undefined) {
         // - Start of file -> Paragraph
         normalizedLines.push(currentLine);
       } else {
