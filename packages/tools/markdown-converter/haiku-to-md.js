@@ -192,14 +192,55 @@ function handleBodyLines(haikuFile, bodyLines) {
     }
   });
 
-  // TODO inter-line lint
-  // multiline quotes
+  const normalizedLines = [];
+  astLines.forEach((currentLine, index) => {
+    const prevLine = astLines[index - 1];
+
+    if (currentLine.type === "PARAGRAPH") {
+      if (["HEADING", "ORDERED_LIST_ITEM", "UNORDERED_LIST_ITEM", "QUOTE"].includes(prevLine?.type)) {
+        // Insert blank line before the paragraph:
+        // - Heading -> Paragraph
+        // - List item -> Paragraph
+        // - Quote -> Paragraph
+        normalizedLines.push(
+          {
+            type: "BLANK_LINE",
+            line: "",
+          },
+          currentLine
+        );
+      } else if (prevLine?.type === "PARAGRAPH") {
+        // Insert two spaces on the previous line:
+        // - Paragraph -> Paragraph
+        prevLine.line += "  ";
+        normalizedLines.push(currentLine);
+      } else if (prevLine?.type === "BLANK_LINE") {
+        // - blank line -> Paragraph
+        normalizedLines.push(currentLine);
+      } else if (prevLine === undefined) {
+        // - Start of file -> Paragraph
+        normalizedLines.push(currentLine);
+      } else {
+        throw new Error(`${haikuFile} "${currentLine.line}" has illegal previous line`);
+      }
+    } else if (currentLine.type === "QUOTE") {
+      // Insert two spaces on the previous line:
+      // - Blockquote -> Blockquote
+      if (prevLine?.type === "QUOTE") {
+        prevLine.line += "  ";
+        normalizedLines.push(currentLine);
+      } else {
+        normalizedLines.push(currentLine);
+      }
+    } else {
+      normalizedLines.push(currentLine);
+    }
+  });
+
   // relative link url
-  // TODO Add two spaces to the line before paragraph lines
-  // increment of list item depth must be 1
-  // ordered list cannot be nested under unordered list
-  // test with markdown parser
-  const markdownLines = astLines.map((astLine) => astLine.line);
+  // TODO
+  // Make sure we don't have code blocks (```) in the body text
+  const markdownLines = normalizedLines.map((astLine) => astLine.line);
 
   const bodyText = markdownLines.join("\n");
 
