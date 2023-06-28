@@ -5,6 +5,7 @@
   "main": "haiku-to-md.js",
   "type": "module",
   "scripts": {
+    "start": "node ./haiku-to-md.js",
     "test": "node --test"
   },
   "keywords": [],

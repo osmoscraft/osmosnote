@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { fileToLines, handleHeaderLines } from "./lib.js";
+import { fileToLines, handleBodyLines, handleHeaderLines } from "./lib.js";
 
 describe("header", () => {
   it("throw on empty header", () => {
@@ -63,5 +63,44 @@ describe("header", () => {
       handleHeaderLines("", fileToLines(`#+title: hello\n#+url: https://test.com/?q=32`).headerLines),
       `---\ntitle: hello\nurl: https://test.com/?q=32\n---`
     );
+  });
+});
+
+describe("body", () => {
+  it("handles basic list", () => {
+    assert.strictEqual(handleBodyLines("", fileToLines(`- item\n- item\n- item`).bodyLines), `- item\n- item\n- item`);
+  });
+  it("handles nested list", () => {
+    assert.strictEqual(
+      handleBodyLines("", fileToLines(`- item\n-- item\n--- item`).bodyLines),
+      `- item\n  - item\n    - item`
+    );
+  });
+  it("handles ordered list", () => {
+    assert.strictEqual(
+      handleBodyLines("", fileToLines(`1. item\n2. item\n3. item`).bodyLines),
+      `- 1. item\n- 2. item\n- 3. item`
+    );
+  });
+  it("handles nested ordered list", () => {
+    assert.strictEqual(
+      handleBodyLines("", fileToLines(`1. item\n-1. item\n--1. item`).bodyLines),
+      `- 1. item\n  - 1. item\n    - 1. item`
+    );
+  });
+  it("invalid lists", () => {
+    assert.throws(() => handleBodyLines("", fileToLines(`+ item`).bodyLines));
+    assert.throws(() => handleBodyLines("", fileToLines(`* item`).bodyLines));
+  });
+  it("handles quotes", () => {
+    assert.strictEqual(handleBodyLines("", fileToLines(`> quote`).bodyLines), `> quote`);
+  });
+  it("handles heading", () => {
+    assert.strictEqual(handleBodyLines("", fileToLines(`# heading`).bodyLines), `# heading`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`## heading`).bodyLines), `## heading`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`### heading`).bodyLines), `### heading`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`#### heading`).bodyLines), `#### heading`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`##### heading`).bodyLines), `##### heading`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`###### heading`).bodyLines), `###### heading`);
   });
 });

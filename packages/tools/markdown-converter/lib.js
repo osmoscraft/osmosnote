@@ -161,6 +161,8 @@ export function handleBodyLines(haikuFile, bodyLines) {
         };
       }
       case "PARAGRAPH": {
+        assert(!line.startsWith("* "), `${haikuFile} "${line}" has asterisk list item`);
+        assert(!line.startsWith("+ "), `${haikuFile} "${line}" has plus list item`);
         return {
           type: "PARAGRAPH",
           line: line.trim(),
