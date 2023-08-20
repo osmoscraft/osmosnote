@@ -38,6 +38,15 @@ export function handleHeaderLines(haikuFile, headerLines) {
         value = `"${value}"`;
       }
 
+      if (key === "created") {
+        const date = new Date(value);
+        const shortLocalDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date
+          .getDate()
+          .toString()
+          .padStart(2, "0")}`;
+        return `${key}: ${shortLocalDate}`;
+      }
+
       if (key === "tags") {
         const tags = value
           .split(",")

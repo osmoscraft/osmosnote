@@ -37,6 +37,17 @@ describe("header", () => {
     );
   });
 
+  it("coverts date", () => {
+    assert.strictEqual(
+      handleHeaderLines("", fileToLines(`#+title: hello\n#+created: 2023-08-19T23:59:59-07:00`).headerLines),
+      `---\ntitle: hello\ncreated: 2023-08-19\n---`
+    );
+    assert.strictEqual(
+      handleHeaderLines("", fileToLines(`#+title: hello\n#+created: 2023-08-19T00:00:01-07:00`).headerLines),
+      `---\ntitle: hello\ncreated: 2023-08-19\n---`
+    );
+  });
+
   it("empty tags", () => {
     assert.strictEqual(
       handleHeaderLines("", fileToLines(`#+title: hello\n#+tags: `).headerLines),
