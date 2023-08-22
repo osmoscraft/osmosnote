@@ -1,26 +1,29 @@
 #/bin/sh
 
+HAIKU_REPO_PATH=~/.osmosnote/repo
+MD_REPO_NOTES_PATH=~/repos/s2-notes-md/data/notes
+
 rm -rf ./input
 mkdir ./input
 rm -rf ./output
 mkdir ./output
 
 # load inputs
-git -C ~/.osmosnote/repo pull
-cp ~/.osmosnote/repo/* ~/repos/osmosnote/packages/tools/markdown-converter/input
+git -C $HAIKU_REPO_PATH pull
+cp $HAIKU_REPO_PATH/* ./input
 
 # convert
 node ./haiku-to-md.js
 
 # update target
-git -C ~/repos/s2-notes-md/data/notes fetch
-git -C ~/repos/s2-notes-md/data/notes reset --hard origin/master
-rm -rf ~/repos/s2-notes-md/data/notes/*
-cp ~/repos/osmosnote/packages/tools/markdown-converter/output/* ~/repos/s2-notes-md/data/notes/
+git -C $MD_REPO_NOTES_PATH fetch
+git -C $MD_REPO_NOTES_PATH reset --hard origin/master
+rm -rf $MD_REPO_NOTES_PATH/*
+cp ./output/* $MD_REPO_NOTES_PATH/
 
 # let user finish git push
-git -C ~/repos/s2-notes-md/data/notes add -A
-git -C ~/repos/s2-notes-md/data/notes status
-git -C ~/repos/s2-notes-md/data/notes commit -m "sync"
-git -C ~/repos/s2-notes-md/data/notes push
+git -C $MD_REPO_NOTES_PATH add -A
+git -C $MD_REPO_NOTES_PATH status
+git -C $MD_REPO_NOTES_PATH commit -m "sync"
+git -C $MD_REPO_NOTES_PATH push
 
