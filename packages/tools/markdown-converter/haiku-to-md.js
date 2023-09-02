@@ -1,10 +1,13 @@
 import fs from "fs/promises";
+import assert from "node:assert";
 import path from "path";
 import { fileToLines, handleBodyLines, handleHeaderLines } from "./lib.js";
 const __dirname = path.resolve();
 const inputDir = path.resolve(__dirname, "./input");
 
 // console.warn = () => {};
+
+const filenameMap = new Map();
 
 async function main(inputDir) {
   try {
@@ -16,12 +19,27 @@ async function main(inputDir) {
   const haikuFiles = await fs.readdir(inputDir);
   console.log("file count: ", haikuFiles.length);
 
+  // first pass, analyze all metadata
+  for (const haikuFile of haikuFiles) {
+    await fs.readFile(path.resolve(inputDir, haikuFile), "utf-8").then(async (data) => {
+      const { headerLines } = fileToLines(data);
+
+      // convert headerLines to yaml
+      const { timeId } = handleHeaderLines(haikuFile, headerLines);
+      const sourceFilename = haikuFile.replace(".haiku", "");
+      filenameMap.set(sourceFilename, timeId);
+    });
+  }
+
+  assert(filenameMap.size === haikuFiles.length, "filenameMap size should match haikuFiles length");
+
   for (const haikuFile of haikuFiles) {
     await fs.readFile(path.resolve(inputDir, haikuFile), "utf-8").then(async (data) => {
       const { headerLines, bodyLines } = fileToLines(data);
 
       // convert headerLines to yaml
       const { frontmatter, timeId } = handleHeaderLines(haikuFile, headerLines);
+
       const body = handleBodyLines(haikuFile, bodyLines);
 
       // TODO pass through markdown and yaml parser
