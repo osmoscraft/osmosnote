@@ -89,9 +89,11 @@ export function handleHeaderLines(haikuFile, headerLines) {
 }
 
 /**
+ * @param {string} haikuFile
  * @param {string[]} bodyLines
+ * @param {Map<string, string>} filenameMap
  */
-export function handleBodyLines(haikuFile, bodyLines) {
+export function handleBodyLines(haikuFile, bodyLines, filenameMap) {
   // trim bodyLines
   while (bodyLines[0]?.trim() === "") {
     bodyLines.shift();

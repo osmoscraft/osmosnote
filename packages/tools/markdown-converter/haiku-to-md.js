@@ -40,7 +40,7 @@ async function main(inputDir) {
       // convert headerLines to yaml
       const { frontmatter, timeId } = handleHeaderLines(haikuFile, headerLines);
 
-      const body = handleBodyLines(haikuFile, bodyLines);
+      const body = handleBodyLines(haikuFile, bodyLines, filenameMap);
 
       // TODO pass through markdown and yaml parser
 

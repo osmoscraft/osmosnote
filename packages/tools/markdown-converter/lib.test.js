@@ -111,39 +111,42 @@ describe("header", () => {
 
 describe("body", () => {
   it("handles basic list", () => {
-    assert.strictEqual(handleBodyLines("", fileToLines(`- item\n- item\n- item`).bodyLines), `- item\n- item\n- item`);
+    assert.strictEqual(
+      handleBodyLines("", fileToLines(`- item\n- item\n- item`).bodyLines, new Map()),
+      `- item\n- item\n- item`
+    );
   });
   it("handles nested list", () => {
     assert.strictEqual(
-      handleBodyLines("", fileToLines(`- item\n-- item\n--- item`).bodyLines),
+      handleBodyLines("", fileToLines(`- item\n-- item\n--- item`).bodyLines, new Map()),
       `- item\n  - item\n    - item`
     );
   });
   it("handles ordered list", () => {
     assert.strictEqual(
-      handleBodyLines("", fileToLines(`1. item\n2. item\n3. item`).bodyLines),
+      handleBodyLines("", fileToLines(`1. item\n2. item\n3. item`).bodyLines, new Map()),
       `- 1. item\n- 2. item\n- 3. item`
     );
   });
   it("handles nested ordered list", () => {
     assert.strictEqual(
-      handleBodyLines("", fileToLines(`1. item\n-1. item\n--1. item`).bodyLines),
+      handleBodyLines("", fileToLines(`1. item\n-1. item\n--1. item`).bodyLines, new Map()),
       `- 1. item\n  - 1. item\n    - 1. item`
     );
   });
   it("invalid lists", () => {
-    assert.throws(() => handleBodyLines("", fileToLines(`+ item`).bodyLines));
-    assert.throws(() => handleBodyLines("", fileToLines(`* item`).bodyLines));
+    assert.throws(() => handleBodyLines("", fileToLines(`+ item`).bodyLines, new Map()));
+    assert.throws(() => handleBodyLines("", fileToLines(`* item`).bodyLines, new Map()));
   });
   it("handles quotes", () => {
-    assert.strictEqual(handleBodyLines("", fileToLines(`> quote`).bodyLines), `> quote`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`> quote`).bodyLines, new Map()), `> quote`);
   });
   it("handles heading", () => {
-    assert.strictEqual(handleBodyLines("", fileToLines(`# heading`).bodyLines), `# heading`);
-    assert.strictEqual(handleBodyLines("", fileToLines(`## heading`).bodyLines), `## heading`);
-    assert.strictEqual(handleBodyLines("", fileToLines(`### heading`).bodyLines), `### heading`);
-    assert.strictEqual(handleBodyLines("", fileToLines(`#### heading`).bodyLines), `#### heading`);
-    assert.strictEqual(handleBodyLines("", fileToLines(`##### heading`).bodyLines), `##### heading`);
-    assert.strictEqual(handleBodyLines("", fileToLines(`###### heading`).bodyLines), `###### heading`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`# heading`).bodyLines, new Map()), `# heading`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`## heading`).bodyLines, new Map()), `## heading`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`### heading`).bodyLines, new Map()), `### heading`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`#### heading`).bodyLines, new Map()), `#### heading`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`##### heading`).bodyLines, new Map()), `##### heading`);
+    assert.strictEqual(handleBodyLines("", fileToLines(`###### heading`).bodyLines, new Map()), `###### heading`);
   });
 });
