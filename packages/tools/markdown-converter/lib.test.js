@@ -149,4 +149,20 @@ describe("body", () => {
     assert.strictEqual(handleBodyLines("", fileToLines(`##### heading`).bodyLines, new Map()), `##### heading`);
     assert.strictEqual(handleBodyLines("", fileToLines(`###### heading`).bodyLines, new Map()), `###### heading`);
   });
+
+  it("throws when internal link id is not in the map", () => {
+    assert.throws(() => handleBodyLines("", fileToLines(`[hello world](123)`).bodyLines, new Map()));
+  });
+  it("update link id using the filename map", () => {
+    assert.strictEqual(
+      handleBodyLines("", fileToLines(`[hello world](123)`).bodyLines, new Map([["123", "456"]])),
+      "[hello world](456)"
+    );
+  });
+  it("leaves url link unchanged", () => {
+    assert.strictEqual(
+      handleBodyLines("", fileToLines(`[hello world](https://example.com)`).bodyLines, new Map([["123", "456"]])),
+      "[hello world](https://example.com)"
+    );
+  });
 });

@@ -182,7 +182,16 @@ export function handleBodyLines(haikuFile, bodyLines, filenameMap) {
 
   const markdownLines = normalizedLines.map((astLine) => astLine.line);
 
-  const bodyText = markdownLines.join("\n");
+  let bodyText = markdownLines.join("\n");
+
+  // post-processing
+  // Fix all links
+  const internalLinkPattern = /\[(.+?)\]\((\d+?)\)/g;
+  bodyText = bodyText.replace(internalLinkPattern, (_, text, id) => {
+    const filename = filenameMap.get(id);
+    assert(filename, `${haikuFile} has invalid internal link id ${id}`);
+    return `[${text}](${filename})`;
+  });
 
   if (bodyText.includes("```")) {
     console.log(`[code block] ${haikuFile} has code block`);
