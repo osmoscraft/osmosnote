@@ -26,7 +26,8 @@ async function main(inputDir) {
 
       // TODO pass through markdown and yaml parser
 
-      await fs.writeFile(path.join(__dirname, `./output/${timeId}.md`), `${frontmatter}\n\n${body}\n`);
+      // `wx` flag: fail if file exists
+      await fs.writeFile(path.join(__dirname, `./output/${timeId}.md`), `${frontmatter}\n\n${body}\n`, { flag: "wx" });
     });
   }
 }
