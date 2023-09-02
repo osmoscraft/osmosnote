@@ -12,67 +12,88 @@ describe("header", () => {
     assert.throws(() => handleHeaderLines("", fileToLines(`#+title:`).headerLines));
   });
 
+  it("missing timestamp", () => {
+    assert.throws(() => handleHeaderLines("", fileToLines(`#+title: hello`).headerLines));
+  });
+
   it("title", () => {
     assert.strictEqual(
-      handleHeaderLines("", fileToLines(`#+title: Basic title`).headerLines),
-      `---\ntitle: Basic title\n---`
+      handleHeaderLines("", fileToLines(`#+title: Basic title\n#+created: 2000-01-01T00:00:00Z`).headerLines)
+        .frontmatter,
+      `---\ntitle: Basic title\ncreated: 2000-01-01T00:00:00Z\n---`
     );
   });
 
   it("title with surrounding space", () => {
     assert.strictEqual(
-      handleHeaderLines("", fileToLines(`#+title:   Basic title  `).headerLines),
-      `---\ntitle: Basic title\n---`
+      handleHeaderLines("", fileToLines(`#+title:   Basic title  \n#+created: 2000-01-01T00:00:00Z`).headerLines)
+        .frontmatter,
+      `---\ntitle: Basic title\ncreated: 2000-01-01T00:00:00Z\n---`
     );
   });
 
   it("title that contains quotes", () => {
-    assert.throws(() => handleHeaderLines("", fileToLines(`#+title: "hello"`).headerLines));
+    assert.throws(() =>
+      handleHeaderLines("", fileToLines(`#+title: "hello"\n#+created: 2000-01-01T00:00:00Z`).headerLines)
+    );
   });
 
   it("title with colon", () => {
     assert.strictEqual(
-      handleHeaderLines("", fileToLines(`#+title: Key: Value`).headerLines),
-      `---\ntitle: \"Key: Value\"\n---`
+      handleHeaderLines("", fileToLines(`#+title: Key: Value\n#+created: 2000-01-01T00:00:00Z`).headerLines)
+        .frontmatter,
+      `---\ntitle: \"Key: Value\"\ncreated: 2000-01-01T00:00:00Z\n---`
     );
   });
 
   it("coverts date", () => {
     assert.strictEqual(
-      handleHeaderLines("", fileToLines(`#+title: hello\n#+created: 2023-08-19T23:59:59-07:00`).headerLines),
+      handleHeaderLines("", fileToLines(`#+title: hello\n#+created: 2023-08-19T23:59:59-07:00`).headerLines)
+        .frontmatter,
       `---\ntitle: hello\ncreated: 2023-08-19T23:59:59-07:00\n---`
     );
     assert.strictEqual(
-      handleHeaderLines("", fileToLines(`#+title: hello\n#+created: 2023-08-19T00:00:01+07:00`).headerLines),
+      handleHeaderLines("", fileToLines(`#+title: hello\n#+created: 2023-08-19T00:00:01+07:00`).headerLines)
+        .frontmatter,
       `---\ntitle: hello\ncreated: 2023-08-19T00:00:01+07:00\n---`
     );
   });
 
   it("empty tags", () => {
     assert.strictEqual(
-      handleHeaderLines("", fileToLines(`#+title: hello\n#+tags: `).headerLines),
-      `---\ntitle: hello\n---`
+      handleHeaderLines("", fileToLines(`#+title: hello\n#+tags: \n#+created: 2000-01-01T00:00:00Z`).headerLines)
+        .frontmatter,
+      `---\ntitle: hello\ncreated: 2000-01-01T00:00:00Z\n---`
     );
   });
 
   it("basic tags", () => {
     assert.strictEqual(
-      handleHeaderLines("", fileToLines(`#+title: hello\n#+tags: hello, world`).headerLines),
-      `---\ntitle: hello\ntags: [hello, world]\n---`
+      handleHeaderLines(
+        "",
+        fileToLines(`#+title: hello\n#+tags: hello, world\n#+created: 2000-01-01T00:00:00Z`).headerLines
+      ).frontmatter,
+      `---\ntitle: hello\ntags: [hello, world]\ncreated: 2000-01-01T00:00:00Z\n---`
     );
   });
 
   it("tags with irregular spaces", () => {
     assert.strictEqual(
-      handleHeaderLines("", fileToLines(`#+title: hello\n#+tags:   hello  ,  world `).headerLines),
-      `---\ntitle: hello\ntags: [hello, world]\n---`
+      handleHeaderLines(
+        "",
+        fileToLines(`#+title: hello\n#+tags:   hello  ,  world \n#+created: 2000-01-01T00:00:00Z`).headerLines
+      ).frontmatter,
+      `---\ntitle: hello\ntags: [hello, world]\ncreated: 2000-01-01T00:00:00Z\n---`
     );
   });
 
   it("handles URL", () => {
     assert.strictEqual(
-      handleHeaderLines("", fileToLines(`#+title: hello\n#+url: https://test.com/?q=32`).headerLines),
-      `---\ntitle: hello\nurl: https://test.com/?q=32\n---`
+      handleHeaderLines(
+        "",
+        fileToLines(`#+title: hello\n#+created: 2000-01-01T00:00:00Z\n#+url: https://test.com/?q=32`).headerLines
+      ).frontmatter,
+      `---\ntitle: hello\ncreated: 2000-01-01T00:00:00Z\nurl: https://test.com/?q=32\n---`
     );
   });
 });
