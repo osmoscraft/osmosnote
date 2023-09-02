@@ -59,6 +59,17 @@ describe("header", () => {
     );
   });
 
+  it("extracts time id from metadata", () => {
+    assert.strictEqual(
+      handleHeaderLines("", fileToLines(`#+title: hello\n#+created: 2023-08-19T23:59:59Z`).headerLines).timeId,
+      `20230819235959`
+    );
+    assert.strictEqual(
+      handleHeaderLines("", fileToLines(`#+title: hello\n#+created: 2023-08-19T23:59:59-01:00`).headerLines).timeId,
+      `20230820005959`
+    );
+  });
+
   it("empty tags", () => {
     assert.strictEqual(
       handleHeaderLines("", fileToLines(`#+title: hello\n#+tags: \n#+created: 2000-01-01T00:00:00Z`).headerLines)
