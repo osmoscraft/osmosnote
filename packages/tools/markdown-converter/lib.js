@@ -80,10 +80,12 @@ export function handleHeaderLines(haikuFile, headerLines) {
     throw e;
   }
   assert(parsedYaml.title, `${haikuFile} has no title`);
+  assert(parsedYaml.created, `${haikuFile} has no timestamp`);
+  const timeId = new Date(parsedYaml.created).toISOString().replace(/-|T|:/g, "").slice(0, 14);
 
   const frontmatter = `---\n${frontmatterLines.join("\n")}\n---`;
 
-  return frontmatter;
+  return { timeId, frontmatter };
 }
 
 /**

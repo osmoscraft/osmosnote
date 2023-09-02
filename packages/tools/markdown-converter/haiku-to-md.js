@@ -21,15 +21,12 @@ async function main(inputDir) {
       const { headerLines, bodyLines } = fileToLines(data);
 
       // convert headerLines to yaml
-      const frontmatter = handleHeaderLines(haikuFile, headerLines);
+      const { frontmatter, timeId } = handleHeaderLines(haikuFile, headerLines);
       const body = handleBodyLines(haikuFile, bodyLines);
 
       // TODO pass through markdown and yaml parser
 
-      await fs.writeFile(
-        path.join(__dirname, `./output/${haikuFile.replace(".haiku", ".md")}`),
-        `${frontmatter}\n\n${body}\n`
-      );
+      await fs.writeFile(path.join(__dirname, `./output/${timeId}.md`), `${frontmatter}\n\n${body}\n`);
     });
   }
 }
