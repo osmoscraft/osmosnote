@@ -91,7 +91,10 @@ This project is inspired by all of the great text editors and note taking apps o
 
 ## Ecosystem
 
-osmos::note is part of the [osmos::craft](https://osmoscraft.org) ecosystem. If you enjoy this tool, you might also like:
+## Ecosystem
 
-- [osmos::feed](https://github.com/osmoscraft/osmosfeed): A web-based RSS reader running entirely from your GitHub repo.
-- [osmos::memo](https://github.com/osmoscraft/osmosmemo): An in-browser bookmark manager optimized for tagging and retrieval speed.
+Browse other projects from the [osmos::craft](https://osmoscraft.org/) ecosystem. 
+
+- Read the web with [Fjord](https://github.com/osmoscraft/fjord)
+- Manage bookmarks with [Memo](https://github.com/osmoscraft/osmosmemo)
+- Take notes with [Tundra](https://github.com/osmoscraft/tundra)
