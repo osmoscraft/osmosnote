@@ -10,6 +10,8 @@ A web-based text editor for networked note-taking, self-hostable on any Git repo
 - Keyboard-centeric design for max efficiency.
 - Easy theming and customziation with JavaScript and CSS (coming soon).
 
+Want a host-free alternative? Check out the sister project: [Tundra](https://github.com/osmoscraft/Tundra).
+
 ## Screenshot
 
 ![image](https://user-images.githubusercontent.com/1895289/116659117-ed0fb800-a945-11eb-9e97-c28eeaf29ab0.png)
